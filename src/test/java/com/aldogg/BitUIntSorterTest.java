@@ -10,7 +10,7 @@ public class BitUIntSorterTest {
 
     @Test
     public void basicTests() {
-        IntSorter[] sorters = new IntSorter[] {new JavaIntSorter(), new BitSorterUIntOptimized2(), new BitSorterUIntOptimized(), new BitSorterUIntMT(), new RadixBitUIntSorter()};
+        IntSorter[] sorters = new IntSorter[] {new JavaIntSorter(), new BitSorterUIntOptimized2(), new BitSorterUIntOptimized(), new BitSorterUIntMT(), new RadixBitUIntSorter3()};
         TestSortResults sorter = new TestSortResults(sorters);
         testSort(new int[] {}, sorter);
         testSort(new int[] {1}, sorter);
@@ -61,7 +61,7 @@ public class BitUIntSorterTest {
 
     @Test
     public void speedTest() {
-        IntSorter[] sorters = new IntSorter[] {new JavaIntSorter(), new BitSorterUIntOptimized2(), new BitSorterUIntOptimized(), new BitSorterUIntMT(), new RadixBitUIntSorter(), new RadixBitUIntSorter2(), new JavaParallelSorter()};
+        IntSorter[] sorters = new IntSorter[] {new JavaIntSorter(), new BitSorterUIntOptimized2(), new BitSorterUIntOptimized(), new BitSorterUIntMT(), new RadixBitUIntSorter2(), new RadixBitUIntSorter3(), new JavaParallelSorter()};
         TestSortResults testSortResults = new TestSortResults(sorters);
 
         // write your code here
