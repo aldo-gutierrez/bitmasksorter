@@ -52,3 +52,12 @@ Optimizations:
 ## Things to DO
 - Add Object sorting by key
 - Add Int sorters Long sorters and ULong sorters
+
+## Speed
+BitSorterUIntOptimized and BitSorterUIntMT is fastests always than JavaSorter
+RadixBitUIntSorter3 is almost always faster than JavaSorter
+BitSorterUIntMT is most of the time faster than JavaSorter or near the same speed
+
+## O(N) Complexity. Needs to be evaluated
+
+
