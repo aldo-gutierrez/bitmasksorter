@@ -28,13 +28,14 @@ public class RadixBitUIntSorter2  extends  RadixBitUIntSorter{
             int kListI = kList[i];
             int sortMask1 = getMask(kListI);
             int bits = 1;
+            int imm = 0;
             if (i - 1 > 0) {
                 int kListIm1 = kList[i - 1];
                 if (kListIm1 == kListI + 1) {
                     int sortMask2 = getMask(kListIm1);
                     sortMask1 = sortMask1 | sortMask2;
                     bits++;
-                    i--;
+                    imm++;
                 }
             }
             if (i - 2 > 0) {
@@ -43,9 +44,10 @@ public class RadixBitUIntSorter2  extends  RadixBitUIntSorter{
                     int sortMask3 = getMask(kListIm2);
                     sortMask1 = sortMask1 | sortMask3;
                     bits++;
-                    i--;
+                    imm++;
                 }
             }
+            i-=imm;
             if (bits == 1) {
                 stablePartition(list, start, end, sortMask1);
             } else {
