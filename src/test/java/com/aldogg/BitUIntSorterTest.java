@@ -61,48 +61,46 @@ public class BitUIntSorterTest {
 
     @Test
     public void speedTest() {
-        IntSorter[] sorters = new IntSorter[] {new JavaIntSorter(), new BitSorterUIntOptimized2(), new BitSorterUIntOptimized(), new BitSorterUIntMT(), new RadixBitUIntSorter2(), new RadixBitUIntSorter3(), new JavaParallelSorter()};
+        IntSorter[] sorters = new IntSorter[] {new JavaIntSorter(), new JavaParallelSorter(), new BitSorterUIntOptimized(), new BitSorterUIntOptimized2(), new BitSorterUIntMT(), new RadixBitUIntSorter3()};
         TestSortResults testSortResults = new TestSortResults(sorters);
 
         // write your code here
         int iterations = 10;
+        int[] limitHigh = new int[] {10, 1000, 100000, 10000000};
 
-        testSpeed(iterations, 600000, 0, 10000000, testSortResults);
-        for (int i = 0; i< testSortResults.getSorters().size(); i++) {
-            IntSorter sorter = testSortResults.getSorters().get(i);
-            System.out.println("Elapsed "+sorter.name() + " AVG: " + testSortResults.getAVG(i));
-        }
-        System.out.println();
+        for (int limitH : limitHigh) {
+            testSpeed(iterations, 10000, 0, limitH, testSortResults);
+            for (int i = 0; i < testSortResults.getSorters().size(); i++) {
+                IntSorter sorter = testSortResults.getSorters().get(i);
+                System.out.println("Elapsed " + sorter.name() + " AVG: " + testSortResults.getAVG(i));
+            }
+            System.out.println();
 
-        // write your code here
-        testSpeed(iterations, 10000000, 0, 10000000, testSortResults);
-        for (int i = 0; i< testSortResults.getSorters().size(); i++) {
-            IntSorter sorter = testSortResults.getSorters().get(i);
-            System.out.println("Elapsed "+sorter.name() + " AVG: " + testSortResults.getAVG(i));
-        }
-        System.out.println();
+            // write your code here
+            testSpeed(iterations, 100000, 0, limitH, testSortResults);
+            for (int i = 0; i < testSortResults.getSorters().size(); i++) {
+                IntSorter sorter = testSortResults.getSorters().get(i);
+                System.out.println("Elapsed " + sorter.name() + " AVG: " + testSortResults.getAVG(i));
+            }
+            System.out.println();
 
-        testSortResults = new TestSortResults(sorters);
-        testSpeed(iterations, 2333333, 0, 9999, testSortResults);
-        for (int i = 0; i< testSortResults.getSorters().size(); i++) {
-            IntSorter sorter = testSortResults.getSorters().get(i);
-            System.out.println("Elapsed "+sorter.name() + " AVG: " + testSortResults.getAVG(i));
-        }
-        System.out.println();
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 1000000, 0, limitH, testSortResults);
+            for (int i = 0; i < testSortResults.getSorters().size(); i++) {
+                IntSorter sorter = testSortResults.getSorters().get(i);
+                System.out.println("Elapsed " + sorter.name() + " AVG: " + testSortResults.getAVG(i));
+            }
+            System.out.println();
 
-        testSortResults = new TestSortResults(sorters);
-        testSpeed(iterations, 1000000, 0, 400000, testSortResults);
-        for (int i = 0; i< testSortResults.getSorters().size(); i++) {
-            IntSorter sorter = testSortResults.getSorters().get(i);
-            System.out.println("Elapsed "+sorter.name() + " AVG: " + testSortResults.getAVG(i));
-        }
-        System.out.println();
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 10000000, 0, limitH, testSortResults);
+            for (int i = 0; i < testSortResults.getSorters().size(); i++) {
+                IntSorter sorter = testSortResults.getSorters().get(i);
+                System.out.println("Elapsed " + sorter.name() + " AVG: " + testSortResults.getAVG(i));
+            }
+            System.out.println();
 
-        testSortResults = new TestSortResults(sorters);
-        testSpeed(iterations, 1000000, 0, 2, testSortResults);
-        for (int i = 0; i< testSortResults.getSorters().size(); i++) {
-            IntSorter sorter = testSortResults.getSorters().get(i);
-            System.out.println("Elapsed "+sorter.name() + " AVG: " + testSortResults.getAVG(i));
+            System.out.println("----------------------");
         }
         System.out.println();
 
