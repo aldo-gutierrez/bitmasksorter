@@ -12,6 +12,15 @@ public class BitSorterUIntOptimized extends BitSorterUIntBasic implements IntSor
         this.params = params;
     }
 
+    public BitSorterUIntOptimized() {
+
+    }
+
+    public BitSorterUIntOptimized( int size) {
+        super();
+        this.params.setCountingSortBits(size);
+    }
+
     @Override
     public void sort(int[] list) {
         final int start = 0;
