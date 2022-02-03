@@ -53,7 +53,7 @@ public class BitSorterUIntMT extends BitSorterUIntOptimized implements IntSorter
         if (listK.length <= params.getCountingSortBits()) {
             CountSort.countSort(list, start, end, listK, 0);
         } else {
-            sortMT(list, start, end, listK, 0);
+            sortMT(list, start, end, listK, 0, false);
         }
     }
 
@@ -62,7 +62,7 @@ public class BitSorterUIntMT extends BitSorterUIntOptimized implements IntSorter
         return this.getClass().getSimpleName();
     }
 
-    public void sortMT(final int[] list, final int start, final int end, final int[] kList, final int kIndex) {
+    public void sortMT(final int[] list, final int start, final int end,  int[] kList, int kIndex, boolean recalculate) {
         final int listLength = end - start;
         if (listLength <= 5) {
             sortList2to5Elements(list, start, end);
@@ -71,13 +71,32 @@ public class BitSorterUIntMT extends BitSorterUIntOptimized implements IntSorter
         if (kIndex > kList.length - 1) {
             return;
         }
+
+        if (recalculate) {
+            int[] maskParts = getMask(list, start, end);
+            int mask = maskParts[0] & maskParts[1];
+            kList = getMaskAsList(mask);
+            kIndex = 0;
+
+            if (kIndex > kList.length - 1) {
+                return;
+            }
+        }
+
         if (kList.length - kIndex <= params.getCountingSortBits()) {
             CountSort.countSort(list, start, end, kList, kIndex);
             return;
         }
         int sortMask = getMask(kList[kIndex]);
         int finalLeft = partition(list, start, end, sortMask);
-        Runnable r1 = () -> sortMT(list, start, finalLeft, kList, kIndex + 1);
+        boolean recalculateBitMask = false;
+        if (finalLeft == start || finalLeft == end) {
+            recalculateBitMask = true;
+        }
+
+        int[] finalKList = kList;
+        int finalKIndex = kIndex;
+        Runnable r1 = () -> sortMT(list, start, finalLeft, finalKList, finalKIndex + 1, false);
         Thread t1 = null;
         if (finalLeft - start > 1) {
             if (finalLeft - start > params.getDataSizeForThreads() && numThreads.get() < params.getMaxThreads()) {
@@ -89,7 +108,7 @@ public class BitSorterUIntMT extends BitSorterUIntOptimized implements IntSorter
             }
         }
         if (end - finalLeft > 1) {
-            sortMT(list, finalLeft, end, kList, kIndex + 1);
+            sortMT(list, finalLeft, end, kList, kIndex + 1, recalculateBitMask);
         }
         if (t1 != null) {
             try {

@@ -124,13 +124,13 @@ public class BitUIntSorterTest {
     public void testNegativeNumbers() {
         IntSorter[] sorters = new IntSorter[] {new JavaIntSorter(), new BitSorterIntOptimized()};
         TestSortResults sorter = new TestSortResults(sorters);
-        //testSort(new int[] {}, sorter);
-        //testSort(new int[] {1}, sorter);
-        //testSort(new int[] {2, 1}, sorter);
-        //testSort(new int[] {1, 2}, sorter);
-        //testSort(new int[] {1, 1}, sorter);
-        //testSort(new int[] {53,11,13}, sorter);
-        //testSort(new int[] {70,11,13,53}, sorter);
+        testSort(new int[] {}, sorter);
+        testSort(new int[] {1}, sorter);
+        testSort(new int[] {2, 1}, sorter);
+        testSort(new int[] {1, 2}, sorter);
+        testSort(new int[] {1, 1}, sorter);
+        testSort(new int[] {53,11,13}, sorter);
+        testSort(new int[] {70,11,13,53}, sorter);
         testSort(new int[] {-70,-11,-13,-53}, sorter);
         testSort(new int[] {-54,-46,-95,-96,-59,-58,-29,18,6,12,56,76,55,16,85,88,87,54,21,90,27,79,29,23,41,74}, sorter);
 
