@@ -21,11 +21,11 @@ public class BitSorterUIntOptimized2 extends BitSorterUIntOptimized implements I
         if (listK.length <= params.getCountingSortBits()) {
             CountSort.countSort(list, start, end, listK, 0);
         } else {
-            sort(list, start, end, listK, 0, 0);
+            sort(list, start, end, listK, 0, false);
         }
     }
 
-    public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex, int level) {
+    public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
         final int listLength = end - start;
         if (listLength <= 5) {
             sortList2to5Elements(list, start, end);
@@ -35,28 +35,35 @@ public class BitSorterUIntOptimized2 extends BitSorterUIntOptimized implements I
             return;
         }
 
-        if (level > 0) {
-            if (level < 2 && kIndex <= 2 && kList.length >= 24) {
-                int[] maskParts = getMask(list, start, end);
-                int mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsList(mask);
-                kIndex = 0;
-            }
+        if (recalculate) {
+            int[] maskParts = getMask(list, start, end);
+            int mask = maskParts[0] & maskParts[1];
+            kList = getMaskAsList(mask);
+            kIndex = 0;
 
-            if (kList.length - kIndex <= params.getCountingSortBits()) {
-                CountSort.countSort(list, start, end, kList, kIndex);
+            if (kIndex > kList.length - 1) {
                 return;
             }
         }
 
+        if (kList.length - kIndex <= params.getCountingSortBits()) {
+            CountSort.countSort(list, start, end, kList, kIndex);
+            return;
+        }
+
         int sortMask = getMask(kList[kIndex]);
         int finalLeft = partition(list, start, end, sortMask);
+        boolean recalculateBitMask = false;
+
+        if (finalLeft == start || finalLeft == end) {
+            recalculateBitMask = true;
+        }
 
         if (finalLeft - start > 1) {
-            sort(list, start, finalLeft, kList, kIndex + 1, level+1);
+            sort(list, start, finalLeft, kList, kIndex + 1, recalculateBitMask);
         }
         if (end - finalLeft > 1) {
-            sort(list, finalLeft, end, kList, kIndex + 1, level +1);
+            sort(list, finalLeft, end, kList, kIndex + 1, recalculateBitMask);
         }
     }
 

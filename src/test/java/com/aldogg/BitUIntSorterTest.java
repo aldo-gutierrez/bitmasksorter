@@ -136,5 +136,12 @@ public class BitUIntSorterTest {
 
     }
 
+    @Test
+    public void testBooleans() {
+        IntSorter[] sorters = new IntSorter[]{new JavaIntSorter(), new BitSorterUIntOptimized2()};
+        TestSortResults sorter = new TestSortResults(sorters);
+        testSort(new int[]{33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0}, sorter);
+    }
+
 }
 
