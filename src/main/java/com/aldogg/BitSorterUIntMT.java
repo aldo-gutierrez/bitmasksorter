@@ -9,7 +9,7 @@ import static com.aldogg.BitSorterUtils.getMask;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 import static com.aldogg.IntSorterUtils.sortList2to5Elements;
 
-public class BitSorterUIntMT extends BitSorterUIntOptimized implements IntSorter {
+public class BitSorterUIntMT extends BitSorterUIntOptimized2 implements IntSorter {
 
     AtomicInteger numThreads = new AtomicInteger(1);
 
@@ -89,26 +89,33 @@ public class BitSorterUIntMT extends BitSorterUIntOptimized implements IntSorter
         }
         int sortMask = getMask(kList[kIndex]);
         int finalLeft = partition(list, start, end, sortMask);
-        boolean recalculateBitMask = false;
-        if (finalLeft == start || finalLeft == end) {
-            recalculateBitMask = true;
-        }
+        final boolean recalculateBitMask = (finalLeft == start || finalLeft == end);
 
         int[] finalKList = kList;
         int finalKIndex = kIndex;
-        Runnable r1 = () -> sortMT(list, start, finalLeft, finalKList, finalKIndex + 1, false);
         Thread t1 = null;
-        if (finalLeft - start > 1) {
-            if (finalLeft - start > params.getDataSizeForThreads() && numThreads.get() < params.getMaxThreads()) {
+        int size1 = finalLeft - start;
+        if (size1 > params.getDataSizeForThreads()) {
+            if (numThreads.get() < params.getMaxThreads() + 1) {
+                Runnable r1 = () -> sortMT(list, start, finalLeft, finalKList, finalKIndex + 1, recalculateBitMask);
                 t1 = new Thread(r1);
                 t1.start();
                 numThreads.addAndGet(1);
             } else {
-                r1.run();
+                sortMT(list, start, finalLeft, finalKList, finalKIndex + 1, recalculateBitMask);
+            }
+        } else {
+            if (size1 > 1) {
+                sort(list, start, finalLeft, finalKList, finalKIndex + 1, recalculateBitMask);
             }
         }
-        if (end - finalLeft > 1) {
+        int size2 = end - finalLeft;
+        if (size2 > params.getDataSizeForThreads()) {
             sortMT(list, finalLeft, end, kList, kIndex + 1, recalculateBitMask);
+        } else {
+            if (size2 > 1) {
+                sort(list, finalLeft, end, kList, kIndex + 1, recalculateBitMask);
+            }
         }
         if (t1 != null) {
             try {

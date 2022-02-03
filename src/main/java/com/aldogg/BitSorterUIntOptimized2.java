@@ -53,11 +53,7 @@ public class BitSorterUIntOptimized2 extends BitSorterUIntOptimized implements I
 
         int sortMask = getMask(kList[kIndex]);
         int finalLeft = partition(list, start, end, sortMask);
-        boolean recalculateBitMask = false;
-
-        if (finalLeft == start || finalLeft == end) {
-            recalculateBitMask = true;
-        }
+        boolean recalculateBitMask = (finalLeft == start || finalLeft == end);
 
         if (finalLeft - start > 1) {
             sort(list, start, finalLeft, kList, kIndex + 1, recalculateBitMask);
