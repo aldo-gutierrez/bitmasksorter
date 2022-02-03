@@ -4,8 +4,6 @@ import static com.aldogg.BitSorterUtils.getMask;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 
 public class RadixBitUIntSorter2  extends  RadixBitUIntSorter{
-    int[][] aux2;
-    int[] leftX;
 
     @Override
     public void sort(int[] list) {
@@ -14,8 +12,7 @@ public class RadixBitUIntSorter2  extends  RadixBitUIntSorter{
         int[] maskParts = getMask(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
-        leftX = new int[8];
-        aux2 = new int[8][];
+        int[][] aux2 = new int[8][];
         for (int i = 0; i < 8; i++) {
             try {
                 aux2[i] = new int[list.length];
@@ -23,7 +20,7 @@ public class RadixBitUIntSorter2  extends  RadixBitUIntSorter{
                 ex.printStackTrace();
             }
         }
-        aux = aux2[0];
+        int[] aux = aux2[0];
         for (int i = kList.length - 1; i >= 0; i--) {
             int kListI = kList[i];
             int sortMask1 = getMask(kListI);
@@ -49,19 +46,17 @@ public class RadixBitUIntSorter2  extends  RadixBitUIntSorter{
             }
             i-=imm;
             if (bits == 1) {
-                stablePartition(list, start, end, sortMask1);
+                stablePartition(list, start, end, sortMask1, aux);
             } else {
-                stablePartition(list, start, end, sortMask1, bits, 32 - bits - kListI, 32 - bits);
+                stablePartition(list, start, end, sortMask1, aux2, bits, 32 - bits - kListI, 32 - bits);
             }
         }
-        aux2 = null;
     }
 
-    protected int stablePartition(final int[] list, final int start, final int end, int sortMask, final int bits, final int shiftLeft, final int shiftRight) {
+    protected int stablePartition(final int[] list, final int start, final int end, int sortMask, int[][] aux2, final int bits, final int shiftLeft, final int shiftRight) {
         int lengthBitsToNumber = (int) Math.pow(2, bits);
-        for (int i = 0; i < lengthBitsToNumber; i++) {
-            leftX[i] = 0;
-        }
+        int[] leftX = new int[8];
+
         sortMask = shiftPre(sortMask, shiftLeft, shiftRight);
         int left = start;
         for (int i = start; i < end; i++) {

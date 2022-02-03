@@ -4,9 +4,6 @@ import static com.aldogg.BitSorterUtils.getMask;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 
 public class RadixBitUIntSorter3 extends RadixBitUIntSorter {
-    int[] aux2;
-    int[] leftX;
-    int[] count;
 
     @Override
     public void sort(int[] list) {
@@ -15,9 +12,13 @@ public class RadixBitUIntSorter3 extends RadixBitUIntSorter {
         int[] maskParts = getMask(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
-        aux2 = new int[list.length];
-        aux = aux2;
-        for (int i = kList.length - 1; i >= 0; i--) {
+        radixSort(list, start, end, kList, 0);
+    }
+
+    protected void radixSort(int[] list, int start, int end, int[] kList, int kIndexLow) {
+        int[] aux2 = new int[list.length];
+        int kIndexHigh = kList.length - 1;
+        for (int i = kIndexHigh; i >= kIndexLow; i--) {
             int kListI = kList[i];
             int sortMask1 = getMask(kListI);
             int bits = 1;
@@ -87,22 +88,19 @@ public class RadixBitUIntSorter3 extends RadixBitUIntSorter {
             }
             i-=imm;
             if (bits == 1) {
-                stablePartition(list, start, end, sortMask1);
+                stablePartition(list, start, end, sortMask1, aux2);
             } else {
-                stablePartition(list, start, end, sortMask1, bits, 32 - bits - kListI, 32 - bits);
+                stablePartition(list, start, end, sortMask1, aux2, bits, 32 - bits - kListI, 32 - bits);
             }
         }
-        aux2 = null;
     }
 
-    protected void stablePartition(final int[] list, final int start, final int end, int sortMask, final int bits, final int shiftLeft, final int shiftRight) {
+    protected void stablePartition(final int[] list, final int start, final int end, int sortMask, final int[] aux2, final int bits, final int shiftLeft, final int shiftRight) {
         int lengthBitsToNumber = (int) Math.pow(2, bits);
-        leftX = new int[lengthBitsToNumber];
-        count = new int[lengthBitsToNumber];
-        for (int i = 0; i < lengthBitsToNumber; i++) {
-            leftX[i] = 0;
-            count[i] = 0;
-        }
+
+        int[] leftX = new int[lengthBitsToNumber];
+        int[] count = new int[lengthBitsToNumber];
+
         sortMask = shiftPre(sortMask, shiftLeft, shiftRight);
         for (int i = start; i < end; i++) {
             int element = list[i];

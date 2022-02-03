@@ -5,9 +5,6 @@ import static com.aldogg.BitSorterUtils.getMaskAsList;
 
 public class RadixBitUIntSorter extends BitSorterUIntOptimized {
 
-    int[] aux;
-
-
     @Override
     public void sort(int[] list) {
         final int start = 0;
@@ -15,14 +12,14 @@ public class RadixBitUIntSorter extends BitSorterUIntOptimized {
         int[] maskParts = getMask(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
-        aux = new int[end - start];
+        int[] aux = new int[end - start];
         for (int i=kList.length-1; i >=0; i--) {
             int sortMask = getMask(kList[i]);
-            stablePartition(list, start, end, sortMask);
+            stablePartition(list, start, end, sortMask, aux);
         }
     }
 
-    protected int stablePartition(final int[] list, final int start, final int end, final int sortMask) {
+    protected int stablePartition(final int[] list, final int start, final int end, final int sortMask, int[] aux) {
         int left = start;
         int right = 0;
         for (int i = start; i < end; i++) {
