@@ -4,9 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
+import static com.aldogg.BitSorterUtils.getKey;
+import static com.aldogg.BitSorterUtils.getMaskAsSections;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class BitUIntSorterTest {
+public class SorterTest {
 
     @Test
     public void basicTests() {
@@ -52,10 +54,22 @@ public class BitUIntSorterTest {
                     testSortResults.set(i, false, 0);
                     ex.printStackTrace();
                     String orig = Arrays.toString(list);
-                    //System.err.println("List orig: " + orig);
+                    System.err.println("List orig: " + orig);
+                    String failed = Arrays.toString(listAux);
+                    System.err.println("List fail: " + failed);
+                    String ok = Arrays.toString(listAux2);
+                    System.err.println("List ok: " + ok);
                 }
             }
         }
+    }
+
+    @Test
+    public void maskTest() {
+        int[] listk = new int[] {4,2,1,0};
+        int[][] parts = getMaskAsSections(listk);
+        int key = getKey(20, parts);
+        assertEquals(key, 12);
     }
 
 
@@ -77,7 +91,6 @@ public class BitUIntSorterTest {
             }
             System.out.println();
 
-            // write your code here
             testSpeed(iterations, 100000, 0, limitH, testSortResults);
             for (int i = 0; i < testSortResults.getSorters().size(); i++) {
                 IntSorter sorter = testSortResults.getSorters().get(i);
