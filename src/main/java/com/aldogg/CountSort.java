@@ -4,10 +4,11 @@ import static com.aldogg.BitSorterUtils.*;
 
 public class CountSort {
     public static void countSort(final int[] list, final int start, final int end, int[] listK, final int kIndex) {
-        int[][] sections = getMaskAsSections(listK);
+        int[][] sections = getMaskAsSections(listK); //in case of multiple sections maybe trim list and set kIndex 0???
         int sortMask = getMask(listK, kIndex);
         int auxCountSize = (int) Math.pow(2, listK.length - kIndex);
         if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
+        //if (sections.length == 1 && sections[0][0] + 1 == sections[0][1] && kIndex == 0) { //THIS IS NOT NECESSARY BECAUSE THE ELEMENT SAMPLE
             int[] auxCount = new int[auxCountSize];
             int elementSample = list[start];
             elementSample = elementSample & ~sortMask;

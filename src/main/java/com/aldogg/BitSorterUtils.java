@@ -49,17 +49,24 @@ public class BitSorterUtils {
         return mask;
     }
 
-    public static int getKey(final int elementMasked, final int[][] sections) {
-        if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
-            return elementMasked;
+    public static int getMask2(final int kIndexStart, final int kIndexEnd) {
+        int mask = 0;
+        for (int k = kIndexStart; k >= kIndexEnd; k--) {
+            mask = mask | getMask(k);
         }
+        return mask;
+    }
+
+    public static int getKey(final int elementMasked, final int[][] sections) {
+        //if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
+        //    return elementMasked;
+        //}
 
         int result = 0;
         for (int i = 0; i < sections.length; i++) {
             int[] section = sections[i];
-            int k = section[0];
             int length = section[1];
-            int bits = (elementMasked >> (k - length + 1));
+            int bits = (elementMasked & section[2]) >> section[3];
             result = result << length | bits;
         }
         return result;
@@ -91,9 +98,12 @@ public class BitSorterUtils {
         int[][] sectionsAsInts = new int[sections.size()][];
         int i = 0;
         for (Map.Entry<Integer, Integer> entry : sections.entrySet()) {
-            sectionsAsInts[i] = new int[2];
+            sectionsAsInts[i] = new int[4];
             sectionsAsInts[i][0] = entry.getKey();
             sectionsAsInts[i][1] = entry.getValue();
+            sectionsAsInts[i][2] = getMask2(entry.getKey(), entry.getKey() - entry.getValue() + 1);
+            sectionsAsInts[i][3] = entry.getKey() - entry.getValue() + 1;
+            i++;
         }
         return sectionsAsInts;
     }

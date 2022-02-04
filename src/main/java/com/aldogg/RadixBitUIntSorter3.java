@@ -12,18 +12,18 @@ public class RadixBitUIntSorter3 extends RadixBitUIntSorter {
         int[] maskParts = getMask(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
-        radixSort(list, start, end, kList, 0);
+        radixSort(list, start, end, kList, kList.length - 1, 0);
     }
 
-    protected void radixSort(int[] list, int start, int end, int[] kList, int kIndexLow) {
-        int[] aux2 = new int[list.length];
-        int kIndexHigh = kList.length - 1;
-        for (int i = kIndexHigh; i >= kIndexLow; i--) {
+    protected void radixSort(int[] list, int start, int end, int[] kList, int kIndexStart, int kIndexEnd) {
+        int length = end - start;
+        int[] aux2 = new int[length];
+        for (int i = kIndexStart; i >= kIndexEnd; i--) {
             int kListI = kList[i];
             int sortMask1 = getMask(kListI);
             int bits = 1;
             int imm = 0;
-            if (i - 1 > 0) {
+            if (i - 1 >= kIndexEnd) {
                 int kListIm1 = kList[i - 1];
                 if (kListIm1 == kListI + 1) {
                     int sortMask2 = getMask(kListIm1);
@@ -32,7 +32,7 @@ public class RadixBitUIntSorter3 extends RadixBitUIntSorter {
                     imm++;
                 }
             }
-            if (i - 2 > 0) {
+            if (i - 2 >= kIndexEnd) {
                 int kListIm2 = kList[i - 2];
                 if (kListIm2 == kListI + 2) {
                     int sortMask3 = getMask(kListIm2);
@@ -41,7 +41,7 @@ public class RadixBitUIntSorter3 extends RadixBitUIntSorter {
                     imm++;
                 }
             }
-            if (i - 3 > 0) {
+            if (i - 3 >= kIndexEnd) {
                 int kListIm3 = kList[i - 3];
                 if (kListIm3 == kListI + 3) {
                     int sortMask4 = getMask(kListIm3);
@@ -50,7 +50,7 @@ public class RadixBitUIntSorter3 extends RadixBitUIntSorter {
                     imm++;
                 }
             }
-            if (i - 4 > 0) {
+            if (i - 4 >= kIndexEnd) {
                 int kListIm2 = kList[i - 4];
                 if (kListIm2 == kListI + 4) {
                     int sortMask5 = getMask(kListIm2);
@@ -59,7 +59,7 @@ public class RadixBitUIntSorter3 extends RadixBitUIntSorter {
                     imm++;
                 }
             }
-            if (i - 5 > 0) {
+            if (i - 5 >= kIndexEnd) {
                 int kListIm2 = kList[i - 5];
                 if (kListIm2 == kListI + 5) {
                     int sortMask6 = getMask(kListIm2);
@@ -68,7 +68,7 @@ public class RadixBitUIntSorter3 extends RadixBitUIntSorter {
                     imm++;
                 }
             }
-            if (i - 6 > 0) {
+            if (i - 6 >= kIndexEnd) {
                 int kListIm2 = kList[i - 6];
                 if (kListIm2 == kListI + 6) {
                     int sortMask7 = getMask(kListIm2);
@@ -77,7 +77,7 @@ public class RadixBitUIntSorter3 extends RadixBitUIntSorter {
                     imm++;
                 }
             }
-            if (i - 7 > 0) {
+            if (i - 7 >= kIndexEnd) {
                 int kListIm2 = kList[i - 7];
                 if (kListIm2 == kListI + 7) {
                     int sortMask8 = getMask(kListIm2);
@@ -119,7 +119,7 @@ public class RadixBitUIntSorter3 extends RadixBitUIntSorter {
             aux2[leftX[elementMasked]] = element;
             leftX[elementMasked]++;
         }
-        System.arraycopy(aux2, start, list, start, end - start);
+        System.arraycopy(aux2, 0, list, start, end - start);
         return;
     }
 
