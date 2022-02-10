@@ -8,10 +8,16 @@ public class BitSorterParams {
 
     private int dataSizeForThreads = 256;
 
-    private int maxThreads = 4;
+    private int maxThreads = 1;
+
+    private int maxThreadsBits = 1;
 
     public int getCountingSortBits() {
         return countingSortBits;
+    }
+
+    public int getMaxThreadsBits() {
+        return maxThreadsBits;
     }
 
     public void setCountingSortBits(int countingSortBits) {
@@ -51,6 +57,7 @@ public class BitSorterParams {
         int cpuMaxThreadCount = Runtime.getRuntime().availableProcessors();
         BitSorterParams params = new BitSorterParams();
         params.maxThreads = cpuMaxThreadCount;
+        params.maxThreadsBits = (int)(Math.log(cpuMaxThreadCount) / Math.log(2));
         return params;
     }
 
