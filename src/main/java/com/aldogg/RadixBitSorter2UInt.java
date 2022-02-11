@@ -23,67 +23,17 @@ public class RadixBitSorter2UInt extends RadixBitSorterUInt {
             int sortMask1 = getMask(kListI);
             int bits = 1;
             int imm = 0;
-            if (i - 1 >= kIndexEnd) {
-                int kListIm1 = kList[i - 1];
-                if (kListIm1 == kListI + 1) {
-                    int sortMask2 = getMask(kListIm1);
-                    sortMask1 = sortMask1 | sortMask2;
-                    bits++;
-                    imm++;
-                }
-            }
-            if (i - 2 >= kIndexEnd) {
-                int kListIm2 = kList[i - 2];
-                if (kListIm2 == kListI + 2) {
-                    int sortMask3 = getMask(kListIm2);
-                    sortMask1 = sortMask1 | sortMask3;
-                    bits++;
-                    imm++;
-                }
-            }
-            if (i - 3 >= kIndexEnd) {
-                int kListIm3 = kList[i - 3];
-                if (kListIm3 == kListI + 3) {
-                    int sortMask4 = getMask(kListIm3);
-                    sortMask1 = sortMask1 | sortMask4;
-                    bits++;
-                    imm++;
-                }
-            }
-            if (i - 4 >= kIndexEnd) {
-                int kListIm2 = kList[i - 4];
-                if (kListIm2 == kListI + 4) {
-                    int sortMask5 = getMask(kListIm2);
-                    sortMask1 = sortMask1 | sortMask5;
-                    bits++;
-                    imm++;
-                }
-            }
-            if (i - 5 >= kIndexEnd) {
-                int kListIm2 = kList[i - 5];
-                if (kListIm2 == kListI + 5) {
-                    int sortMask6 = getMask(kListIm2);
-                    sortMask1 = sortMask1 | sortMask6;
-                    bits++;
-                    imm++;
-                }
-            }
-            if (i - 6 >= kIndexEnd) {
-                int kListIm2 = kList[i - 6];
-                if (kListIm2 == kListI + 6) {
-                    int sortMask7 = getMask(kListIm2);
-                    sortMask1 = sortMask1 | sortMask7;
-                    bits++;
-                    imm++;
-                }
-            }
-            if (i - 7 >= kIndexEnd) {
-                int kListIm2 = kList[i - 7];
-                if (kListIm2 == kListI + 7) {
-                    int sortMask8 = getMask(kListIm2);
-                    sortMask1 = sortMask1 | sortMask8;
-                    bits++;
-                    imm++;
+            for (int j = 1; j <= 7; j++) {
+                if (i - j >= kIndexEnd) {
+                    int kListIm1 = kList[i - j];
+                    if (kListIm1 == kListI + j) {
+                        int sortMask2 = getMask(kListIm1);
+                        sortMask1 = sortMask1 | sortMask2;
+                        bits++;
+                        imm++;
+                    } else {
+                        break;
+                    }
                 }
             }
             i -= imm;
