@@ -66,8 +66,8 @@ public class SorterTest {
 
     @Test
     public void maskTest() {
-        int[] listk = new int[] {4,2,1,0};
-        int[][] parts = getMaskAsSections(listk);
+        int[] kList = new int[] {4,2,1,0};
+        int[][] parts = getMaskAsSections(kList);
         int key = getKey(20, parts);
         assertEquals(key, 12);
     }

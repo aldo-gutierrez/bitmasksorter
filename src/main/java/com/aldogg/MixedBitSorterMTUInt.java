@@ -17,6 +17,11 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
     public void sort(int[] list) {
         final int start = 0;
         final int end = list.length;
+        if (list.length < 1) {
+            return;
+        }
+        //if (listIsOrdered(list, start, end)) return;
+
         int[] maskParts = getMask(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
@@ -26,6 +31,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
             sort(list, start, end, kList, 0, 0);
         }
     }
+
 
 
     public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex, int level) {

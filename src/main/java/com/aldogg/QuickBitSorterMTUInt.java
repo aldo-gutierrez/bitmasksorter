@@ -5,8 +5,7 @@ import com.aldogg.parallel.ArrayThreadRunner;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.aldogg.BitSorterUtils.getMask;
-import static com.aldogg.BitSorterUtils.getMaskAsList;
+import static com.aldogg.BitSorterUtils.*;
 import static com.aldogg.IntSorterUtils.sortList2to5Elements;
 
 public class QuickBitSorterMTUInt extends QuickBitSorter3UInt implements IntSorter {
@@ -31,6 +30,7 @@ public class QuickBitSorterMTUInt extends QuickBitSorter3UInt implements IntSort
         numThreads = new AtomicInteger(1);
         final int start = 0;
         final int end = list.length;
+        //if (listIsOrdered(list, start, end)) return;
 
         /*
         int[] maskParts = ArrayThreadRunner.runInParallel(list, start, end, 2, new ArrayRunnable<int[]>() {

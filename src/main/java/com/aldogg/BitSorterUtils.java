@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.aldogg.IntSorterUtils.compareAndSwap;
+
 public class BitSorterUtils {
 
     public static int[] getMask(final int[] list, final int start, final int end) {
@@ -106,6 +108,43 @@ public class BitSorterUtils {
             i++;
         }
         return sectionsAsInts;
+    }
+
+    public static boolean listIsOrdered(int[] list, int start, int end) {
+        boolean swap = compareAndSwap(list, 0, end-1);
+        if (!swap) {
+            for (int i = start; i + 1 < end; i ++) {
+                swap = swap || compareAndSwap(list, i, i + 1);
+                if (swap) {
+                    return  false;
+                }
+            }
+            if (!swap) {
+                return true;
+            }
+        } else {
+            //Reverse Order?
+            swap = true;
+            for (int i = start+1; i <= (end-1) / 2; i++) {
+                swap = swap && compareAndSwap(list, i, end - 1 - i);
+                if (!swap) {
+                    return  false;
+                }
+            }
+            if (swap) {
+                swap = false;
+                for (int i = start; i + 1 < end; i ++) {
+                    swap = swap || compareAndSwap(list, i, i + 1);
+                    if (swap) {
+                        return false;
+                    }
+                }
+                if (!swap) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

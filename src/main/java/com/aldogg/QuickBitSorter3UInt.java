@@ -1,7 +1,6 @@
 package com.aldogg;
 
-import static com.aldogg.BitSorterUtils.getMask;
-import static com.aldogg.BitSorterUtils.getMaskAsList;
+import static com.aldogg.BitSorterUtils.*;
 import static com.aldogg.IntSorterUtils.sortList2to5Elements;
 
 public class QuickBitSorter3UInt extends QuickBitSorter2UInt implements IntSorter {
@@ -15,6 +14,10 @@ public class QuickBitSorter3UInt extends QuickBitSorter2UInt implements IntSorte
     public void sort(int[] list) {
         final int start = 0;
         final int end = list.length;
+        if (list.length < 1) {
+            return;
+        }
+        //if (listIsOrdered(list, start, end)) return;
         int[] maskParts = getMask(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] listK = getMaskAsList(mask);
