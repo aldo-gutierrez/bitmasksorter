@@ -43,7 +43,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
         }
 
 //        if (level == 0) {
-        if (level == params.getMaxThreadsBits() && (kList.length - kIndex) <= params.getCountingSortBits() + 8) {
+        if (level == params.getMaxThreadsBits() && (kList.length - kIndex) >= params.getCountingSortBits()) {
             radixCountSort(list, start, end, kList, kList.length - 1, kIndex);
         } else {
             int sortMask = getMask(kList[kIndex]);
