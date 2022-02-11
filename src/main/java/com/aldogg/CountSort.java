@@ -1,25 +1,38 @@
 package com.aldogg;
 
+import java.util.Arrays;
+
 import static com.aldogg.BitSorterUtils.*;
 
 public class CountSort {
-    public static void countSort(final int[] list, final int start, final int end, int[] listK, final int kIndex) {
-        int[][] sections = getMaskAsSections(listK); //in case of multiple sections maybe trim list and set kIndex 0???
-        int sortMask = getMask(listK, kIndex);
-        int auxCountSize = (int) Math.pow(2, listK.length - kIndex);
+
+    public static void countSort(final int[] list, final int start, final int end, int[] kList,  int kIndex) {
+        int auxCountSize = (int) Math.pow(2, kList.length - kIndex);
+        kList = Arrays.copyOfRange(kList, kIndex, kList.length);
+        int[][] sections = getMaskAsSections(kList);
+        kIndex = 0;
+        int[] countBuffer = new int[auxCountSize];
+        int[] numberBuffer = null;
         if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
-            //if (sections.length == 1 && sections[0][0] + 1 == sections[0][1] && kIndex == 0) { //THIS IS NOT NECESSARY BECAUSE THE ELEMENT SAMPLE
-            int[] auxCount = new int[auxCountSize];
+        } else {
+            numberBuffer = new int[auxCountSize];
+        }
+        int sortMask = getMask(kList, kIndex);
+        countSort(list, start, end, sortMask, sections, countBuffer, numberBuffer);
+    }
+
+    public static void countSort(final int[] list, final int start, final int end, int sortMask, int[][] sections, int[] countBuffer, int[] numberBuffer) {
+        if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
             int elementSample = list[start];
             elementSample = elementSample & ~sortMask;
             for (int i = start; i < end; i++) {
                 int element = list[i];
                 int elementMasked = element & sortMask;
-                auxCount[elementMasked] = auxCount[elementMasked] + 1;
+                countBuffer[elementMasked] = countBuffer[elementMasked] + 1;
             }
             int i = start;
-            for (int j = 0; j < auxCountSize; j++) {
-                int count = auxCount[j];
+            for (int j = 0; j < countBuffer.length; j++) {
+                int count = countBuffer[j];
                 if (count > 0) {
                     for (int k = 0; k < count; k++) {
                         list[i] = j | elementSample;
@@ -28,25 +41,23 @@ public class CountSort {
                 }
             }
         } else {
-            int[] auxCount = new int[auxCountSize];
-            int[] auxCount2 = new int[auxCountSize];
             for (int i = start; i < end; i++) {
                 int element = list[i];
                 int elementMasked = element & sortMask;
                 if (elementMasked == 0) {
-                    auxCount[0] = auxCount[0] + 1;
-                    auxCount2[0] = element;
+                    countBuffer[0] = countBuffer[0] + 1;
+                    numberBuffer[0] = element;
                 } else {
                     int key = getKey(elementMasked, sections);
-                    auxCount[key] = auxCount[key] + 1;
-                    auxCount2[key] = element;
+                    countBuffer[key] = countBuffer[key] + 1;
+                    numberBuffer[key] = element;
                 }
             }
             int i = start;
-            for (int j = 0; j < auxCountSize; j++) {
-                int count = auxCount[j];
+            for (int j = 0; j < countBuffer.length; j++) {
+                int count = countBuffer[j];
                 if (count > 0) {
-                    int value = auxCount2[j];
+                    int value = numberBuffer[j];
                     for (int k = 0; k < count; k++) {
                         list[i] = value;
                         i++;

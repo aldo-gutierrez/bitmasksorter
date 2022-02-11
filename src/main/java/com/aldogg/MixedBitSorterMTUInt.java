@@ -1,5 +1,6 @@
 package com.aldogg;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.aldogg.BitSorterUtils.*;
@@ -43,8 +44,8 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
         }
 
 //        if (level == 0) {
-        if (level == params.getMaxThreadsBits() && (kList.length - kIndex) >= params.getCountingSortBits()) {
-            radixCountSort(list, start, end, kList, kList.length - 1, kIndex);
+        if (level >= params.getMaxThreadsBits() && (kList.length - kIndex) >= params.getCountingSortBits()) {
+            radixCountSort(list, start, end, kList, kIndex);
         } else {
             int sortMask = getMask(kList[kIndex]);
             int finalLeft = partition(list, start, end, sortMask);
@@ -56,6 +57,8 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
                     t1 = new Thread(r1);
                     t1.start();
                     numThreads.addAndGet(1);
+                } else {
+                    sort(list, start, finalLeft, kList, kIndex + 1, level + 1);
                 }
             }
             int size2 = end - finalLeft;
@@ -75,7 +78,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
         }
     }
 
-    protected void radixCountSort(int[] list, int start, int end, int[] kList, int kIndexStart, int kIndexEnd) {
+    protected void radixCountSort(int[] list, int start, int end, int[] kList, int kIndexEnd) {
         int length = end - start;
         int[] aux2 = new int[length];
         //assert kIndexEnd  - kIndexStart >max 8
@@ -119,26 +122,27 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
         }
 
         if (kIndex > 0) {
-            //TODO PARALLELIZE HERE
+            final int[] kListCountS = Arrays.copyOfRange(kList, kIndex, kList.length);;
+            final int kIndexCountS = 0;
+            final int bufferCountSSize = (int) Math.pow(2, kListCountS.length - kIndexCountS);
+            final int[][] sectionsCountS = getMaskAsSections(kListCountS);
+            final int sortMaskCountS = getMask(kListCountS, kIndexCountS);
+            final int[] zeroBuffer = new int[bufferCountSSize];
             if (numThreads.get() < params.getMaxThreads() + 1) {
                 Runnable r1 = () -> {
+                    int[] bufferCount = new int[bufferCountSSize];
+                    int[] bufferSize = new int[bufferCountSSize];
                     for (int i = 0; i < lengthBitsToNumber / 2; i++) {
-                        if (count[i] > 5) {
-                            CountSort.countSort(aux2, leftX2[i], leftX[i], kList, kIndex);
-                        } else if (count[i] > 1) {
-                            sortList2to5Elements(aux2, leftX2[i], leftX[i]);
-                        }
+                        countSortUtil(aux2, leftX2[i], leftX[i], count[i], bufferCountSSize, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
                     }
                 };
                 Thread t1 = new Thread(r1);
                 t1.start();
                 numThreads.addAndGet(1);
+                int[] bufferCount = new int[bufferCountSSize];
+                int[] bufferSize = new int[bufferCountSSize];
                 for (int i = lengthBitsToNumber / 2; i < lengthBitsToNumber; i++) {
-                    if (count[i] > 5) {
-                        CountSort.countSort(aux2, leftX2[i], leftX[i], kList, kIndex);
-                    } else if (count[i] > 1) {
-                        sortList2to5Elements(aux2, leftX2[i], leftX[i]);
-                    }
+                    countSortUtil(aux2, leftX2[i], leftX[i], count[i], bufferCountSSize, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
                 }
                 try {
                     t1.join();
@@ -147,17 +151,25 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
                     e.printStackTrace();
                 }
             } else {
+                int[] bufferCount = new int[bufferCountSSize];
+                int[] bufferSize = new int[bufferCountSSize];
                 for (int i = 0; i < lengthBitsToNumber; i++) {
-                    if (count[i] > 5) {
-                        CountSort.countSort(aux2, leftX2[i], leftX[i], kList, kIndex);
-                    } else if (count[i] > 1) {
-                        sortList2to5Elements(aux2, leftX2[i], leftX[i]);
-                    }
+                    countSortUtil(aux2, leftX2[i], leftX[i], count[i], bufferCountSSize, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
                 }
             }
 
         }
         System.arraycopy(aux2, 0, list, start, end - start);
+    }
+
+    private void countSortUtil(final int[] list, final int start , final int end, final int length, final int bufferSize, final int[][] sections, final int sortMask, final int[] bufferCount, final int[] bufferNumber, final int[] zeroBuffer) {
+        if (length > 5) {
+            CountSort.countSort(list, start, end, sortMask, sections, bufferCount, bufferNumber);
+            System.arraycopy(zeroBuffer, 0, bufferCount, 0, bufferSize);
+            System.arraycopy(zeroBuffer, 0, bufferNumber, 0, bufferSize);
+        } else if (length > 1) {
+            sortList2to5Elements(list, start, end);
+        }
     }
 
 }
