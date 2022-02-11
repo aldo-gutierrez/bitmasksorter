@@ -4,7 +4,7 @@ import static com.aldogg.BitSorterUtils.getMask;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 import static com.aldogg.IntSorterUtils.sortList2to5Elements;
 
-public class BitSorterUIntOptimized2 extends BitSorterUIntOptimized implements IntSorter {
+public class QuickBitSorter3UInt extends QuickBitSorter2UInt implements IntSorter {
     protected BitSorterParams params = BitSorterParams.getSTParams();
 
     public void setParams(BitSorterParams params) {

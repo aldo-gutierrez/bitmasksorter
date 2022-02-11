@@ -12,7 +12,7 @@ public class SorterTest {
 
     @Test
     public void basicTests() {
-        IntSorter[] sorters = new IntSorter[] {new JavaIntSorter(), new BitSorterUIntOptimized2(), new BitSorterUIntOptimized(), new BitSorterUIntMT(), new RadixBitUIntSorter3()};
+        IntSorter[] sorters = new IntSorter[] {new MixedBitSorterMTUInt(), new QuickBitSorter3UInt(), new QuickBitSorterMTUInt(), new RadixBitSorter2UInt()};
         TestSortResults sorter = new TestSortResults(sorters);
         testSort(new int[] {}, sorter);
         testSort(new int[] {1}, sorter);
@@ -75,8 +75,7 @@ public class SorterTest {
 
     @Test
     public void speedTest() {
-        //IntSorter[] sorters = new IntSorter[] {new JavaIntSorter(), new BitSorterUIntOptimized(8), new BitSorterUIntOptimized(12), new BitSorterUIntOptimized(16), new BitSorterUIntOptimized(20), new BitSorterUIntOptimized(24)};
-        IntSorter[] sorters = new IntSorter[] {new JavaIntSorter(), new JavaParallelSorter(), new BitSorterUIntOptimized(), new BitSorterUIntOptimized2(), new BitSorterUIntMT(), new RadixBitUIntSorter3()};
+        IntSorter[] sorters = new IntSorter[] {new JavaIntSorter(), new JavaParallelSorter(), new MixedBitSorterMTUInt(), new QuickBitSorter3UInt(), new QuickBitSorterMTUInt(), new RadixBitSorter2UInt()};
         TestSortResults testSortResults = new TestSortResults(sorters);
 
         // write your code here
@@ -135,7 +134,7 @@ public class SorterTest {
 
     @Test
     public void testNegativeNumbers() {
-        IntSorter[] sorters = new IntSorter[] {new JavaIntSorter(), new BitSorterIntOptimized()};
+        IntSorter[] sorters = new IntSorter[] {new JavaIntSorter(), new QuickBitSorterInt()};
         TestSortResults sorter = new TestSortResults(sorters);
         testSort(new int[] {}, sorter);
         testSort(new int[] {1}, sorter);
@@ -151,7 +150,7 @@ public class SorterTest {
 
     @Test
     public void testBooleans() {
-        IntSorter[] sorters = new IntSorter[]{new JavaIntSorter(), new BitSorterUIntOptimized2()};
+        IntSorter[] sorters = new IntSorter[]{new JavaIntSorter(), new QuickBitSorter3UInt()};
         TestSortResults sorter = new TestSortResults(sorters);
         testSort(new int[]{33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0}, sorter);
     }

@@ -3,7 +3,7 @@ package com.aldogg;
 import static com.aldogg.BitSorterUtils.getMask;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 
-public class RadixBitUIntSorter extends BitSorterUIntOptimized {
+public class RadixBitSorterUInt extends QuickBitSorter2UInt {
 
     @Override
     public void sort(int[] list) {
@@ -13,7 +13,7 @@ public class RadixBitUIntSorter extends BitSorterUIntOptimized {
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
         int[] aux = new int[end - start];
-        for (int i=kList.length-1; i >=0; i--) {
+        for (int i = kList.length - 1; i >= 0; i--) {
             int sortMask = getMask(kList[i]);
             stablePartition(list, start, end, sortMask, aux);
         }

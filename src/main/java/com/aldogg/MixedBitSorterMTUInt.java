@@ -8,7 +8,7 @@ import static com.aldogg.IntSorterUtils.sortList2to5Elements;
 /**
  * Experimental Bit Sorter
  */
-public class MixedBitSorterMTUInt extends  RadixBitUIntSorter3{
+public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
     AtomicInteger numThreads = new AtomicInteger(1);
     protected BitSorterParams params = BitSorterParams.getMTParams();
 
@@ -122,7 +122,7 @@ public class MixedBitSorterMTUInt extends  RadixBitUIntSorter3{
             //TODO PARALLELIZE HERE
             if (numThreads.get() < params.getMaxThreads() + 1) {
                 Runnable r1 = () -> {
-                    for (int i = 0; i < lengthBitsToNumber/2; i++) {
+                    for (int i = 0; i < lengthBitsToNumber / 2; i++) {
                         if (count[i] > 5) {
                             CountSort.countSort(aux2, leftX2[i], leftX[i], kList, kIndex);
                         } else if (count[i] > 1) {
@@ -133,7 +133,7 @@ public class MixedBitSorterMTUInt extends  RadixBitUIntSorter3{
                 Thread t1 = new Thread(r1);
                 t1.start();
                 numThreads.addAndGet(1);
-                for (int i = lengthBitsToNumber/2; i < lengthBitsToNumber; i++) {
+                for (int i = lengthBitsToNumber / 2; i < lengthBitsToNumber; i++) {
                     if (count[i] > 5) {
                         CountSort.countSort(aux2, leftX2[i], leftX[i], kList, kIndex);
                     } else if (count[i] > 1) {

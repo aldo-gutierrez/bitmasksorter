@@ -9,7 +9,7 @@ import static com.aldogg.BitSorterUtils.getMask;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 import static com.aldogg.IntSorterUtils.sortList2to5Elements;
 
-public class BitSorterUIntMT extends BitSorterUIntOptimized2 implements IntSorter {
+public class QuickBitSorterMTUInt extends QuickBitSorter3UInt implements IntSorter {
 
     AtomicInteger numThreads = new AtomicInteger(1);
 
@@ -62,7 +62,7 @@ public class BitSorterUIntMT extends BitSorterUIntOptimized2 implements IntSorte
         return this.getClass().getSimpleName();
     }
 
-    public void sortMT(final int[] list, final int start, final int end,  int[] kList, int kIndex, boolean recalculate) {
+    public void sortMT(final int[] list, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
         final int listLength = end - start;
         if (listLength <= 5) {
             sortList2to5Elements(list, start, end);
@@ -149,7 +149,7 @@ public class BitSorterUIntMT extends BitSorterUIntOptimized2 implements IntSorte
 
                 @Override
                 public Object reduce(Object result, Object partialResult) {
-                    int[] partialResultInt = (int[])  partialResult;
+                    int[] partialResultInt = (int[]) partialResult;
                     int start = partialResultInt[0];
                     int end = partialResultInt[1];
                     int partialLeft = partialResultInt[2];
@@ -171,7 +171,7 @@ public class BitSorterUIntMT extends BitSorterUIntOptimized2 implements IntSorte
             System.arraycopy(aux, start, list, start, end - start);
             return (Integer) left;
         } else {
-            return  partition(list, start, end, sortMask);
+            return partition(list, start, end, sortMask);
         }
     }
 
@@ -210,7 +210,7 @@ public class BitSorterUIntMT extends BitSorterUIntOptimized2 implements IntSorte
             System.arraycopy(aux, start, list, start, end - start);
             return left.get();
         } else {
-            return  partition(list, start, end, sortMask);
+            return partition(list, start, end, sortMask);
         }
     }
 

@@ -8,7 +8,7 @@ public class CountSort {
         int sortMask = getMask(listK, kIndex);
         int auxCountSize = (int) Math.pow(2, listK.length - kIndex);
         if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
-        //if (sections.length == 1 && sections[0][0] + 1 == sections[0][1] && kIndex == 0) { //THIS IS NOT NECESSARY BECAUSE THE ELEMENT SAMPLE
+            //if (sections.length == 1 && sections[0][0] + 1 == sections[0][1] && kIndex == 0) { //THIS IS NOT NECESSARY BECAUSE THE ELEMENT SAMPLE
             int[] auxCount = new int[auxCountSize];
             int elementSample = list[start];
             elementSample = elementSample & ~sortMask;

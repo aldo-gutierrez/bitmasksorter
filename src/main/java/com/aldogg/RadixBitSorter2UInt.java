@@ -3,7 +3,7 @@ package com.aldogg;
 import static com.aldogg.BitSorterUtils.getMask;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 
-public class RadixBitUIntSorter3 extends RadixBitUIntSorter {
+public class RadixBitSorter2UInt extends RadixBitSorterUInt {
 
     @Override
     public void sort(int[] list) {
@@ -86,7 +86,7 @@ public class RadixBitUIntSorter3 extends RadixBitUIntSorter {
                     imm++;
                 }
             }
-            i-=imm;
+            i -= imm;
             if (bits == 1) {
                 stablePartition(list, start, end, sortMask1, aux2);
             } else {

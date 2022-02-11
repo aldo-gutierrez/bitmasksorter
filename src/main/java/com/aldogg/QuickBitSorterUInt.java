@@ -8,7 +8,7 @@ import static com.aldogg.BitSorterUtils.getMask;
  * It doesn't include a count sort it
  * It doesn't include a comparator sort for small lists
  */
-public class BitSorterUIntBasic implements IntSorter {
+public class QuickBitSorterUInt implements IntSorter {
 
     public void sort(int[] list) {
         final int start = 0;

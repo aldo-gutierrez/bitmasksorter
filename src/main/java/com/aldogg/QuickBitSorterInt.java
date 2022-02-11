@@ -3,7 +3,7 @@ package com.aldogg;
 import static com.aldogg.BitSorterUtils.getMask;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 
-public class BitSorterIntOptimized extends BitSorterUIntOptimized2 implements IntSorter {
+public class QuickBitSorterInt extends QuickBitSorter3UInt implements IntSorter {
 
     @Override
     public void sort(int[] list) {
@@ -21,10 +21,10 @@ public class BitSorterIntOptimized extends BitSorterUIntOptimized2 implements In
             int sortMask = getMask(kList[0]);
             int finalLeft = partitionNegative(list, start, end, sortMask);
             if (finalLeft - start > 1) {
-                sort(list, start, finalLeft, kList,  1, false);
+                sort(list, start, finalLeft, kList, 1, false);
             }
             if (end - finalLeft > 1) {
-                sort(list, finalLeft, end, kList,  1, false);
+                sort(list, finalLeft, end, kList, 1, false);
             }
         } else {
             if (kList.length <= params.getCountingSortBits()) {
