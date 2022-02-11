@@ -1,12 +1,14 @@
-# bitsorter
-This project tests different ideas for sorting algorithms
-All of them use the notion of a bitmask as a way to get statistical information of the numbers
+# Mask Bit Sorter
+This project tests different ideas for sorting algorithms. 
+
+We use a bitmask as a way to get statistical information about the numbers to be sorted
 
 ## QuickBitSorter
-Is similar to a quicksort but for choosing the pivot we choose it using a mask of bits. 
-And as we have a bit mask we can also use a flexible count sort for the last bits
+Is similar to QuickSort but for choosing the pivot we choose it using a bit mask. 
+Having the bit mask also helps when doing a flexible CountSort for the last bits.
 
-This is different to other quicksort algorithms use other approaches as choosing the average of three pivots or to getting the average number as pivot
+This is different to other QuickSort algorithms that normally use the last element as pivot or choose the average of three
+pivots.
 
 Usage:
 ```
@@ -31,16 +33,17 @@ sorter.sort(list);
 ### How the selection of the pivot works:
 
 For example suppose the list contains numbers from 0 to 127 
-000000000000 -> 000001111111  ==>  the mask is 1111111 and to choosse a pivot we could choose 1000000 (64) that is probably a good pivot
+000000000000 -> 000001111111  ==>  the mask is 1111111 and to choose the middle 1000000 (64) that is probably a good pivot.
+In the worst case (32 bit mask) the last recursion level is 32, even better we could do Count Sort in the last bits
 
-For the counting sort part if the number of bits of the mask that remain to be evaluated are less than a constant we could do a count sort
-even if the mask is for example: 1110011 we could use 5 bits 2^5 32 slots for count sort
+We apply Count Sort if the number of bits of the mask that remain to be evaluated are less than a constant countingSortBits.
+The bits of the mask don't need to be adjacent for example for example: 1110011 we could use 5 bits 2^5 32 slots for Count Sort
 
 Optimizations:
-- Count sort if in the recursion the number of bits is small with flexible mask (it can contain 000 at any place)
+- Count sort for last bits adjacent or not
 - Optimization for small lists
 - Multithreading support
-- Doesn't need to sort all the bits just the ones used
+- Doesn't need to partition by all the bits just the ones used
 
 
 ## RadixBitSorter:
@@ -54,21 +57,29 @@ sorter.sort(list);
 ```
 ### How it works:
 
-Is similar to the RadixBitSorter described at https://www.youtube.com/watch?v=_KhZ7F-jOlI
-However it doesn't need to sort by all bits, just by the bits that are in the bit mask
+Is similar to the traditional RadixSorter but instead of using a 10 Base it uses a 2 Base.
+As is binary the Count Sort is a little different. Also, it doesn't need to sort by all bits
+, just by the bits that are in the bit mask.
 
 Optimizations:
   Doesn't need to sort all the bits just the ones used
   It sorts by 8 bits at a time as maximum
 
 ## MixedBitSorter:
-It combines in multithread first Bit Quicksort  then RadixBitSort and lastly Count Sort  
+It is a multi thread sorter, it combines Bit QuickSort  then RadixBitSort and lastly CountSort
+For example if the bitmask is 00000000111111111111111111111110  
+Then there are 23 bits, if we have a 32 thread processor then:
+
+- The first 5 bits are recursively processed by doing Bit QuickSort in multi thread
+- The next 2 bits are recursively processed by doing RadixBitSort
+- The last 16 bits are done using CountSort while doing RadixBitSort
+- In total 23 bits are processed, the last bit 0 is not used
 
 # Speed
 See file Comparison.xlsx
-Most of the algorithms are faster than the Java default Tim Sort and Parallel sort under some conditions
+Most of the algorithms are faster than the Java default (Tim Sort) and Parallel sort under some conditions
 
-Example comparison for sorting 10 Million elements with range from 0 to 10 Million
+Example comparison for sorting 10 Million elements with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor
 
 - Elapsed JavaIntSorter AVG: 792
 - Elapsed QuickBitSorter3UInt AVG: 347
@@ -77,14 +88,15 @@ Example comparison for sorting 10 Million elements with range from 0 to 10 Milli
 - Elapsed QuickBitSorterMTUInt AVG: 107
 - Elapsed MixedBitSorterMTUInt AVG: 99
 
-Other example:
 
-- Elapsed JavaIntSorter AVG: 303
-- Elapsed QuickBitSorter3UInt AVG: 21
-- Elapsed RadixBitSorter2UInt AVG: 98
-- Elapsed JavaParallelSorter AVG: 55
-- Elapsed QuickBitSorterMTUInt AVG: 21
-- Elapsed MixedBitSorterMTUInt AVG: 20
+Example comparison for sorting 10 Million elements with range from 0 to 100000 in an AMD Ryzen 7 4800H processor
+
+- Elapsed JavaIntSorter AVG: 597
+- Elapsed QuickBitSorter3UInt AVG: 53
+- Elapsed RadixBitSorter2UInt AVG: 122
+- Elapsed JavaParallelSorter AVG: 97
+- Elapsed QuickBitSorterMTUInt AVG: 50
+- Elapsed MixedBitSorterMTUInt AVG: 50
 
 # O(N) Complexity. Needs to be evaluated
 
@@ -94,4 +106,3 @@ Other example:
 - Add Int, Long and ULong sorters
 - Evaluate Complexity
 - More testing
-- MixedBitSort its in Alpha state, there are problems when countingSortBits is 4

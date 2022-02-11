@@ -17,7 +17,7 @@ public class RadixBitSorter2UInt extends RadixBitSorterUInt {
 
     protected void radixSort(int[] list, int start, int end, int[] kList, int kIndexStart, int kIndexEnd) {
         int length = end - start;
-        int[] aux2 = new int[length];
+        int[] aux = new int[length];
         for (int i = kIndexStart; i >= kIndexEnd; i--) {
             int kListI = kList[i];
             int sortMask1 = getMask(kListI);
@@ -38,9 +38,9 @@ public class RadixBitSorter2UInt extends RadixBitSorterUInt {
             }
             i -= imm;
             if (bits == 1) {
-                stablePartition(list, start, end, sortMask1, aux2);
+                stablePartition(list, start, end, sortMask1, aux);
             } else {
-                stablePartition(list, start, end, sortMask1, aux2, bits, 32 - bits - kListI, 32 - bits);
+                stablePartition(list, start, end, sortMask1, aux, bits, 32 - bits - kListI, 32 - bits);
             }
         }
     }
