@@ -1,7 +1,6 @@
 package com.aldogg;
 
 import static com.aldogg.BitSorterUtils.*;
-import static com.aldogg.BitSorterUtils.getMask;
 
 /**
  * Basic XXXSorter

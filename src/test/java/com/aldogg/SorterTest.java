@@ -75,7 +75,7 @@ public class SorterTest {
 
     @Test
     public void speedTest() {
-        IntSorter[] sorters = new IntSorter[] {new JavaIntSorter(), new QuickBitSorter3UInt(), new RadixBitSorter2UInt(), new JavaParallelSorter(), new QuickBitSorterMTUInt(), new MixedBitSorterMTUInt()};
+        IntSorter[] sorters = new IntSorter[] {new RadixSort(), new JavaIntSorter(), new QuickBitSorter3UInt(), new RadixBitSorter2UInt(), new JavaParallelSorter(), new QuickBitSorterMTUInt(), new MixedBitSorterMTUInt()};
         TestSortResults testSortResults = new TestSortResults(sorters);
 
         // write your code here

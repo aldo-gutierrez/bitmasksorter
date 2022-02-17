@@ -67,8 +67,8 @@ public class SortingNetworks {
             if (compareAndSwap(list, start, start + 1)) { //0 < 1?
                 compareAndSwap(list, start + 1, start + 2); // 0 < 1 < 2
             }
-            compareAndSwap(list, start, start + 3); // 0 < 3, 0 menor que todos
-            compareAndSwap(list, start + 2, start + 4); // 2 < 4, 4 mayor que todos
+            compareAndSwap(list, start, start + 3); // 0 < 3, 0 lesser than all
+            compareAndSwap(list, start + 2, start + 4); // 2 < 4, 4 greater than all
 
             compareAndSwap(list, start + 1, start + 2); // 1 < 2
             compareAndSwap(list, start + 1, start + 3); // 1 < 3

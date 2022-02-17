@@ -119,12 +119,9 @@ public class BitSorterUtils {
                     return  false;
                 }
             }
-            if (!swap) {
-                return true;
-            }
+            return !swap;
         } else {
             //Reverse Order?
-            swap = true;
             for (int i = start+1; i <= (end-1) / 2; i++) {
                 swap = swap && compareAndSwap(list, i, end - 1 - i);
                 if (!swap) {
@@ -139,9 +136,7 @@ public class BitSorterUtils {
                         return false;
                     }
                 }
-                if (!swap) {
-                    return true;
-                }
+                return !swap;
             }
         }
         return false;

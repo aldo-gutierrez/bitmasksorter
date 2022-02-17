@@ -70,7 +70,6 @@ public class RadixBitSorter2UInt extends RadixBitSorterUInt {
             leftX[elementMasked]++;
         }
         System.arraycopy(aux2, 0, list, start, end - start);
-        return;
     }
 
     private int shiftPre(int i, int shiftLeft, int shiftRight) {

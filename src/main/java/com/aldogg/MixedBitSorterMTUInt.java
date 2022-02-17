@@ -127,7 +127,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
         }
 
         if (kIndex > 0) {
-            final int[] kListCountS = Arrays.copyOfRange(kList, kIndex, kList.length);;
+            final int[] kListCountS = Arrays.copyOfRange(kList, kIndex, kList.length);
             final int kIndexCountS = 0;
             final int bufferCountSSize = (int) Math.pow(2, kListCountS.length - kIndexCountS);
             final int[][] sectionsCountS = getMaskAsSections(kListCountS);
