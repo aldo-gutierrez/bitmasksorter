@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.aldogg.BitSorterUtils.*;
-import static com.aldogg.IntSorterUtils.sortList2to5Elements;
 
 /**
  * Experimental Bit Sorter
@@ -36,8 +35,8 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
 
     public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex, int level) {
         final int listLength = end - start;
-        if (listLength <= 5) {
-            sortList2to5Elements(list, start, end);
+        if (listLength <= 8) {
+            SortingNetworks.sortSmallList(list, start, end);
             return;
         }
         if (kIndex > kList.length - 1) {
@@ -169,12 +168,12 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
     }
 
     private void countSortUtil(final int[] list, final int start , final int end, final int length, final int bufferSize, final int[][] sections, final int sortMask, final int[] bufferCount, final int[] bufferNumber, final int[] zeroBuffer) {
-        if (length > 5) {
+        if (length > 8) {
             CountSort.countSort(list, start, end, sortMask, sections, bufferCount, bufferNumber);
             System.arraycopy(zeroBuffer, 0, bufferCount, 0, bufferSize);
             System.arraycopy(zeroBuffer, 0, bufferNumber, 0, bufferSize);
         } else if (length > 1) {
-            sortList2to5Elements(list, start, end);
+            SortingNetworks.sortSmallList(list, start, end);
         }
     }
 

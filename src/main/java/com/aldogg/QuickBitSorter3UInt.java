@@ -1,7 +1,6 @@
 package com.aldogg;
 
 import static com.aldogg.BitSorterUtils.*;
-import static com.aldogg.IntSorterUtils.sortList2to5Elements;
 
 public class QuickBitSorter3UInt extends QuickBitSorter2UInt implements IntSorter {
     protected BitSorterParams params = BitSorterParams.getSTParams();
@@ -30,8 +29,8 @@ public class QuickBitSorter3UInt extends QuickBitSorter2UInt implements IntSorte
 
     public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
         final int listLength = end - start;
-        if (listLength <= 5) {
-            sortList2to5Elements(list, start, end);
+        if (listLength <= 8) {
+            SortingNetworks.sortSmallList(list, start, end);
             return;
         }
         if (kIndex > kList.length - 1) {
