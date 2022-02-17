@@ -62,8 +62,8 @@ As is binary the Count Sort is a little different. Also, it doesn't need to sort
 , just by the bits that are in the bit mask.
 
 Optimizations:
-  Doesn't need to sort all the bits just the ones used
-  It sorts by 8 bits at a time as maximum
+- It does not need to sort all the bits just the ones used
+- It sorts by 8 bits at a time as maximum
 
 ## MixedBitSorter:
 It is a multi thread sorter, it combines Bit QuickSort  then RadixBitSort and lastly CountSort
@@ -100,6 +100,19 @@ Example comparison for sorting 10 Million elements with range from 0 to 100000 i
 
 # O(N) Complexity. Needs to be evaluated
 
+n = number of elements
+k = number of bits on mask
+t = number of threads
+c = number of bits for counting sort
+q = number of bits for quick sort
+
+
+| Algorithm        | CPU worst     | CPU average         | CPU best       | MEM worst | MEM average | MEM best |
+| ---------------- |:-------------:| -------------------:| --------------:| ---------:| -----------:|---------:|
+| QuickBitSorter   | O(n * log(n)) | O(n * log(n))?      | O(n+k), k <= c | O(2^c)    | O(2^c)      |    1     |
+| RadixBitSorter   | O(n * log(n)) | O(n * k), k<log2(n) | O(n), k = 1    | O(n)      | O(n)        |    1     |
+| QuickBitSorterMT | O(n * log(n)) | O(n * log(n))?      | O(n+k), k <= c | O(t*2^c)  | O(2^c)      |    1     |
+| MixedBitSorterMT | O(n * log(n)) | O(n * log(n))?      | O(n), k <= t   | O(n*t)    | O(n*t)      |  O(2^c)  |
 
 ## Things to DO
 - Add Object sorting by key
