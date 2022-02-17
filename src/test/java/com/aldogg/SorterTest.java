@@ -76,13 +76,14 @@ public class SorterTest {
     @Test
     public void speedTest() {
         IntSorter[] sorters = new IntSorter[] {new RadixSort(), new JavaIntSorter(), new QuickBitSorter3UInt(), new RadixBitSorter2UInt(), new JavaParallelSorter(), new QuickBitSorterMTUInt(), new MixedBitSorterMTUInt()};
-        TestSortResults testSortResults = new TestSortResults(sorters);
+        TestSortResults testSortResults;
 
         // write your code here
         int iterations = 10;
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000};
 
         for (int limitH : limitHigh) {
+            testSortResults = new TestSortResults(sorters);
             testSpeed(iterations, 10000, 0, limitH, testSortResults);
             for (int i = 0; i < testSortResults.getSorters().size(); i++) {
                 IntSorter sorter = testSortResults.getSorters().get(i);
@@ -90,6 +91,7 @@ public class SorterTest {
             }
             System.out.println();
 
+            testSortResults = new TestSortResults(sorters);
             testSpeed(iterations, 100000, 0, limitH, testSortResults);
             for (int i = 0; i < testSortResults.getSorters().size(); i++) {
                 IntSorter sorter = testSortResults.getSorters().get(i);
