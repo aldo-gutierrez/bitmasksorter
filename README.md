@@ -91,6 +91,8 @@ Example comparison for sorting 10 Million elements with range from 0 to 10 Milli
 |QuickBitSorterMTUInt|111|
 |MixedBitSorterMTUInt|100|
 
+![Graph2](plot-S10000000-Range0-10000000-random.png?raw=true "Graph2")
+
 Example comparison for sorting 10 Million elements with range from 0 to 100000 in an AMD Ryzen 7 4800H processor
 
 | Algorithm        | AVG CPU time  |
@@ -102,6 +104,8 @@ Example comparison for sorting 10 Million elements with range from 0 to 100000 i
 |JavaParallelSorter|57|
 |QuickBitSorterMTUInt|26|
 |MixedBitSorterMTUInt|23|
+
+![Graph2](plot-S10000000-Range0-100000-random.png?raw=true "Graph2")
 
 # O(N) Complexity. Needs to be evaluated
 
