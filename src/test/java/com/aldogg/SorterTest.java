@@ -75,12 +75,12 @@ public class SorterTest {
 
     @Test
     public void speedTest() {
-        IntSorter[] sorters = new IntSorter[] {new RadixSorter(), new JavaSorter(), new QuickBitSorter3UInt(), new RadixBitSorter2UInt(), new JavaParallelSorter(), new QuickBitSorterMTUInt(), new MixedBitSorterMTUInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorter(), new QuickBitSorter3UInt(), new RadixBitSorter2UInt(), new JavaParallelSorter(), new QuickBitSorterMTUInt(), new MixedBitSorterMTUInt()};
         TestSortResults testSortResults;
 
         //heatup
         testSortResults = new TestSortResults(sorters);
-        testSpeed(100, 80000, 0, 80000, testSortResults);
+        testSpeed(1000, 80000, 0, 80000, testSortResults);
 
         int iterations = 20;
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000};
