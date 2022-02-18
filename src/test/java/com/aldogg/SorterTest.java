@@ -2,6 +2,10 @@ package com.aldogg;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 
 import static com.aldogg.BitSorterUtils.getKey;
@@ -74,57 +78,51 @@ public class SorterTest {
 
 
     @Test
-    public void speedTest() {
+    public void speedTest() throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("speed.csv"));
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
+
+
         IntSorter[] sorters = new IntSorter[] {new JavaSorter(), new QuickBitSorter3UInt(), new RadixBitSorter2UInt(), new JavaParallelSorter(), new QuickBitSorterMTUInt(), new MixedBitSorterMTUInt()};
         TestSortResults testSortResults;
 
         //heatup
         testSortResults = new TestSortResults(sorters);
-        testSpeed(1000, 80000, 0, 80000, testSortResults);
+        testSpeed(1000, 80000, 0, 80000, testSortResults, null);
 
         int iterations = 20;
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000};
 
         for (int limitH : limitHigh) {
             testSortResults = new TestSortResults(sorters);
-            testSpeed(iterations, 10000, 0, limitH, testSortResults);
-            for (int i = 0; i < testSortResults.getSorters().size(); i++) {
-                IntSorter sorter = testSortResults.getSorters().get(i);
-                System.out.println("Elapsed " + sorter.name() + " AVG: " + testSortResults.getAVG(i));
-            }
-            System.out.println();
+            testSpeed(iterations, 10000, 0, limitH, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters);
-            testSpeed(iterations, 100000, 0, limitH, testSortResults);
-            for (int i = 0; i < testSortResults.getSorters().size(); i++) {
-                IntSorter sorter = testSortResults.getSorters().get(i);
-                System.out.println("Elapsed " + sorter.name() + " AVG: " + testSortResults.getAVG(i));
-            }
-            System.out.println();
+            testSpeed(iterations, 100000, 0, limitH, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters);
-            testSpeed(iterations, 1000000, 0, limitH, testSortResults);
-            for (int i = 0; i < testSortResults.getSorters().size(); i++) {
-                IntSorter sorter = testSortResults.getSorters().get(i);
-                System.out.println("Elapsed " + sorter.name() + " AVG: " + testSortResults.getAVG(i));
-            }
-            System.out.println();
+            testSpeed(iterations, 1000000, 0, limitH, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters);
-            testSpeed(iterations, 10000000, 0, limitH, testSortResults);
-            for (int i = 0; i < testSortResults.getSorters().size(); i++) {
-                IntSorter sorter = testSortResults.getSorters().get(i);
-                System.out.println("Elapsed " + sorter.name() + " AVG: " + testSortResults.getAVG(i));
-            }
-            System.out.println();
+            testSpeed(iterations, 10000000, 0, limitH, testSortResults, writer);
 
             System.out.println("----------------------");
         }
         System.out.println();
-
+        writer.close();
     }
 
-    private void testSpeed(int iterations, int size, int limitLow, int limitHigh, TestSortResults testSortResults) {
+    private void print(TestSortResults testSortResults, Writer writer) throws IOException {
+        for (int i = 0; i < testSortResults.getSorters().size(); i++) {
+            IntSorter sorter = testSortResults.getSorters().get(i);
+            System.out.println("Elapsed " + sorter.name() + " AVG: " + testSortResults.getAVG(i));
+            writer.write(sorter.name()+","+ testSortResults.getAVG(i)+"\n");
+            writer.flush();
+        }
+        System.out.println();
+    }
+
+    private void testSpeed(int iterations, int size, int limitLow, int limitHigh, TestSortResults testSortResults, Writer writer) throws IOException {
         Random random = new Random();
         int f = limitHigh - limitLow;
         for (int iter = 0; iter < iterations; iter++) {
@@ -134,6 +132,15 @@ public class SorterTest {
                 list[i] = randomInt;
             }
             testSort(list, testSortResults);
+        }
+        if (writer != null) {
+            for (int i = 0; i < testSortResults.getSorters().size(); i++) {
+                IntSorter sorter = testSortResults.getSorters().get(i);
+                System.out.println("Elapsed " + sorter.name() + " AVG: " + testSortResults.getAVG(i));
+                writer.write(size + ",\"" + limitLow + ":" + limitHigh + "\",\""+sorter.name()+"\"," + testSortResults.getAVG(i) + "\n");
+                writer.flush();
+            }
+            System.out.println();
         }
     }
 
