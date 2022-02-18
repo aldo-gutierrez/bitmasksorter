@@ -1,7 +1,7 @@
 package com.aldogg;
 
 // Radix Sort in Java Programming
-public class RadixSort implements IntSorter {
+public class RadixSorter implements IntSorter {
 
     // Using counting sort to sort the elements in the basis of significant places
     void countingSort(int array[], int size, int place) {
@@ -57,7 +57,7 @@ public class RadixSort implements IntSorter {
     @Override
     public void sort(int[] data) {
         int size = data.length;
-        RadixSort rs = new RadixSort();
+        RadixSorter rs = new RadixSorter();
         rs.radixSort(data, size);
     }
 }

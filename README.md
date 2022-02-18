@@ -81,30 +81,35 @@ Most of the algorithms are faster than the Java default (Tim Sort) and Parallel 
 
 Example comparison for sorting 10 Million elements with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor
 
-- Elapsed JavaIntSorter AVG: 792
-- Elapsed QuickBitSorter3UInt AVG: 347
-- Elapsed RadixBitSorter2UInt AVG: 125
-- Elapsed JavaParallelSorter AVG: 88
-- Elapsed QuickBitSorterMTUInt AVG: 107
-- Elapsed MixedBitSorterMTUInt AVG: 99
-
+| Algorithm        | AVG CPU time  |
+| ---------------- |:-------------:|
+|RadixSorter|1186|
+|JavaIntSorter|721|
+|QuickBitSorter3UInt|370|
+|RadixBitSorter2UInt|130|
+|JavaParallelSorter|84|
+|QuickBitSorterMTUInt|111|
+|MixedBitSorterMTUInt|100|
 
 Example comparison for sorting 10 Million elements with range from 0 to 100000 in an AMD Ryzen 7 4800H processor
 
-- Elapsed JavaIntSorter AVG: 597
-- Elapsed QuickBitSorter3UInt AVG: 53
-- Elapsed RadixBitSorter2UInt AVG: 122
-- Elapsed JavaParallelSorter AVG: 97
-- Elapsed QuickBitSorterMTUInt AVG: 50
-- Elapsed MixedBitSorterMTUInt AVG: 50
+| Algorithm        | AVG CPU time  |
+| ---------------- |:-------------:|
+|RadixSorter|412|
+|JavaIntSorter|311|
+|QuickBitSorter3UInt|22|
+|RadixBitSorter2UInt|91|
+|JavaParallelSorter|57|
+|QuickBitSorterMTUInt|26|
+|MixedBitSorterMTUInt|23|
 
 # O(N) Complexity. Needs to be evaluated
 
-n = number of elements
-k = number of bits on mask
-t = number of threads
-c = number of bits for counting sort
-q = number of bits for quick sort
+- n = number of elements
+- k = number of bits on mask
+- t = number of threads
+- c = number of bits for counting sort
+- q = number of bits for quick sort
 
 
 | Algorithm        | CPU worst     | CPU average         | CPU best       | MEM worst | MEM average | MEM best |

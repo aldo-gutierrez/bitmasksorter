@@ -1,6 +1,6 @@
 package com.aldogg;
 
-public class QuickSortIntSorter implements IntSorter {
+public class QuickSorter implements IntSorter {
 
     @Override
     public void sort(int[] list) {
