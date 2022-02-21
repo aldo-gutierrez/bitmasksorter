@@ -53,7 +53,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
             radixCountSort(list, start, end, kList, kIndex);
         } else {
             int sortMask = getMask(kList[kIndex]);
-            int finalLeft = partition(list, start, end, sortMask);
+            int finalLeft = IntSorterUtils.partition(list, start, end, sortMask);
             Thread t1 = null;
             int size1 = finalLeft - start;
             if (size1 > 1) {

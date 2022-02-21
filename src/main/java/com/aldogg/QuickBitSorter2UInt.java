@@ -48,7 +48,7 @@ public class QuickBitSorter2UInt extends QuickBitSorterUInt implements IntSorter
         }
 
         int sortMask = getMask(kList[kIndex]);
-        int finalLeft = partition(list, start, end, sortMask);
+        int finalLeft = IntSorterUtils.partition(list, start, end, sortMask);
         if (finalLeft - start > 1) {
             sort(list, start, finalLeft, kList, kIndex + 1);
         }

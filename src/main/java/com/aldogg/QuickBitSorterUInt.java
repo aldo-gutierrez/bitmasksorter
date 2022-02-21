@@ -32,7 +32,7 @@ public class QuickBitSorterUInt implements IntSorter {
             return;
         }
         int sortMask = getMask(kList[kIndex]);
-        int finalLeft = partition(list, start, end, sortMask);
+        int finalLeft = IntSorterUtils.partition(list, start, end, sortMask);
         if (finalLeft - start > 1) {
             sort(list, start, finalLeft, kList, kIndex + 1);
         }
@@ -41,74 +41,5 @@ public class QuickBitSorterUInt implements IntSorter {
         }
     }
 
-    //TODO CHECK
-    protected int partitionWithAuxMemory(int[] list, int start, int end, int sortMask) {
-        int[] aux = new int[end - start];
-        int left = start;
-        int right = end - 1;
-
-        for (int i = start; i < end; i++) {
-            int element = list[i];
-            if ((element & sortMask) == 0) {
-                aux[left] = element;
-                left++;
-            } else {
-                aux[right] = element;
-                right--;
-            }
-        }
-        System.arraycopy(aux, start, list, start, end - start);
-        return left;
-    }
-
-    protected int partition(int[] list, int start, int end, int sortMask) {
-        int left = start;
-        int right = end - 1;
-
-        for (; left <= right; ) {
-            int element = list[left];
-            if ((element & sortMask) == 0) {
-                left++;
-            } else {
-                for (; left <= right; ) {
-                    element = list[right];
-                    if (!((element & sortMask) == 0)) {
-                        right--;
-                    } else {
-                        IntSorterUtils.swap(list, left, right);
-                        left++;
-                        right--;
-                        break;
-                    }
-                }
-            }
-        }
-        return left;
-    }
-
-    protected int partitionNegative(int[] list, int start, int end, int sortMask) {
-        int left = start;
-        int right = end - 1;
-
-        for (; left <= right; ) {
-            int element = list[left];
-            if (!((element & sortMask) == 0)) {
-                left++;
-            } else {
-                for (; left <= right; ) {
-                    element = list[right];
-                    if (((element & sortMask) == 0)) {
-                        right--;
-                    } else {
-                        IntSorterUtils.swap(list, left, right);
-                        left++;
-                        right--;
-                        break;
-                    }
-                }
-            }
-        }
-        return left;
-    }
 
 }

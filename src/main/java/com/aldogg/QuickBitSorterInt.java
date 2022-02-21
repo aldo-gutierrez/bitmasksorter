@@ -19,7 +19,7 @@ public class QuickBitSorterInt extends QuickBitSorter3UInt implements IntSorter 
             return;
         } else if (kList[0] == 31) { //there are negative numbers
             int sortMask = getMask(kList[0]);
-            int finalLeft = partitionNegative(list, start, end, sortMask);
+            int finalLeft = IntSorterUtils.partitionReverse(list, start, end, sortMask);
             if (finalLeft - start > 1) {
                 sort(list, start, finalLeft, kList, 1, false);
             }

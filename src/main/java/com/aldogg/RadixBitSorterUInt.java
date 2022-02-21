@@ -15,25 +15,8 @@ public class RadixBitSorterUInt extends QuickBitSorter2UInt {
         int[] aux = new int[end - start];
         for (int i = kList.length - 1; i >= 0; i--) {
             int sortMask = getMask(kList[i]);
-            stablePartition(list, start, end, sortMask, aux);
+            IntSorterUtils.partitionStable(list, start, end, sortMask, aux);
         }
-    }
-
-    protected int stablePartition(final int[] list, final int start, final int end, final int sortMask, int[] aux) {
-        int left = start;
-        int right = 0;
-        for (int i = start; i < end; i++) {
-            int element = list[i];
-            if ((element & sortMask) == 0) {
-                list[left] = element;
-                left++;
-            } else {
-                aux[right] = element;
-                right++;
-            }
-        }
-        System.arraycopy(aux, 0, list, left, right);
-        return left;
     }
 
 }
