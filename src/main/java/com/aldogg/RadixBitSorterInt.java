@@ -21,12 +21,19 @@ public class RadixBitSorterInt extends RadixBitSorterUInt {
         if (kList[0] == 31) { //there are negative numbers and positive numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
             int finalLeft = IntSorterUtils.partitionReverse(list, start, end, sortMask);
-            int[] aux = new int[end - start];
             if (finalLeft - start > 1) { //sort negative numbers
-                radixSort(list, start, finalLeft, aux, kList, kList.length - 1, 1);
+                int[] aux = new int[finalLeft - start];
+                maskParts = getMaskBit(list, start, finalLeft);
+                mask = maskParts[0] & maskParts[1];
+                kList = getMaskAsList(mask);
+                radixSort(list, start, finalLeft, aux, kList, kList.length - 1, 0);
             }
             if (end - finalLeft > 1) { //sort positive numbers
-                radixSort(list, finalLeft, end, aux, kList, kList.length - 1, 1);
+                int[] aux = new int[end - finalLeft];
+                maskParts = getMaskBit(list, finalLeft, end);
+                mask = maskParts[0] & maskParts[1];
+                kList = getMaskAsList(mask);
+                radixSort(list, finalLeft, end, aux, kList, kList.length - 1, 0);
             }
         } else {
             int[] aux = new int[end - start];

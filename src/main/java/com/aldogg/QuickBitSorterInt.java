@@ -21,17 +21,13 @@ public class QuickBitSorterInt extends QuickBitSorter3UInt implements IntSorter 
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
             int finalLeft = IntSorterUtils.partitionReverse(list, start, end, sortMask);
             if (finalLeft - start > 1) {
-                sort(list, start, finalLeft, kList, 1, false);
+                sort(list, start, finalLeft, kList, 1, true);
             }
             if (end - finalLeft > 1) {
-                sort(list, finalLeft, end, kList, 1, false);
+                sort(list, finalLeft, end, kList, 1, true);
             }
         } else {
-            if (kList.length <= params.getCountingSortBits()) {
-                CountSort.countSort(list, start, end, kList, 0);
-            } else {
-                sort(list, start, end, kList, 0);
-            }
+            sort(list, start, end, kList, 0, false);
         }
     }
 }
