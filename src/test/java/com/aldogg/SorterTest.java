@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 
-import static com.aldogg.BitSorterUtils.getKey;
-import static com.aldogg.BitSorterUtils.getMaskAsSections;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SorterTest {
@@ -104,16 +102,7 @@ public class SorterTest {
         System.out.println();
         writer.close();
     }
-
-    private void print(TestSortResults testSortResults, Writer writer) throws IOException {
-        for (int i = 0; i < testSortResults.getSorters().size(); i++) {
-            IntSorter sorter = testSortResults.getSorters().get(i);
-            System.out.println("Elapsed " + sorter.name() + " AVG: " + testSortResults.getAVG(i));
-            writer.write(sorter.name()+","+ testSortResults.getAVG(i)+"\n");
-            writer.flush();
-        }
-        System.out.println();
-    }
+    
 
     private void testSpeed(int iterations, int size, int limitLow, int limitHigh, TestSortResults testSortResults, Writer writer) throws IOException {
         Random random = new Random();
@@ -139,7 +128,7 @@ public class SorterTest {
 
     @Test
     public void testNegativeNumbers() {
-        IntSorter[] sorters = new IntSorter[] {new JavaSorter(), new QuickBitSorterInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorter(), new QuickBitSorterInt(), new RadixBitSorterInt()};
         TestSortResults sorter = new TestSortResults(sorters);
         testSort(new int[] {}, sorter);
         testSort(new int[] {1}, sorter);

@@ -23,7 +23,7 @@ public class QuickBitSorter2UInt extends QuickBitSorterUInt implements IntSorter
     public void sort(int[] list) {
         final int start = 0;
         final int end = list.length;
-        int[] maskParts = getMask(list, start, end);
+        int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] listK = getMaskAsList(mask);
         if (listK.length <= params.getCountingSortBits()) {
@@ -47,7 +47,7 @@ public class QuickBitSorter2UInt extends QuickBitSorterUInt implements IntSorter
             return;
         }
 
-        int sortMask = getMask(kList[kIndex]);
+        int sortMask = getMaskBit(kList[kIndex]);
         int finalLeft = IntSorterUtils.partition(list, start, end, sortMask);
         if (finalLeft - start > 1) {
             sort(list, start, finalLeft, kList, kIndex + 1);

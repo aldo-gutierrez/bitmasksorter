@@ -9,7 +9,7 @@ import static com.aldogg.IntSorterUtils.compareAndSwap;
 
 public class BitSorterUtils {
 
-    public static int[] getMask(final int[] list, final int start, final int end) {
+    public static int[] getMaskBit(final int[] list, final int start, final int end) {
         //long startTime = System.currentTimeMillis();
         int mask = 0x00000000;
         int inv_mask = 0x00000000;
@@ -37,47 +37,50 @@ public class BitSorterUtils {
         return res;
     }
 
-    public static int getMask(final int k) {
+    public static int getMaskBit(final int k) {
         final int n = 1;
         return (n << k);
     }
 
-    public static int getMask(final int[] listK, final int kIndex) {
+    public static int getMaskLastBits(final int[] listK, final int kIndex) {
         int mask = 0;
         for (int i = kIndex; i < listK.length; i++) {
             int k = listK[i];
-            mask = mask | getMask(k);
+            mask = mask | getMaskBit(k);
         }
         return mask;
     }
 
-    public static int getMask2(final int kIndexStart, final int kIndexEnd) {
+    public static int getMaskRangeBits(final int kIndexStart, final int kIndexEnd) {
         int mask = 0;
         for (int k = kIndexStart; k >= kIndexEnd; k--) {
-            mask = mask | getMask(k);
+            mask = mask | getMaskBit(k);
         }
         return mask;
     }
 
-    public static int getKey(final int elementMasked, final int[][] sections) {
-        //if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
-        //    return elementMasked;
-        //}
-
+    public static int getKeySN(int element, int[][] sections) {
         int result = 0;
         for (int i = 0; i < sections.length; i++) {
             int[] section = sections[i];
             int length = section[1];
-            int bits = (elementMasked & section[2]) >> section[3];
+            int sortMask = section[2];
+            int shiftRight = section[3];
+            int bits = (element & sortMask) >> shiftRight;
             result = result << length | bits;
         }
         return result;
+    }
 
-//        for (int i=0; i< listK.size(); i++) {
-//            int k = listK.get(i);
-//            int bit = (elementMasked >> k) & 1;
-//            result = result<<1 | bit;
-//        }
+    public static int getKeySec1(int element, int[] section) {
+        int sortMask = section[2];
+        int length = section[1];
+        if  (section[0] + 1 == length) {
+            return element & sortMask;
+        } else {
+            int shiftRight = section[3];
+            return  (element & sortMask) >> shiftRight;
+        }
     }
 
     public static int[][] getMaskAsSections(final int[] listK) {
@@ -103,7 +106,7 @@ public class BitSorterUtils {
             sectionsAsInts[i] = new int[4];
             sectionsAsInts[i][0] = entry.getKey();
             sectionsAsInts[i][1] = entry.getValue();
-            sectionsAsInts[i][2] = getMask2(entry.getKey(), entry.getKey() - entry.getValue() + 1);
+            sectionsAsInts[i][2] = getMaskRangeBits(entry.getKey(), entry.getKey() - entry.getValue() + 1);
             sectionsAsInts[i][3] = entry.getKey() - entry.getValue() + 1;
             i++;
         }

@@ -17,7 +17,7 @@ public class CountSort {
         } else {
             numberBuffer = new int[auxCountSize];
         }
-        int sortMask = getMask(kList, kIndex);
+        int sortMask = getMaskLastBits(kList, kIndex);
         countSort(list, start, end, sortMask, sections, countBuffer, numberBuffer);
     }
 
@@ -25,33 +25,45 @@ public class CountSort {
         if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
             int elementSample = list[start];
             elementSample = elementSample & ~sortMask;
-            for (int i = start; i < end; i++) {
-                int element = list[i];
-                int elementMasked = element & sortMask;
-                countBuffer[elementMasked] = countBuffer[elementMasked] + 1;
-            }
-            int i = start;
-            for (int j = 0; j < countBuffer.length; j++) {
-                int count = countBuffer[j];
-                if (count > 0) {
-                    for (int k = 0; k < count; k++) {
-                        list[i] = j | elementSample;
-                        i++;
+            if (elementSample == 0) { //last bits and includes all numbers
+                for (int i = start; i < end; i++) {
+                    int element = list[i];
+                    countBuffer[element] = countBuffer[element] + 1;
+                }
+                int i = start;
+                for (int j = 0; j < countBuffer.length; j++) {
+                    int count = countBuffer[j];
+                    if (count > 0) {
+                        for (int k = 0; k < count; k++) {
+                            list[i] = j;
+                            i++;
+                        }
+                    }
+                }
+
+            } else { //last bits but there is a mask for a bigger number
+                for (int i = start; i < end; i++) {
+                    int element = list[i];
+                    int elementMasked = element & sortMask;
+                    countBuffer[elementMasked] = countBuffer[elementMasked] + 1;
+                }
+                int i = start;
+                for (int j = 0; j < countBuffer.length; j++) {
+                    int count = countBuffer[j];
+                    if (count > 0) {
+                        for (int k = 0; k < count; k++) {
+                            list[i] = j | elementSample;
+                            i++;
+                        }
                     }
                 }
             }
         } else {
             for (int i = start; i < end; i++) {
                 int element = list[i];
-                int elementMasked = element & sortMask;
-                if (elementMasked == 0) {
-                    countBuffer[0] = countBuffer[0] + 1;
-                    numberBuffer[0] = element;
-                } else {
-                    int key = getKey(elementMasked, sections);
-                    countBuffer[key] = countBuffer[key] + 1;
-                    numberBuffer[key] = element;
-                }
+                int key = getKeySN(element, sections);
+                countBuffer[key] = countBuffer[key] + 1;
+                numberBuffer[key] = element;
             }
             int i = start;
             for (int j = 0; j < countBuffer.length; j++) {

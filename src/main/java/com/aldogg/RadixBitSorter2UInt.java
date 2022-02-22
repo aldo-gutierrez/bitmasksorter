@@ -1,6 +1,6 @@
 package com.aldogg;
 
-import static com.aldogg.BitSorterUtils.getMask;
+import static com.aldogg.BitSorterUtils.getMaskBit;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 
 public class RadixBitSorter2UInt extends RadixBitSorterUInt {
@@ -12,7 +12,7 @@ public class RadixBitSorter2UInt extends RadixBitSorterUInt {
         }
         final int start = 0;
         final int end = list.length;
-        int[] maskParts = getMask(list, start, end);
+        int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
         if (kList.length == 0) {
@@ -26,14 +26,14 @@ public class RadixBitSorter2UInt extends RadixBitSorterUInt {
     protected void radixSort(int[] list, int start, int end, int[] aux, int[] kList, int kIndexStart, int kIndexEnd) {
         for (int i = kIndexStart; i >= kIndexEnd; i--) {
             int kListI = kList[i];
-            int sortMask1 = getMask(kListI);
+            int sortMask1 = BitSorterUtils.getMaskBit(kListI);
             int bits = 1;
             int imm = 0;
             for (int j = 1; j <= 11; j++) { //11bits looks faster than 8 on AMD 4800H, 15 is slower
                 if (i - j >= kIndexEnd) {
                     int kListIm1 = kList[i - j];
                     if (kListIm1 == kListI + j) {
-                        int sortMask2 = getMask(kListIm1);
+                        int sortMask2 = BitSorterUtils.getMaskBit(kListIm1);
                         sortMask1 = sortMask1 | sortMask2;
                         bits++;
                         imm++;

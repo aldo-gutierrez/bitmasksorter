@@ -21,7 +21,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
         }
         //if (listIsOrdered(list, start, end)) return;
 
-        int[] maskParts = getMask(list, start, end);
+        int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
         if (kList.length <= params.getCountingSortBits()) {
@@ -52,7 +52,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
         if (level >= params.getMaxThreadsBits() && (kList.length - kIndex) >= params.getCountingSortBits()) {
             radixCountSort(list, start, end, kList, kIndex);
         } else {
-            int sortMask = getMask(kList[kIndex]);
+            int sortMask = getMaskBit(kList[kIndex]);
             int finalLeft = IntSorterUtils.partition(list, start, end, sortMask);
             Thread t1 = null;
             int size1 = finalLeft - start;
@@ -92,18 +92,19 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
         int sortMask1 = 0;
         for (int i = kIndexCountSort - 1; i >= kIndexEnd; i--) {
             int kListIj = kList[i];
-            int sortMaskij = getMask(kListIj);
+            int sortMaskij = getMaskBit(kListIj);
             sortMask1 = sortMask1 | sortMaskij;
             bits++;
         }
-        stableRadixCountPartition(list, start, end, sortMask1, aux2, bits, kList, kIndexCountSort);
+        int lengthBitsToNumber = (int) Math.pow(2, bits);
+        partitionStableNonConsecutiveBitsAndCountSort(list, start, end, lengthBitsToNumber, aux2, sortMask1, kList, kIndexCountSort);
     }
 
-    protected void stableRadixCountPartition(final int[] list, final int start, final int end, int sortMask, final int[] aux2, final int bits, int[] kList, int kIndex) {
+    //partitionStableLastBits
+    protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] list, final int start, final int end, int lengthBitsToNumber, final int[] aux, int sortMask, int[] kList, int kIndex) {
         int[] kListAux = getMaskAsList(sortMask);
         int[][] sections = getMaskAsSections(kListAux);
 
-        int lengthBitsToNumber = (int) Math.pow(2, bits);
 
         int[] leftX = new int[lengthBitsToNumber];
         int[] leftX2 = new int[lengthBitsToNumber];
@@ -111,7 +112,12 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
 
         for (int i = start; i < end; i++) {
             int element = list[i];
-            int elementMaskedShifted = BitSorterUtils.getKey(element & sortMask, sections);
+            int elementMaskedShifted;
+            if (sections.length == 1) {
+                elementMaskedShifted = getKeySec1(element, sections[0]);
+            } else {
+                elementMaskedShifted = getKeySN(element, sections);
+            }
             count[elementMaskedShifted]++;
         }
         for (int i = 1; i < lengthBitsToNumber; i++) {
@@ -121,8 +127,13 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
 
         for (int i = start; i < end; i++) {
             int element = list[i];
-            int elementMaskedShifted = BitSorterUtils.getKey(element & sortMask, sections);
-            aux2[leftX[elementMaskedShifted]] = element;
+            int elementMaskedShifted;
+            if (sections.length == 1) {
+                elementMaskedShifted = getKeySec1(element, sections[0]);
+            } else {
+                elementMaskedShifted = getKeySN(element, sections);
+            }
+            aux[leftX[elementMaskedShifted]] = element;
             leftX[elementMaskedShifted]++;
         }
 
@@ -131,14 +142,14 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
             final int kIndexCountS = 0;
             final int bufferCountSSize = (int) Math.pow(2, kListCountS.length - kIndexCountS);
             final int[][] sectionsCountS = getMaskAsSections(kListCountS);
-            final int sortMaskCountS = getMask(kListCountS, kIndexCountS);
+            final int sortMaskCountS = getMaskLastBits(kListCountS, kIndexCountS);
             final int[] zeroBuffer = new int[bufferCountSSize];
             if (numThreads.get() < params.getMaxThreads() + 1) {
                 Runnable r1 = () -> {
                     int[] bufferCount = new int[bufferCountSSize];
                     int[] bufferSize = new int[bufferCountSSize];
                     for (int i = 0; i < lengthBitsToNumber / 2; i++) {
-                        countSortUtil(aux2, leftX2[i], leftX[i], count[i], bufferCountSSize, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
+                        countSortUtil(aux, leftX2[i], leftX[i], count[i], bufferCountSSize, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
                     }
                 };
                 Thread t1 = new Thread(r1);
@@ -147,7 +158,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
                 int[] bufferCount = new int[bufferCountSSize];
                 int[] bufferSize = new int[bufferCountSSize];
                 for (int i = lengthBitsToNumber / 2; i < lengthBitsToNumber; i++) {
-                    countSortUtil(aux2, leftX2[i], leftX[i], count[i], bufferCountSSize, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
+                    countSortUtil(aux, leftX2[i], leftX[i], count[i], bufferCountSSize, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
                 }
                 try {
                     t1.join();
@@ -159,12 +170,12 @@ public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
                 int[] bufferCount = new int[bufferCountSSize];
                 int[] bufferSize = new int[bufferCountSSize];
                 for (int i = 0; i < lengthBitsToNumber; i++) {
-                    countSortUtil(aux2, leftX2[i], leftX[i], count[i], bufferCountSSize, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
+                    countSortUtil(aux, leftX2[i], leftX[i], count[i], bufferCountSSize, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
                 }
             }
 
         }
-        System.arraycopy(aux2, 0, list, start, end - start);
+        System.arraycopy(aux, 0, list, start, end - start);
     }
 
     private void countSortUtil(final int[] list, final int start , final int end, final int length, final int bufferSize, final int[][] sections, final int sortMask, final int[] bufferCount, final int[] bufferNumber, final int[] zeroBuffer) {
