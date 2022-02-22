@@ -8,7 +8,7 @@ import static com.aldogg.BitSorterUtils.*;
 /**
  * Experimental Bit Sorter
  */
-public class MixedBitSorterMTUInt extends RadixBitSorter2UInt {
+public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
     AtomicInteger numThreads = new AtomicInteger(1);
     protected BitSorterParams params = BitSorterParams.getMTParams();
 

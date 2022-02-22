@@ -51,9 +51,15 @@ Optimizations:
 Usage:
 ```
 //Sorting uint numbers 
-IntSorter sorter = RadixBitSorter2UInt();
+IntSorter sorter = RadixBitSorterUInt();
 int[] list = ....
 sorter.sort(list);
+
+//Sorting int numbers 
+IntSorter sorter = RadixBitSorterInt();
+int[] list = ....
+sorter.sort(list);
+
 ```
 ### How it works:
 
@@ -84,12 +90,12 @@ Example comparison for sorting 10 Million elements with range from 0 to 10 Milli
 | Algorithm        | AVG CPU time  |
 | ---------------- |:-------------:|
 |RadixSorter|1186|
-|JavaIntSorter|721|
-|QuickBitSorter3UInt|370|
-|RadixBitSorter2UInt|130|
+|JavaIntSorter|728|
+|QuickBitSorter3UInt|367|
+|RadixBitSorterUInt|110|
 |JavaParallelSorter|84|
-|QuickBitSorterMTUInt|111|
-|MixedBitSorterMTUInt|100|
+|QuickBitSorterMTUInt|114|
+|MixedBitSorterMTUInt|99|
 
 ![Graph2](plot-S10000000-Range0-10000000-random.png?raw=true "Graph2")
 
@@ -98,11 +104,11 @@ Example comparison for sorting 10 Million elements with range from 0 to 100000 i
 | Algorithm        | AVG CPU time  |
 | ---------------- |:-------------:|
 |RadixSorter|412|
-|JavaIntSorter|311|
-|QuickBitSorter3UInt|22|
-|RadixBitSorter2UInt|91|
-|JavaParallelSorter|57|
-|QuickBitSorterMTUInt|26|
+|JavaIntSorter|304|
+|QuickBitSorter3UInt|23|
+|RadixBitSorterUInt|51|
+|JavaParallelSorter|55|
+|QuickBitSorterMTUInt|34|
 |MixedBitSorterMTUInt|23|
 
 ![Graph2](plot-S10000000-Range0-100000-random.png?raw=true "Graph2")
@@ -128,3 +134,6 @@ Example comparison for sorting 10 Million elements with range from 0 to 100000 i
 - Add Int, Long and ULong sorters
 - Evaluate Complexity
 - More testing
+
+## Things DONE
+-  RadixBitSorterInt and RadixBitSorterUInt are ready for prod now

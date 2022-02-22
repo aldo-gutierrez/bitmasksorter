@@ -14,7 +14,7 @@ public class SorterTest {
 
     @Test
     public void basicTests() {
-        IntSorter[] sorters = new IntSorter[] {new MixedBitSorterMTUInt(), new QuickBitSorter3UInt(), new QuickBitSorterMTUInt(), new RadixBitSorter2UInt()};
+        IntSorter[] sorters = new IntSorter[] {new MixedBitSorterMTUInt(), new QuickBitSorter3UInt(), new QuickBitSorterMTUInt(), new RadixBitSorterUInt()};
         TestSortResults sorter = new TestSortResults(sorters);
         testSort(new int[] {}, sorter);
         testSort(new int[] {1}, sorter);
@@ -74,7 +74,7 @@ public class SorterTest {
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
 
-        IntSorter[] sorters = new IntSorter[] {new JavaSorter(), new QuickBitSorter3UInt(), new RadixBitSorter2UInt(), new JavaParallelSorter(), new QuickBitSorterMTUInt(), new MixedBitSorterMTUInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorter(), new QuickBitSorter3UInt(), new RadixBitSorterUInt(), new JavaParallelSorter(), new QuickBitSorterMTUInt(), new MixedBitSorterMTUInt()};
         TestSortResults testSortResults;
 
         //heatup
