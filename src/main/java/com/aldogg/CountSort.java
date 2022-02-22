@@ -59,11 +59,20 @@ public class CountSort {
                 }
             }
         } else {
-            for (int i = start; i < end; i++) {
-                int element = list[i];
-                int key = getKeySN(element, sections);
-                countBuffer[key] = countBuffer[key] + 1;
-                numberBuffer[key] = element;
+            if (sections.length == 1) {
+                for (int i = start; i < end; i++) {
+                    int element = list[i];
+                    int key = getKeySec1(element, sections[0]);
+                    countBuffer[key] = countBuffer[key] + 1;
+                    numberBuffer[key] = element;
+                }
+            } else {
+                for (int i = start; i < end; i++) {
+                    int element = list[i];
+                    int key = getKeySN(element, sections);
+                    countBuffer[key] = countBuffer[key] + 1;
+                    numberBuffer[key] = element;
+                }
             }
             int i = start;
             for (int j = 0; j < countBuffer.length; j++) {
