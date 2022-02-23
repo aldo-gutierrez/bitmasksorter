@@ -46,7 +46,7 @@ public class QuickBitSorter3UInt extends QuickBitSorter2UInt implements IntSorte
         }
 
         if (kList.length - kIndex <= params.getCountingSortBits()) {
-            if (listLength < getCountSortBufferSize(kList.length - kIndex)>>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
+            if (listLength < twoPowerX(kList.length - kIndex)>>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
                 int[] aux = new int[listLength];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
                     int sortMask = BitSorterUtils.getMaskBit(kList[i]);

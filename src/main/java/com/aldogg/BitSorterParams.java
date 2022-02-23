@@ -8,8 +8,6 @@ public class BitSorterParams {
 
     private int countingSortBits = 16;
 
-    private int countingSortBufferSize = getCountSortBufferSize(countingSortBits);
-
     private int dataSizeForThreads = 256;
 
     private int maxThreads = 1;
@@ -18,10 +16,6 @@ public class BitSorterParams {
 
     public int getCountingSortBits() {
         return countingSortBits;
-    }
-
-    public int getCountingSortBufferSize() {
-        return countingSortBufferSize;
     }
 
     public int getMaxThreadsBits() {
@@ -33,7 +27,6 @@ public class BitSorterParams {
             throw new InvalidParameterException("maxBitsForCountingSort needs to be >=4");
         }
         this.countingSortBits = countingSortBits;
-        this.countingSortBufferSize = (int) Math.pow(2, countingSortBits);
     }
 
     public int getDataSizeForThreads() {
@@ -70,7 +63,7 @@ public class BitSorterParams {
         return params;
     }
 
-    public static int getCountSortBufferSize(int k) {
+    public static int twoPowerX(int k) {
         return 1<<k;
     }
 

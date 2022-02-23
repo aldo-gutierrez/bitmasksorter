@@ -46,14 +46,11 @@ public class RadixBitSorterUInt extends RadixBitSorterUIntBase {
             if (bits == 1) {
                 IntSorterUtils.partitionStable(list, start, end, sortMask1, aux);
             } else {
-                int lengthBitsToNumber = (int) Math.pow(2, bits);
-                int shiftLeft =  32 - bits - kListI;
-                int shiftRight = 32 - bits;
-                boolean eqShift = shiftLeft == shiftRight;
-                if (eqShift) {
+                int lengthBitsToNumber = BitSorterParams.twoPowerX(bits);
+                if (kListI == 0) {
                     partitionStableLastBits(list, start, end, lengthBitsToNumber, aux, sortMask1);
                 } else {
-                    partitionStableGroupBits(list, start, end, lengthBitsToNumber, aux, shiftLeft, shiftRight);
+                    partitionStableGroupBits(list, start, end, lengthBitsToNumber, aux, sortMask1, kListI);
                 }
             }
         }
@@ -86,12 +83,12 @@ public class RadixBitSorterUInt extends RadixBitSorterUIntBase {
      *  CPU: 3*N + 2^K
      *  MEM: N + 2*2^K
      */
-    private void partitionStableGroupBits(int[] list, int start, int end, int lengthBitsToNumber, int[] aux, int shiftLeft, int shiftRight) {
+    private void partitionStableGroupBits(int[] list, int start, int end, int lengthBitsToNumber, int[] aux, int sortMask, int shiftRight) {
         int[] leftX = new int[lengthBitsToNumber];
         int[] count = new int[lengthBitsToNumber];
         for (int i = start; i < end; i++) {
             int element = list[i];
-            int elementShiftMasked = element << shiftLeft >>> shiftRight;
+            int elementShiftMasked = (element & sortMask) >>> shiftRight;
             count[elementShiftMasked]++;
         }
         for (int i = 1; i < lengthBitsToNumber; i++) {
@@ -99,7 +96,7 @@ public class RadixBitSorterUInt extends RadixBitSorterUIntBase {
         }
         for (int i = start; i < end; i++) {
             int element = list[i];
-            int elementShiftMasked = element << shiftLeft >>> shiftRight;
+            int elementShiftMasked = (element & sortMask) >>> shiftRight;
             aux[leftX[elementShiftMasked]] = element;
             leftX[elementShiftMasked]++;
         }

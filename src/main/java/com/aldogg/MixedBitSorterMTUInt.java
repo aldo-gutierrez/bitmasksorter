@@ -41,7 +41,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
         }
 
         if (kList.length - kIndex <= params.getCountingSortBits()) {
-            if (listLength < getCountSortBufferSize(kList.length - kIndex)>>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
+            if (listLength < twoPowerX(kList.length - kIndex)>>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
                 int[] aux = new int[listLength];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
                     int sortMask = BitSorterUtils.getMaskBit(kList[i]);
@@ -101,7 +101,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
             sortMask1 = sortMask1 | sortMaskij;
             bits++;
         }
-        int lengthBitsToNumber = (int) Math.pow(2, bits);
+        int lengthBitsToNumber = BitSorterParams.twoPowerX(bits);
         partitionStableNonConsecutiveBitsAndCountSort(list, start, end, lengthBitsToNumber, aux2, sortMask1, kList, kIndexCountSort);
     }
 
@@ -115,37 +115,46 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
         int[] leftX2 = new int[lengthBitsToNumber];
         int[] count = new int[lengthBitsToNumber];
 
-        for (int i = start; i < end; i++) {
-            int element = list[i];
-            int elementMaskedShifted;
-            if (sections.length == 1) {
-                elementMaskedShifted = getKeySec1(element, sections[0]);
-            } else {
-                elementMaskedShifted = getKeySN(element, sections);
+        if (sections.length == 1) {
+            for (int i = start; i < end; i++) {
+                int element = list[i];
+                int elementMaskedShifted = getKeySec1(element, sections[0]);
+                count[elementMaskedShifted]++;
             }
-            count[elementMaskedShifted]++;
+        } else {
+            for (int i = start; i < end; i++) {
+                int element = list[i];
+                int elementMaskedShifted = getKeySN(element, sections);
+                count[elementMaskedShifted]++;
+            }
         }
+
         for (int i = 1; i < lengthBitsToNumber; i++) {
             leftX[i] = leftX[i - 1] + count[i - 1];
             leftX2[i] = leftX[i];
         }
 
-        for (int i = start; i < end; i++) {
-            int element = list[i];
-            int elementMaskedShifted;
-            if (sections.length == 1) {
-                elementMaskedShifted = getKeySec1(element, sections[0]);
-            } else {
-                elementMaskedShifted = getKeySN(element, sections);
+        if (sections.length == 1) {
+            for (int i = start; i < end; i++) {
+                int element = list[i];
+                int elementMaskedShifted = getKeySec1(element, sections[0]);
+                aux[leftX[elementMaskedShifted]] = element;
+                leftX[elementMaskedShifted]++;
             }
-            aux[leftX[elementMaskedShifted]] = element;
-            leftX[elementMaskedShifted]++;
+
+        } else {
+            for (int i = start; i < end; i++) {
+                int element = list[i];
+                int elementMaskedShifted = getKeySN(element, sections);
+                aux[leftX[elementMaskedShifted]] = element;
+                leftX[elementMaskedShifted]++;
+            }
         }
 
         if (kIndex > 0) {
             final int[] kListCountS = Arrays.copyOfRange(kList, kIndex, kList.length);
             final int kIndexCountS = 0;
-            final int bufferCountSSize = (int) Math.pow(2, kListCountS.length - kIndexCountS);
+            final int bufferCountSSize = BitSorterParams.twoPowerX(kListCountS.length - kIndexCountS);
             final int[][] sectionsCountS = getMaskAsSections(kListCountS);
             final int sortMaskCountS = getMaskLastBits(kListCountS, kIndexCountS);
             final int[] zeroBuffer = new int[bufferCountSSize];
