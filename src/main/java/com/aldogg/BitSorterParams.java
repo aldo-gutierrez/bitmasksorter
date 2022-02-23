@@ -8,7 +8,7 @@ public class BitSorterParams {
 
     private int countingSortBits = 16;
 
-    private int countingSortBufferSize = (int) Math.pow(2, countingSortBits);
+    private int countingSortBufferSize = getCountSortBufferSize(countingSortBits);
 
     private int dataSizeForThreads = 256;
 
@@ -68,6 +68,10 @@ public class BitSorterParams {
         params.maxThreads = cpuMaxThreadCount;
         params.maxThreadsBits = (int)(Math.log(cpuMaxThreadCount) / Math.log(2));
         return params;
+    }
+
+    public static int getCountSortBufferSize(int k) {
+        return 1<<k;
     }
 
 }

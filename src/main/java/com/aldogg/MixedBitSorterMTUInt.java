@@ -3,8 +3,7 @@ package com.aldogg;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.aldogg.BitSorterParams.COUNT_SORT_SMALL_NUMBER_SHIFT;
-import static com.aldogg.BitSorterParams.SMALL_LIST_SIZE;
+import static com.aldogg.BitSorterParams.*;
 import static com.aldogg.BitSorterUtils.*;
 
 /**
@@ -42,7 +41,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
         }
 
         if (kList.length - kIndex <= params.getCountingSortBits()) {
-            if (listLength < params.getCountingSortBufferSize()>>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
+            if (listLength < getCountSortBufferSize(kList.length - kIndex)>>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
                 int[] aux = new int[listLength];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
                     int sortMask = BitSorterUtils.getMaskBit(kList[i]);
