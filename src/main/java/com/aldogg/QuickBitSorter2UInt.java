@@ -1,5 +1,6 @@
 package com.aldogg;
 
+import static com.aldogg.BitSorterParams.SMALL_LIST_SIZE;
 import static com.aldogg.BitSorterUtils.*;
 
 public class QuickBitSorter2UInt extends QuickBitSorterUInt implements IntSorter {
@@ -31,7 +32,7 @@ public class QuickBitSorter2UInt extends QuickBitSorterUInt implements IntSorter
 
     public void sort(final int[] list, final int start, final int end, final int[] kList, final int kIndex) {
         final int listLength = end - start;
-        if (listLength <= 8) {
+        if (listLength <= SMALL_LIST_SIZE) {
             SortingNetworks.sortSmallList(list, start, end);
             return;
         }

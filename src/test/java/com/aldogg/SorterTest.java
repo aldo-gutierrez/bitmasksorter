@@ -106,7 +106,7 @@ public class SorterTest {
 
     @Test
     public void speedTestNegative() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("speed.csv"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("speed_negative.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
 
