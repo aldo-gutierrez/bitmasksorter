@@ -7,20 +7,24 @@ import static com.aldogg.BitSorterUtils.*;
 public class CountSort {
 
     public static void countSort(final int[] list, final int start, final int end, int[] kList,  int kIndex) {
-        int auxCountSize = (int) Math.pow(2, kList.length - kIndex);
+        int countBufferSize = (int) Math.pow(2, kList.length - kIndex);
         kList = Arrays.copyOfRange(kList, kIndex, kList.length);
         int[][] sections = getMaskAsSections(kList);
         kIndex = 0;
-        int[] countBuffer = new int[auxCountSize];
+        int[] countBuffer = new int[countBufferSize];
         int[] numberBuffer = null;
         if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
         } else {
-            numberBuffer = new int[auxCountSize];
+            numberBuffer = new int[countBufferSize];
         }
         int sortMask = getMaskLastBits(kList, kIndex);
         countSort(list, start, end, sortMask, sections, countBuffer, numberBuffer);
     }
 
+    /**
+     * CPU: N + 2^K
+     * MEM: 2 * (2^K)
+     */
     public static void countSort(final int[] list, final int start, final int end, int sortMask, int[][] sections, int[] countBuffer, int[] numberBuffer) {
         if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
             int elementSample = list[start];

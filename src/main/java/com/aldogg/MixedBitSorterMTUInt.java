@@ -24,11 +24,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
         int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
-        if (kList.length <= params.getCountingSortBits()) {
-            CountSort.countSort(list, start, end, kList, 0);
-        } else {
-            sort(list, start, end, kList, 0, 0);
-        }
+        sort(list, start, end, kList, 0, 0);
     }
 
 
@@ -44,7 +40,15 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
         }
 
         if (kList.length - kIndex <= params.getCountingSortBits()) {
-            CountSort.countSort(list, start, end, kList, kIndex);
+            if (listLength < params.getCountingSortBufferSize()>>4 ) {
+                int[] aux = new int[listLength];
+                for (int i = kList.length - 1; i >= kIndex; i--) {
+                    int sortMask = BitSorterUtils.getMaskBit(kList[i]);
+                    IntSorterUtils.partitionStable(list, start, end, sortMask, aux);
+                }
+            } else {
+                CountSort.countSort(list, start, end, kList, kIndex);
+            }
             return;
         }
 

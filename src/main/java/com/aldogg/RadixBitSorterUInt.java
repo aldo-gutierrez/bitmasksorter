@@ -59,6 +59,10 @@ public class RadixBitSorterUInt extends RadixBitSorterUIntBase {
         }
     }
 
+    /**
+     *  CPU: 3*N + 2^K
+     *  MEM: N + 2*2^K
+     */
     private void partitionStableLastBits(int[] list, int start, int end, int lengthBitsToNumber, int[] aux, int sortMask) {
         int[] leftX = new int[lengthBitsToNumber];
         int[] count = new int[lengthBitsToNumber];
@@ -78,6 +82,10 @@ public class RadixBitSorterUInt extends RadixBitSorterUIntBase {
         System.arraycopy(aux, 0, list, start, end - start);
     }
 
+    /**
+     *  CPU: 3*N + 2^K
+     *  MEM: N + 2*2^K
+     */
     private void partitionStableGroupBits(int[] list, int start, int end, int lengthBitsToNumber, int[] aux, int shiftLeft, int shiftRight) {
         int[] leftX = new int[lengthBitsToNumber];
         int[] count = new int[lengthBitsToNumber];

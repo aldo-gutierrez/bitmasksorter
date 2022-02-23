@@ -82,7 +82,7 @@ public class SorterTest {
         testSpeed(1000, 80000, 0, 80000, testSortResults, null);
 
         int iterations = 20;
-        int[] limitHigh = new int[] {10, 1000, 100000, 10000000};
+        int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
             testSortResults = new TestSortResults(sorters);
@@ -102,6 +102,43 @@ public class SorterTest {
         System.out.println();
         writer.close();
     }
+
+
+    @Test
+    public void speedTestNegative() throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("speed.csv"));
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
+
+
+        IntSorter[] sorters = new IntSorter[] {new JavaSorter(),  new RadixBitSorterInt(), new JavaParallelSorter(),  new QuickBitSorterInt()};
+        TestSortResults testSortResults;
+
+        //heatup
+        testSortResults = new TestSortResults(sorters);
+        testSpeed(1000, 80000, 0, 80000, testSortResults, null);
+
+        int iterations = 20;
+        int[] limitHigh = new int[] {1000000000};
+
+        for (int limitH : limitHigh) {
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 10000, -limitH, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 100000, -limitH, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 1000000, -limitH, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 10000000, -limitH, limitH, testSortResults, writer);
+
+            System.out.println("----------------------");
+        }
+        System.out.println();
+        writer.close();
+    }
+
     
 
     private void testSpeed(int iterations, int size, int limitLow, int limitHigh, TestSortResults testSortResults, Writer writer) throws IOException {
@@ -149,5 +186,8 @@ public class SorterTest {
         testSort(new int[]{33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0}, sorter);
     }
 
+    public static  void main (String[] args) {
+        //Collections.sort();
+    }
 }
 

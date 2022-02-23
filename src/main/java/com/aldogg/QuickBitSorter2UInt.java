@@ -26,11 +26,7 @@ public class QuickBitSorter2UInt extends QuickBitSorterUInt implements IntSorter
         int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] listK = getMaskAsList(mask);
-        if (listK.length <= params.getCountingSortBits()) {
-            CountSort.countSort(list, start, end, listK, 0);
-        } else {
-            sort(list, start, end, listK, 0);
-        }
+        sort(list, start, end, listK, 0);
     }
 
     public void sort(final int[] list, final int start, final int end, final int[] kList, final int kIndex) {

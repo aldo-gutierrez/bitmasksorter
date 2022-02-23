@@ -75,6 +75,8 @@ public class IntSorterUtils {
 
     /**
      *  stable partition with aux memory, only copies right to aux for better performance
+     *  CPU: 2*N*K (K=1 for 1 bit)
+     *  MEM: N
      */
     public static int partitionStable(final int[] list, final int start, final int end, final int sortMask, int[] aux) {
         int left = start;

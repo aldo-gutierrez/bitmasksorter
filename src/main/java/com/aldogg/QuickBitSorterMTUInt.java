@@ -49,11 +49,7 @@ public class QuickBitSorterMTUInt extends QuickBitSorter3UInt implements IntSort
         int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] listK = getMaskAsList(mask);
-        if (listK.length <= params.getCountingSortBits()) {
-            CountSort.countSort(list, start, end, listK, 0);
-        } else {
-            sortMT(list, start, end, listK, 0, false);
-        }
+        sortMT(list, start, end, listK, 0, false);
     }
 
     @Override
@@ -83,7 +79,15 @@ public class QuickBitSorterMTUInt extends QuickBitSorter3UInt implements IntSort
         }
 
         if (kList.length - kIndex <= params.getCountingSortBits()) {
-            CountSort.countSort(list, start, end, kList, kIndex);
+            if (listLength < params.getCountingSortBufferSize()>>4 ) {
+                int[] aux = new int[listLength];
+                for (int i = kList.length - 1; i >= kIndex; i--) {
+                    int sortMask = BitSorterUtils.getMaskBit(kList[i]);
+                    IntSorterUtils.partitionStable(list, start, end, sortMask, aux);
+                }
+            } else {
+                CountSort.countSort(list, start, end, kList, kIndex);
+            }
             return;
         }
         int sortMask = getMaskBit(kList[kIndex]);
