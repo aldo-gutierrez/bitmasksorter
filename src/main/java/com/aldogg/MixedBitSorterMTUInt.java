@@ -25,12 +25,12 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
         int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
-        sort(list, start, end, kList, 0, 0);
+        sort(list, start, end, kList, 0);
     }
 
 
 
-    public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex, int level) {
+    public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex) {
         final int listLength = end - start;
         if (listLength <= SMALL_LIST_SIZE) {
             SortingNetworks.sortSmallList(list, start, end);
@@ -53,8 +53,8 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
             return;
         }
 
-//        if (level == 0) {
-        if (level >= params.getMaxThreadsBits() && (kList.length - kIndex) >= params.getCountingSortBits()) {
+        //kIndex == level, starting with 0
+        if (kIndex >= params.getMaxThreadsBits() - 1) {
             radixCountSort(list, start, end, kList, kIndex);
         } else {
             int sortMask = getMaskBit(kList[kIndex]);
@@ -63,17 +63,17 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
             int size1 = finalLeft - start;
             if (size1 > 1) {
                 if (numThreads.get() < params.getMaxThreads() + 1) {
-                    Runnable r1 = () -> sort(list, start, finalLeft, kList, kIndex + 1, level + 1);
+                    Runnable r1 = () -> sort(list, start, finalLeft, kList, kIndex + 1);
                     t1 = new Thread(r1);
                     t1.start();
                     numThreads.addAndGet(1);
                 } else {
-                    sort(list, start, finalLeft, kList, kIndex + 1, level + 1);
+                    sort(list, start, finalLeft, kList, kIndex + 1);
                 }
             }
             int size2 = end - finalLeft;
             if (size2 > 1) {
-                sort(list, finalLeft, end, kList, kIndex + 1, level + 1);
+                sort(list, finalLeft, end, kList, kIndex + 1);
             }
 
             if (t1 != null) {

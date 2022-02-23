@@ -42,6 +42,9 @@ public class CountSort {
                             list[i] = j;
                             i++;
                         }
+//                        if (i == end) {
+//                            break;
+//                        }
                     }
                 }
 
@@ -55,10 +58,14 @@ public class CountSort {
                 for (int j = 0; j < countBuffer.length; j++) {
                     int count = countBuffer[j];
                     if (count > 0) {
+                        int value = j | elementSample;
                         for (int k = 0; k < count; k++) {
-                            list[i] = j | elementSample;
+                            list[i] = value;
                             i++;
                         }
+//                        if (i == end) {
+//                            break;
+//                        }
                     }
                 }
             }
@@ -87,6 +94,9 @@ public class CountSort {
                         list[i] = value;
                         i++;
                     }
+//                    if (i == end) {
+//                        break;
+//                    }
                 }
             }
         }
