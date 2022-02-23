@@ -112,7 +112,6 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
 
 
         int[] leftX = new int[lengthBitsToNumber];
-        int[] leftX2 = new int[lengthBitsToNumber];
         int[] count = new int[lengthBitsToNumber];
 
         if (sections.length == 1) {
@@ -131,7 +130,6 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
 
         for (int i = 1; i < lengthBitsToNumber; i++) {
             leftX[i] = leftX[i - 1] + count[i - 1];
-            leftX2[i] = leftX[i];
         }
 
         if (sections.length == 1) {
@@ -163,7 +161,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
                     int[] bufferCount = new int[bufferCountSSize];
                     int[] bufferSize = new int[bufferCountSSize];
                     for (int i = 0; i < lengthBitsToNumber / 2; i++) {
-                        smallListUtil(aux, leftX2[i], leftX[i], kListCountS, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
+                        smallListUtil(aux, leftX[i] - count[i], leftX[i], kListCountS, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
                     }
                 };
                 Thread t1 = new Thread(r1);
@@ -172,7 +170,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
                 int[] bufferCount = new int[bufferCountSSize];
                 int[] bufferSize = new int[bufferCountSSize];
                 for (int i = lengthBitsToNumber / 2; i < lengthBitsToNumber; i++) {
-                    smallListUtil(aux, leftX2[i], leftX[i], kListCountS, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
+                    smallListUtil(aux, leftX[i] - count[i], leftX[i], kListCountS, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
                 }
                 try {
                     t1.join();
@@ -184,7 +182,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
                 int[] bufferCount = new int[bufferCountSSize];
                 int[] bufferSize = new int[bufferCountSSize];
                 for (int i = 0; i < lengthBitsToNumber; i++) {
-                    smallListUtil(aux, leftX2[i], leftX[i], kListCountS,sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
+                    smallListUtil(aux, leftX[i] - count[i], leftX[i], kListCountS,sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
                 }
             }
 

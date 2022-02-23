@@ -22,7 +22,7 @@ public class CountSort {
     }
 
     /**
-     * CPU: N + 2^K
+     * CPU: N + MAX(2^K, N)
      * MEM: 2 * (2^K)
      */
     public static void countSort(final int[] list, final int start, final int end, int sortMask, int[][] sections, int[] countBuffer, int[] numberBuffer) {
