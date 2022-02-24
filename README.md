@@ -4,7 +4,7 @@ This project tests different ideas for sorting algorithms.
 We use a bitmask as a way to get statistical information about the numbers to be sorted
 
 ## QuickBitSorter
-Is similar to QuickSort but for choosing the pivot we choose it using a bit mask. 
+Is similar to QuickSort but for choosing the pivot we use the bit mask. 
 Having the bit mask also helps when doing a flexible CountSort for the last bits.
 
 This is different to other QuickSort algorithms that normally use the last element as pivot or choose the average of three
@@ -89,13 +89,14 @@ Example comparison for sorting 10 Million elements with range from 0 to 10 Milli
 
 | Algorithm        | AVG CPU time  |
 | ---------------- |:-------------:|
-|RadixSorter|1186|
-|JavaIntSorter|728|
-|QuickBitSorter3UInt|367|
-|RadixBitSorterUInt|110|
-|JavaParallelSorter|84|
-|QuickBitSorterMTUInt|114|
-|MixedBitSorterMTUInt|99|
+|JavaIntSorter|748|
+|QuickBitSorter3UInt|423|
+|RadixBitSorterUInt|115|
+|JavaParallelSorter|144|
+|QuickBitSorterMTUInt|118|
+|MixedBitSorterMTUInt|98|
+|RadixBitSorterMTUInt|96|
+
 
 ![Graph2](plot-S10000000-Range0-10000000-random.png?raw=true "Graph2")
 
@@ -103,13 +104,13 @@ Example comparison for sorting 10 Million elements with range from 0 to 100000 i
 
 | Algorithm        | AVG CPU time  |
 | ---------------- |:-------------:|
-|RadixSorter|412|
-|JavaIntSorter|304|
-|QuickBitSorter3UInt|23|
-|RadixBitSorterUInt|51|
-|JavaParallelSorter|55|
-|QuickBitSorterMTUInt|34|
+|JavaIntSorter|327|
+|QuickBitSorter3UInt|25|
+|RadixBitSorterUInt|52|
+|JavaParallelSorter|94|
+|QuickBitSorterMTUInt|23|
 |MixedBitSorterMTUInt|23|
+|RadixBitSorterMTUInt|23|
 
 ![Graph2](plot-S10000000-Range0-100000-random.png?raw=true "Graph2")
 
