@@ -97,6 +97,9 @@ public class SorterTest {
             testSortResults = new TestSortResults(sorters);
             testSpeed(iterations, 10000000, 0, limitH, testSortResults, writer);
 
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 40000000, 0, limitH, testSortResults, writer);
+
             System.out.println("----------------------");
         }
         System.out.println();
@@ -118,7 +121,7 @@ public class SorterTest {
         testSpeed(1000, 80000, 0, 80000, testSortResults, null);
 
         int iterations = 20;
-        int[] limitHigh = new int[] {1000000000};
+        int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
             testSortResults = new TestSortResults(sorters);
@@ -132,6 +135,9 @@ public class SorterTest {
 
             testSortResults = new TestSortResults(sorters);
             testSpeed(iterations, 10000000, -limitH, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 40000000, -limitH, limitH, testSortResults, writer);
 
             System.out.println("----------------------");
         }
