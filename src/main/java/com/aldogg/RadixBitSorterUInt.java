@@ -23,7 +23,7 @@ public class RadixBitSorterUInt extends RadixBitSorterUIntBase {
         radixSort(list, start, end, aux, kList, kList.length - 1, 0);
     }
 
-    protected void radixSort(int[] list, int start, int end, int[] aux, int[] kList, int kIndexStart, int kIndexEnd) {
+    public void radixSort(int[] list, int start, int end, int[] aux, int[] kList, int kIndexStart, int kIndexEnd) {
         for (int i = kIndexStart; i >= kIndexEnd; i--) {
             int kListI = kList[i];
             int sortMask1 = BitSorterUtils.getMaskBit(kListI);
