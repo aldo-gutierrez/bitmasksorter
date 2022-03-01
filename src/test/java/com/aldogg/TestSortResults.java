@@ -6,11 +6,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class TestSortResults {
-    private List<IntSorter> sorters;
-    private List<Long> totalElapsed;
-    private List<Integer> count;
-    private List<Long> elapsed;
-    private List<Boolean> success;
+    private final List<IntSorter> sorters;
+    private final List<Long> totalElapsed;
+    private final List<Integer> count;
+    private final List<Long> elapsed;
+    private final List<Boolean> success;
 
     public TestSortResults(IntSorter... _sorters) {
         this.sorters = Arrays.asList(_sorters);

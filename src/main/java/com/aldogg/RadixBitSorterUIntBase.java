@@ -3,7 +3,7 @@ package com.aldogg;
 import static com.aldogg.BitSorterUtils.getMaskBit;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 
-public class RadixBitSorterUIntBase extends QuickBitSorter2UInt {
+public class RadixBitSorterUIntBase extends QuickBitSorterUInt {
 
     @Override
     public void sort(int[] list) {

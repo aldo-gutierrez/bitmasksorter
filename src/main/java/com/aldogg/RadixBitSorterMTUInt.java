@@ -8,7 +8,7 @@ import static com.aldogg.BitSorterParams.*;
 import static com.aldogg.BitSorterUtils.*;
 
 public class RadixBitSorterMTUInt extends RadixBitSorterUInt {
-    protected BitSorterParams params = BitSorterParams.getMTParams();
+    protected final BitSorterParams params = BitSorterParams.getMTParams();
 
     @Override
     public void sort(int[] list) {
@@ -32,12 +32,13 @@ public class RadixBitSorterMTUInt extends RadixBitSorterUInt {
 //            SortingNetworks.sortSmallList(list, start, end);
 //            return;
 //        }
-        if (kIndex > kList.length - 1) {
+        int kDiff = kList.length - kIndex;
+        if (kDiff < 1) {
             return;
         }
 
-        if (kList.length - kIndex <= params.getCountingSortBits()) {
-            if (listLength < twoPowerX(kList.length - kIndex) >> COUNT_SORT_SMALL_NUMBER_SHIFT) {
+        if (kDiff <= params.getCountingSortBits()) {
+            if (listLength < twoPowerX(kDiff)>>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
                 int[] aux = new int[listLength];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
                     int sortMask = BitSorterUtils.getMaskBit(kList[i]);

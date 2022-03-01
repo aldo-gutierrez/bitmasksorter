@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.aldogg.BitSorterParams.*;
 import static com.aldogg.BitSorterUtils.*;
 
-public class QuickBitSorterMTUInt extends QuickBitSorter3UInt implements IntSorter {
+public class QuickBitSorterMTUInt extends QuickBitSorterUInt implements IntSorter {
 
     AtomicInteger numThreads = new AtomicInteger(1);
 
@@ -64,9 +64,7 @@ public class QuickBitSorterMTUInt extends QuickBitSorter3UInt implements IntSort
             SortingNetworks.sortSmallList(list, start, end);
             return;
         }
-        if (kIndex > kList.length - 1) {
-            return;
-        }
+        int kDiff = kList.length - kIndex;
 
         if (recalculate) {
             int[] maskParts = getMaskBit(list, start, end);
@@ -74,13 +72,14 @@ public class QuickBitSorterMTUInt extends QuickBitSorter3UInt implements IntSort
             kList = getMaskAsList(mask);
             kIndex = 0;
 
-            if (kIndex > kList.length - 1) {
-                return;
-            }
         }
 
-        if (kList.length - kIndex <= params.getCountingSortBits()) {
-            if (listLength < twoPowerX(kList.length - kIndex) >>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
+        if (kDiff < 1) {
+            return;
+        }
+
+        if (kDiff <= params.getCountingSortBits()) {
+            if (listLength < twoPowerX(kDiff)>>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
                 int[] aux = new int[listLength];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
                     int sortMask = BitSorterUtils.getMaskBit(kList[i]);
