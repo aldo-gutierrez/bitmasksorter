@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.aldogg.BitSorterParams.*;
 import static com.aldogg.BitSorterUtils.*;
+import static com.aldogg.IntSorterUtils.sortShortList;
 
 public class RadixBitSorterMTUInt extends RadixBitSorterUInt {
     protected final BitSorterParams params = BitSorterParams.getMTParams();
@@ -38,15 +39,7 @@ public class RadixBitSorterMTUInt extends RadixBitSorterUInt {
         }
 
         if (kDiff <= params.getCountingSortBits()) {
-            if (listLength < twoPowerX(kDiff)>>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
-                int[] aux = new int[listLength];
-                for (int i = kList.length - 1; i >= kIndex; i--) {
-                    int sortMask = BitSorterUtils.getMaskBit(kList[i]);
-                    IntSorterUtils.partitionStable(list, start, end, sortMask, aux);
-                }
-            } else {
-                CountSort.countSort(list, start, end, kList, kIndex);
-            }
+            sortShortList(list, start, end, kList, kIndex);
             return;
         }
 
@@ -118,14 +111,7 @@ public class RadixBitSorterMTUInt extends RadixBitSorterUInt {
                         int endT = leftX[finalI];
                         int[] auxT = new int[lengthT];
                         if (kList.length - params.getMaxThreadsBits() <= params.getCountingSortBits()) {
-                            int bufferLength = twoPowerX(kList.length - params.getMaxThreadsBits());
-                            if (lengthT < bufferLength >> COUNT_SORT_SMALL_NUMBER_SHIFT) {
-                                for (int j = kList.length - 1; j >= params.getMaxThreadsBits(); j--) {
-                                    IntSorterUtils.partitionStable(list, endT - lengthT, endT, BitSorterUtils.getMaskBit(kList[j]), auxT);
-                                }
-                            } else {
-                                CountSort.countSort(list, endT - lengthT, endT, kList, params.getMaxThreadsBits());
-                            }
+                            sortShortList(list, endT - lengthT, endT,  kList, params.getMaxThreadsBits());
                         } else {
                             RadixBitSorterUInt rs = new RadixBitSorterUInt();
                             rs.radixSort(list, endT - lengthT, endT, auxT, kList, kList.length - 1, params.getMaxThreadsBits());

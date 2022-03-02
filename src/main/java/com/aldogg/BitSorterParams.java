@@ -8,7 +8,7 @@ public class BitSorterParams {
 
     private int countingSortBits = 16;
 
-    private int dataSizeForThreads = 256;
+    private int dataSizeForThreads = 1024;
 
     private int maxThreads = 1;
 

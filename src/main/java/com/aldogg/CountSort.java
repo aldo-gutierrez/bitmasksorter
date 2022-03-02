@@ -42,9 +42,9 @@ public class CountSort {
                             list[i] = j;
                             i++;
                         }
-//                        if (i == end) {
-//                            break;
-//                        }
+                        if (i == end) {
+                            break;
+                        }
                     }
                 }
 
@@ -63,9 +63,9 @@ public class CountSort {
                             list[i] = value;
                             i++;
                         }
-//                        if (i == end) {
-//                            break;
-//                        }
+                        if (i == end) {
+                            break;
+                        }
                     }
                 }
             }
@@ -94,9 +94,9 @@ public class CountSort {
                         list[i] = value;
                         i++;
                     }
-//                    if (i == end) {
-//                        break;
-//                    }
+                    if (i == end) {
+                        break;
+                    }
                 }
             }
         }

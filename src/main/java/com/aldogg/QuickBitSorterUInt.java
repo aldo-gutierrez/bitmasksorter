@@ -4,6 +4,7 @@ import com.sun.org.apache.xalan.internal.xsltc.dom.KeyIndex;
 
 import static com.aldogg.BitSorterParams.*;
 import static com.aldogg.BitSorterUtils.*;
+import static com.aldogg.IntSorterUtils.sortShortList;
 
 public class QuickBitSorterUInt extends QuickBitSorterUIntBase implements IntSorter {
     protected BitSorterParams params = BitSorterParams.getSTParams();
@@ -46,15 +47,7 @@ public class QuickBitSorterUInt extends QuickBitSorterUIntBase implements IntSor
         }
 
         if (kDiff <= params.getCountingSortBits()) {
-            if (listLength < twoPowerX(kDiff)>>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
-                int[] aux = new int[listLength];
-                for (int i = kList.length - 1; i >= kIndex; i--) {
-                    int sortMask = BitSorterUtils.getMaskBit(kList[i]);
-                    IntSorterUtils.partitionStable(list, start, end, sortMask, aux);
-                }
-            } else {
-                CountSort.countSort(list, start, end, kList, kIndex);
-            }
+            sortShortList(list, start, end, kList, kIndex);
             return;
         }
 
@@ -92,15 +85,7 @@ public class QuickBitSorterUInt extends QuickBitSorterUIntBase implements IntSor
         }
 
         if (kDiff <= params.getCountingSortBits()) {
-            if (listLength < twoPowerX(kDiff)>>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
-                int[] aux = new int[listLength];
-                for (int i = kList.length - 1; i >= kIndex; i--) {
-                    int sortMask = BitSorterUtils.getMaskBit(kList[i]);
-                    IntSorterUtils.partitionStable(list, start, end, sortMask, aux);
-                }
-            } else {
-                CountSort.countSort(list, start, end, kList, kIndex);
-            }
+            sortShortList(list, start, end, kList, kIndex);
             return;
         }
 

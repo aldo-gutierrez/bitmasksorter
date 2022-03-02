@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.aldogg.BitSorterParams.*;
 import static com.aldogg.BitSorterUtils.*;
+import static com.aldogg.IntSorterUtils.sortShortList;
 
 public class QuickBitSorterMTUInt extends QuickBitSorterUInt implements IntSorter {
 
@@ -79,15 +80,7 @@ public class QuickBitSorterMTUInt extends QuickBitSorterUInt implements IntSorte
         }
 
         if (kDiff <= params.getCountingSortBits()) {
-            if (listLength < twoPowerX(kDiff)>>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
-                int[] aux = new int[listLength];
-                for (int i = kList.length - 1; i >= kIndex; i--) {
-                    int sortMask = BitSorterUtils.getMaskBit(kList[i]);
-                    IntSorterUtils.partitionStable(list, start, end, sortMask, aux);
-                }
-            } else {
-                CountSort.countSort(list, start, end, kList, kIndex);
-            }
+            sortShortList(list, start, end, kList, kIndex);
             return;
         }
         int sortMask = getMaskBit(kList[kIndex]);

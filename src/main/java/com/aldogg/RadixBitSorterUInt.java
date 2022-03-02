@@ -23,7 +23,7 @@ public class RadixBitSorterUInt extends RadixBitSorterUIntBase {
         radixSort(list, start, end, aux, kList, kList.length - 1, 0);
     }
 
-    public void radixSort(int[] list, int start, int end, int[] aux, int[] kList, int kIndexStart, int kIndexEnd) {
+    public static void radixSort(int[] list, int start, int end, int[] aux, int[] kList, int kIndexStart, int kIndexEnd) {
         for (int i = kIndexStart; i >= kIndexEnd; i--) {
             int kListI = kList[i];
             int sortMask1 = BitSorterUtils.getMaskBit(kListI);
@@ -60,7 +60,7 @@ public class RadixBitSorterUInt extends RadixBitSorterUIntBase {
      *  CPU: 3*N + 2^K
      *  MEM: N + 2*2^K
      */
-    private void partitionStableLastBits(int[] list, int start, int end, int lengthBitsToNumber, int[] aux, int sortMask) {
+    private static void partitionStableLastBits(int[] list, int start, int end, int lengthBitsToNumber, int[] aux, int sortMask) {
         int[] leftX = new int[lengthBitsToNumber];
         int[] count = new int[lengthBitsToNumber];
         for (int i = start; i < end; i++) {
@@ -83,7 +83,7 @@ public class RadixBitSorterUInt extends RadixBitSorterUIntBase {
      *  CPU: 3*N + 2^K
      *  MEM: N + 2*2^K
      */
-    private void partitionStableGroupBits(int[] list, int start, int end, int lengthBitsToNumber, int[] aux, int sortMask, int shiftRight) {
+    private static void partitionStableGroupBits(int[] list, int start, int end, int lengthBitsToNumber, int[] aux, int sortMask, int shiftRight) {
         int[] leftX = new int[lengthBitsToNumber];
         int[] count = new int[lengthBitsToNumber];
         for (int i = start; i < end; i++) {
