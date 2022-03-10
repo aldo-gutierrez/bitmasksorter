@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 
+import static com.aldogg.BitSorterUtils.getMaskAsList;
+import static com.aldogg.BitSorterUtils.getMaskBit;
+import static com.aldogg.RadixBitSorterUInt.radixSort;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SorterTest {
@@ -36,19 +39,19 @@ public class SorterTest {
 
     private void testSort(int[] list, TestSortResults testSortResults) {
         int[] listAux2 = Arrays.copyOf(list, list.length);
-        long startJava = System.currentTimeMillis();
+        long startJava = System.nanoTime();
         Arrays.sort(listAux2);
-        long elapsedJava = System.currentTimeMillis() - startJava;
+        long elapsedJava = System.nanoTime() - startJava;
 
         for (int i = 0; i < testSortResults.getSorters().size(); i++) {
             IntSorter sorter = testSortResults.getSorters().get(i);
             if (sorter instanceof JavaSorter) {
                 testSortResults.set(i, true, elapsedJava);
             } else {
-                long start = System.currentTimeMillis();
+                long start = System.nanoTime();
                 int[] listAux = Arrays.copyOf(list, list.length);
                 sorter.sort(listAux);
-                long elapsed = System.currentTimeMillis() - start;
+                long elapsed = System.nanoTime() - start;
                 try {
                     assertArrayEquals(listAux2, listAux);
                     testSortResults.set(i, true, elapsed);
@@ -108,6 +111,110 @@ public class SorterTest {
 
 
     @Test
+    public void smallListAlgorithmSpeedTest() throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("small.csv"));
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
+
+
+        IntSorter[] sorters = new IntSorter[] {new IntSorter() {
+            @Override
+            public void sort(int[] list) {
+                final int start = 0;
+                final int end = list.length;
+                int[] maskParts = getMaskBit(list, start, end);
+                int mask = maskParts[0] & maskParts[1];
+                int[] kList = getMaskAsList(mask);
+                int length = end - start;
+                int[] aux = new int[length];
+                radixSort(list, start, end, aux, kList, kList.length - 1, 0);
+            }
+            @Override
+            public String name() {
+                return "StableByte";
+            }
+        },  new IntSorter() {
+            @Override
+            public void sort(int[] list) {
+                int[] maskParts = getMaskBit(list, 0, list.length);
+                int mask = maskParts[0] & maskParts[1];
+                int[] listK = getMaskAsList(mask);
+                int[] aux = new int[list.length];
+                for (int i = listK.length - 1; i >= 0; i--) {
+                    int sortMask = BitSorterUtils.getMaskBit(listK[i]);
+                    IntSorterUtils.partitionStable(list, 0, list.length, sortMask, aux);
+                }
+            }
+            @Override
+            public String name() {
+                return "StableBit";
+            }
+        }, new IntSorter() {
+            @Override
+            public void sort(int[] list) {
+                int[] maskParts = getMaskBit(list, 0, list.length);
+                int mask = maskParts[0] & maskParts[1];
+                int[] listK = getMaskAsList(mask);
+                CountSort.countSort(list, 0, list.length, listK, 0);
+            }
+
+            @Override
+            public String name() {
+                return "CountSort";
+            }
+        }};
+        TestSortResults testSortResults;
+
+        int iterations = 20;
+            int[] limitHigh = new int[] {2, 4, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192,16384,32768,65536};
+
+        for (int limitH : limitHigh) {
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 16, 0, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 32, 0, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 64, 0, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 128, 0, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 256, 0, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 512, 0, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 1024, 0, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 2048, 0, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 4096, 0, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 8192, 0, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 16384, 0, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 32768, 0, limitH, testSortResults, writer);
+
+            testSortResults = new TestSortResults(sorters);
+            testSpeed(iterations, 65536, 0, limitH, testSortResults, writer);
+
+            //System.out.println("----------------------");
+        }
+        System.out.println();
+        writer.close();
+    }
+
+
+    @Test
     public void speedTestNegative() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter("speed_negative.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
@@ -120,7 +227,7 @@ public class SorterTest {
         testSortResults = new TestSortResults(sorters);
         testSpeed(1000, 80000, 0, 80000, testSortResults, null);
 
-        int iterations = 20;
+        int iterations = 200;
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
@@ -158,13 +265,32 @@ public class SorterTest {
             }
             testSort(list, testSortResults);
         }
-        if (writer != null) {
+         if (writer != null) {
+            //System.out.println("N: %12i, K: %12i ",  size, limitLow, limitHigh+ ");
             for (int i = 0; i < testSortResults.getSorters().size(); i++) {
                 IntSorter sorter = testSortResults.getSorters().get(i);
-                System.out.println("Elapsed " + sorter.name() + " AVG: " + testSortResults.getAVG(i));
-                writer.write(size + ",\"" + limitLow + ":" + limitHigh + "\",\""+sorter.name()+"\"," + testSortResults.getAVG(i) + "\n");
+                writer.write(size + ",\"" + limitLow + ":" + limitHigh + "\",\""+sorter.name()+"\"," + testSortResults.getAVG(i)/1000000 + "\n");
                 writer.flush();
             }
+            System.out.printf("%12d, %12d, ", size,  limitHigh);
+            for (int i = 0; i < testSortResults.getSorters().size(); i++) {
+                IntSorter sorter = testSortResults.getSorters().get(i);
+                System.out.printf("%20s, %12d, ", sorter.name(), testSortResults.getAVG(i));
+            }
+            String sorterWinner = "";
+            long sorterWinnerTime = 0;
+            for (int i = 0; i < testSortResults.getSorters().size(); i++) {
+                IntSorter sorter = testSortResults.getSorters().get(i);
+                if (i==0) {
+                    sorterWinner = sorter.name();
+                    sorterWinnerTime = testSortResults.getAVG(i);
+                } else {
+                    if (testSortResults.getAVG(i) < sorterWinnerTime) {
+                        sorterWinner = sorter.name();
+                    }
+                }
+            }
+            System.out.print(sorterWinner  + ",\t");
             System.out.println();
         }
     }

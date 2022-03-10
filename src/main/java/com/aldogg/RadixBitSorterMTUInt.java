@@ -113,8 +113,7 @@ public class RadixBitSorterMTUInt extends RadixBitSorterUInt {
                         if (kList.length - params.getMaxThreadsBits() <= params.getCountingSortBits()) {
                             sortShortList(list, endT - lengthT, endT,  kList, params.getMaxThreadsBits());
                         } else {
-                            RadixBitSorterUInt rs = new RadixBitSorterUInt();
-                            rs.radixSort(list, endT - lengthT, endT, auxT, kList, kList.length - 1, params.getMaxThreadsBits());
+                            RadixBitSorterUInt.radixSort(list, endT - lengthT, endT, auxT, kList, kList.length - 1, params.getMaxThreadsBits());
                         }
                     };
                     if (i < lengthBitsToNumber - 1) {
