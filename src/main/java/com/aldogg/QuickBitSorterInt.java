@@ -1,5 +1,8 @@
 package com.aldogg;
 
+import com.aldogg.intType.IntSorter;
+import com.aldogg.intType.IntSorterUtils;
+
 import static com.aldogg.BitSorterUtils.getMaskBit;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 
@@ -19,7 +22,7 @@ public class QuickBitSorterInt extends QuickBitSorterUInt implements IntSorter {
             return;
         } else if (kList[0] == 31) { //there are negative numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
-            int finalLeft = IntSorterUtils.partitionReverse(list, start, end, sortMask);
+            int finalLeft = IntSorterUtils.partitionReverseNotStable(list, start, end, sortMask);
             if (finalLeft - start > 1) {
                 sort(list, start, finalLeft, kList, 1, true);
             }

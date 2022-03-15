@@ -1,5 +1,7 @@
 package com.aldogg;
 
+import com.aldogg.intType.IntSorter;
+
 public class QuickSorter implements IntSorter {
 
     @Override

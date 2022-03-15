@@ -1,10 +1,7 @@
-package com.aldogg;
+package com.aldogg.intType;
 
-public interface IntSorter {
-    void sort(int[] list);
-
+public interface Sorter {
     default String name() {
         return this.getClass().getSimpleName();
     }
-
 }

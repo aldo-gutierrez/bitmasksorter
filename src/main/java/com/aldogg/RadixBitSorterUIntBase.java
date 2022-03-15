@@ -1,9 +1,12 @@
 package com.aldogg;
 
+import com.aldogg.intType.IntSorter;
+import com.aldogg.intType.IntSorterUtils;
+
 import static com.aldogg.BitSorterUtils.getMaskBit;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 
-public class RadixBitSorterUIntBase extends QuickBitSorterUInt {
+public class RadixBitSorterUIntBase implements IntSorter {
 
     @Override
     public void sort(int[] list) {

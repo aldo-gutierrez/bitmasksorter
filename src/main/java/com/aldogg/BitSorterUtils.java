@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.aldogg.IntSorterUtils.compareAndSwap;
+import static com.aldogg.intType.IntSorterUtils.compareAndSwap;
 
 public class BitSorterUtils {
 

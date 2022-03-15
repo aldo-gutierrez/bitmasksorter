@@ -1,5 +1,7 @@
 package com.aldogg;
 
+import com.aldogg.intType.IntSorterUtils;
+
 import static com.aldogg.BitSorterUtils.getMaskBit;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 

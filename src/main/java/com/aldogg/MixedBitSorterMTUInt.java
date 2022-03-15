@@ -1,11 +1,13 @@
 package com.aldogg;
 
+import com.aldogg.intType.IntSorterUtils;
+
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.aldogg.BitSorterParams.*;
 import static com.aldogg.BitSorterUtils.*;
-import static com.aldogg.IntSorterUtils.sortShortList;
+import static com.aldogg.intType.IntSorterUtils.sortShortList;
 
 /**
  * Experimental Bit Sorter
@@ -18,7 +20,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
     public void sort(int[] list) {
         final int start = 0;
         final int end = list.length;
-        if (list.length < 1) {
+        if (list.length < 2) {
             return;
         }
         //if (listIsOrdered(list, start, end)) return;

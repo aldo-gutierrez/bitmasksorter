@@ -1,5 +1,7 @@
 package com.aldogg;
 
+import com.aldogg.intType.IntSorter;
+
 // Radix Sort in Java Programming
 public class RadixSorter implements IntSorter {
 

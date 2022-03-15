@@ -1,10 +1,11 @@
 package com.aldogg;
 
-import com.sun.org.apache.xalan.internal.xsltc.dom.KeyIndex;
+import com.aldogg.intType.IntSorter;
+import com.aldogg.intType.IntSorterUtils;
 
 import static com.aldogg.BitSorterParams.*;
 import static com.aldogg.BitSorterUtils.*;
-import static com.aldogg.IntSorterUtils.sortShortList;
+import static com.aldogg.intType.IntSorterUtils.sortShortList;
 
 public class QuickBitSorterUInt extends QuickBitSorterUIntBase implements IntSorter {
     protected BitSorterParams params = BitSorterParams.getSTParams();
@@ -15,11 +16,11 @@ public class QuickBitSorterUInt extends QuickBitSorterUIntBase implements IntSor
 
     @Override
     public void sort(int[] list) {
-        final int start = 0;
-        final int end = list.length;
-        if (list.length < 1) {
+        if (list.length < 2) {
             return;
         }
+        final int start = 0;
+        final int end = list.length;
         //if (listIsOrdered(list, start, end)) return;
         int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];

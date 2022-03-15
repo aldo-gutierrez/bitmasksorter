@@ -1,4 +1,7 @@
-package com.aldogg;
+package com.aldogg.intType;
+
+import com.aldogg.BitSorterUtils;
+import com.aldogg.CountSort;
 
 import static com.aldogg.BitSorterParams.twoPowerX;
 import static com.aldogg.RadixBitSorterUInt.radixSort;
@@ -56,7 +59,7 @@ public class IntSorterUtils {
      *   MEM: 1
      *   not stable?
      */
-    public static int partitionReverse(final int[] list, final int start, final int end, final int sortMask) {
+    public static int partitionReverseNotStable(final int[] list, final int start, final int end, final int sortMask) {
         int left = start;
         int right = end - 1;
 

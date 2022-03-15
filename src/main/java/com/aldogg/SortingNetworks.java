@@ -1,6 +1,6 @@
 package com.aldogg;
 
-import static com.aldogg.IntSorterUtils.compareAndSwap;
+import static com.aldogg.intType.IntSorterUtils.compareAndSwap;
 
 //http://users.telenet.be/bertdobbelaere/SorterHunter/sorting_networks.html
 public class SortingNetworks {

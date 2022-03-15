@@ -1,5 +1,7 @@
 package com.aldogg;
 
+import com.aldogg.intType.IntSorter;
+import com.aldogg.intType.IntSorterUtils;
 import com.aldogg.parallel.ArrayRunnable;
 import com.aldogg.parallel.ArrayThreadRunner;
 
@@ -7,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.aldogg.BitSorterParams.*;
 import static com.aldogg.BitSorterUtils.*;
-import static com.aldogg.IntSorterUtils.sortShortList;
+import static com.aldogg.intType.IntSorterUtils.sortShortList;
 
 public class QuickBitSorterMTUInt extends QuickBitSorterUInt implements IntSorter {
 
@@ -24,6 +26,9 @@ public class QuickBitSorterMTUInt extends QuickBitSorterUInt implements IntSorte
 
     @Override
     public void sort(int[] list) {
+        if (list.length < 2) {
+            return;
+        }
         aux = null;
         if (params.getMaxThreads() < 2) {
             super.sort(list);
