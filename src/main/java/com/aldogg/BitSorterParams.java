@@ -63,9 +63,5 @@ public class BitSorterParams {
         return params;
     }
 
-    public static int twoPowerX(int k) {
-        return 1<<k;
-    }
-
 }
 

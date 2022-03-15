@@ -10,7 +10,7 @@ public class GenerateBarPlots {
 
     public static void main(String[] args) throws IOException {
 
-        Table speeds = Table.read().csv("C:\\Users\\aldo\\IdeaProjects\\bitsorter\\speed.csv");
+        Table speeds = Table.read().csv("C:\\Users\\aldo\\IdeaProjects\\bitsorter\\speed_object.csv");
         int size;
         int range;
 

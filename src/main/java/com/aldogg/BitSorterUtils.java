@@ -10,7 +10,6 @@ import static com.aldogg.intType.IntSorterUtils.compareAndSwapSigned;
 public class BitSorterUtils {
 
     public static int[] getMaskBit(final int[] list, final int start, final int end) {
-        //long startTime = System.currentTimeMillis();
         int mask = 0x00000000;
         int inv_mask = 0x00000000;
         for (int i = start; i < end; i++) {
@@ -18,8 +17,6 @@ public class BitSorterUtils {
             mask = mask | ei;
             inv_mask = inv_mask | (~ei);
         }
-        //mask = mask & inv_mask;
-        //System.out.println(System.currentTimeMillis() - startTime);
         return new int[]{mask, inv_mask};
     }
 
@@ -83,6 +80,10 @@ public class BitSorterUtils {
         }
     }
 
+    public static int twoPowerX(int k) {
+        return 1<<k;
+    }
+
     public static int[][] getMaskAsSections(final int[] listK) {
         LinkedHashMap<Integer, Integer> sections = new LinkedHashMap<>();
         int currentSection = -1;
@@ -112,6 +113,7 @@ public class BitSorterUtils {
         }
         return sectionsAsInts;
     }
+
 
     public static boolean listIsOrdered(int[] list, int start, int end) {
         boolean swap = compareAndSwapSigned(list, 0, end-1);

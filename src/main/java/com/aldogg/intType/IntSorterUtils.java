@@ -2,7 +2,7 @@ package com.aldogg.intType;
 
 import com.aldogg.BitSorterUtils;
 
-import static com.aldogg.BitSorterParams.twoPowerX;
+import static com.aldogg.BitSorterUtils.twoPowerX;
 import static com.aldogg.RadixBitSorterInt.radixSort;
 
 public class IntSorterUtils {

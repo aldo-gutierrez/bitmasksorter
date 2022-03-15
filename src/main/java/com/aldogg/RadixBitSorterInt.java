@@ -80,7 +80,7 @@ public class RadixBitSorterInt implements IntSorter {
             if (bits == 1) {
                 IntSorterUtils.partitionStable(list, start, end, sortMask1, aux);
             } else {
-                int lengthBitsToNumber = BitSorterParams.twoPowerX(bits);
+                int lengthBitsToNumber = BitSorterUtils.twoPowerX(bits);
                 if (kListI == 0) {
                     partitionStableLastBits(list, start, end, lengthBitsToNumber, aux, sortMask1);
                 } else {

@@ -62,6 +62,7 @@ public class SortingNetworks {
         }
     }
 
+    //is this necessary?? verify
     public static void sortVerySmallListUnSigned(final int[] list, final int start, final int end) {
         int listLength = end - start;
         if (listLength == 2) {
