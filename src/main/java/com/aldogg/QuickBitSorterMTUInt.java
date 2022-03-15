@@ -11,7 +11,7 @@ import static com.aldogg.BitSorterParams.*;
 import static com.aldogg.BitSorterUtils.*;
 import static com.aldogg.intType.IntSorterUtils.sortShortList;
 
-public class QuickBitSorterMTUInt extends QuickBitSorterUInt implements IntSorter {
+public class QuickBitSorterMTUInt extends QuickBitSorterInt implements IntSorter {
 
     AtomicInteger numThreads = new AtomicInteger(1);
 
@@ -67,7 +67,7 @@ public class QuickBitSorterMTUInt extends QuickBitSorterUInt implements IntSorte
     public void sortMT(final int[] list, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
         final int listLength = end - start;
         if (listLength <= SMALL_LIST_SIZE) {
-            SortingNetworks.sortSmallList(list, start, end);
+            SortingNetworks.sortVerySmallListSigned(list, start, end);
             return;
         }
         int kDiff = kList.length - kIndex;

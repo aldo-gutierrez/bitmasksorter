@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.aldogg.intType.IntSorterUtils.compareAndSwap;
+import static com.aldogg.intType.IntSorterUtils.compareAndSwapSigned;
 
 public class BitSorterUtils {
 
@@ -114,10 +114,10 @@ public class BitSorterUtils {
     }
 
     public static boolean listIsOrdered(int[] list, int start, int end) {
-        boolean swap = compareAndSwap(list, 0, end-1);
+        boolean swap = compareAndSwapSigned(list, 0, end-1);
         if (!swap) {
             for (int i = start; i + 1 < end; i ++) {
-                swap = swap || compareAndSwap(list, i, i + 1);
+                swap = swap || compareAndSwapSigned(list, i, i + 1);
                 if (swap) {
                     return  false;
                 }
@@ -126,7 +126,7 @@ public class BitSorterUtils {
         } else {
             //Reverse Order?
             for (int i = start+1; i <= (end-1) / 2; i++) {
-                swap = swap && compareAndSwap(list, i, end - 1 - i);
+                swap = swap && compareAndSwapSigned(list, i, end - 1 - i);
                 if (!swap) {
                     return  false;
                 }
@@ -134,7 +134,7 @@ public class BitSorterUtils {
             if (swap) {
                 swap = false;
                 for (int i = start; i + 1 < end; i ++) {
-                    swap = swap || compareAndSwap(list, i, i + 1);
+                    swap = swap || compareAndSwapSigned(list, i, i + 1);
                     if (swap) {
                         return false;
                     }

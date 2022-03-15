@@ -7,8 +7,16 @@ import static com.aldogg.RadixBitSorterInt.radixSort;
 
 public class IntSorterUtils {
 
-    public static boolean compareAndSwap(final int[] list, final int left, final int right) {
+    public static boolean compareAndSwapSigned(final int[] list, final int left, final int right) {
         if ((list[left] > list[right])) {
+            swap(list, left, right);
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean compareAndSwapUnsigned(final int[] list, final int left, final int right) {
+        if (Integer.compareUnsigned(list[left], list[right]) ==  1) {
             swap(list, left, right);
             return true;
         }

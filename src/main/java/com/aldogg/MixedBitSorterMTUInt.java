@@ -37,7 +37,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorterInt {
     public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex) {
         final int listLength = end - start;
         if (listLength <= SMALL_LIST_SIZE) {
-            SortingNetworks.sortSmallList(list, start, end);
+            SortingNetworks.sortVerySmallListSigned(list, start, end);
             return;
         }
         int kDiff = kList.length - kIndex;
@@ -203,7 +203,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorterInt {
             }
 
         } else if (length > 1) {
-            SortingNetworks.sortSmallList(list, start, end);
+            SortingNetworks.sortVerySmallListSigned(list, start, end);
         }
     }
 

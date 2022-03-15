@@ -1,6 +1,7 @@
 package com.aldogg;
 
-import static com.aldogg.intType.IntSorterUtils.compareAndSwap;
+import static com.aldogg.intType.IntSorterUtils.compareAndSwapSigned;
+import static com.aldogg.intType.IntSorterUtils.compareAndSwapUnsigned;
 
 //http://users.telenet.be/bertdobbelaere/SorterHunter/sorting_networks.html
 public class SortingNetworks {
@@ -38,28 +39,52 @@ public class SortingNetworks {
                     {1, 2}, {3, 4}, {5, 6}}
     };
 
-    public static void sortSmallList(final int[] list, final int start, final int end) {
+    public static void sortVerySmallListSigned(final int[] list, final int start, final int end) {
         int listLength = end - start;
         if (listLength == 2) {
-            compareAndSwap(list, start, end - 1);
+            compareAndSwapSigned(list, start, end - 1);
         } else if (listLength == 3) {
-            compareAndSwap(list, start, end - 1);
-            compareAndSwap(list, start, end - 2);
-            compareAndSwap(list, end - 2, end - 1);
+            compareAndSwapSigned(list, start, end - 1);
+            compareAndSwapSigned(list, start, end - 2);
+            compareAndSwapSigned(list, end - 2, end - 1);
         } else if (listLength == 4) {
-            compareAndSwap(list, start, start + 1);
-            compareAndSwap(list, end - 2, end - 1);
-            compareAndSwap(list, start, end - 2);
-            compareAndSwap(list, start + 1, end - 1);
-            compareAndSwap(list, start + 1, end - 2);
+            compareAndSwapSigned(list, start, start + 1);
+            compareAndSwapSigned(list, end - 2, end - 1);
+            compareAndSwapSigned(list, start, end - 2);
+            compareAndSwapSigned(list, start + 1, end - 1);
+            compareAndSwapSigned(list, start + 1, end - 2);
         } else {
             int[][] swap = swaps[listLength];
             for (int i = 0; i < swap.length; i++) {
                 int[] parts = swap[i];
-                compareAndSwap(list, start + parts[0], start + parts[1]);
+                compareAndSwapSigned(list, start + parts[0], start + parts[1]);
             }
         }
     }
+
+    public static void sortVerySmallListUnSigned(final int[] list, final int start, final int end) {
+        int listLength = end - start;
+        if (listLength == 2) {
+            compareAndSwapUnsigned(list, start, end - 1);
+        } else if (listLength == 3) {
+            compareAndSwapUnsigned(list, start, end - 1);
+            compareAndSwapUnsigned(list, start, end - 2);
+            compareAndSwapUnsigned(list, end - 2, end - 1);
+        } else if (listLength == 4) {
+            compareAndSwapUnsigned(list, start, start + 1);
+            compareAndSwapUnsigned(list, end - 2, end - 1);
+            compareAndSwapUnsigned(list, start, end - 2);
+            compareAndSwapUnsigned(list, start + 1, end - 1);
+            compareAndSwapUnsigned(list, start + 1, end - 2);
+        } else {
+            int[][] swap = swaps[listLength];
+            for (int i = 0; i < swap.length; i++) {
+                int[] parts = swap[i];
+                compareAndSwapUnsigned(list, start + parts[0], start + parts[1]);
+            }
+        }
+    }
+
     /*
         } else if (listLength == 5) {
             compareAndSwap(list, start + 1, start + 2);  //1 < 2

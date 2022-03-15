@@ -22,7 +22,7 @@ public class SorterTest {
 
     @Test
     public void basicTests() {
-        IntSorter[] sorters = new IntSorter[] {new MixedBitSorterMTUInt(), new QuickBitSorterUInt(), new QuickBitSorterMTUInt(), new RadixBitSorterInt()};
+        IntSorter[] sorters = new IntSorter[] {new MixedBitSorterMTUInt(), new QuickBitSorterInt(), new QuickBitSorterMTUInt(), new RadixBitSorterInt()};
         TestSortResults sorterTests = new TestSortResults(sorters.length);
         testIntSort(new int[] {}, sorterTests, sorters);
         testIntSort(new int[] {1}, sorterTests, sorters);
@@ -120,7 +120,7 @@ public class SorterTest {
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
 
-        IntSorter[] sorters = new IntSorter[] {new JavaSorter(), new QuickBitSorterUInt(), new RadixBitSorterInt(), new JavaParallelSorter(), new QuickBitSorterMTUInt(), new MixedBitSorterMTUInt(), new RadixBitSorterMTUInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorter(), new QuickBitSorterInt(), new RadixBitSorterInt(), new JavaParallelSorter(), new QuickBitSorterMTUInt(), new MixedBitSorterMTUInt(), new RadixBitSorterMTUInt()};
         TestSortResults testSortResults;
 
         //heatup
@@ -424,7 +424,7 @@ public class SorterTest {
 
     @Test
     public void testBooleans() {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorter(), new QuickBitSorterUInt()};
+        IntSorter[] sorters = new IntSorter[]{new JavaSorter(), new QuickBitSorterInt()};
         TestSortResults sorter = new TestSortResults(sorters.length);
         testIntSort(new int[]{33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0}, sorter, sorters);
     }
