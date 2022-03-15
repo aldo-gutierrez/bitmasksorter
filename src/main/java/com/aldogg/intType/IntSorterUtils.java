@@ -1,10 +1,9 @@
 package com.aldogg.intType;
 
 import com.aldogg.BitSorterUtils;
-import com.aldogg.CountSort;
 
 import static com.aldogg.BitSorterParams.twoPowerX;
-import static com.aldogg.RadixBitSorterUInt.radixSort;
+import static com.aldogg.RadixBitSorterInt.radixSort;
 
 public class IntSorterUtils {
 
@@ -28,7 +27,7 @@ public class IntSorterUtils {
      *   MEM: 1
      *   not stable?
      */
-    public static int partition(final int[] list, final  int start, final int end, final int sortMask) {
+    public static int partitionNotStable(final int[] list, final  int start, final int end, final int sortMask) {
         int left = start;
         int right = end - 1;
 
@@ -107,6 +106,53 @@ public class IntSorterUtils {
         return left;
     }
 
+    /**
+     *  CPU: 3*N + 2^K
+     *  MEM: N + 2*2^K
+     */
+    public static void partitionStableLastBits(int[] list, int start, int end, int lengthBitsToNumber, int[] aux, int sortMask) {
+        int[] leftX = new int[lengthBitsToNumber];
+        int[] count = new int[lengthBitsToNumber];
+        for (int i = start; i < end; i++) {
+            int elementShiftMasked = list[i] & sortMask;
+            count[elementShiftMasked]++;
+        }
+        for (int i = 1; i < lengthBitsToNumber; i++) {
+            leftX[i] = leftX[i - 1] + count[i - 1];
+        }
+        for (int i = start; i < end; i++) {
+            int element = list[i];
+            int elementShiftMasked = element & sortMask;
+            aux[leftX[elementShiftMasked]] = element;
+            leftX[elementShiftMasked]++;
+        }
+        System.arraycopy(aux, 0, list, start, end - start);
+    }
+
+    /**
+     *  CPU: 3*N + 2^K
+     *  MEM: N + 2*2^K
+     */
+    public static void partitionStableGroupBits(int[] list, int start, int end, int lengthBitsToNumber, int[] aux, int sortMask, int shiftRight) {
+        int[] leftX = new int[lengthBitsToNumber];
+        int[] count = new int[lengthBitsToNumber];
+        for (int i = start; i < end; i++) {
+            int element = list[i];
+            int elementShiftMasked = (element & sortMask) >>> shiftRight;
+            count[elementShiftMasked]++;
+        }
+        for (int i = 1; i < lengthBitsToNumber; i++) {
+            leftX[i] = leftX[i - 1] + count[i - 1];
+        }
+        for (int i = start; i < end; i++) {
+            int element = list[i];
+            int elementShiftMasked = (element & sortMask) >>> shiftRight;
+            aux[leftX[elementShiftMasked]] = element;
+            leftX[elementShiftMasked]++;
+        }
+        System.arraycopy(aux, 0, list, start, end - start);
+    }
+
     public static void sortShortList(int[] list, int start, int end, int[] kList, int kIndex) {
         int kDiff = kList.length - kIndex; //K
         int listLength = end - start; //N
@@ -151,16 +197,6 @@ public class IntSorterUtils {
                 }
             }
         }
-
-//        if (listLength < twoPK >> COUNT_SORT_SMALL_NUMBER_SHIFT) {
-//            int[] aux = new int[listLength];
-//            for (int i = kList.length - 1; i >= kIndex; i--) {
-//                int sortMask = BitSorterUtils.getMaskBit(kList[i]);
-//                IntSorterUtils.partitionStable(list, start, end, sortMask, aux);
-//            }
-//        } else {
-//            CountSort.countSort(list, start, end, kList, kIndex);
-//        }
     }
 
 }

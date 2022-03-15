@@ -7,7 +7,7 @@ import com.aldogg.collection.ObjectSorterUtils;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 import static com.aldogg.BitSorterUtils.getMaskBit;
 
-public class RadixBitSorterObject implements ObjectSorter {
+public class RadixBitSorterObjectInt implements ObjectSorter {
 
     boolean unsigned = false;
 

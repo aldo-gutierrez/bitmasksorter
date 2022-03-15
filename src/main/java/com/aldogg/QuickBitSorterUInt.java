@@ -53,7 +53,7 @@ public class QuickBitSorterUInt extends QuickBitSorterUIntBase implements IntSor
         }
 
         int sortMask = getMaskBit(kList[kIndex]);
-        int finalLeft = IntSorterUtils.partition(list, start, end, sortMask);
+        int finalLeft = IntSorterUtils.partitionNotStable(list, start, end, sortMask);
         if (recalculate) {
             if (finalLeft - start > 1) {
                 sort(list, start, finalLeft, kList, kIndex + 1);
@@ -91,7 +91,7 @@ public class QuickBitSorterUInt extends QuickBitSorterUIntBase implements IntSor
         }
 
         int sortMask = getMaskBit(kList[kIndex]);
-        int finalLeft = IntSorterUtils.partition(list, start, end, sortMask);
+        int finalLeft = IntSorterUtils.partitionNotStable(list, start, end, sortMask);
 
         if (finalLeft - start > 1) {
             sort(list, start, finalLeft, kList, kIndex + 1);

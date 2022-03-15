@@ -89,7 +89,7 @@ public class QuickBitSorterMTUInt extends QuickBitSorterUInt implements IntSorte
             return;
         }
         int sortMask = getMaskBit(kList[kIndex]);
-        int finalLeft = IntSorterUtils.partition(list, start, end, sortMask);
+        int finalLeft = IntSorterUtils.partitionNotStable(list, start, end, sortMask);
         final boolean recalculateBitMask = (finalLeft == start || finalLeft == end);
 
         int[] finalKList = kList;
@@ -144,7 +144,7 @@ public class QuickBitSorterMTUInt extends QuickBitSorterUInt implements IntSorte
 
                 @Override
                 public int[] map(int[] list, int start, int end) {
-                    int left = IntSorterUtils.partition(list, start, end, sortMask);
+                    int left = IntSorterUtils.partitionNotStable(list, start, end, sortMask);
                     return new int[]{start, end, left};
                 }
 
@@ -172,7 +172,7 @@ public class QuickBitSorterMTUInt extends QuickBitSorterUInt implements IntSorte
             System.arraycopy(aux, start, list, start, end - start);
             return (Integer) left;
         } else {
-            return IntSorterUtils.partition(list, start, end, sortMask);
+            return IntSorterUtils.partitionNotStable(list, start, end, sortMask);
         }
     }
 
@@ -211,7 +211,7 @@ public class QuickBitSorterMTUInt extends QuickBitSorterUInt implements IntSorte
             System.arraycopy(aux, start, list, start, end - start);
             return left.get();
         } else {
-            return IntSorterUtils.partition(list, start, end, sortMask);
+            return IntSorterUtils.partitionNotStable(list, start, end, sortMask);
         }
     }
 

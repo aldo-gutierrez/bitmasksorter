@@ -6,7 +6,7 @@ import java.util.List;
 import static com.aldogg.BitSorterUtils.*;
 import static com.aldogg.intType.IntSorterUtils.sortShortList;
 
-public class RadixBitSorterMTUInt extends RadixBitSorterUInt {
+public class RadixBitSorterMTUInt extends RadixBitSorterInt {
     protected final BitSorterParams params = BitSorterParams.getMTParams();
 
     @Override
@@ -27,10 +27,6 @@ public class RadixBitSorterMTUInt extends RadixBitSorterUInt {
 
     public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex) {
         final int listLength = end - start;
-//        if (listLength <= SMALL_LIST_SIZE) {
-//            SortingNetworks.sortSmallList(list, start, end);
-//            return;
-//        }
         int kDiff = kList.length - kIndex;
         if (kDiff < 1) {
             return;
@@ -111,7 +107,7 @@ public class RadixBitSorterMTUInt extends RadixBitSorterUInt {
                         if (kList.length - params.getMaxThreadsBits() <= params.getCountingSortBits()) {
                             sortShortList(list, endT - lengthT, endT,  kList, params.getMaxThreadsBits());
                         } else {
-                            RadixBitSorterUInt.radixSort(list, endT - lengthT, endT, auxT, kList, kList.length - 1, params.getMaxThreadsBits());
+                            RadixBitSorterInt.radixSort(list, endT - lengthT, endT, auxT, kList, kList.length - 1, params.getMaxThreadsBits());
                         }
                     };
                     if (i < lengthBitsToNumber - 1) {

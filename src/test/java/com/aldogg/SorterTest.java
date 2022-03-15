@@ -1,6 +1,7 @@
 package com.aldogg;
 
 import com.aldogg.collection.*;
+import com.aldogg.intType.CountSort;
 import com.aldogg.intType.IntSorter;
 import com.aldogg.intType.IntSorterUtils;
 import com.aldogg.intType.Sorter;
@@ -14,14 +15,14 @@ import java.util.*;
 
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 import static com.aldogg.BitSorterUtils.getMaskBit;
-import static com.aldogg.RadixBitSorterUInt.radixSort;
+import static com.aldogg.RadixBitSorterInt.radixSort;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SorterTest {
 
     @Test
     public void basicTests() {
-        IntSorter[] sorters = new IntSorter[] {new MixedBitSorterMTUInt(), new QuickBitSorterUInt(), new QuickBitSorterMTUInt(), new RadixBitSorterUInt()};
+        IntSorter[] sorters = new IntSorter[] {new MixedBitSorterMTUInt(), new QuickBitSorterUInt(), new QuickBitSorterMTUInt(), new RadixBitSorterInt()};
         TestSortResults sorterTests = new TestSortResults(sorters.length);
         testIntSort(new int[] {}, sorterTests, sorters);
         testIntSort(new int[] {1}, sorterTests, sorters);
@@ -91,7 +92,11 @@ public class SorterTest {
                 sorter.sort(listAux, comparator);
                 long elapsed = System.nanoTime() - start;
                 try {
-                    assertArrayEquals(listAux2, listAux);
+                    for (int j=0; j<listAux.length; j++) {
+                        assertEquals(comparator.intValue(listAux[j]), comparator.intValue(listAux2[j]));
+                    }
+                    //for stable sort
+                    //assertArrayEquals(listAux2, listAux);
                     testSortResults.set(i, elapsed);
                 } catch (Throwable ex) {
                     testSortResults.set(i, 0);
@@ -115,7 +120,7 @@ public class SorterTest {
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
 
-        IntSorter[] sorters = new IntSorter[] {new JavaSorter(), new QuickBitSorterUInt(), new RadixBitSorterUInt(), new JavaParallelSorter(), new QuickBitSorterMTUInt(), new MixedBitSorterMTUInt(), new RadixBitSorterMTUInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorter(), new QuickBitSorterUInt(), new RadixBitSorterInt(), new JavaParallelSorter(), new QuickBitSorterMTUInt(), new MixedBitSorterMTUInt(), new RadixBitSorterMTUInt()};
         TestSortResults testSortResults;
 
         //heatup
@@ -150,11 +155,11 @@ public class SorterTest {
 
     @Test
     public void speedTestObject() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("speedObject.csv"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("speed_object.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
 
-        ObjectSorter[] sorters = new ObjectSorter[] {new JavaObjectSorter(), new JavaObjectParallelSorter(), new RadixBitSorterObject()};
+        ObjectSorter[] sorters = new ObjectSorter[] {new JavaObjectSorter(), new JavaObjectParallelSorter(), new RadixBitSorterObjectInt()};
         TestSortResults testSortResults;
 
         IntComparator comparator = new IntComparator() {
@@ -180,17 +185,17 @@ public class SorterTest {
             testSortResults = new TestSortResults(sorters.length);
             testSpeedObject(iterations, 10000, 0, limitH, testSortResults, sorters, comparator, writer);
 
-//            testSortResults = new TestSortResults(sorters.length);
-//            testSpeedObject(iterations, 100000, 0, limitH, testSortResults, sorters, comparator, writer);
+            testSortResults = new TestSortResults(sorters.length);
+            testSpeedObject(iterations, 100000, 0, limitH, testSortResults, sorters, comparator, writer);
 
-//            testSortResults = new TestSortResults(sorters.length);
-//            testSpeedObject(iterations, 1000000, 0, limitH, testSortResults, sorters, comparator, writer);
-//
-//            testSortResults = new TestSortResults(sorters.length);
-//            testSpeedObject(iterations, 10000000, 0, limitH, testSortResults, sorters, comparator, writer);
+            testSortResults = new TestSortResults(sorters.length);
+            testSpeedObject(iterations, 1000000, 0, limitH, testSortResults, sorters, comparator, writer);
 
-//            testSortResults = new TestSortResults(sorters.length);
-//            testSpeedObject(iterations, 40000000, 0, limitH, testSortResults, sorters, comparator, writer);
+            testSortResults = new TestSortResults(sorters.length);
+            testSpeedObject(iterations, 10000000, 0, limitH, testSortResults, sorters, comparator, writer);
+
+            //testSortResults = new TestSortResults(sorters.length);
+            //testSpeedObject(iterations, 40000000, 0, limitH, testSortResults, sorters, comparator, writer);
 
             System.out.println("----------------------");
         }
@@ -450,7 +455,7 @@ public class SorterTest {
             Entity1[] listAux2 = Arrays.copyOf(entity1sArray, entity1sArray.length);
 
             startJava = System.nanoTime();
-            new RadixBitSorterObject().sort(listAux2, new IntComparator() {
+            new RadixBitSorterObjectInt().sort(listAux2, new IntComparator() {
                 @Override
                 public int intValue(Object o) {
                     return ((Entity1) o).getId();

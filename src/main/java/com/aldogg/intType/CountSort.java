@@ -1,4 +1,6 @@
-package com.aldogg;
+package com.aldogg.intType;
+
+import com.aldogg.BitSorterParams;
 
 import java.util.Arrays;
 
@@ -101,48 +103,4 @@ public class CountSort {
             }
         }
     }
-
-    /*
-    countSortMT
-    public static void countSort(final int[] list, final int start, final int end, int[] listK, int kIndex) {
-        int[][] sections = getMaskAsSections(listK);
-        int sortMask = getMask(listK, kIndex);
-        //List<AtomicInteger> aux = new ArrayList<>((int) Math.pow(2, listK.length));
-        //for (int i=0; i < (int) Math.pow(2, listK.length); i++) {
-        //    aux.add(new AtomicInteger(0));
-        //}
-        int[] aux = new int[(int) Math.pow(2, listK.length)];
-        int[] aux2 = new int[(int) Math.pow(2, listK.length)];
-        for (int i = start; i < end; i++) {
-            int element = list[i];
-            int elementMasked = element & sortMask;
-            if (elementMasked == 0) {
-                //aux.get(0).incrementAndGet();
-                aux[0] = aux[0] + 1;
-                aux2[0] = element;
-            } else {
-                int key = getKey(elementMasked, sections);
-                //aux.get(key).incrementAndGet();
-                aux[key] = aux[key] + 1;
-                aux2[key] = element;
-            }
-        }
-        int i = start;
-        for (int j = 0; j < aux.length; j++) {
-            int count = aux[j];
-            //int count = aux.get(j).get();
-            if (count > 0) {
-                int value = aux2[j];
-                for (int k = 0; k < count; k++) {
-                    list[i] = value;
-                    i++;
-                }
-            }
-        }
-    }
-
-
-     */
-
-
 }

@@ -4,6 +4,12 @@ import com.aldogg.intType.IntSorterUtils;
 
 public class ObjectSorterUtils {
 
+    public static void swap(final Object[] list, final int left, final int right) {
+        Object aux = list[left];
+        list[left] = list[right];
+        list[right] = aux;
+    }
+
     /**
      *   partition with 0 memory in-place reverse order
      *   CPU: N
@@ -114,12 +120,6 @@ public class ObjectSorterUtils {
         }
         System.arraycopy(aux, 0, list, start, end - start);
         System.arraycopy(oAux, 0, oList, start, end - start);
-    }
-
-    public static void swap(final Object[] list, final int left, final int right) {
-        Object aux = list[left];
-        list[left] = list[right];
-        list[right] = aux;
     }
 
 }

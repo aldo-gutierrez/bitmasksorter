@@ -37,7 +37,7 @@ public class QuickBitSorterUIntBase implements IntSorter {
             return;
         }
         int sortMask = getMaskBit(kList[kIndex]);
-        int finalLeft = IntSorterUtils.partition(list, start, end, sortMask);
+        int finalLeft = IntSorterUtils.partitionNotStable(list, start, end, sortMask);
         if (finalLeft - start > 1) {
             sort(list, start, finalLeft, kList, kIndex + 1);
         }

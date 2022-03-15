@@ -1,5 +1,6 @@
 package com.aldogg;
 
+import com.aldogg.intType.CountSort;
 import com.aldogg.intType.IntSorterUtils;
 
 import java.util.Arrays;
@@ -12,7 +13,7 @@ import static com.aldogg.intType.IntSorterUtils.sortShortList;
 /**
  * Experimental Bit Sorter
  */
-public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
+public class MixedBitSorterMTUInt extends RadixBitSorterInt {
     final AtomicInteger numThreads = new AtomicInteger(1);
     protected final BitSorterParams params = BitSorterParams.getMTParams();
 
@@ -54,7 +55,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorterUInt {
             radixCountSort(list, start, end, kList, kIndex);
         } else {
             int sortMask = getMaskBit(kList[kIndex]);
-            int finalLeft = IntSorterUtils.partition(list, start, end, sortMask);
+            int finalLeft = IntSorterUtils.partitionNotStable(list, start, end, sortMask);
             Thread t1 = null;
             int size1 = finalLeft - start;
             if (size1 > 1) {

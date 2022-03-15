@@ -57,7 +57,8 @@ Optimizations:
 Usage:
 ```
 //Sorting uint numbers 
-IntSorter sorter = RadixBitSorterUInt();
+IntSorter sorter = RadixBitSorterInt();
+sorter.setUnsigned(true);
 int[] list = ....
 sorter.sort(list);
 
@@ -102,11 +103,11 @@ Most of the algorithms are faster than the Java default (Tim Sort) and Parallel 
 In the test from 10000 to 40000000 in list size and from range 10 to 1000000000 RadixBitSorterMTUInt
 wins in all the test except by three in which  MixedBitSorterMTUInt and JavaParallelSorter won.
 
-Example 1: 
+###Example 1: 
 
 Comparison for sorting 10 Million elements with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor
 
-| Algorithm        | AVG CPU time  |
+| Algorithm        | AVG CPU time [ms] |
 | ---------------- |:-------------:|
 |JavaIntSorter|748|
 |QuickBitSorter3UInt|423|
@@ -119,11 +120,11 @@ Comparison for sorting 10 Million elements with range from 0 to 10 Million in an
 
 ![Graph2](plot-S10000000-Range0-10000000-random.png?raw=true "Graph2")
 
-Example 2:
+###Example 2:
 
 Comparison for sorting 10 Million elements with range from 0 to 100000 in an AMD Ryzen 7 4800H processor
 
-| Algorithm        | AVG CPU time  |
+| Algorithm        | AVG CPU time  [ms]|
 | ---------------- |:-------------:|
 |JavaIntSorter|327|
 |QuickBitSorter3UInt|25|
@@ -135,11 +136,11 @@ Comparison for sorting 10 Million elements with range from 0 to 100000 in an AMD
 
 ![Graph2](plot-S10000000-Range0-100000-random.png?raw=true "Graph2")
 
-Example 3:
+###Example 3:
 
 Comparison for sorting 40 Million elements with range from 0 to 1000000000 in an AMD Ryzen 7 4800H processor
 
-| Algorithm        | AVG CPU time  |
+| Algorithm        | AVG CPU time  [ms]|
 | ---------------- |:-------------:|
 |JavaIntSorter|3542|
 |QuickBitSorterUInt|2960|
@@ -150,6 +151,32 @@ Comparison for sorting 40 Million elements with range from 0 to 1000000000 in an
 |RadixBitSorterMTUInt|397|
 
 ![Graph2](plot-S40000000-Range0-1000000000-random.png?raw=true "Graph2")
+
+
+###Example 1: 
+
+Comparison for sorting 10 Million elements with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor
+
+| Algorithm        | AVG CPU time [ms] |
+| ---------------- |:-------------:|
+|JavaObjectSorter|8229|
+|JavaObjectParallelSorter|1464|
+|RadixBitSorterObject|1333|
+
+![Graph2](plot-S10000000-Range0-10000000-random-object.png?raw=true "Graph2")
+
+###Example 2:
+
+Comparison for sorting 10 Million elements with range from 0 to 100000 in an AMD Ryzen 7 4800H processor
+
+| Algorithm        | AVG CPU time  [ms]|
+| ---------------- |:-------------:|
+|JavaObjectSorter|6745|
+|JavaObjectParallelSorter|1366|
+|RadixBitSorterObject|1315|
+
+![Graph2](plot-S10000000-Range0-100000-random-object.png?raw=true "Graph2")
+
 
 # O(N) Complexity. Needs to be evaluated
 
@@ -166,17 +193,17 @@ Comparison for sorting 40 Million elements with range from 0 to 1000000000 in an
 | RadixBitSorter   | O(n * log(n)) | O(n * k), k<log2(n) | O(n), k = 1    | O(n)      | O(n)        |    1     |
 | QuickBitSorterMT | O(n * log(n)) | O(n * log(n))?      | O(n+k), k <= c | O(t*2^c)  | O(2^c)      |    1     |
 | MixedBitSorterMT | O(n * log(n)) | O(n * log(n))?      | O(n), k <= t   | O(n*t)    | O(n*t)      |  O(2^c)  |
+| RadixBitSorterMT | O(n * log(n)) | O(n * k), k<log2(n) | O(n), k = 1    | O(n)      | O(n)        |    1     |
 
 ## Things to DO
-- Add Object sorting by Int key
-- Add Int, Long and ULong sorters
+- Add More Object sorters besides RadixBitSorter
+- Add Long, Short, Byte sorters
+- Add C#, C++, Python, Javascript Implementations
 - More evaluation on complexity
 - More testing
-- Compare with Ska Sort
-- Compare with wolfsort fluxsort 
+- Compare with [Ska Sort] (https://github.com/skarupke/ska_sort)
+- Compare with [Wolf Sort] (https://github.com/scandum/wolfsort) 
 
 ## Algorithms Ready for Prod
 - RadixBitSorterInt 
-- RadixBitSorterUInt
-- RadixBitSorterMTUInt
 - RadixBitSorterMTInt
