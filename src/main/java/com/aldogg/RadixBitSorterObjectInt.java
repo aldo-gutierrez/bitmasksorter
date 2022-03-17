@@ -4,8 +4,7 @@ import com.aldogg.collection.IntComparator;
 import com.aldogg.collection.ObjectSorter;
 import com.aldogg.collection.ObjectSorterUtils;
 
-import static com.aldogg.BitSorterUtils.getMaskAsList;
-import static com.aldogg.BitSorterUtils.getMaskBit;
+import static com.aldogg.BitSorterUtils.*;
 
 public class RadixBitSorterObjectInt implements ObjectSorter {
 
@@ -87,7 +86,7 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
             if (bits == 1) {
                 ObjectSorterUtils.partitionStable(olist, list, start, end, sortMask1, oAux, aux);
             } else {
-                int lengthBitsToNumber = BitSorterParams.twoPowerX(bits);
+                int lengthBitsToNumber = twoPowerX(bits);
                 if (kListI == 0) {
                     ObjectSorterUtils.partitionStableLastBits(olist, list, start, end, lengthBitsToNumber, oAux, aux, sortMask1);
                 } else {

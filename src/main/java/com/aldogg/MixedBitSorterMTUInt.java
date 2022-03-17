@@ -98,7 +98,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorterInt {
             sortMask1 = sortMask1 | sortMaskij;
             bits++;
         }
-        int lengthBitsToNumber = BitSorterParams.twoPowerX(bits);
+        int lengthBitsToNumber = twoPowerX(bits);
         partitionStableNonConsecutiveBitsAndCountSort(list, start, end, lengthBitsToNumber, aux2, sortMask1, kList, kIndexCountSort);
     }
 
@@ -149,7 +149,7 @@ public class MixedBitSorterMTUInt extends RadixBitSorterInt {
         if (kIndex > 0) {
             final int[] kListCountS = Arrays.copyOfRange(kList, kIndex, kList.length);
             final int kIndexCountS = 0;
-            final int bufferCountSSize = BitSorterParams.twoPowerX(kListCountS.length - kIndexCountS);
+            final int bufferCountSSize = twoPowerX(kListCountS.length - kIndexCountS);
             final int[][] sectionsCountS = getMaskAsSections(kListCountS);
             final int sortMaskCountS = getMaskLastBits(kListCountS, kIndexCountS);
             final int[] zeroBuffer = new int[bufferCountSSize];

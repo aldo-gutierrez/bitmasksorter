@@ -114,6 +114,39 @@ public class IntSorterUtils {
         return left;
     }
 
+    //TODO prototype test
+    public static int partitionStableHalfMemory(final int[] list, final int start, final int end, final int sortMask, int[] aux5) {
+        int half = (end - start) / 2;
+        int[] aux = new int[half];
+        int[] aux2 = aux;
+        int left = start;
+        int right = 0;
+        boolean filledRight = false;
+        for (int i = start; i < end; i++) {
+            int element = list[i];
+            if ((element & sortMask) == 0) {
+                list[left] = element;
+                left++;
+            } else {
+                if (right < aux.length) {
+                    aux[right] = element;
+                    right++;
+                } else {
+                    filledRight = true;
+                    aux = list;
+                    right = half;
+                }
+            }
+        }
+        if (!filledRight) {
+            System.arraycopy(aux, 0, list, left, right);
+        } else {
+            System.arraycopy(list, right, list, end-right, right);
+            System.arraycopy(aux2, 0, list, left, aux2.length);
+        }
+        return left;
+    }
+
     /**
      *  CPU: 3*N + 2^K
      *  MEM: N + 2*2^K
@@ -146,7 +179,7 @@ public class IntSorterUtils {
         int[] count = new int[lengthBitsToNumber];
         for (int i = start; i < end; i++) {
             int element = list[i];
-            int elementShiftMasked = (element & sortMask) >>> shiftRight;
+            int elementShiftMasked = (element & sortMask) >> shiftRight;
             count[elementShiftMasked]++;
         }
         for (int i = 1; i < lengthBitsToNumber; i++) {
@@ -154,7 +187,7 @@ public class IntSorterUtils {
         }
         for (int i = start; i < end; i++) {
             int element = list[i];
-            int elementShiftMasked = (element & sortMask) >>> shiftRight;
+            int elementShiftMasked = (element & sortMask) >> shiftRight;
             aux[leftX[elementShiftMasked]] = element;
             leftX[elementShiftMasked]++;
         }

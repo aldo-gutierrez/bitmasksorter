@@ -48,7 +48,7 @@ public class RadixBitSorterMTUInt extends RadixBitSorterInt {
             sortMask1 = sortMask1 | sortMaskij;
             bits++;
         }
-        int lengthBitsToNumber = BitSorterParams.twoPowerX(bits);
+        int lengthBitsToNumber = twoPowerX(bits);
         partitionStableNonConsecutiveBitsAndRadixSort(list, start, end, lengthBitsToNumber, aux2, sortMask1, kList, kList.length - params.getMaxThreadsBits());
     }
 

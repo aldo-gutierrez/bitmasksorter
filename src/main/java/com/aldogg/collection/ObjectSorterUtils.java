@@ -104,7 +104,7 @@ public class ObjectSorterUtils {
         int[] count = new int[lengthBitsToNumber];
         for (int i = start; i < end; i++) {
             int element = list[i];
-            int elementShiftMasked = (element & sortMask) >>> shiftRight;
+            int elementShiftMasked = (element & sortMask) >> shiftRight;
             count[elementShiftMasked]++;
         }
         for (int i = 1; i < lengthBitsToNumber; i++) {
@@ -113,7 +113,7 @@ public class ObjectSorterUtils {
         for (int i = start; i < end; i++) {
             int element = list[i];
             Object oElement = oList[i];
-            int elementShiftMasked = (element & sortMask) >>> shiftRight;
+            int elementShiftMasked = (element & sortMask) >> shiftRight;
             aux[leftX[elementShiftMasked]] = element;
             oAux[leftX[elementShiftMasked]] = oElement;
             leftX[elementShiftMasked]++;

@@ -398,10 +398,12 @@ public class SorterTest {
                } else {
                    if (testSortResults.getAVG(i) < sorterWinnerTime) {
                        sorterWinner = sorter.name();
+                       sorterWinnerTime = testSortResults.getAVG(i);
                    }
                }
            }
            System.out.print(sorterWinner  + ",\t");
+           System.out.print(sorterWinnerTime  + ",\t");
            System.out.println();
        }
     }
