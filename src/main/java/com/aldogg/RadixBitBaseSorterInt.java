@@ -6,7 +6,7 @@ import com.aldogg.intType.IntSorterUtils;
 import static com.aldogg.BitSorterUtils.getMaskBit;
 import static com.aldogg.BitSorterUtils.getMaskAsList;
 
-public class RadixBitSorterIntBase implements IntSorter {
+public class RadixBitBaseSorterInt implements IntSorter {
 
     boolean unsigned = false;
 

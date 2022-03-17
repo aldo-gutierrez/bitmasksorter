@@ -4,9 +4,9 @@ import com.aldogg.intType.IntSorter;
 
 import java.util.Arrays;
 
-public class JavaParallelSorter implements IntSorter {
+public class JavaSorterInt implements IntSorter {
     @Override
     public void sort(int[] list) {
-        Arrays.parallelSort(list);
+        Arrays.sort(list);
     }
 }

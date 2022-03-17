@@ -2,10 +2,9 @@ package com.aldogg.collection;
 
 import java.util.Arrays;
 
-public class JavaObjectParallelSorter implements ObjectSorter {
-
+public class JavaSorterObject implements ObjectSorter {
     @Override
     public void sort(Object[] list, IntComparator comparator) {
-        Arrays.parallelSort(list, comparator);
+        Arrays.sort(list, comparator);
     }
 }

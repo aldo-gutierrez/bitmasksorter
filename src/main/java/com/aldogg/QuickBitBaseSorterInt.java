@@ -10,7 +10,7 @@ import static com.aldogg.BitSorterUtils.*;
  * It doesn't include a count sort
  * It doesn't include a comparator sort for small lists
  */
-public class QuickBitSorterIntBase implements IntSorter {
+public class QuickBitBaseSorterInt implements IntSorter {
     boolean unsigned = false;
 
     @Override
