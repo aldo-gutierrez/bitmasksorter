@@ -240,4 +240,18 @@ public class IntSorterUtils {
         }
     }
 
+        /*
+        int[] maskParts = ArrayThreadRunner.runInParallel(list, start, end, 2, new ArrayRunnable<int[]>() {
+            @Override
+            public int[] map(int[] list, int start, int end) {
+                return getMask(list, start, end);
+            }
+
+            @Override
+            public int[] reduce(int[] m1, int[] m2) {
+                return new int[]{m1[0] | m2[0], m1[1] | m2[1]};
+            }
+        });
+        */
+
 }

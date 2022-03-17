@@ -11,7 +11,7 @@ import static com.aldogg.BitSorterParams.*;
 import static com.aldogg.BitSorterUtils.*;
 import static com.aldogg.intType.IntSorterUtils.sortShortList;
 
-public class QuickBitSorterMTUInt extends QuickBitSorterInt implements IntSorter {
+public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter {
 
     AtomicInteger numThreads = new AtomicInteger(1);
 
@@ -37,26 +37,44 @@ public class QuickBitSorterMTUInt extends QuickBitSorterInt implements IntSorter
         final int start = 0;
         final int end = list.length;
         //if (listIsOrdered(list, start, end)) return;
-
-        /*
-        int[] maskParts = ArrayThreadRunner.runInParallel(list, start, end, 2, new ArrayRunnable<int[]>() {
-            @Override
-            public int[] map(int[] list, int start, int end) {
-                return getMask(list, start, end);
-            }
-
-            @Override
-            public int[] reduce(int[] m1, int[] m2) {
-                return new int[]{m1[0] | m2[0], m1[1] | m2[1]};
-            }
-        });
-        */
-
-
         int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];
-        int[] listK = getMaskAsList(mask);
-        sortMT(list, start, end, listK, 0, false);
+        int[] kList = getMaskAsList(mask);
+        if (kList.length == 0) {
+            return;
+        }
+
+        if (!isUnsigned() && kList[0] == 31) { //there are negative numbers and positive numbers
+            int sortMask = BitSorterUtils.getMaskBit(kList[0]);
+            int finalLeft = IntSorterUtils.partitionReverseNotStable(list, start, end, sortMask);
+            Thread t1 = null;
+            if (finalLeft - start > 1) { //sort negative numbers
+                maskParts = getMaskBit(list, start, finalLeft);
+                mask = maskParts[0] & maskParts[1];
+                kList = getMaskAsList(mask);
+                int[] finalKList = kList;
+                Runnable r1 = () -> sortMT(list, start, finalLeft, finalKList, 0, false);
+                t1 = new Thread(r1);
+                t1.start();
+                numThreads.addAndGet(1);
+            }
+            if (end - finalLeft > 1) { //sort positive numbers
+                maskParts = getMaskBit(list, finalLeft, end);
+                mask = maskParts[0] & maskParts[1];
+                kList = getMaskAsList(mask);
+                sortMT(list, finalLeft, end, kList, 0, false);
+            }
+            if (t1 != null) {
+                try {
+                    t1.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            sortMT(list, start, end, kList, 0, false);
+        }
+
     }
 
     @Override
@@ -67,12 +85,15 @@ public class QuickBitSorterMTUInt extends QuickBitSorterInt implements IntSorter
     public void sortMT(final int[] list, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
         final int listLength = end - start;
         if (listLength <= SMALL_LIST_SIZE) {
-            SortingNetworks.sortVerySmallListSigned(list, start, end);
+            if (unsigned) {
+                SortingNetworks.sortVerySmallListUnSigned(list, start, end);
+            } else {
+                SortingNetworks.sortVerySmallListSigned(list, start, end);
+            }
             return;
         }
-        int kDiff = kList.length - kIndex;
 
-        if (recalculate) {
+        if (recalculate && kIndex < 3) {
             int[] maskParts = getMaskBit(list, start, end);
             int mask = maskParts[0] & maskParts[1];
             kList = getMaskAsList(mask);
@@ -80,6 +101,7 @@ public class QuickBitSorterMTUInt extends QuickBitSorterInt implements IntSorter
 
         }
 
+        int kDiff = kList.length - kIndex;
         if (kDiff < 1) {
             return;
         }
@@ -88,6 +110,7 @@ public class QuickBitSorterMTUInt extends QuickBitSorterInt implements IntSorter
             sortShortList(list, start, end, kList, kIndex);
             return;
         }
+
         int sortMask = getMaskBit(kList[kIndex]);
         int finalLeft = IntSorterUtils.partitionNotStable(list, start, end, sortMask);
         final boolean recalculateBitMask = (finalLeft == start || finalLeft == end);
@@ -138,7 +161,7 @@ public class QuickBitSorterMTUInt extends QuickBitSorterInt implements IntSorter
         int maxThreads = params.getMaxThreads();
         if (listLength > maxThreads * params.getDataSizeForThreads()) {
 
-            Object left = ArrayThreadRunner.runInParallel(list, start, end, maxThreads, new int[]{}, new ArrayRunnable<Object>() {
+            Object left = ArrayThreadRunner.runInParallel(list, start, end, maxThreads, numThreads, new int[]{}, new ArrayRunnable<Object>() {
                 int left = start;
                 int right = end - 1;
 
@@ -175,45 +198,5 @@ public class QuickBitSorterMTUInt extends QuickBitSorterInt implements IntSorter
             return IntSorterUtils.partitionNotStable(list, start, end, sortMask);
         }
     }
-
-    //too slow, tested 2021 11 19
-    protected int partitionMT2(int[] list, int start, int end, int sortMask) {
-        int listLength = end - start;
-        if (aux == null) {
-            aux = new int[listLength];
-        }
-        final AtomicInteger left = new AtomicInteger(start);
-        final AtomicInteger right = new AtomicInteger(end - 1);
-
-        int maxThreads = 2; //calculate max threads available to use
-        if (listLength > maxThreads * params.getDataSizeForThreads()) {
-
-            ArrayThreadRunner.runInParallel(list, start, end, maxThreads, null, new ArrayRunnable<Object>() {
-
-                @Override
-                public Object map(int[] list, int start, int end) {
-                    for (int i = start; i < end; i++) {
-                        int element = list[i];
-                        if ((element & sortMask) == 0) {
-                            aux[left.getAndAdd(1)] = element;
-                        } else {
-                            aux[right.getAndAdd(-1)] = element;
-                        }
-                    }
-                    return null;
-                }
-
-                @Override
-                public Object reduce(Object result, Object partialResult) {
-                    return null;
-                }
-            });
-            System.arraycopy(aux, start, list, start, end - start);
-            return left.get();
-        } else {
-            return IntSorterUtils.partitionNotStable(list, start, end, sortMask);
-        }
-    }
-
 
 }

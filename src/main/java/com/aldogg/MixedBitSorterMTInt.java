@@ -1,6 +1,7 @@
 package com.aldogg;
 
 import com.aldogg.intType.CountSort;
+import com.aldogg.intType.IntSorter;
 import com.aldogg.intType.IntSorterUtils;
 
 import java.util.Arrays;
@@ -13,9 +14,10 @@ import static com.aldogg.intType.IntSorterUtils.sortShortList;
 /**
  * Experimental Bit Sorter
  */
-public class MixedBitSorterMTUInt extends RadixBitSorterInt {
+public class MixedBitSorterMTInt implements IntSorter {
     final AtomicInteger numThreads = new AtomicInteger(1);
     protected final BitSorterParams params = BitSorterParams.getMTParams();
+    boolean unsigned = false;
 
     @Override
     public void sort(int[] list) {
@@ -29,7 +31,42 @@ public class MixedBitSorterMTUInt extends RadixBitSorterInt {
         int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
-        sort(list, start, end, kList, 0);
+        if (kList.length == 0) {
+            return;
+        }
+
+        if (!isUnsigned() && kList[0] == 31) { //there are negative numbers and positive numbers
+            int sortMask = BitSorterUtils.getMaskBit(kList[0]);
+            int finalLeft = IntSorterUtils.partitionReverseNotStable(list, start, end, sortMask);
+            Thread t1 = null;
+            if (finalLeft - start > 1) { //sort negative numbers
+                maskParts = getMaskBit(list, start, finalLeft);
+                mask = maskParts[0] & maskParts[1];
+                kList = getMaskAsList(mask);
+                int[] finalKList = kList;
+                Runnable r1 = () -> sort(list, start, finalLeft, finalKList, 0);
+                t1 = new Thread(r1);
+                t1.start();
+                numThreads.addAndGet(1);
+            }
+            if (end - finalLeft > 1) { //sort positive numbers
+                maskParts = getMaskBit(list, finalLeft, end);
+                mask = maskParts[0] & maskParts[1];
+                kList = getMaskAsList(mask);
+                sort(list, finalLeft, end, kList, 0);
+            }
+            if (t1 != null) {
+                try {
+                    t1.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    numThreads.addAndGet(-1);
+                }
+            }
+        } else {
+            sort(list, start, end, kList, 0);
+        }
     }
 
 
@@ -37,7 +74,11 @@ public class MixedBitSorterMTUInt extends RadixBitSorterInt {
     public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex) {
         final int listLength = end - start;
         if (listLength <= SMALL_LIST_SIZE) {
-            SortingNetworks.sortVerySmallListSigned(list, start, end);
+            if (unsigned) {
+                SortingNetworks.sortVerySmallListUnSigned(list, start, end);
+            } else {
+                SortingNetworks.sortVerySmallListSigned(list, start, end);
+            }
             return;
         }
         int kDiff = kList.length - kIndex;
@@ -171,9 +212,10 @@ public class MixedBitSorterMTUInt extends RadixBitSorterInt {
                 }
                 try {
                     t1.join();
-                    numThreads.addAndGet(-1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                } finally {
+                    numThreads.addAndGet(-1);
                 }
             } else {
                 int[] bufferCount = new int[bufferCountSSize];
