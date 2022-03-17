@@ -160,6 +160,29 @@ Comparison for sorting 40 Million int elements with range from 0 to 1000000000 i
 
 ![Graph2](plot-S40000000-Range0-1000000000-random.png?raw=true "Graph2")
 
+Object Sort using the Interface IntComparator
+
+```
+public class Entity1 {
+    int id;
+    String name;
+}
+
+IntComparator comparator = new IntComparator() {
+            @Override
+            public int intValue(Object o) {
+                return ((Entity1) o).getId();
+            }
+
+            @Override
+            public int compare(Object entity1, Object t1) {
+                return Integer.compare(((Entity1)entity1).getId(), ((Entity1) t1).getId());
+            }
+};
+
+Object[] list = ...;
+Arrays.sort(list, comparator);
+```
 
 ###Example 4: 
 
