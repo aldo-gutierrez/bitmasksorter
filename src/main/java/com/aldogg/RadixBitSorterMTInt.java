@@ -1,12 +1,14 @@
 package com.aldogg;
 
+import com.aldogg.intType.IntSorterUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.aldogg.BitSorterUtils.*;
 import static com.aldogg.intType.IntSorterUtils.sortShortList;
 
-public class RadixBitSorterMTUInt extends RadixBitSorterInt {
+public class RadixBitSorterMTInt extends RadixBitSorterInt {
     protected final BitSorterParams params = BitSorterParams.getMTParams();
 
     @Override
@@ -21,7 +23,28 @@ public class RadixBitSorterMTUInt extends RadixBitSorterInt {
         int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
-        sort(list, start, end, kList, 0);
+
+        if (kList.length == 0) {
+            return;
+        }
+        if (!isUnsigned() && kList[0] == 31) { //there are negative numbers and positive numbers
+            int sortMask = BitSorterUtils.getMaskBit(kList[0]);
+            int finalLeft = IntSorterUtils.partitionReverseNotStable(list, start, end, sortMask);
+            if (finalLeft - start > 1) { //sort negative numbers
+                maskParts = getMaskBit(list, start, finalLeft);
+                mask = maskParts[0] & maskParts[1];
+                kList = getMaskAsList(mask);
+                sort(list, start, finalLeft, kList, 0);
+            }
+            if (end - finalLeft > 1) { //sort positive numbers
+                maskParts = getMaskBit(list, finalLeft, end);
+                mask = maskParts[0] & maskParts[1];
+                kList = getMaskAsList(mask);
+                sort(list, finalLeft, end, kList, 0);
+            }
+        } else {
+            sort(list, start, end, kList, 0);
+        }
     }
 
 

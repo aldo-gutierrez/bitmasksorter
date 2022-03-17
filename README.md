@@ -181,7 +181,8 @@ IntComparator comparator = new IntComparator() {
 };
 
 Object[] list = ...;
-Arrays.sort(list, comparator);
+ObjectSorter sorter = new RadixBitSorterInt();
+sorter.sort(list, comparator);
 ```
 
 ###Example 4: 
