@@ -9,4 +9,8 @@ public class JavaParallelSorterInt implements IntSorter {
     public void sort(int[] list) {
         Arrays.parallelSort(list);
     }
+    @Override
+    public void setUnsigned(boolean unsigned) {
+        throw new UnsupportedOperationException();
+    }
 }

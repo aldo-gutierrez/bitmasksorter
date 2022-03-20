@@ -20,6 +20,16 @@ public class MixedBitSorterMTInt implements IntSorter {
     boolean unsigned = false;
 
     @Override
+    public boolean isUnsigned() {
+        return unsigned;
+    }
+
+    @Override
+    public void setUnsigned(boolean unsigned) {
+        this.unsigned = unsigned;
+    }
+
+    @Override
     public void sort(int[] list) {
         final int start = 0;
         final int end = list.length;

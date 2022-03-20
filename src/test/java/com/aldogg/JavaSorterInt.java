@@ -9,4 +9,8 @@ public class JavaSorterInt implements IntSorter {
     public void sort(int[] list) {
         Arrays.sort(list);
     }
+    @Override
+    public void setUnsigned(boolean unsigned) {
+        throw new UnsupportedOperationException();
+    }
 }

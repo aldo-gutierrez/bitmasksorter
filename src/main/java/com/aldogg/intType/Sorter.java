@@ -9,6 +9,8 @@ public interface Sorter {
         return false;
     }
 
+    void setUnsigned(boolean unsigned);
+
     default boolean isStable() {
         return false;
     }

@@ -8,4 +8,9 @@ public class JavaParallelSorterObjectInt implements ObjectSorter {
     public void sort(Object[] list, IntComparator comparator) {
         Arrays.parallelSort(list, comparator);
     }
+
+    @Override
+    public void setUnsigned(boolean unsigned) {
+        throw new UnsupportedOperationException();
+    }
 }

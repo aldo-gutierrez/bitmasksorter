@@ -22,7 +22,7 @@ public class SorterTest {
 
     @Test
     public void basicTests() {
-        IntSorter[] sorters = new IntSorter[] {new MixedBitSorterMTInt(), new QuickBitSorterInt(), new QuickBitSorterMTInt(), new RadixBitSorterInt()};
+        IntSorter[] sorters = new IntSorter[] {new MixedBitSorterMTInt(), new QuickBitSorterInt(), new QuickBitSorterMTInt(), new RadixBitSorterInt(), new RadixBitSorterMTInt()};
         TestSortResults sorterTests = new TestSortResults(sorters.length);
         testIntSort(new int[] {}, sorterTests, sorters);
         testIntSort(new int[] {1}, sorterTests, sorters);
@@ -226,6 +226,11 @@ public class SorterTest {
             public String name() {
                 return "StableByte";
             }
+
+            @Override
+            public void setUnsigned(boolean unsigned) {
+                
+            }
         },  new IntSorter() {
             @Override
             public void sort(int[] list) {
@@ -242,6 +247,11 @@ public class SorterTest {
             public String name() {
                 return "StableBit";
             }
+
+            @Override
+            public void setUnsigned(boolean unsigned) {
+
+            }
         }, new IntSorter() {
             @Override
             public void sort(int[] list) {
@@ -254,6 +264,11 @@ public class SorterTest {
             @Override
             public String name() {
                 return "CountSort";
+            }
+
+            @Override
+            public void setUnsigned(boolean unsigned) {
+
             }
         }};
         TestSortResults testSortResults;
@@ -312,9 +327,9 @@ public class SorterTest {
     public void speedTestNegative() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter("speed_negative.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
 
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(),  new RadixBitSorterInt(), new JavaParallelSorterInt(),  new QuickBitSorterInt()};
         TestSortResults testSortResults;
 
         //heatup
@@ -346,7 +361,47 @@ public class SorterTest {
         writer.close();
     }
 
-    
+
+    @Test
+    public void speedTestUnsigned() throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("speed_negative.csv"));
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+
+        for (IntSorter sorter: sorters) {
+            sorter.setUnsigned(true);
+        }
+
+        TestSortResults testSortResults;
+
+        //heatup
+        testSortResults = new TestSortResults(sorters.length);
+        testSpeedInt(1000, 80000, 0, 80000, testSortResults, sorters, null);
+
+        int iterations = 200;
+        int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
+
+        for (int limitH : limitHigh) {
+            testSortResults = new TestSortResults(sorters.length);
+            testSpeedInt(iterations, 10000, -limitH, limitH, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            testSpeedInt(iterations, 100000, -limitH, limitH, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            testSpeedInt(iterations, 1000000, -limitH, limitH, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            testSpeedInt(iterations, 10000000, -limitH, limitH, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            testSpeedInt(iterations, 40000000, -limitH, limitH, testSortResults, sorters, writer);
+
+            System.out.println("----------------------");
+        }
+        System.out.println();
+        writer.close();
+    }
 
     private void testSpeedInt(int iterations, int size, int limitLow, int limitHigh, TestSortResults testSortResults, IntSorter[] sorters, Writer writer) throws IOException {
         Random random = new Random();
