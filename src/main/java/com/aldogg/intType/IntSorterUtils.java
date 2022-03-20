@@ -114,10 +114,10 @@ public class IntSorterUtils {
         return left;
     }
 
-    //TODO prototype test
-    public static int partitionStableHalfMemory(final int[] list, final int start, final int end, final int sortMask, int[] aux5) {
+    //IT WORKS!! 2022-03-20
+    public static int partitionStableHalfMemory(final int[] list, final int start, final int end, final int sortMask, int[] aux) {
         int half = (end - start) / 2;
-        int[] aux = new int[half];
+        //int[] aux = new int[half];
         int[] aux2 = aux;
         int left = start;
         int right = 0;
@@ -128,21 +128,22 @@ public class IntSorterUtils {
                 list[left] = element;
                 left++;
             } else {
-                if (right < aux.length) {
-                    aux[right] = element;
-                    right++;
-                } else {
+                if (!filledRight && right >= half) {
                     filledRight = true;
                     aux = list;
-                    right = half;
+                    right = start + half;
                 }
+                aux[right] = element;
+                right++;
             }
         }
         if (!filledRight) {
             System.arraycopy(aux, 0, list, left, right);
         } else {
-            System.arraycopy(list, right, list, end-right, right);
-            System.arraycopy(aux2, 0, list, left, aux2.length);
+            for (int j = 0; j < (right - (start + half)); j++) {
+                IntSorterUtils.swap(list, right - j - 1, end - j - 1);
+            }
+            System.arraycopy(aux2, 0, list, left, half);
         }
         return left;
     }
