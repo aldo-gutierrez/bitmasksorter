@@ -22,7 +22,7 @@ public class SorterTest {
 
     @Test
     public void basicTests() {
-        IntSorter[] sorters = new IntSorter[] {new MixedBitSorterMTInt(), new QuickBitSorterInt(), new QuickBitSorterMTInt(), new RadixBitSorterInt(), new RadixBitSorterMTInt()};
+        IntSorter[] sorters = new IntSorter[] {new MixedBitSorterMTInt(), new QuickBitSorterInt(), new QuickBitSorterMTInt(), new RadixBitSorterInt(), new RadixBitSorterMTInt(), new RadixByteSorterInt()};
         TestSortResults sorterTests = new TestSortResults(sorters.length);
         testIntSort(new int[] {}, sorterTests, sorters);
         testIntSort(new int[] {1}, sorterTests, sorters);
@@ -120,12 +120,12 @@ public class SorterTest {
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
 
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt(), new RadixByteSorterInt()};
         TestSortResults testSortResults;
 
         //heatup
         testSortResults = new TestSortResults(sorters.length);
-        testSpeedInt(1000, 80000, 0, 80000, testSortResults, sorters, null);
+        testSpeedInt(10, 80000, 0, 80000, testSortResults, sorters, null);
 
         int iterations = 20;
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
@@ -327,7 +327,7 @@ public class SorterTest {
     public void speedTestNegative() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter("speed_negative.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt(), new RadixByteSorterInt()};
 
 
         TestSortResults testSortResults;
