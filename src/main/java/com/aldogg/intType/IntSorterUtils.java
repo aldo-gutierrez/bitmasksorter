@@ -114,39 +114,7 @@ public class IntSorterUtils {
         return left;
     }
 
-    //IT WORKS!! 2022-03-20
-    public static int partitionStableHalfMemory(final int[] list, final int start, final int end, final int sortMask, int[] aux) {
-        int half = (end - start) / 2;
-        //int[] aux = new int[half];
-        int[] aux2 = aux;
-        int left = start;
-        int right = 0;
-        boolean filledRight = false;
-        for (int i = start; i < end; i++) {
-            int element = list[i];
-            if ((element & sortMask) == 0) {
-                list[left] = element;
-                left++;
-            } else {
-                if (!filledRight && right >= half) {
-                    filledRight = true;
-                    aux = list;
-                    right = start + half;
-                }
-                aux[right] = element;
-                right++;
-            }
-        }
-        if (!filledRight) {
-            System.arraycopy(aux, 0, list, left, right);
-        } else {
-            for (int j = 0; j < (right - (start + half)); j++) {
-                IntSorterUtils.swap(list, right - j - 1, end - j - 1);
-            }
-            System.arraycopy(aux2, 0, list, left, half);
-        }
-        return left;
-    }
+
 
     /**
      *  CPU: 3*N + 2^K
@@ -156,8 +124,7 @@ public class IntSorterUtils {
         int[] leftX = new int[lengthBitsToNumber];
         int[] count = new int[lengthBitsToNumber];
         for (int i = start; i < end; i++) {
-            int elementShiftMasked = list[i] & sortMask;
-            count[elementShiftMasked]++;
+            count[list[i] & sortMask]++;
         }
         for (int i = 1; i < lengthBitsToNumber; i++) {
             leftX[i] = leftX[i - 1] + count[i - 1];
@@ -180,8 +147,7 @@ public class IntSorterUtils {
         int[] count = new int[lengthBitsToNumber];
         for (int i = start; i < end; i++) {
             int element = list[i];
-            int elementShiftMasked = (element & sortMask) >> shiftRight;
-            count[elementShiftMasked]++;
+            count[(element & sortMask) >> shiftRight]++;
         }
         for (int i = 1; i < lengthBitsToNumber; i++) {
             leftX[i] = leftX[i - 1] + count[i - 1];
