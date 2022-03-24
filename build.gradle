@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'com.aldogg'
+group 'com.aldogg.sorter'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
