@@ -2,6 +2,8 @@ package com.aldogg.sorter.intType;
 
 public class IntSorterUtils2 {
 
+
+
     //IT WORKS!! 2022-03-20
     public static int partitionStableHalfMemory(final int[] list, final int start, final int end, final int sortMask) {
         int half = (end - start) / 2;
@@ -58,7 +60,6 @@ public class IntSorterUtils2 {
             oneThird++;
         }
         int twoThird = oneThird * 2;
-        //int[] aux = new int[oneThird];
         int[] auxOriginal = aux;
         int left = start;
         int right = 0;
