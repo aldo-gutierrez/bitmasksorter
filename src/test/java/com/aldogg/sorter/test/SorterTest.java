@@ -445,10 +445,10 @@ public class SorterTest {
                writer.write(size + ",\"" + limitLow + ":" + limitHigh + "\",\""+sorter.name()+"\"," + testSortResults.getAVG(i)/1000000 + "\n");
                writer.flush();
            }
-           System.out.printf("%12d, %12d, ", size,  limitHigh);
+           System.out.printf("%.13d, %.13d, ", size,  limitHigh);
            for (int i = 0; i < sorters.length; i++) {
                Sorter sorter = sorters[i];
-               System.out.printf("%20s, %12d, ", sorter.name(), testSortResults.getAVG(i));
+               System.out.printf("%21s, %.13d, ", sorter.name(), testSortResults.getAVG(i));
            }
            String sorterWinner = "";
            long sorterWinnerTime = 0;
@@ -464,8 +464,7 @@ public class SorterTest {
                    }
                }
            }
-           System.out.print(sorterWinner  + ",\t");
-           System.out.print(sorterWinnerTime  + ",\t");
+            System.out.printf("%21s, %.13d, ", sorterWinner, sorterWinnerTime);
            System.out.println();
        }
     }
