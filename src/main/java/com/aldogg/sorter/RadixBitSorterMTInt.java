@@ -128,9 +128,9 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
                         int endT = leftX[finalI];
                         int[] auxT = new int[lengthT];
                         if (kList.length - params.getMaxThreadsBits() <= params.getCountingSortBits()) {
-                            sortShortList(list, endT - lengthT, endT,  kList, params.getMaxThreadsBits());
+                            sortShortList(list, start + endT - lengthT, start + endT,  kList, params.getMaxThreadsBits());
                         } else {
-                            RadixBitSorterInt.radixSort(list, endT - lengthT, endT, auxT, kList, kList.length - 1, params.getMaxThreadsBits());
+                            RadixBitSorterInt.radixSort(list, start + endT - lengthT, start + endT, auxT, kList, kList.length - 1, params.getMaxThreadsBits());
                         }
                     };
                     if (i < lengthBitsToNumber - 1) {

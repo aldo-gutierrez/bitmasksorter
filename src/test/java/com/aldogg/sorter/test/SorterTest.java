@@ -334,8 +334,7 @@ public class SorterTest {
     public void speedTestNegative() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter("speed_negative.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
-        //, new RadixBitSorterMTInt() //TODO fails 2022 03 24
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixByteSorterInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt()};
 
 
         TestSortResults testSortResults;
@@ -344,7 +343,7 @@ public class SorterTest {
         testSortResults = new TestSortResults(sorters.length);
         testSpeedInt(1000, 80000, 0, 80000, testSortResults, sorters, null);
 
-        int iterations = 200;
+        int iterations = 20;
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
