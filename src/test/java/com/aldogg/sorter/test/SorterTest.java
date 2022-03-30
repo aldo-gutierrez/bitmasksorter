@@ -134,7 +134,7 @@ public class SorterTest {
         testSortResults = new TestSortResults(sorters.length);
         testSpeedInt(10, 80000, 0, 80000, testSortResults, sorters, null);
 
-        int iterations = 20;
+        int iterations = 50;
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
@@ -334,8 +334,7 @@ public class SorterTest {
     public void speedTestNegative() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter("speed_negative.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt()};
-
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
         TestSortResults testSortResults;
 
@@ -343,7 +342,7 @@ public class SorterTest {
         testSortResults = new TestSortResults(sorters.length);
         testSpeedInt(1000, 80000, 0, 80000, testSortResults, sorters, null);
 
-        int iterations = 20;
+        int iterations = 50;
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
@@ -445,10 +444,10 @@ public class SorterTest {
                writer.write(size + ",\"" + limitLow + ":" + limitHigh + "\",\""+sorter.name()+"\"," + testSortResults.getAVG(i)/1000000 + "\n");
                writer.flush();
            }
-           System.out.printf("%.13d, %.13d, ", size,  limitHigh);
+           System.out.printf("%,13d %,13d ", size,  limitHigh);
            for (int i = 0; i < sorters.length; i++) {
                Sorter sorter = sorters[i];
-               System.out.printf("%21s, %.13d, ", sorter.name(), testSortResults.getAVG(i));
+               System.out.printf("%21s %,13d ", sorter.name(), testSortResults.getAVG(i));
            }
            String sorterWinner = "";
            long sorterWinnerTime = 0;
@@ -464,7 +463,7 @@ public class SorterTest {
                    }
                }
            }
-            System.out.printf("%21s, %.13d, ", sorterWinner, sorterWinnerTime);
+            System.out.printf("%21s %,13d ", sorterWinner, sorterWinnerTime);
            System.out.println();
        }
     }
