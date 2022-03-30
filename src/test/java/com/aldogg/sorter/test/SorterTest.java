@@ -13,6 +13,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.aldogg.sorter.BitSorterUtils.getMaskAsList;
 import static com.aldogg.sorter.BitSorterUtils.getMaskBit;
@@ -491,43 +493,100 @@ public class SorterTest {
         testIntSort(new int[]{33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0}, sorter, sorters);
     }
 
+    static volatile int  sum = 0;
+
     public static  void main (String[] args) {
-        for (int j=0; j < 100000; j++) {
-            List<Entity1> entity1sList = new ArrayList<>();
-            Entity1[] entity1sArray = new Entity1[entity1sList.size()];
-            entity1sList.toArray(entity1sArray);
-            Random random = new Random();
-            for (int i = 0; i < 10000000; i++) {
-                int randomInt = random.nextInt();
-                entity1sList.add(new Entity1(randomInt, randomInt + ""));
+        long average_t = 0;
+        long average_st = 0;
+        long average_wt = 0;
+        long average_nt = 0;
+        int numberOfLoops = 50;
+        int numberOfThreads = 8;
+        int waitTime = 5;
+
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                Thread t = new Thread(() -> {
+                    int a = new Random().nextInt();
+                    int b = new Random().nextInt();
+                    int c = a + b;
+                    sum += c;
+                    try {
+                        Thread.sleep(waitTime);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                });
+                t.start();
+                try {
+                    t.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-
-            Entity1[] listAux1 = Arrays.copyOf(entity1sArray, entity1sArray.length);
-
-            long startJava = System.nanoTime();
-            Arrays.sort(listAux1, new Comparator<Entity1>() {
-                @Override
-                public int compare(Entity1 entity1, Entity1 t1) {
-                    return Integer.compare(entity1.getId(), t1.getId());
-                }
-            });
-            long elapsedJava = System.nanoTime() - startJava;
-            System.out.println("elapsed Java: " + elapsedJava);
-
-            Entity1[] listAux2 = Arrays.copyOf(entity1sArray, entity1sArray.length);
-
-            startJava = System.nanoTime();
-            new RadixBitSorterObjectInt().sort(listAux2, new IntComparator() {
-                @Override
-                public int intValue(Object o) {
-                    return ((Entity1) o).getId();
-                }
-            });
-            elapsedJava = System.nanoTime() - startJava;
-            System.out.println("elapsed Radix: " + elapsedJava);
-            boolean equals = Arrays.equals(listAux1, listAux2);
-            System.out.println("equals: " + equals);
         }
+
+        for (int i = 0; i < numberOfLoops; i++) {
+
+            long startThread = System.nanoTime();
+            List<Thread> threads = new ArrayList<>();
+            for (int j = 0; j < numberOfThreads; j++) {
+                Thread t = new Thread(() -> {
+                    int a = new Random().nextInt();
+                    int b = new Random().nextInt();
+                    int c = a + b;
+                    sum += c;
+                    try {
+                        Thread.sleep(waitTime);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                });
+                threads.add(t);
+                t.start();
+            }
+            average_st += System.nanoTime() - startThread;
+
+            long waitingThread = System.nanoTime();
+            for (int j = 0; j < numberOfThreads; j++) {
+                Thread t = threads.get(j);
+                try {
+                    t.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            average_wt += System.nanoTime() - waitingThread;
+
+            long elapsedThread = System.nanoTime() - startThread;
+            average_t+=elapsedThread;
+
+
+            long startNoThread = System.nanoTime();
+            for (int j = 0; j < numberOfThreads; j++) {
+                int a = new Random().nextInt();
+                int b = new Random().nextInt();
+                int c = a + b;
+                sum += c;
+                try {
+                    Thread.sleep(waitTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            long elapsedNoThread = System.nanoTime() - startNoThread;
+            average_nt+=elapsedNoThread;
+
+        }
+        System.out.println("");
+        System.out.printf("%24s %,13d \n", "Average Thread",  average_t/ numberOfLoops);
+        System.out.printf("%24s %,13d \n", "Average Starting Thread",  average_st/ numberOfLoops);
+        System.out.printf("%24s %,13d \n", "Average Waiting Thread",  average_wt/ numberOfLoops);
+        System.out.println("");
+        System.out.printf("%24s %,13d \n", "Average No Thread",  average_nt/ numberOfLoops);
+        System.out.println("");
+        System.out.printf("%24s %,13d \n", "Difference Average",  (average_t - average_nt)/ numberOfLoops);
+
     }
 }
 
