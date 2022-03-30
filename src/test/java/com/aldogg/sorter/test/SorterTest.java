@@ -169,15 +169,15 @@ public class SorterTest {
         ObjectSorter[] sorters = new ObjectSorter[] {new JavaSorterObject(), new JavaParallelSorterObjectInt(), new RadixBitSorterObjectInt()};
         TestSortResults testSortResults;
 
-        IntComparator comparator = new IntComparator() {
+        IntComparator<Entity1> comparator = new IntComparator<Entity1>() {
             @Override
-            public int intValue(Object o) {
-                return ((Entity1) o).getId();
+            public int intValue(Entity1 o) {
+                return o.getId();
             }
 
             @Override
-            public int compare(Object entity1, Object t1) {
-                return Integer.compare(((Entity1)entity1).getId(), ((Entity1) t1).getId());
+            public int compare(Entity1 entity1, Entity1 t1) {
+                return Integer.compare(entity1.getId(), t1.getId());
             }
         };
 
@@ -470,7 +470,7 @@ public class SorterTest {
 
     @Test
     public void testNegativeNumbers() {
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         TestSortResults testSorter = new TestSortResults(sorters.length);
         testIntSort(new int[] {}, testSorter, sorters);
         testIntSort(new int[] {1}, testSorter, sorters);

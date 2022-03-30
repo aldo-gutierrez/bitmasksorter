@@ -2,11 +2,11 @@ package com.aldogg.sorter.collection;
 
 import java.util.Comparator;
 
-public interface IntComparator extends Comparator {
+public interface IntComparator<T> extends Comparator<T> {
 
-    int intValue(Object o);
+    int intValue(T o);
 
-    default int compare(Object o1, Object o2) {
+    default int compare(T o1, T o2) {
         return Integer.compare(intValue(o1), intValue(o2));
     }
 }

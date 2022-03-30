@@ -1,7 +1,5 @@
 package com.aldogg.sorter.intType;
 
-import static com.sun.tools.javac.jvm.ByteCodes.swap;
-
 /**
  *
  */
@@ -14,11 +12,7 @@ public class IntSorterUtils3 {
         list[nPosRight] = auxR;
     }
 
-    /**
-     * LOOKS O(N^2) but it works 2022 03 27
-     * @return
-     */
-    public static int partitionStableRecursive(final int[] list, final int start, final int end, final int sortMask) {
+    public static int[] skipSorted(final int[] list, final int start, final int end, final int sortMask) {
         int left = start;
         int right = end - 1;
 
@@ -53,21 +47,10 @@ public class IntSorterUtils3 {
                 break;
             }
         }
-
-        if (left >= right) {
-            if (left == right) {
-                return right + 1;
-            } else {
-                return left;
-            }
-        } else {
-            int leftAux = partitionStableReverseRecursive(list, left, right+1, sortMask);
-            return reverseResult(list, left, right+1, leftAux);
-        }
+        return new int[] {left, right};
     }
 
-    //LOOKS O(N^2)
-    public static int partitionStableReverseRecursive(final int[] list, final int start, final int end, final int sortMask) {
+    public static int[] skipSortedReverse(final int[] list, final int start, final int end, final int sortMask) {
         int left = start;
         int right = end - 1;
 
@@ -102,6 +85,35 @@ public class IntSorterUtils3 {
                 break;
             }
         }
+        return new int[] {left, right};
+    }
+
+    /**
+     * LOOKS O(N^2) but it works 2022 03 27
+     * @return
+     */
+    public static int partitionStableRecursive(final int[] list, final int start, final int end, final int sortMask) {
+        int[] aux = skipSorted(list, start, end, sortMask);
+        int left = aux[0];
+        int right = aux[1];
+
+        if (left >= right) {
+            if (left == right) {
+                return right + 1;
+            } else {
+                return left;
+            }
+        } else {
+            int leftAux = partitionStableReverseRecursive(list, left, right+1, sortMask);
+            return reverseResult(list, left, right+1, leftAux);
+        }
+    }
+
+    //LOOKS O(N^2)
+    public static int partitionStableReverseRecursive(final int[] list, final int start, final int end, final int sortMask) {
+        int[] aux = skipSortedReverse(list, start, end, sortMask);
+        int left = aux[0];
+        int right = aux[1];
 
         if (left >= right) {
             if (left == right) {
