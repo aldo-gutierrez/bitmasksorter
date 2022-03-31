@@ -5,7 +5,7 @@ import com.aldogg.sorter.intType.IntSorterUtils;
 
 import static com.aldogg.sorter.BitSorterParams.*;
 import static com.aldogg.sorter.BitSorterUtils.*;
-import static com.aldogg.sorter.intType.IntSorterUtils.sortShortList;
+import static com.aldogg.sorter.intType.IntSorterUtils.sortShortKList;
 
 public class QuickBitSorterInt implements IntSorter {
     protected BitSorterParams params = BitSorterParams.getSTParams();
@@ -77,7 +77,7 @@ public class QuickBitSorterInt implements IntSorter {
         }
 
         if (kDiff <= params.getCountingSortBits()) {
-            sortShortList(list, start, end, kList, kIndex);
+            sortShortKList(list, start, end, kList, kIndex);
             return;
         }
 
@@ -119,7 +119,7 @@ public class QuickBitSorterInt implements IntSorter {
         }
 
         if (kDiff <= params.getCountingSortBits()) {
-            sortShortList(list, start, end, kList, kIndex);
+            sortShortKList(list, start, end, kList, kIndex);
             return;
         }
 

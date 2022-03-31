@@ -7,9 +7,8 @@ import com.aldogg.parallel.ArrayThreadRunner;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.aldogg.sorter.BitSorterParams.*;
 import static com.aldogg.sorter.BitSorterUtils.*;
-import static com.aldogg.sorter.intType.IntSorterUtils.sortShortList;
+import static com.aldogg.sorter.intType.IntSorterUtils.sortShortKList;
 
 public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter {
 
@@ -84,12 +83,8 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
 
     public void sortMT(final int[] list, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
         final int listLength = end - start;
-        if (listLength <= SMALL_LIST_SIZE) {
-            if (unsigned) {
-                SortingNetworks.sortVerySmallListUnSigned(list, start, end);
-            } else {
-                SortingNetworks.sortVerySmallListSigned(list, start, end);
-            }
+        if (listLength < params.getDataSizeForThreads()) {
+            sort(list, start, end, kList, kIndex, recalculate);
             return;
         }
 
@@ -107,7 +102,7 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
         }
 
         if (kDiff <= params.getCountingSortBits()) {
-            sortShortList(list, start, end, kList, kIndex);
+            sortShortKList(list, start, end, kList, kIndex);
             return;
         }
 
@@ -119,8 +114,8 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
         int finalKIndex = kIndex;
         Thread t1 = null;
         int size1 = finalLeft - start;
-        if (size1 > params.getDataSizeForThreads()) {
-            if (numThreads.get() < params.getMaxThreads() + 1) {
+        if (size1 > 1) {
+            if (size1 > params.getDataSizeForThreads() && numThreads.get() < params.getMaxThreads() + 1) {
                 Runnable r1 = () -> sortMT(list, start, finalLeft, finalKList, finalKIndex + 1, recalculateBitMask);
                 t1 = new Thread(r1);
                 t1.start();
@@ -128,18 +123,10 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
             } else {
                 sortMT(list, start, finalLeft, finalKList, finalKIndex + 1, recalculateBitMask);
             }
-        } else {
-            if (size1 > 1) {
-                sort(list, start, finalLeft, finalKList, finalKIndex + 1, recalculateBitMask);
-            }
         }
         int size2 = end - finalLeft;
-        if (size2 > params.getDataSizeForThreads()) {
+        if (size2 > 1) {
             sortMT(list, finalLeft, end, kList, kIndex + 1, recalculateBitMask);
-        } else {
-            if (size2 > 1) {
-                sort(list, finalLeft, end, kList, kIndex + 1, recalculateBitMask);
-            }
         }
         if (t1 != null) {
             try {

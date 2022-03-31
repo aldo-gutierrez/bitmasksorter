@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.aldogg.sorter.BitSorterParams.*;
 import static com.aldogg.sorter.BitSorterUtils.*;
-import static com.aldogg.sorter.intType.IntSorterUtils.sortShortList;
+import static com.aldogg.sorter.intType.IntSorterUtils.sortShortKList;
 
 /**
  * Experimental Bit Sorter
@@ -97,7 +97,7 @@ public class MixedBitSorterMTInt implements IntSorter {
         }
 
         if (kDiff  <= params.getCountingSortBits()) {
-            sortShortList(list, start, end, kList, kIndex);
+            sortShortKList(list, start, end, kList, kIndex);
             return;
         }
 

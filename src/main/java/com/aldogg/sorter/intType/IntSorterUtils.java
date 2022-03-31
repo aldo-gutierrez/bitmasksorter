@@ -161,7 +161,7 @@ public class IntSorterUtils {
         System.arraycopy(aux, 0, list, start, end - start);
     }
 
-    public static void sortShortList(int[] list, int start, int end, int[] kList, int kIndex) {
+    public static void sortShortKList(int[] list, int start, int end, int[] kList, int kIndex) {
         int kDiff = kList.length - kIndex; //K
         int listLength = end - start; //N
         int twoPK = twoPowerX(kDiff);
