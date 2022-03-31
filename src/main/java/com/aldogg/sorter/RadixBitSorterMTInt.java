@@ -9,11 +9,16 @@ import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.intType.IntSorterUtils.sortShortList;
 
 public class RadixBitSorterMTInt extends RadixBitSorterInt {
+    public static final int MIN_SIZE_FOR_THREADS = 65536;
     protected final BitSorterParams params = BitSorterParams.getMTParams();
 
     @Override
     public void sort(int[] list) {
         if (list.length < 2) {
+            return;
+        }
+        if (list.length <= MIN_SIZE_FOR_THREADS) {
+            (new RadixBitSorterInt()).sort(list);
             return;
         }
         final int start = 0;
@@ -27,6 +32,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
         if (kList.length == 0) {
             return;
         }
+
         if (!isUnsigned() && kList[0] == 31) { //there are negative numbers and positive numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
             int finalLeft = IntSorterUtils.partitionReverseNotStable(list, start, end, sortMask);
@@ -49,7 +55,6 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
 
 
     public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex) {
-        final int listLength = end - start;
         int kDiff = kList.length - kIndex;
         if (kDiff < 1) {
             return;
@@ -63,25 +68,30 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
         int length = end - start;
         int[] aux2 = new int[length];
 
-        int bits = 0;
+        int threadBits = 0;
         int sortMask1 = 0;
-        for (int i = params.getMaxThreadsBits() - 1; i >= 0; i--) {
-            int kListIj = kList[i];
-            int sortMaskij = getMaskBit(kListIj);
-            sortMask1 = sortMask1 | sortMaskij;
-            bits++;
+        //we are using intentionaly the double of threads
+        int maxThreadBits = Math.min(params.getMaxThreadsBits() - 1, kList.length);
+        for (int i = maxThreadBits; i >= 0; i--) {
+            int kListI = kList[i];
+            int sortMaskI = getMaskBit(kListI);
+            sortMask1 = sortMask1 | sortMaskI;
+            threadBits++;
         }
-        int lengthBitsToNumber = twoPowerX(bits);
-        partitionStableNonConsecutiveBitsAndRadixSort(list, start, end, lengthBitsToNumber, aux2, sortMask1, kList, kList.length - params.getMaxThreadsBits());
+        partitionStableNonConsecutiveBitsAndRadixSort(list, start, end, threadBits, aux2, sortMask1, kList);
     }
 
-    protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] list, final int start, final int end, int lengthBitsToNumber, final int[] aux, int sortMask, int[] kList, int remainingBits) {
+    protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] list, final int start, final int end, int threadBits, final int[] aux, int sortMask, int[] kList) {
+        int maxProcessNumber = twoPowerX(threadBits);
+        int remainingBits = kList.length - threadBits;
+
         int[] kListAux = getMaskAsList(sortMask);
         int[][] sections = getMaskAsSections(kListAux);
 
 
-        int[] leftX = new int[lengthBitsToNumber];
-        int[] count = new int[lengthBitsToNumber];
+        int[] leftX = new int[maxProcessNumber];
+        int[] count = new int[maxProcessNumber];
+
 
         if (sections.length == 1) {
             for (int i = start; i < end; i++) {
@@ -97,7 +107,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
             }
         }
 
-        for (int i = 1; i < lengthBitsToNumber; i++) {
+        for (int i = 1; i < maxProcessNumber; i++) {
             leftX[i] = leftX[i - 1] + count[i - 1];
         }
 
@@ -119,34 +129,41 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
         }
         System.arraycopy(aux, 0, list, start, end - start);
         if (remainingBits > 0) {
+            List<Runnable> runInThreadList = new ArrayList<>();
             List<Thread> threadList = new ArrayList<>();
-            for (int i = 0; i < lengthBitsToNumber; i++) {
+            for (int i = 0; i < maxProcessNumber; i++) {
                 int finalI = i;
                 int lengthT = count[finalI];
                 if (lengthT > 1) {
-                    Runnable r1 = () -> {
+                    Runnable r = () -> {
                         int endT = leftX[finalI];
-                        int[] auxT = new int[lengthT];
-                        if (kList.length - params.getMaxThreadsBits() <= params.getCountingSortBits()) {
-                            sortShortList(list, start + endT - lengthT, start + endT,  kList, params.getMaxThreadsBits());
+                        if (remainingBits <= params.getCountingSortBits()) {
+                            sortShortList(list, start + endT - lengthT, start + endT, kList, threadBits);
                         } else {
-                            RadixBitSorterInt.radixSort(list, start + endT - lengthT, start + endT, auxT, kList, kList.length - 1, params.getMaxThreadsBits());
+                            int[] auxT = new int[lengthT];
+                            RadixBitSorterInt.radixSort(list, start + endT - lengthT, start + endT, auxT, kList, kList.length - 1,threadBits);
                         }
                     };
-                    if (i < lengthBitsToNumber - 1) {
-                        Thread t1 = new Thread(r1);
-                        threadList.add(t1);
-                        t1.start();
-                    } else {
-                        r1.run();
-                    }
+                    runInThreadList.add(r);
                 }
             }
+
+            for (int i = 0; i < runInThreadList.size(); i++) {
+                Runnable r = runInThreadList.get(i);
+                if (i == runInThreadList.size() -1)  {
+                    r.run();
+                } else {
+                    Thread t = new Thread(r);
+                    t.start();
+                    threadList.add(t);
+                }
+            }
+
+
 
             for (int t = 0; t < threadList.size(); t++) {
                 try {
                     threadList.get(t).join();
-                    //numThreads.addAndGet(-1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
