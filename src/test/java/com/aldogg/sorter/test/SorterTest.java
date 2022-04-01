@@ -13,8 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 import static com.aldogg.sorter.BitSorterUtils.getMaskAsList;
 import static com.aldogg.sorter.BitSorterUtils.getMaskBit;
@@ -136,7 +135,7 @@ public class SorterTest {
         testSortResults = new TestSortResults(sorters.length);
         testSpeedInt(10, 80000, 0, 80000, testSortResults, sorters, null);
 
-        int iterations = 50;
+        int iterations = 20;
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
@@ -501,8 +500,10 @@ public class SorterTest {
         long average_wt = 0;
         long average_nt = 0;
         int numberOfLoops = 50;
-        int numberOfThreads = 8;
+        int numberOfThreads = 4;
         int waitTime = 5;
+
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
@@ -529,9 +530,9 @@ public class SorterTest {
         for (int i = 0; i < numberOfLoops; i++) {
 
             long startThread = System.nanoTime();
-            List<Thread> threads = new ArrayList<>();
+            List<Future> threads = new ArrayList<>();
             for (int j = 0; j < numberOfThreads; j++) {
-                Thread t = new Thread(() -> {
+                Future f = executor.submit(() -> {
                     int a = new Random().nextInt();
                     int b = new Random().nextInt();
                     int c = a + b;
@@ -542,20 +543,21 @@ public class SorterTest {
                         e.printStackTrace();
                     }
                 });
-                threads.add(t);
-                t.start();
+                threads.add(f);
+                //t.start();
             }
             average_st += System.nanoTime() - startThread;
 
             long waitingThread = System.nanoTime();
             for (int j = 0; j < numberOfThreads; j++) {
-                Thread t = threads.get(j);
+                Future  t = threads.get(j);
                 try {
-                    t.join();
-                } catch (InterruptedException e) {
+                    t.get();
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
+
             average_wt += System.nanoTime() - waitingThread;
 
             long elapsedThread = System.nanoTime() - startThread;
@@ -578,6 +580,11 @@ public class SorterTest {
             average_nt+=elapsedNoThread;
 
         }
+        long startThread = System.nanoTime();
+        executor.shutdownNow();
+        long t = System.nanoTime() - startThread;
+        System.out.println(""+t);
+
         System.out.println("");
         System.out.printf("%24s %,13d \n", "Average Thread",  average_t/ numberOfLoops);
         System.out.printf("%24s %,13d \n", "Average Starting Thread",  average_st/ numberOfLoops);

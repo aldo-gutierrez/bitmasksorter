@@ -3,7 +3,7 @@ package com.aldogg.sorter;
 import java.security.InvalidParameterException;
 
 public class BitSorterParams {
-    public static final int SMALL_LIST_SIZE = 8;
+    public static final int SMALL_LIST_SIZE = 16;
     public static final int COUNT_SORT_SMALL_NUMBER_SHIFT = 4;
 
     private int countingSortBits = 16;
