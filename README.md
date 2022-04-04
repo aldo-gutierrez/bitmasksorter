@@ -18,7 +18,7 @@ only the bits that change are part of the mask in this case 3 bits
 
 ## QuickBitSorter
 Is similar to QuickSort but for choosing the pivot we use the bit mask. 
-Having the bit mask also helps when doing a flexible CountSort for the last bits.
+Having the bit mask also helps when doing a CountSort or Radix sort for the last bits.
 
 This is different to other QuickSort algorithms that normally use the last element as pivot or choose the average of three
 pivots.
@@ -113,50 +113,53 @@ wins the majority.
 
 ###Example 1: 
 
-Comparison for sorting 10 Million int elements with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor
+Comparison for sorting 10 Million int elements with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 11
 
 | Algorithm        | AVG CPU time [ms] |
 | ---------------- |:-------------:|
-|JavaIntSorter|748|
-|QuickBitSorter3UInt|423|
-|RadixBitSorterUInt|115|
-|JavaParallelSorter|144|
-|QuickBitSorterMTUInt|118|
-|MixedBitSorterMTUInt|98|
-|RadixBitSorterMTUInt|96|
+|JavaIntSorter|721|
+|QuickBitSorterInt|355|
+|RadixBitSorterInt|106|
+|JavaParallelSorterInt|85|
+|RadixByteSorterInt|186|
+|QuickBitSorterMTInt|104|
+|MixedBitSorterMTInt|97|
+|RadixBitSorterMTInt|105|
 
 
 ![Graph2](plot-S10000000-Range0-10000000-random.png?raw=true "Graph2")
 
 ###Example 2:
 
-Comparison for sorting 10 Million int elements with range from 0 to 100000 in an AMD Ryzen 7 4800H processor
+Comparison for sorting 10 Million int elements with range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 11
 
 | Algorithm        | AVG CPU time  [ms]|
 | ---------------- |:-------------:|
-|JavaIntSorter|327|
-|QuickBitSorter3UInt|25|
-|RadixBitSorterUInt|52|
-|JavaParallelSorter|94|
-|QuickBitSorterMTUInt|23|
-|MixedBitSorterMTUInt|23|
-|RadixBitSorterMTUInt|23|
+|JavaSorterInt|533|
+|QuickBitSorterInt|53|
+|RadixBitSorterInt|101|
+|RadixByteSorterInt|188|
+|JavaParallelSorterInt|85|
+|QuickBitSorterMTInt|51|
+|MixedBitSorterMTInt|50|
+|RadixBitSorterMTInt|82|
 
 ![Graph2](plot-S10000000-Range0-100000-random.png?raw=true "Graph2")
 
 ###Example 3:
 
-Comparison for sorting 40 Million int elements with range from 0 to 1000000000 in an AMD Ryzen 7 4800H processor
+Comparison for sorting 40 Million int elements with range from 0 to 1000000000 in an AMD Ryzen 7 4800H processor, Java 11
 
 | Algorithm        | AVG CPU time  [ms]|
 | ---------------- |:-------------:|
-|JavaIntSorter|3542|
-|QuickBitSorterUInt|2960|
-|RadixBitSorterUInt|706|
-|JavaParallelSorter|410|
-|QuickBitSorterMTUInt|657|
-|MixedBitSorterMTUInt|664|
-|RadixBitSorterMTUInt|397|
+|JavaSorterInt|3160|
+|QuickBitSorterInt|2868|
+|RadixBitSorterInt|681|
+|RadixByteSorterInt|673|
+|JavaParallelSorterInt|382|
+|QuickBitSorterMTInt|558|
+|MixedBitSorterMTInt|601|
+|RadixBitSorterMTInt|466|
 
 ![Graph2](plot-S40000000-Range0-1000000000-random.png?raw=true "Graph2")
 
@@ -187,25 +190,25 @@ sorter.sort(list, comparator);
 
 ###Example 4: 
 
-Comparison for sorting 10 Million objects with int key  with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor
+Comparison for sorting 10 Million objects with int key  with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 11
 
 | Algorithm        | AVG CPU time [ms] |
 | ---------------- |:-------------:|
-|JavaObjectSorter|8229|
-|JavaObjectParallelSorter|1464|
-|RadixBitSorterObject|1333|
+|JavaSorterObject|7715|
+|JavaParallelSorterObjectInt|1510|
+|RadixBitSorterObjectInt|1274|
 
 ![Graph2](plot-S10000000-Range0-10000000-random-object.png?raw=true "Graph2")
 
 ###Example 5:
 
-Comparison for sorting 10 Million elements with int key range from 0 to 100000 in an AMD Ryzen 7 4800H processor
+Comparison for sorting 10 Million elements with int key range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 11
 
 | Algorithm        | AVG CPU time  [ms]|
 | ---------------- |:-------------:|
-|JavaObjectSorter|6745|
-|JavaObjectParallelSorter|1366|
-|RadixBitSorterObject|1315|
+|JavaSorterObject|6149|
+|JavaParallelSorterObjectInt|1355|
+|RadixBitSorterObjectInt|1250|
 
 ![Graph2](plot-S10000000-Range0-100000-random-object.png?raw=true "Graph2")
 
@@ -227,6 +230,13 @@ Comparison for sorting 10 Million elements with int key range from 0 to 100000 i
 | MixedBitSorterMT | O(n * log(n)) | O(n * log(n))?      | O(n), k <= t   | O(n*t)    | O(n*t)      |  O(2^c)  |
 | RadixBitSorterMT | O(n * log(n)) | O(n * k), k<log2(n) | O(n), k = 1    | O(n)      | O(n)        |    1     |
 
+## Comparing to Ska Sort
+I Still didn't implement the same algorithm but RadixByteSorterInt should be equivalent to Ska Sort
+Ska Sort is faster when the range of the number is 30 bit of more, and RadixBitSorter is faster if the range 
+has less than 30 bits.
+
+More comparison is needed.
+
 ## Things to DO
 - Add More Object sorters besides RadixBitSorter
 - Add Long, Short, Byte sorters
@@ -237,5 +247,13 @@ Comparison for sorting 10 Million elements with int key range from 0 to 100000 i
 - Compare with [Wolf Sort] (https://github.com/scandum/wolfsort) 
 
 ## Algorithms Ready for Prod
-- RadixBitSorterInt 
-- RadixBitSorterMTInt
+|Algorithm|positive random numbers|negative random numbers|unsigned numbers|sorted|reverse sorted|
+|QuickBitSorterInt|ok|ok|not tested|slower than java|slower than java|
+|RadixBitSorterInt|ok|ok|not tested|slower than java|slower than java|
+|RadixByteSorterInt|ok|ok|not tested|slower than java|slower than java|
+|JavaParallelSorterInt|ok|ok|not tested|slower than java|slower than java|
+|QuickBitSorterMTInt|ok|ok|not tested|slower than java|slower than java|
+|MixedBitSorterMTInt|ok|ok|not tested|slower than java|slower than java|
+|RadixBitSorterMTInt|ok|ok|not tested|slower than java|slower than java|
+|RadixBitSorterObject|ok|ok|not tested|slower than java|slower than java|
+
