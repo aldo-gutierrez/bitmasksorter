@@ -249,12 +249,12 @@ More comparison is needed.
 ## Algorithms Ready for Prod
 |Algorithm|Positive random numbers|Negative random numbers|Unsigned numbers|Sorted|Reverse sorted|
 |---------|-----------------------|-----------------------|----------------|------|--------------|
-|QuickBitSorterInt|ok|ok|not tested|slower than java|slower than java|
-|RadixBitSorterInt|ok|ok|not tested|slower than java|slower than java|
-|RadixByteSorterInt|ok|ok|not tested|slower than java|slower than java|
-|JavaParallelSorterInt|ok|ok|not tested|slower than java|slower than java|
-|QuickBitSorterMTInt|ok|ok|not tested|slower than java|slower than java|
-|MixedBitSorterMTInt|ok|ok|not tested|slower than java|slower than java|
-|RadixBitSorterMTInt|ok|ok|not tested|slower than java|slower than java|
+|QuickBitSorterInt|ok|ok|ok|slower than java|slower than java|
+|RadixBitSorterInt|ok|ok|ok|slower than java|slower than java|
+|RadixByteSorterInt|ok|ok|ok|slower than java|slower than java|
+|JavaParallelSorterInt|ok|ok|not supported|slower than java|slower than java|
+|QuickBitSorterMTInt|ok|ok|ok|slower than java|slower than java|
+|MixedBitSorterMTInt|ok|ok|ok|slower than java|slower than java|
+|RadixBitSorterMTInt|ok|ok|ok|slower than java|slower than java|
 |RadixBitSorterObject|ok|ok|not tested|slower than java|slower than java|
 
