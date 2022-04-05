@@ -247,7 +247,8 @@ More comparison is needed.
 - Compare with [Wolf Sort] (https://github.com/scandum/wolfsort) 
 
 ## Algorithms Ready for Prod
-|Algorithm|positive random numbers|negative random numbers|unsigned numbers|sorted|reverse sorted|
+|Algorithm|Positive random numbers|Negative random numbers|Unsigned numbers|Sorted|Reverse sorted|
+|---------|-----------------------|-----------------------|----------------|------|--------------|
 |QuickBitSorterInt|ok|ok|not tested|slower than java|slower than java|
 |RadixBitSorterInt|ok|ok|not tested|slower than java|slower than java|
 |RadixByteSorterInt|ok|ok|not tested|slower than java|slower than java|

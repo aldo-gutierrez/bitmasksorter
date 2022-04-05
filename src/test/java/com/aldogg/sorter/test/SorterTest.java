@@ -82,6 +82,46 @@ public class SorterTest {
         }
     }
 
+    private void testUnsignedIntSort(int[] list, TestSortResults testSortResults, IntSorter[] sorters) {
+        int[] listAux2 = Arrays.copyOf(list, list.length);
+        long startBase = System.nanoTime();
+        IntSorter base = new RadixByteSorterInt();
+        base.setUnsigned(true);
+        base.sort(listAux2);
+        long elapsedBase = System.nanoTime() - startBase;
+
+        for (int i = 0; i < sorters.length; i++) {
+            IntSorter sorter = sorters[i];
+            if (sorter instanceof JavaSorterInt) {
+                testSortResults.set(i, elapsedBase);
+            } else {
+                long start = System.nanoTime();
+                int[] listAux = Arrays.copyOf(list, list.length);
+                sorter.sort(listAux);
+                long elapsed = System.nanoTime() - start;
+                try {
+                    assertArrayEquals(listAux2, listAux);
+                    testSortResults.set(i, elapsed);
+                } catch (Throwable ex) {
+                    testSortResults.set(i, 0);
+                    if (list.length <= 10000) {
+                        System.err.println("Sorter "+ sorter.name());
+                        String orig = Arrays.toString(list);
+                        System.err.println("List orig: " + orig);
+                        String failed = Arrays.toString(listAux);
+                        System.err.println("List fail: " + failed);
+                        String ok = Arrays.toString(listAux2);
+                        System.err.println("List ok: " + ok);
+                    } else {
+                        System.err.println("Sorter "+ sorter.name());
+                        System.err.println("List order is not OK ");
+                    }
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
 
 
     private void testObjectSort(Object[] list, IntComparator comparator, TestSortResults testSortResults, ObjectSorter[] sorters) {
@@ -371,9 +411,9 @@ public class SorterTest {
 
     @Test
     public void speedTestUnsigned() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("speed_negative.csv"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("speed_unsigned.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        IntSorter[] sorters = new IntSorter[] {new QuickBitSorterInt(),  new RadixBitSorterInt(), new RadixByteSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
         for (IntSorter sorter: sorters) {
             sorter.setUnsigned(true);
@@ -382,27 +422,26 @@ public class SorterTest {
         TestSortResults testSortResults;
 
         //heatup
-        testSortResults = new TestSortResults(sorters.length);
-        testSpeedInt(1000, 80000, 0, 80000, testSortResults, sorters, null);
+        //testSortResults = new TestSortResults(sorters.length);
+        //testSpeedUnsignedInt(1000, 80000, 0, 80000, testSortResults, sorters, null);
 
-        int iterations = 200;
-        int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
-
+        int iterations = 50;
+        int[] limitHigh = new int[] {214748364};
         for (int limitH : limitHigh) {
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 10000, -limitH, limitH, testSortResults, sorters, writer);
+            testSpeedUnsignedInt(iterations, 10000, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 100000, -limitH, limitH, testSortResults, sorters, writer);
+            testSpeedUnsignedInt(iterations, 100000, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 1000000, -limitH, limitH, testSortResults, sorters, writer);
+            testSpeedUnsignedInt(iterations, 1000000, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 10000000, -limitH, limitH, testSortResults, sorters, writer);
+            testSpeedUnsignedInt(iterations, 10000000, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 40000000, -limitH, limitH, testSortResults, sorters, writer);
+            testSpeedUnsignedInt(iterations, 40000000, testSortResults, sorters, writer);
 
             System.out.println("----------------------");
         }
@@ -424,6 +463,20 @@ public class SorterTest {
         printTestSpeed(size, limitLow, limitHigh, testSortResults, sorters, writer);
     }
 
+    private void testSpeedUnsignedInt(int iterations, int size, TestSortResults testSortResults, IntSorter[] sorters, Writer writer) throws IOException {
+        Random random = new Random();
+        int limitLow = Integer.MAX_VALUE - 1000;
+        for (int iter = 0; iter < iterations; iter++) {
+            int[] list = new int[size];
+            for (int i = 0; i < size; i++) {
+                long randomInt = (long) random.nextInt(3000)  + (long) limitLow;
+                list[i] = ((Long) randomInt).intValue();
+            }
+            testUnsignedIntSort(list, testSortResults, sorters);
+        }
+        printTestSpeed(size, limitLow, Integer.MAX_VALUE + 2000, testSortResults, sorters, writer);
+    }
+
     private void testSpeedObject(int iterations, int size, int limitLow, int limitHigh, TestSortResults testSortResults, ObjectSorter[] sorters, IntComparator comparator, Writer writer) throws IOException {
         Random random = new Random();
         int f = limitHigh - limitLow;
@@ -438,7 +491,7 @@ public class SorterTest {
         printTestSpeed(size, limitLow, limitHigh, testSortResults, sorters, writer);
     }
 
-    private void printTestSpeed(int size, int limitLow, int limitHigh, TestSortResults testSortResults, Sorter[] sorters, Writer writer) throws IOException {
+    private void printTestSpeed(int size, int limitLow, long limitHigh, TestSortResults testSortResults, Sorter[] sorters, Writer writer) throws IOException {
         if (writer != null) {
            for (int i = 0; i < sorters.length; i++) {
                Sorter sorter = sorters[i];
