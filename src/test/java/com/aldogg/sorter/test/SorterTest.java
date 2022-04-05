@@ -413,7 +413,7 @@ public class SorterTest {
     public void speedTestUnsigned() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter("speed_unsigned.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
-        IntSorter[] sorters = new IntSorter[] {new QuickBitSorterInt(),  new RadixBitSorterInt(), new RadixByteSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        IntSorter[] sorters = new IntSorter[] {new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
         for (IntSorter sorter: sorters) {
             sorter.setUnsigned(true);
@@ -474,7 +474,7 @@ public class SorterTest {
             }
             testUnsignedIntSort(list, testSortResults, sorters);
         }
-        printTestSpeed(size, limitLow, Integer.MAX_VALUE + 2000, testSortResults, sorters, writer);
+        printTestSpeed(size, limitLow, ((long) Integer.MAX_VALUE) + 2000L, testSortResults, sorters, writer);
     }
 
     private void testSpeedObject(int iterations, int size, int limitLow, int limitHigh, TestSortResults testSortResults, ObjectSorter[] sorters, IntComparator comparator, Writer writer) throws IOException {

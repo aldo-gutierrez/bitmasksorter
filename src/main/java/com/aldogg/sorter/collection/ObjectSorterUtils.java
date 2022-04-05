@@ -11,6 +11,38 @@ public class ObjectSorterUtils {
     }
 
     /**
+     *   partition with 0 memory in-place
+     *   CPU: N
+     *   MEM: 1
+     *   not stable?
+     */
+    public static int partitionNotStable(final Object[] oList, final int[] list, final  int start, final int end, final int sortMask) {
+        int left = start;
+        int right = end - 1;
+
+        for (; left <= right; ) {
+            int element = list[left];
+            if ((element & sortMask) == 0) {
+                left++;
+            } else {
+                for (; left <= right; ) {
+                    element = list[right];
+                    if ((element & sortMask) == 0) {
+                        IntSorterUtils.swap(list, left, right);
+                        ObjectSorterUtils.swap(oList, left,right);
+                        left++;
+                        right--;
+                        break;
+                    } else {
+                        right--;
+                    }
+                }
+            }
+        }
+        return left;
+    }
+
+    /**
      *   partition with 0 memory in-place reverse order
      *   CPU: N
      *   MEM: 1

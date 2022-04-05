@@ -37,9 +37,11 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
             return;
         }
 
-        if (!isUnsigned() && kList[0] == 31) { //there are negative numbers and positive numbers
+        if (kList[0] == 31) { //there are negative numbers and positive numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
-            int finalLeft = ObjectSorterUtils.partitionReverseNotStable(oList, list, start, end, sortMask);
+            int finalLeft = isUnsigned()
+                    ? ObjectSorterUtils.partitionNotStable(oList, list, start, end, sortMask)
+                    : ObjectSorterUtils.partitionReverseNotStable(oList, list, start, end, sortMask);
             if (finalLeft - start > 1) { //sort negative numbers
                 int[] aux = new int[finalLeft - start];
                 Object[] oAux = new Object[finalLeft - start];

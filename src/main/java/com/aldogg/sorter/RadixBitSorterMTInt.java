@@ -18,7 +18,9 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
             return;
         }
         if (list.length <= MIN_SIZE_FOR_THREADS) {
-            (new RadixBitSorterInt()).sort(list);
+            RadixBitSorterInt radixBitSorterInt = new RadixBitSorterInt();
+            radixBitSorterInt.setUnsigned(isUnsigned());
+            radixBitSorterInt.sort(list);
             return;
         }
         final int start = 0;
@@ -33,9 +35,11 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
             return;
         }
 
-        if (!isUnsigned() && kList[0] == 31) { //there are negative numbers and positive numbers
+        if (kList[0] == 31) { //there are negative numbers and positive numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
-            int finalLeft = IntSorterUtils.partitionReverseNotStable(list, start, end, sortMask);
+            int finalLeft = isUnsigned()
+                    ? IntSorterUtils.partitionNotStable(list, start, end, sortMask)
+                    : IntSorterUtils.partitionReverseNotStable(list, start, end, sortMask);
             if (finalLeft - start > 1) { //sort negative numbers
                 maskParts = getMaskBit(list, start, finalLeft);
                 mask = maskParts[0] & maskParts[1];

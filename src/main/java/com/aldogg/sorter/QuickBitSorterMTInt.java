@@ -43,9 +43,11 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
             return;
         }
 
-        if (!isUnsigned() && kList[0] == 31) { //there are negative numbers and positive numbers
+        if (kList[0] == 31) { //there are negative numbers and positive numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
-            int finalLeft = IntSorterUtils.partitionReverseNotStable(list, start, end, sortMask);
+            int finalLeft = isUnsigned()
+                    ? IntSorterUtils.partitionNotStable(list, start, end, sortMask)
+                    : IntSorterUtils.partitionReverseNotStable(list, start, end, sortMask);
             Thread t1 = null;
             if (finalLeft - start > 1) { //sort negative numbers
                 maskParts = getMaskBit(list, start, finalLeft);
