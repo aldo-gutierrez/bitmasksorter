@@ -1,5 +1,6 @@
 package com.aldogg.sorter;
 
+import com.aldogg.parallel.SorterRunner;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
 import java.util.ArrayList;
@@ -9,7 +10,6 @@ import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.intType.IntSorterUtils.sortShortKList;
 
 public class RadixBitSorterMTInt extends RadixBitSorterInt {
-    public static final int MIN_SIZE_FOR_THREADS = 65536;
     protected final BitSorterParams params = BitSorterParams.getMTParams();
 
     @Override
@@ -17,7 +17,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
         if (list.length < 2) {
             return;
         }
-        if (list.length <= MIN_SIZE_FOR_THREADS) {
+        if (list.length <= params.getDataSizeForThreads() || params.getMaxThreadsBits() == 0) {
             RadixBitSorterInt radixBitSorterInt = new RadixBitSorterInt();
             radixBitSorterInt.setUnsigned(isUnsigned());
             radixBitSorterInt.sort(list);
@@ -40,25 +40,29 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
             int finalLeft = isUnsigned()
                     ? IntSorterUtils.partitionNotStable(list, start, end, sortMask)
                     : IntSorterUtils.partitionReverseNotStable(list, start, end, sortMask);
-            if (finalLeft - start > 1) { //sort negative numbers
-                maskParts = getMaskBit(list, start, finalLeft);
-                mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsList(mask);
-                sort(list, start, finalLeft, kList, 0);
-            }
-            if (end - finalLeft > 1) { //sort positive numbers
-                maskParts = getMaskBit(list, finalLeft, end);
-                mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsList(mask);
-                sort(list, finalLeft, end, kList, 0);
-            }
+            int size1 = finalLeft - start;
+            int size2 = end - finalLeft;
+            SorterRunner.runTwoRunnable(
+                    size1 > 1 ? (Runnable) () -> { //sort negative numbers
+                        int[] maskParts1 = getMaskBit(list, start, finalLeft);
+                        int mask1 = maskParts1[0] & maskParts1[1];
+                        int[] kList1 = getMaskAsList(mask1);
+                        sort(list, start, finalLeft, kList1, 0, params.getMaxThreadsBits() - 1);
+                    } : null, size1,
+                    size2 > 1 ? (Runnable) () -> { //sort positive numbers
+                        int[] maskParts2 = getMaskBit(list, finalLeft, end);
+                        int mask2 = maskParts2[0] & maskParts2[1];
+                        int[] kList2 = getMaskAsList(mask2);
+                        sort(list, finalLeft, end, kList2, 0, params.getMaxThreadsBits() - 1);
+                    } : null, size2, params.getDataSizeForThreads(),0, null);
+
         } else {
-            sort(list, start, end, kList, 0);
+            sort(list, start, end, kList, 0, params.getMaxThreadsBits());
         }
     }
 
 
-    public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex) {
+    public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex, int paramsMaxThreadBits) {
         int kDiff = kList.length - kIndex;
         if (kDiff < 1) {
             return;
@@ -74,8 +78,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
 
         int threadBits = 0;
         int sortMask1 = 0;
-        //we are using intentionaly the double of threads
-        int maxThreadBits = Math.min(params.getMaxThreadsBits() - 1, kList.length);
+        int maxThreadBits = Math.min(Math.max(paramsMaxThreadBits, 0), kList.length) - 1;
         for (int i = maxThreadBits; i >= 0; i--) {
             int kListI = kList[i];
             int sortMaskI = getMaskBit(kListI);
@@ -103,19 +106,9 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
                 int elementMaskedShifted = getKeySec1(element, sections[0]);
                 count[elementMaskedShifted]++;
             }
-        } else {
-            for (int i = start; i < end; i++) {
-                int element = list[i];
-                int elementMaskedShifted = getKeySN(element, sections);
-                count[elementMaskedShifted]++;
+            for (int i = 1; i < maxProcessNumber; i++) {
+                leftX[i] = leftX[i - 1] + count[i - 1];
             }
-        }
-
-        for (int i = 1; i < maxProcessNumber; i++) {
-            leftX[i] = leftX[i - 1] + count[i - 1];
-        }
-
-        if (sections.length == 1) {
             for (int i = start; i < end; i++) {
                 int element = list[i];
                 int elementMaskedShifted = getKeySec1(element, sections[0]);
@@ -127,10 +120,20 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
             for (int i = start; i < end; i++) {
                 int element = list[i];
                 int elementMaskedShifted = getKeySN(element, sections);
+                count[elementMaskedShifted]++;
+            }
+            for (int i = 1; i < maxProcessNumber; i++) {
+                leftX[i] = leftX[i - 1] + count[i - 1];
+            }
+            for (int i = start; i < end; i++) {
+                int element = list[i];
+                int elementMaskedShifted = getKeySN(element, sections);
                 aux[leftX[elementMaskedShifted]] = element;
                 leftX[elementMaskedShifted]++;
             }
         }
+
+
         System.arraycopy(aux, 0, list, start, end - start);
         if (remainingBits > 0) {
             List<Runnable> runInThreadList = new ArrayList<>();
