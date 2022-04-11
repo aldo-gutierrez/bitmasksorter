@@ -1,12 +1,6 @@
 package com.aldogg.sorter;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.aldogg.sorter.intType.IntSorterUtils.compareAndSwapSigned;
-import static com.aldogg.sorter.intType.IntSorterUtils.compareAndSwapSignedR;
+import java.util.*;
 
 public class BitSorterUtils {
 
@@ -116,36 +110,78 @@ public class BitSorterUtils {
     }
 
 
-    public static boolean listIsOrdered(int[] list, int start, int end) {
-        boolean swap = compareAndSwapSignedR(list, 0, end-1);
-        if (!swap) {
-            for (int i = start; i + 1 < end; i ++) {
-                swap = swap || compareAndSwapSignedR(list, i, i + 1);
-                if (swap) {
-                    return  false;
-                }
+    public static boolean listIsOrderedSigned(int[] list, int start, int end) {
+        boolean orderedAsc = true;
+        int i1 = list[start];
+        for (int i = start + 1; i <= end-1; i++) {
+            int i2 = list[i];
+            if (i1 > i2) {
+                orderedAsc = false;
+                break;
             }
-            return !swap;
-        } else {
-            //Reverse Order?
-            for (int i = start+1; i <= (end-1) / 2; i++) {
-                swap = swap && compareAndSwapSignedR(list, i, end - 1 - i);
-                if (!swap) {
-                    return  false;
-                }
-            }
-            if (swap) {
-                swap = false;
-                for (int i = start; i + 1 < end; i ++) {
-                    swap = swap || compareAndSwapSignedR(list, i, i + 1);
-                    if (swap) {
-                        return false;
-                    }
-                }
-                return !swap;
-            }
+            i1 = i2;
         }
-        return false;
+        if (orderedAsc) {
+            return true;
+        }
+        boolean orderedDesc = true;
+        int i2 = list[end - 1];
+        for (int i = end - 2; i >= start; i--) {
+            i1 = list[i];
+            if (i1 < i2) {
+                orderedDesc = false;
+                break;
+            }
+            i2 = i1;
+        }
+        if (!orderedDesc) {
+            return false;
+        }
+        int length = end - start;
+        int end2 = start + length / 2;
+        for (int i = start; i < end2; i++) {
+            int swap = list[i];
+            list[i] = list[end - i - 1];
+            list[end - i - 1] = swap;
+        }
+        return true;
+    }
+
+    public static boolean listIsOrderedUnSigned(int[] list, int start, int end) {
+        boolean orderedAsc = true;
+        int i1 = list[start];
+        for (int i = start + 1; i <= end-1; i++) {
+            int i2 = list[i];
+            if (Integer.compareUnsigned(i1, i2) ==  1) {
+                orderedAsc = false;
+                break;
+            }
+            i1 = i2;
+        }
+        if (orderedAsc) {
+            return true;
+        }
+        boolean orderedDesc = true;
+        int i2 = list[end - 1];
+        for (int i = end - 2; i >= start; i--) {
+            i1 = list[i];
+            if (Integer.compareUnsigned(i1 , i2) ==  -1) {
+                orderedDesc = false;
+                break;
+            }
+            i2 = i1;
+        }
+        if (!orderedDesc) {
+            return false;
+        }
+        int length = end - start;
+        int end2 = start + length / 2;
+        for (int i = start; i < end2; i++) {
+            int swap = list[i];
+            list[i] = list[end - i - 1];
+            list[end - i - 1] = swap;
+        }
+        return true;
     }
 
 }
