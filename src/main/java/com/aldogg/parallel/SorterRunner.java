@@ -23,19 +23,31 @@ public class SorterRunner {
         }
 
         if (numThreads == null) {
-            Thread t = new Thread(r1);
-            t.start();
-            r2.run();
-            try {
-                t.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
+            if (length1 > length2) {
+                Thread t = new Thread(r2);
+                t.start();
+                r1.run();
+                try {
+                    t.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Thread t = new Thread(r1);
+                t.start();
+                r2.run();
+                try {
+                    t.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             return;
         }
 
         if (numThreads.get() < maxThreads) {
+            //length1 > length2 is faster than length2> length1 that is faster than just lunch r1
+            //but lunching r1 inline as in QuickBitSorterMT is faster than length1 > length2. OoO
             if (length1 > length2) {
                 Thread t = new Thread(r2);
                 numThreads.addAndGet(1);
