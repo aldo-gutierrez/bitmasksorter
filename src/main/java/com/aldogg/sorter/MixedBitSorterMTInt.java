@@ -31,12 +31,12 @@ public class MixedBitSorterMTInt implements IntSorter {
 
     @Override
     public void sort(int[] list) {
-        final int start = 0;
-        final int end = list.length;
         if (list.length < 2) {
             return;
         }
-        //if (listIsOrdered(list, start, end)) return;
+        final int start = 0;
+        final int end = list.length;
+        if (isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end)) return;
 
         int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];

@@ -8,31 +8,23 @@ import static com.aldogg.sorter.RadixBitSorterInt.radixSort;
 public class IntSorterUtils {
 
     public static void compareAndSwapSigned(final int[] list, final int left, final int right) {
-        if ((list[left] > list[right])) {
-            swap(list, left, right);
+        int listL = list[left];
+        int listR = list[right];
+        if ((listL > listR)) {
+            int aux = listL;
+            list[left] = listR;
+            list[right] = aux;
         }
-    }
-
-    public static boolean compareAndSwapSignedR(final int[] list, final int left, final int right) {
-        if ((list[left] > list[right])) {
-            swap(list, left, right);
-            return true;
-        }
-        return false;
     }
 
     public static void compareAndSwapUnsigned(final int[] list, final int left, final int right) {
-        if (Integer.compareUnsigned(list[left], list[right]) ==  1) {
-            swap(list, left, right);
+        int listL = list[left];
+        int listR = list[right];
+        if (Integer.compareUnsigned(listL, listR) ==  1) {
+            int aux = listL;
+            list[left] = listR;
+            list[right] = aux;
         }
-    }
-
-    public static boolean compareAndSwapUnsignedR(final int[] list, final int left, final int right) {
-        if (Integer.compareUnsigned(list[left], list[right]) ==  1) {
-            swap(list, left, right);
-            return true;
-        }
-        return false;
     }
 
     public static void swap(final int[] list, final int left, final int right) {

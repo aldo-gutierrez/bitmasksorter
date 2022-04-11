@@ -16,8 +16,6 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
 
     protected BitSorterParams params = BitSorterParams.getMTParams();
 
-    int[] aux;
-
     @Override
     public void setParams(BitSorterParams params) {
         this.params = params;
@@ -28,14 +26,13 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
         if (list.length < 2) {
             return;
         }
-        aux = null;
         if (params.getMaxThreads() < 2) {
             super.sort(list);
         }
-        numThreads = new AtomicInteger(1);
         final int start = 0;
         final int end = list.length;
-        //if (listIsOrdered(list, start, end)) return;
+        if (isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end)) return;
+
         int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
@@ -138,53 +135,6 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
             } finally {
                 numThreads.addAndGet(-1);
             }
-        }
-    }
-
-    //somehow slow, tested 2021 12 10
-    protected int partitionMT(int[] list, int start, int end, int sortMask) {
-        int listLength = end - start;
-        if (aux == null) {
-            aux = new int[listLength];
-        }
-        int maxThreads = params.getMaxThreads();
-        if (listLength > maxThreads * params.getDataSizeForThreads()) {
-
-            Object left = ArrayThreadRunner.runInParallel(list, start, end, maxThreads, numThreads, new int[]{}, new ArrayRunnable<Object>() {
-                int left = start;
-                int right = end - 1;
-
-                @Override
-                public int[] map(int[] list, int start, int end) {
-                    int left = IntSorterUtils.partitionNotStable(list, start, end, sortMask);
-                    return new int[]{start, end, left};
-                }
-
-                @Override
-                public Object reduce(Object result, Object partialResult) {
-                    int[] partialResultInt = (int[]) partialResult;
-                    int start = partialResultInt[0];
-                    int end = partialResultInt[1];
-                    int partialLeft = partialResultInt[2];
-                    int leftLength = partialLeft - start;
-                    if (leftLength > 0) {
-                        System.arraycopy(list, start, aux, left, leftLength);
-                        left = left + leftLength;
-                    }
-
-                    int rightLength = (end - start) - leftLength;
-                    if (rightLength > 0) {
-                        System.arraycopy(list, end - rightLength, aux, right - rightLength + 1, rightLength);
-                        right = right - rightLength;
-                    }
-                    return left;
-                }
-            });
-
-            System.arraycopy(aux, start, list, start, end - start);
-            return (Integer) left;
-        } else {
-            return IntSorterUtils.partitionNotStable(list, start, end, sortMask);
         }
     }
 

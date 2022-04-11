@@ -2,6 +2,9 @@ package com.aldogg.sorter;
 
 import com.aldogg.sorter.intType.IntSorter;
 
+import static com.aldogg.sorter.BitSorterUtils.listIsOrderedSigned;
+import static com.aldogg.sorter.BitSorterUtils.listIsOrderedUnSigned;
+
 public class RadixByteSorterInt implements IntSorter {
 
     boolean unsigned = false;
@@ -23,6 +26,13 @@ public class RadixByteSorterInt implements IntSorter {
 
     @Override
     public void sort(int[] list) {
+        if (list.length < 2) {
+            return;
+        }
+        final int start = 0;
+        final int end = list.length;
+        if (isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end)) return;
+
         int length = list.length;
         int[] aux = new int[length];
         int[] leftX = new int[256];

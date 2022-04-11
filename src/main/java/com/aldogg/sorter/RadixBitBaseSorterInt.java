@@ -3,8 +3,7 @@ package com.aldogg.sorter;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
-import static com.aldogg.sorter.BitSorterUtils.getMaskBit;
-import static com.aldogg.sorter.BitSorterUtils.getMaskAsList;
+import static com.aldogg.sorter.BitSorterUtils.*;
 
 public class RadixBitBaseSorterInt implements IntSorter {
 
