@@ -15,8 +15,7 @@ import java.io.Writer;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static com.aldogg.sorter.BitSorterUtils.getMaskAsList;
-import static com.aldogg.sorter.BitSorterUtils.getMaskBit;
+import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.RadixBitSorterInt.radixSort;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -242,7 +241,7 @@ public class SorterTest {
         testSortResults = new TestSortResults(sorters.length);
         testSpeedInt(1000, 80000, -80000, 80000, testSortResults, sorters, null);
 
-        int iterations = 50;
+        int iterations = 20;
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
@@ -284,7 +283,7 @@ public class SorterTest {
         //testSortResults = new TestSortResults(sorters.length);
         //testSpeedUnsignedInt(1000, 80000, 0, 80000, testSortResults, sorters, null);
 
-        int iterations = 50;
+        int iterations = 20;
         int[] limitHigh = new int[] {214748364};
         for (int limitH : limitHigh) {
             testSortResults = new TestSortResults(sorters.length);
@@ -321,6 +320,65 @@ public class SorterTest {
         }
         printTestSpeed(size, limitLow, limitHigh, testSortResults, sorters, writer);
     }
+
+    public void testSpeedIncDec(int iterations, int size, TestSortResults testSortResults, IntSorter[] sorters, Writer writer) throws IOException {
+        Random random = new Random();
+        for (int iter = 0; iter < iterations; iter++) {
+            int constant = random.nextInt();
+            int randomInt = random.nextInt(3);
+            int[] list = new int[size];
+            for (int i = 0; i < size; i++) {
+                if (randomInt == 0) {
+                    list[i] = i;
+                } else  if (randomInt == 1) {
+                    list[i] = -i;
+                } else {
+                    list[i] = constant;
+                }
+            }
+            testIntSort(list, testSortResults, sorters);
+        }
+        printTestSpeed(size, 0, 0, testSortResults, sorters, writer);
+    }
+
+    @Test
+    public void speedTestIncDec() throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("speed.csv"));
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
+
+
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        TestSortResults testSortResults;
+
+        //heatup
+        testSortResults = new TestSortResults(sorters.length);
+        testSpeedIncDec(20, 10000, testSortResults, sorters, writer);
+
+        int iterations = 20;
+        int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
+
+        for (int limitH : limitHigh) {
+            testSortResults = new TestSortResults(sorters.length);
+            testSpeedIncDec(iterations, 10000, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            testSpeedIncDec(iterations, 100000, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            testSpeedIncDec(iterations, 1000000, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            testSpeedIncDec(iterations, 10000000, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            testSpeedIncDec(iterations, 40000000, testSortResults, sorters, writer);
+
+            System.out.println("----------------------");
+        }
+        System.out.println();
+        writer.close();
+    }
+
 
     private void testSpeedUnsignedInt(int iterations, int size, TestSortResults testSortResults, IntSorter[] sorters, Writer writer) throws IOException {
         Random random = new Random();
@@ -386,6 +444,8 @@ public class SorterTest {
     static volatile int  sum = 0;
 
     public static  void main (String[] args) {
+        listIsOrderedSigned(new int[]{1,1,1}, 0, 3);
+
         long average_t = 0;
         long average_st = 0;
         long average_wt = 0;
