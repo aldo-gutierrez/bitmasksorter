@@ -111,77 +111,109 @@ public class BitSorterUtils {
 
 
     public static boolean listIsOrderedSigned(int[] list, int start, int end) {
-        boolean orderedAsc = true;
         int i1 = list[start];
-        for (int i = start + 1; i <= end-1; i++) {
+        int i = start + 1;
+        while (i < end) {
             int i2 = list[i];
-            if (i1 > i2) {
-                orderedAsc = false;
+            if (i2 != i1) {
                 break;
             }
             i1 = i2;
+            i++;
         }
-        if (orderedAsc) {
+        if (i == end) {
             return true;
         }
-        boolean orderedDesc = true;
-        int i2 = list[end - 1];
-        for (int i = end - 2; i >= start; i--) {
-            i1 = list[i];
-            if (i1 < i2) {
-                orderedDesc = false;
-                break;
+
+        //ascending
+        i1 = list[i];
+        if (list[i-1] < i1) {
+            i++;
+            for (; i < end; i++)  {
+                int i2 = list[i];
+                if (i1 > i2) {
+                    break;
+                }
+                i1 = i2;
             }
-            i2 = i1;
+            return i == end;
         }
-        if (!orderedDesc) {
-            return false;
+        //descending
+        else {
+            i++;
+            for (; i < end; i++)  {
+                int i2 = list[i];
+                if (i1 < i2) {
+                    break;
+                }
+                i1 = i2;
+            }
+            if (i == end) {
+                int length = end - start;
+                int end2 = start + length / 2;
+                for (i = start; i < end2; i++) {
+                    int swap = list[i];
+                    list[i] = list[end - i - 1];
+                    list[end - i - 1] = swap;
+                }
+                return true;
+            } else {
+                return false;
+            }
         }
-        int length = end - start;
-        int end2 = start + length / 2;
-        for (int i = start; i < end2; i++) {
-            int swap = list[i];
-            list[i] = list[end - i - 1];
-            list[end - i - 1] = swap;
-        }
-        return true;
     }
 
     public static boolean listIsOrderedUnSigned(int[] list, int start, int end) {
-        boolean orderedAsc = true;
         int i1 = list[start];
-        for (int i = start + 1; i <= end-1; i++) {
+        int i = start + 1;
+        while (i < end) {
             int i2 = list[i];
-            if (Integer.compareUnsigned(i1, i2) ==  1) {
-                orderedAsc = false;
+            if (i2 != i1) {
                 break;
             }
             i1 = i2;
+            i++;
         }
-        if (orderedAsc) {
+        if (i == end) {
             return true;
         }
-        boolean orderedDesc = true;
-        int i2 = list[end - 1];
-        for (int i = end - 2; i >= start; i--) {
-            i1 = list[i];
-            if (Integer.compareUnsigned(i1 , i2) ==  -1) {
-                orderedDesc = false;
-                break;
+
+        //ascending
+        i1 = list[i];
+        if (list[i-1] < i1) {
+            i++;
+            for (; i < end; i++)  {
+                int i2 = list[i];
+                if (Integer.compareUnsigned(i1, i2) ==  1) {
+                    break;
+                }
+                i1 = i2;
             }
-            i2 = i1;
+            return i == end;
         }
-        if (!orderedDesc) {
-            return false;
+        //descending
+        else {
+            i++;
+            for (; i < end; i++)  {
+                int i2 = list[i];
+                if (Integer.compareUnsigned(i1, i2) == -1) {
+                    break;
+                }
+                i1 = i2;
+            }
+            if (i == end) {
+                int length = end - start;
+                int end2 = start + length / 2;
+                for (i = start; i < end2; i++) {
+                    int swap = list[i];
+                    list[i] = list[end - i - 1];
+                    list[end - i - 1] = swap;
+                }
+                return true;
+            } else {
+                return false;
+            }
         }
-        int length = end - start;
-        int end2 = start + length / 2;
-        for (int i = start; i < end2; i++) {
-            int swap = list[i];
-            list[i] = list[end - i - 1];
-            list[end - i - 1] = swap;
-        }
-        return true;
     }
 
 }
