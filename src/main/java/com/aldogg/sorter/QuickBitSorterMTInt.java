@@ -31,10 +31,10 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
         final int start = 0;
         final int end = list.length;
         int ordered = isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end);
-        if (ordered == IsOrderedResult.DESCENDING) {
+        if (ordered == AnalysisResult.DESCENDING) {
             IntSorterUtils.reverseList(list, start, end);
         }
-        if (ordered != IsOrderedResult.UNORDERED) return;
+        if (ordered != AnalysisResult.UNORDERED) return;
 
         int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];

@@ -247,14 +247,13 @@ More comparison is needed.
 - Compare with [Wolf Sort] (https://github.com/scandum/wolfsort) 
 
 ## Algorithms Ready for Prod
-|Algorithm|Positive random numbers|Negative random numbers|Unsigned numbers|Sorted|Reverse sorted|
-|---------|-----------------------|-----------------------|----------------|------|--------------|
-|QuickBitSorterInt|ok|ok|ok|slower than java|slower than java|
-|RadixBitSorterInt|ok|ok|ok|slower than java|slower than java|
-|RadixByteSorterInt|ok|ok|ok|slower than java|slower than java|
-|JavaParallelSorterInt|ok|ok|not supported|slower than java|slower than java|
-|QuickBitSorterMTInt|ok|ok|ok|slower than java|slower than java|
-|MixedBitSorterMTInt|ok|ok|ok|slower than java|slower than java|
-|RadixBitSorterMTInt|ok|ok|ok|slower than java|slower than java|
-|RadixBitSorterObject|ok|ok|not tested|slower than java|slower than java|
-
+|Algorithm|Positive random numbers|Negative random numbers|Unsigned numbers| Sorted         | Reverse sorted     |
+|---------|-----------------------|-----------------------|--------------|----------------|--------------------|
+|QuickBitSorterInt|ok|ok|ok| ok | ok |
+|RadixBitSorterInt|ok|ok|ok| ok | ok |
+|RadixByteSorterInt|ok|ok|ok| ok | ok |
+|JavaParallelSorterInt|ok|ok|ok|ok|ok|
+|QuickBitSorterMTInt|ok|ok|ok| ok | ok |
+|MixedBitSorterMTInt|ok|ok|ok| ok | ok |
+|RadixBitSorterMTInt|ok|ok|ok| ok | ok |
+|RadixBitSorterObject|ok|ok|not tested| ok | ok |

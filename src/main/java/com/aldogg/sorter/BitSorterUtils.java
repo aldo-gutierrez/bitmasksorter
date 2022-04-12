@@ -122,7 +122,7 @@ public class BitSorterUtils {
             i++;
         }
         if (i == end) {
-            return IsOrderedResult.ALL_EQUAL;
+            return AnalysisResult.ALL_EQUAL;
         }
 
         //ascending
@@ -137,9 +137,9 @@ public class BitSorterUtils {
                 i1 = i2;
             }
             if (i == end) {
-                return IsOrderedResult.ASCENDING;
+                return AnalysisResult.ASCENDING;
             } else {
-                return IsOrderedResult.UNORDERED;
+                return AnalysisResult.UNORDERED;
             }
         }
         //descending
@@ -153,9 +153,9 @@ public class BitSorterUtils {
                 i1 = i2;
             }
             if (i == end) {
-                return IsOrderedResult.DESCENDING;
+                return AnalysisResult.DESCENDING;
             } else {
-                return IsOrderedResult.UNORDERED;
+                return AnalysisResult.UNORDERED;
             }
         }
     }
@@ -172,7 +172,7 @@ public class BitSorterUtils {
             i++;
         }
         if (i == end) {
-            return IsOrderedResult.ALL_EQUAL;
+            return AnalysisResult.ALL_EQUAL;
         }
 
         //ascending
@@ -187,9 +187,9 @@ public class BitSorterUtils {
                 i1 = i2;
             }
             if (i == end) {
-                return IsOrderedResult.ASCENDING;
+                return AnalysisResult.ASCENDING;
             } else {
-                return IsOrderedResult.UNORDERED;
+                return AnalysisResult.UNORDERED;
             }
         }
         //descending
@@ -203,9 +203,9 @@ public class BitSorterUtils {
                 i1 = i2;
             }
             if (i == end) {
-                return IsOrderedResult.DESCENDING;
+                return AnalysisResult.DESCENDING;
             } else {
-                return IsOrderedResult.UNORDERED;
+                return AnalysisResult.UNORDERED;
             }
         }
     }
