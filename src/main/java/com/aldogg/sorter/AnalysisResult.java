@@ -15,13 +15,12 @@ public class AnalysisResult {
     int left;
     int ordered;
 
-    public AnalysisResult analyze(int[] list, int start, int end, boolean signed) {
-        return signed ? analyzeSigned(list, start, end):analyzeUnsigned(list, start, end);
-    }
 
 
-    public AnalysisResult analyzeSigned(int[] list, int start, int end) {
-        left = start;
+
+    public static  AnalysisResult analyzeSigned(int[] list, int start, int end) {
+        AnalysisResult r = new AnalysisResult();
+        r.left = start;
         int i1 = list[start];
         int i = start + 1;
         while (i < end) {
@@ -33,10 +32,17 @@ public class AnalysisResult {
             i++;
         }
         if (i == end) {
-            ordered = ALL_EQUAL;
-            return this;
+            r.ordered = ALL_EQUAL;
+            return r;
         }
-        calculateMask(i1);
+        if ((i1 & 0x80000000) == 0) {
+            r.mask_low = r.mask_low | i1;
+            r.inv_mask_low = r.inv_mask_low | (~i1);
+            r.left++;
+        } else {
+            r.mask_high = r.mask_high | i1;
+            r.inv_mask_high = r.inv_mask_high | (~i1);
+        }
 
         //ascending
         i1 = list[i];
@@ -44,15 +50,22 @@ public class AnalysisResult {
             i++;
             for (; i < end; i++) {
                 int i2 = list[i];
-                calculateMask(i2);
+                if ((i2 & 0x80000000) == 0) {
+                    r.mask_low = r.mask_low | i2;
+                    r.inv_mask_low = r.inv_mask_low | (~i2);
+                    r.left++;
+                } else {
+                    r.mask_high = r.mask_high | i2;
+                    r.inv_mask_high = r.inv_mask_high | (~i2);
+                }
                 if (i1 > i2) {
                     break;
                 }
                 i1 = i2;
             }
             if (i == end) {
-                ordered = ASCENDING;
-                return this;
+                r.ordered = ASCENDING;
+                return r;
             }
         }
         //descending
@@ -60,30 +73,45 @@ public class AnalysisResult {
             i++;
             for (; i < end; i++) {
                 int i2 = list[i];
-                calculateMask(i2);
+                if ((i2 & 0x80000000) == 0) {
+                    r.mask_low = r.mask_low | i2;
+                    r.inv_mask_low = r.inv_mask_low | (~i2);
+                    r.left++;
+                } else {
+                    r.mask_high = r.mask_high | i2;
+                    r.inv_mask_high = r.inv_mask_high | (~i2);
+                }
                 if (i1 < i2) {
                     break;
                 }
                 i1 = i2;
             }
             if (i == end) {
-                ordered = DESCENDING;
-                return this;
+                r.ordered = DESCENDING;
+                return r;
             }
         }
         for (; i < end; i++) {
             int i2 = list[i];
-            calculateMask(i2);
+            if ((i2 & 0x80000000) == 0) {
+                r.mask_low = r.mask_low | i2;
+                r.inv_mask_low = r.inv_mask_low | (~i2);
+                r.left++;
+            } else {
+                r.mask_high = r.mask_high | i2;
+                r.inv_mask_high = r.inv_mask_high | (~i2);
+            }
         }
-        mask = mask_low | mask_high;
-        inv_mask = mask_low | mask_high;
-        ordered = UNORDERED;
-        return this;
+        r.mask = r.mask_low | r.mask_high;
+        r.inv_mask = r.mask_low | r.mask_high;
+        r.ordered = UNORDERED;
+        return r;
     }
 
 
-    public AnalysisResult analyzeUnsigned(int[] list, int start, int end) {
-        left = start;
+    public static AnalysisResult analyzeUnsigned(int[] list, int start, int end) {
+        AnalysisResult r = new AnalysisResult();
+        r.left = start;
         int i1 = list[start];
         int i = start + 1;
         while (i < end) {
@@ -95,10 +123,17 @@ public class AnalysisResult {
             i++;
         }
         if (i == end) {
-            ordered = ALL_EQUAL;
-            return this;
+            r.ordered = ALL_EQUAL;
+            return r;
         }
-        calculateMask(i1);
+        if ((i1 & 0x80000000) == 0) {
+            r.mask_low = r.mask_low | i1;
+            r.inv_mask_low = r.inv_mask_low | (~i1);
+            r.left++;
+        } else {
+            r.mask_high = r.mask_high | i1;
+            r.inv_mask_high = r.inv_mask_high | (~i1);
+        }
 
         //ascending
         i1 = list[i];
@@ -106,15 +141,22 @@ public class AnalysisResult {
             i++;
             for (; i < end; i++) {
                 int i2 = list[i];
-                calculateMask(i2);
+                if ((i2 & 0x80000000) == 0) {
+                    r.mask_low = r.mask_low | i2;
+                    r.inv_mask_low = r.inv_mask_low | (~i2);
+                    r.left++;
+                } else {
+                    r.mask_high = r.mask_high | i2;
+                    r.inv_mask_high = r.inv_mask_high | (~i2);
+                }
                 if (Integer.compareUnsigned(i1, i2) == 1) {
                     break;
                 }
                 i1 = i2;
             }
             if (i == end) {
-                ordered = ASCENDING;
-                return this;
+                r.ordered = ASCENDING;
+                return r;
             }
         }
         //descending
@@ -122,36 +164,40 @@ public class AnalysisResult {
             i++;
             for (; i < end; i++) {
                 int i2 = list[i];
-                calculateMask(i2);
+                if ((i2 & 0x80000000) == 0) {
+                    r.mask_low = r.mask_low | i2;
+                    r.inv_mask_low = r.inv_mask_low | (~i2);
+                    r.left++;
+                } else {
+                    r.mask_high = r.mask_high | i2;
+                    r.inv_mask_high = r.inv_mask_high | (~i2);
+                }
                 if (Integer.compareUnsigned(i1, i2) == -1) {
                     break;
                 }
                 i1 = i2;
             }
             if (i == end) {
-                ordered = DESCENDING;
-                return this;
+                r.ordered = DESCENDING;
+                return r;
             }
         }
         for (; i < end; i++) {
             int i2 = list[i];
-            calculateMask(i2);
+            if ((i2 & 0x80000000) == 0) {
+                r.mask_low = r.mask_low | i2;
+                r.inv_mask_low = r.inv_mask_low | (~i2);
+                r.left++;
+            } else {
+                r.mask_high = r.mask_high | i2;
+                r.inv_mask_high = r.inv_mask_high | (~i2);
+            }
         }
-        mask = mask_low | mask_high;
-        inv_mask = mask_low | mask_high;
-        ordered = UNORDERED;
-        return this;
+        r.mask = r.mask_low | r.mask_high;
+        r.inv_mask = r.mask_low | r.mask_high;
+        r.ordered = UNORDERED;
+        return r;
     }
 
-    public void calculateMask(int ix) {
-        if ((ix & 0x80000000) == 0) {
-            mask_low = mask_low | ix;
-            inv_mask_low = inv_mask_low | (~ix);
-            left++;
-        } else {
-            mask_high = mask_high | ix;
-            inv_mask_high = inv_mask_high | (~ix);
-        }
-    }
 
 }

@@ -36,7 +36,9 @@ public class MixedBitSorterMTInt implements IntSorter {
         }
         final int start = 0;
         final int end = list.length;
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end);
+        //AnalysisResult analysisResult = new AnalysisResult();
+        AnalysisResult analysisResult1 = isUnsigned() ? AnalysisResult.analyzeUnsigned(list, start, end) : AnalysisResult.analyzeSigned(list, start, end);
+        int ordered = analysisResult1.ordered;
         if (ordered == AnalysisResult.DESCENDING) {
             IntSorterUtils.reverseList(list, start, end);
         }
