@@ -1,9 +1,9 @@
 package com.aldogg.sorter;
 
 import com.aldogg.sorter.intType.IntSorter;
+import com.aldogg.sorter.intType.IntSorterUtils;
 
-import static com.aldogg.sorter.BitSorterUtils.listIsOrderedSigned;
-import static com.aldogg.sorter.BitSorterUtils.listIsOrderedUnSigned;
+import static com.aldogg.sorter.BitSorterUtils.*;
 
 public class RadixByteSorterInt implements IntSorter {
 
@@ -31,7 +31,11 @@ public class RadixByteSorterInt implements IntSorter {
         }
         final int start = 0;
         final int end = list.length;
-        if (isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end)) return;
+        int ordered = isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end);
+        if (ordered == IsOrderedResult.DESCENDING) {
+            IntSorterUtils.reverseList(list, start, end);
+        }
+        if (ordered != IsOrderedResult.UNORDERED) return;
 
         int length = list.length;
         int[] aux = new int[length];

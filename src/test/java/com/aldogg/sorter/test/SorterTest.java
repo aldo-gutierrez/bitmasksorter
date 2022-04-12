@@ -125,13 +125,19 @@ public class SorterTest {
                     testSortResults.set(i, elapsed);
                 } catch (Throwable ex) {
                     testSortResults.set(i, 0);
+                    if (list.length <= 10000) {
+                        System.err.println("Sorter "+ sorter.name());
+                        String orig = Arrays.toString(list);
+                        System.err.println("List orig: " + orig);
+                        String failed = Arrays.toString(listAux);
+                        System.err.println("List fail: " + failed);
+                        String ok = Arrays.toString(listAux2);
+                        System.err.println("List ok: " + ok);
+                    } else {
+                        System.err.println("Sorter "+ sorter.name());
+                        System.err.println("List order is not OK ");
+                    }
                     ex.printStackTrace();
-                    String orig = Arrays.toString(list);
-                    System.err.println("List orig: " + orig);
-                    String failed = Arrays.toString(listAux);
-                    System.err.println("List fail: " + failed);
-                    String ok = Arrays.toString(listAux2);
-                    System.err.println("List ok: " + ok);
                 }
             }
         }

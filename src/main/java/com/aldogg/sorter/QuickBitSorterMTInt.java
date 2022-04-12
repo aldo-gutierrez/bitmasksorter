@@ -3,8 +3,6 @@ package com.aldogg.sorter;
 import com.aldogg.parallel.SorterRunner;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
-import com.aldogg.parallel.ArrayRunnable;
-import com.aldogg.parallel.ArrayThreadRunner;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -32,7 +30,11 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
         }
         final int start = 0;
         final int end = list.length;
-        if (isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end)) return;
+        int ordered = isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end);
+        if (ordered == IsOrderedResult.DESCENDING) {
+            IntSorterUtils.reverseList(list, start, end);
+        }
+        if (ordered != IsOrderedResult.UNORDERED) return;
 
         int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];

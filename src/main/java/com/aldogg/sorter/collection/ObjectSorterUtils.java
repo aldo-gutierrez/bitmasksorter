@@ -82,7 +82,7 @@ public class ObjectSorterUtils {
     public static int partitionStable(final Object[] oList, final int[] list, final int start, final int end, final int sortMask,
                                       Object[] oAux, int[] aux) {
         int left = start;
-        int right = 0;
+        int right = start;
         for (int i = start; i < end; i++) {
             int element = list[i];
             Object oElement = oList[i];
@@ -96,8 +96,32 @@ public class ObjectSorterUtils {
                 right++;
             }
         }
-        System.arraycopy(aux, 0, list, left, right);
-        System.arraycopy(oAux, 0, oList, left, right);
+        int lengthRight = right - start;
+        System.arraycopy(aux, start, list, left, lengthRight);
+        System.arraycopy(oAux, start, oList, left, lengthRight) ;
+        return left;
+    }
+
+    public static int partitionReverseStable(final Object[] oList, final int[] list, final int start, final int end, final int sortMask,
+                                      Object[] oAux, int[] aux) {
+        int left = start;
+        int right = start;
+        for (int i = start; i < end; i++) {
+            int element = list[i];
+            Object oElement = oList[i];
+            if (!((element & sortMask) == 0)) {
+                list[left] = element;
+                oList[left] = oElement;
+                left++;
+            } else {
+                aux[right] = element;
+                oAux[right] = oElement;
+                right++;
+            }
+        }
+        int lengthRight = right - start;
+        System.arraycopy(aux, start, list, left, lengthRight);
+        System.arraycopy(oAux, start, oList, left, lengthRight) ;
         return left;
     }
 
@@ -119,12 +143,12 @@ public class ObjectSorterUtils {
             int element = list[i];
             Object oElement = oList[i];
             int elementShiftMasked = element & sortMask;
-            aux[leftX[elementShiftMasked]] = element;
-            oAux[leftX[elementShiftMasked]] = oElement;
+            aux[start + leftX[elementShiftMasked]] = element;
+            oAux[start + leftX[elementShiftMasked]] = oElement;
             leftX[elementShiftMasked]++;
         }
-        System.arraycopy(aux, 0, list, start, end - start);
-        System.arraycopy(oAux, 0, oList, start, end - start);
+        System.arraycopy(aux, start, list, start, end - start);
+        System.arraycopy(oAux, start, oList, start, end - start);
     }
 
     /**
@@ -146,12 +170,21 @@ public class ObjectSorterUtils {
             int element = list[i];
             Object oElement = oList[i];
             int elementShiftMasked = (element & sortMask) >> shiftRight;
-            aux[leftX[elementShiftMasked]] = element;
-            oAux[leftX[elementShiftMasked]] = oElement;
+            aux[start + leftX[elementShiftMasked]] = element;
+            oAux[start + leftX[elementShiftMasked]] = oElement;
             leftX[elementShiftMasked]++;
         }
-        System.arraycopy(aux, 0, list, start, end - start);
-        System.arraycopy(oAux, 0, oList, start, end - start);
+        System.arraycopy(aux, start, list, start, end - start);
+        System.arraycopy(oAux, start, oList, start, end - start);
     }
 
+    public static void reverseList(Object[] oList, int start, int end) {
+        int length = end - start;
+        int end2 = start + length / 2;
+        for (int i = start; i < end2; i++) {
+            Object swap = oList[i];
+            oList[i] = oList[end - i - 1];
+            oList[end - i - 1] = swap;
+        }
+    }
 }

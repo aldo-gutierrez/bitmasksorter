@@ -3,8 +3,10 @@ package com.aldogg.sorter;
 import com.aldogg.sorter.collection.IntComparator;
 import com.aldogg.sorter.collection.ObjectSorter;
 import com.aldogg.sorter.collection.ObjectSorterUtils;
+import com.aldogg.sorter.intType.IntSorterUtils;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
+import static com.aldogg.sorter.collection.ObjectSorterUtils.*;
 
 public class RadixBitSorterObjectInt implements ObjectSorter {
 
@@ -30,6 +32,13 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
         for (int i = 0; i < list.length; i++) {
             list[i] = comparator.intValue(oList[i]);
         }
+        int ordered = isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end);
+        if (ordered == IsOrderedResult.DESCENDING) {
+            IntSorterUtils.reverseList(list, start, end);
+            reverseList(oList, start, end);
+        }
+        if (ordered != IsOrderedResult.UNORDERED) return;
+
         int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
@@ -37,11 +46,16 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
             return;
         }
 
+//        int[] aux = new int[end - start];
+//        Object[] oAux = new Object[end - start];
         if (kList[0] == 31) { //there are negative numbers and positive numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
             int finalLeft = isUnsigned()
                     ? ObjectSorterUtils.partitionNotStable(oList, list, start, end, sortMask)
                     : ObjectSorterUtils.partitionReverseNotStable(oList, list, start, end, sortMask);
+//                    ? ObjectSorterUtils.partitionStable(oList, list, start, end, sortMask, oAux, aux)
+//                    : ObjectSorterUtils.partitionReverseStable(oList, list, start, end, sortMask, oAux, aux);
+
             if (finalLeft - start > 1) { //sort negative numbers
                 int[] aux = new int[finalLeft - start];
                 Object[] oAux = new Object[finalLeft - start];
@@ -86,13 +100,13 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
             }
             i -= imm;
             if (bits == 1) {
-                ObjectSorterUtils.partitionStable(olist, list, start, end, sortMask1, oAux, aux);
+                partitionStable(olist, list, start, end, sortMask1, oAux, aux);
             } else {
                 int lengthBitsToNumber = twoPowerX(bits);
                 if (kListI == 0) {
-                    ObjectSorterUtils.partitionStableLastBits(olist, list, start, end, lengthBitsToNumber, oAux, aux, sortMask1);
+                    partitionStableLastBits(olist, list, start, end, lengthBitsToNumber, oAux, aux, sortMask1);
                 } else {
-                    ObjectSorterUtils.partitionStableGroupBits(olist, list, start, end, lengthBitsToNumber, oAux, aux, sortMask1, kListI);
+                    partitionStableGroupBits(olist, list, start, end, lengthBitsToNumber, oAux, aux, sortMask1, kListI);
                 }
             }
         }

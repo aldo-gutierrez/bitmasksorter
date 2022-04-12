@@ -110,7 +110,7 @@ public class BitSorterUtils {
     }
 
 
-    public static boolean listIsOrderedSigned(int[] list, int start, int end) {
+    public static int listIsOrderedSigned(int[] list, int start, int end) {
         int i1 = list[start];
         int i = start + 1;
         while (i < end) {
@@ -122,7 +122,7 @@ public class BitSorterUtils {
             i++;
         }
         if (i == end) {
-            return true;
+            return IsOrderedResult.ALL_EQUAL;
         }
 
         //ascending
@@ -136,7 +136,11 @@ public class BitSorterUtils {
                 }
                 i1 = i2;
             }
-            return i == end;
+            if (i == end) {
+                return IsOrderedResult.ASCENDING;
+            } else {
+                return IsOrderedResult.UNORDERED;
+            }
         }
         //descending
         else {
@@ -149,21 +153,14 @@ public class BitSorterUtils {
                 i1 = i2;
             }
             if (i == end) {
-                int length = end - start;
-                int end2 = start + length / 2;
-                for (i = start; i < end2; i++) {
-                    int swap = list[i];
-                    list[i] = list[end - i - 1];
-                    list[end - i - 1] = swap;
-                }
-                return true;
+                return IsOrderedResult.DESCENDING;
             } else {
-                return false;
+                return IsOrderedResult.UNORDERED;
             }
         }
     }
 
-    public static boolean listIsOrderedUnSigned(int[] list, int start, int end) {
+    public static int listIsOrderedUnSigned(int[] list, int start, int end) {
         int i1 = list[start];
         int i = start + 1;
         while (i < end) {
@@ -175,7 +172,7 @@ public class BitSorterUtils {
             i++;
         }
         if (i == end) {
-            return true;
+            return IsOrderedResult.ALL_EQUAL;
         }
 
         //ascending
@@ -189,7 +186,11 @@ public class BitSorterUtils {
                 }
                 i1 = i2;
             }
-            return i == end;
+            if (i == end) {
+                return IsOrderedResult.ASCENDING;
+            } else {
+                return IsOrderedResult.UNORDERED;
+            }
         }
         //descending
         else {
@@ -202,16 +203,9 @@ public class BitSorterUtils {
                 i1 = i2;
             }
             if (i == end) {
-                int length = end - start;
-                int end2 = start + length / 2;
-                for (i = start; i < end2; i++) {
-                    int swap = list[i];
-                    list[i] = list[end - i - 1];
-                    list[end - i - 1] = swap;
-                }
-                return true;
+                return IsOrderedResult.DESCENDING;
             } else {
-                return false;
+                return IsOrderedResult.UNORDERED;
             }
         }
     }

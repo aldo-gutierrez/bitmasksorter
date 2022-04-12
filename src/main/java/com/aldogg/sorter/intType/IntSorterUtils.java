@@ -211,6 +211,16 @@ public class IntSorterUtils {
         }
     }
 
+    public static void reverseList(int[] list, int start, int end) {
+        int length = end - start;
+        int end2 = start + length / 2;
+        for (int i = start; i < end2; i++) {
+            int swap = list[i];
+            list[i] = list[end - i - 1];
+            list[end - i - 1] = swap;
+        }
+    }
+
         /*
         int[] maskParts = ArrayThreadRunner.runInParallel(list, start, end, 2, new ArrayRunnable<int[]>() {
             @Override
