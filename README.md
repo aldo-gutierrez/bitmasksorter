@@ -118,7 +118,7 @@ Object[] sort in java is a stable algorithm, so ObjectSorter has the parameter s
 # Speed
 Most of the algorithms are faster than the Java default and Parallel sorters in most of the cases
 
-###Example 1: 
+### Example 1: 
 
 Comparison for sorting 10 Million int elements with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 11
 
@@ -136,7 +136,7 @@ Comparison for sorting 10 Million int elements with range from 0 to 10 Million i
 
 ![Graph2](plot-S10000000-Range0-10000000-random.png?raw=true "Graph2")
 
-###Example 2:
+### Example 2:
 
 Comparison for sorting 10 Million int elements with range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 11
 
@@ -153,7 +153,7 @@ Comparison for sorting 10 Million int elements with range from 0 to 100000 in an
 
 ![Graph2](plot-S10000000-Range0-100000-random.png?raw=true "Graph2")
 
-###Example 3:
+### Example 3:
 
 Comparison for sorting 40 Million int elements with range from 0 to 1000000000 in an AMD Ryzen 7 4800H processor, Java 11
 
@@ -170,7 +170,7 @@ Comparison for sorting 40 Million int elements with range from 0 to 1000000000 i
 
 ![Graph2](plot-S40000000-Range0-1000000000-random.png?raw=true "Graph2")
 
-###Table of 1st and 2nd algorithm by speed AMD Ryzen 7 4800H processor, Java 11, pluged in
+### Table of 1st and 2nd algorithm by speed AMD Ryzen 7 4800H processor, Java 11, pluged in
 
 | N / range | 10                                    | 1,000                                   | 100,000                               | 10,000,000                                | 1,000,000,000                            |
 |---------------|---------------------------------------|-----------------------------------------|---------------------------------------|-------------------------------------------|-------------------------------------------|
@@ -180,7 +180,7 @@ Comparison for sorting 40 Million int elements with range from 0 to 1000000000 i
 | 10,000,000    | MixedBitSorterMTInt QuickBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt | RadixBitSorterMTInt JavaParallelSorterInt |
 | 40,000,000    | QuickBitSorterMTInt MixedBitSorterMTInt | MixedBitSorterMTInt RadixBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt |
 
-###Table of 1st and 2nd algorithm by speed AMD Ryzen 7 4800H processor, Java 11, with battery
+### Table of 1st and 2nd algorithm by speed AMD Ryzen 7 4800H processor, Java 11, with battery
 
 
 | N / range | 10                                    | 1,000                                 | 100,000                             | 10,000,000                           | 1,000,000,000                        |
