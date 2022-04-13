@@ -49,22 +49,22 @@ public class RadixBitSorterInt implements IntSorter {
                 maskParts = getMaskBit(array, start, finalLeft);
                 mask = maskParts[0] & maskParts[1];
                 kList = getMaskAsList(mask);
-                radixSort(array, start, finalLeft, aux, kList, kList.length - 1, 0);
+                radixSort(array, start, finalLeft, kList, kList.length - 1, 0, aux);
             }
             if (end - finalLeft > 1) { //sort positive numbers
                 int[] aux = new int[end - finalLeft];
                 maskParts = getMaskBit(array, finalLeft, end);
                 mask = maskParts[0] & maskParts[1];
                 kList = getMaskAsList(mask);
-                radixSort(array, finalLeft, end, aux, kList, kList.length - 1, 0);
+                radixSort(array, finalLeft, end, kList, kList.length - 1, 0, aux);
             }
         } else {
             int[] aux = new int[end - start];
-            radixSort(array, start, end, aux, kList, kList.length - 1, 0);
+            radixSort(array, start, end, kList, kList.length - 1, 0, aux);
         }
     }
 
-    public static void radixSort(int[] array, int start, int end, int[] aux, int[] kList, int kIndexStart, int kIndexEnd) {
+    public static void radixSort(int[] array, int start, int end, int[] kList, int kIndexStart, int kIndexEnd, int[] aux) {
         for (int i = kIndexStart; i >= kIndexEnd; i--) {
             int kListI = kList[i];
             int maskI = BitSorterUtils.getMaskBit(kListI);

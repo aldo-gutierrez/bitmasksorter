@@ -2,9 +2,7 @@ package com.aldogg.sorter.test;
 
 import com.aldogg.sorter.*;
 import com.aldogg.sorter.collection.*;
-import com.aldogg.sorter.intType.CountSort;
 import com.aldogg.sorter.intType.IntSorter;
-import com.aldogg.sorter.intType.IntSorterUtils;
 import com.aldogg.sorter.intType.Sorter;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +14,6 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
-import static com.aldogg.sorter.RadixBitSorterInt.radixSort;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SorterTest {

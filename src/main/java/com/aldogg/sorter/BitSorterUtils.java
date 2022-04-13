@@ -34,10 +34,10 @@ public class BitSorterUtils {
         return (n << k);
     }
 
-    public static int getMaskLastBits(final int[] listK, final int kIndex) {
+    public static int getMaskLastBits(final int[] kList, final int kIndex) {
         int mask = 0;
-        for (int i = kIndex; i < listK.length; i++) {
-            int k = listK[i];
+        for (int i = kIndex; i < kList.length; i++) {
+            int k = kList[i];
             mask = mask | getMaskBit(k);
         }
         return mask;
@@ -79,16 +79,16 @@ public class BitSorterUtils {
         return 1<<k;
     }
 
-    public static int[][] getMaskAsSections(final int[] listK) {
+    public static int[][] getMaskAsSections(final int[] kList) {
         LinkedHashMap<Integer, Integer> sections = new LinkedHashMap<>();
         int currentSection = -1;
-        for (int i = 0; i < listK.length; i++) {
-            int k = listK[i];
+        for (int i = 0; i < kList.length; i++) {
+            int k = kList[i];
             if (i == 0) {
                 sections.put(k, 1);
                 currentSection = k;
             } else {
-                if (listK[i - 1] - k == 1) {
+                if (kList[i - 1] - k == 1) {
                     sections.put(currentSection, sections.get(currentSection) + 1);
                 } else {
                     sections.put(k, 1);

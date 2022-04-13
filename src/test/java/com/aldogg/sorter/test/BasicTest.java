@@ -76,7 +76,7 @@ public class BasicTest extends SorterTest{
                 int[] kList = getMaskAsList(mask);
                 int length = end - start;
                 int[] aux = new int[length];
-                radixSort(array, start, end, aux, kList, kList.length - 1, 0);
+                radixSort(array, start, end, kList, kList.length - 1, 0, aux);
             }
             @Override
             public String name() {
@@ -92,10 +92,10 @@ public class BasicTest extends SorterTest{
             public void sort(int[] array) {
                 int[] maskParts = getMaskBit(array, 0, array.length);
                 int mask = maskParts[0] & maskParts[1];
-                int[] listK = getMaskAsList(mask);
+                int[] kList = getMaskAsList(mask);
                 int[] aux = new int[array.length];
-                for (int i = listK.length - 1; i >= 0; i--) {
-                    int sortMask = getMaskBit(listK[i]);
+                for (int i = kList.length - 1; i >= 0; i--) {
+                    int sortMask = getMaskBit(kList[i]);
                     IntSorterUtils.partitionStable(array, 0, array.length, sortMask, aux);
                 }
             }
@@ -113,8 +113,8 @@ public class BasicTest extends SorterTest{
             public void sort(int[] array) {
                 int[] maskParts = getMaskBit(array, 0, array.length);
                 int mask = maskParts[0] & maskParts[1];
-                int[] listK = getMaskAsList(mask);
-                CountSort.countSort(array, 0, array.length, listK, 0);
+                int[] kList = getMaskAsList(mask);
+                CountSort.countSort(array, 0, array.length, kList, 0);
             }
 
             @Override
