@@ -26,19 +26,19 @@ public class QuickBitSorterInt implements IntSorter {
     }
 
     @Override
-    public void sort(int[] list) {
-        if (list.length < 2) {
+    public void sort(int[] array) {
+        if (array.length < 2) {
             return;
         }
         final int start = 0;
-        final int end = list.length;
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end);
+        final int end = array.length;
+        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
         if (ordered == AnalysisResult.DESCENDING) {
-            IntSorterUtils.reverseList(list, start, end);
+            IntSorterUtils.reverse(array, start, end);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        int[] maskParts = getMaskBit(list, start, end);
+        int[] maskParts = getMaskBit(array, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
         if (kList.length == 0) {
@@ -47,32 +47,32 @@ public class QuickBitSorterInt implements IntSorter {
         if (kList[0] == 31) { //there are negative numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
             int finalLeft = isUnsigned()
-                    ? IntSorterUtils.partitionNotStable(list, start, end, sortMask)
-                    : IntSorterUtils.partitionReverseNotStable(list, start, end, sortMask);
+                    ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
+                    : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
             if (finalLeft - start > 1) {
-                sort(list, start, finalLeft, kList, 1, true);
+                sort(array, start, finalLeft, kList, 1, true);
             }
             if (end - finalLeft > 1) {
-                sort(list, finalLeft, end, kList, 1, true);
+                sort(array, finalLeft, end, kList, 1, true);
             }
         } else {
-            sort(list, start, end, kList, 0, false);
+            sort(array, start, end, kList, 0, false);
         }
     }
 
-    public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
+    public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
         final int listLength = end - start;
         if (listLength <= SMALL_LIST_SIZE) {
             if (unsigned) {
-                SortingNetworks.sortVerySmallListUnSigned(list, start, end);
+                SortingNetworks.sortVerySmallListUnSigned(array, start, end);
             } else {
-                SortingNetworks.sortVerySmallListSigned(list, start, end);
+                SortingNetworks.sortVerySmallListSigned(array, start, end);
             }
             return;
         }
 
         if (recalculate && kIndex < 3) {
-            int[] maskParts = getMaskBit(list, start, end);
+            int[] maskParts = getMaskBit(array, start, end);
             int mask = maskParts[0] & maskParts[1];
             kList = getMaskAsList(mask);
             kIndex = 0;
@@ -84,27 +84,27 @@ public class QuickBitSorterInt implements IntSorter {
         }
 
         if (kDiff <= params.getCountingSortBits()) {
-            sortShortKList(list, start, end, kList, kIndex);
+            sortShortKList(array, start, end, kList, kIndex);
             return;
         }
 
         int sortMask = getMaskBit(kList[kIndex]);
-        int finalLeft = IntSorterUtils.partitionNotStable(list, start, end, sortMask);
+        int finalLeft = IntSorterUtils.partitionNotStable(array, start, end, sortMask);
         if (recalculate) {
             if (finalLeft - start > 1) {
-                sort(list, start, finalLeft, kList, kIndex + 1);
+                sort(array, start, finalLeft, kList, kIndex + 1);
             }
             if (end - finalLeft > 1) {
-                sort(list, finalLeft, end, kList, kIndex + 1);
+                sort(array, finalLeft, end, kList, kIndex + 1);
             }
         } else {
             boolean recalculateBitMask = (finalLeft == start || finalLeft == end);
 
             if (finalLeft - start > 1) {
-                sort(list, start, finalLeft, kList, kIndex + 1, recalculateBitMask);
+                sort(array, start, finalLeft, kList, kIndex + 1, recalculateBitMask);
             }
             if (end - finalLeft > 1) {
-                sort(list, finalLeft, end, kList, kIndex + 1, recalculateBitMask);
+                sort(array, finalLeft, end, kList, kIndex + 1, recalculateBitMask);
             }
         }
     }

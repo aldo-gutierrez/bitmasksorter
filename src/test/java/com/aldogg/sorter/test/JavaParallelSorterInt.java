@@ -7,8 +7,8 @@ import java.util.Arrays;
 
 public class JavaParallelSorterInt implements IntSorter {
     @Override
-    public void sort(int[] list) {
-        Arrays.parallelSort(list);
+    public void sort(int[] array) {
+        Arrays.parallelSort(array);
     }
     @Override
     public void setUnsigned(boolean unsigned) {

@@ -67,9 +67,9 @@ public class RadixSorter implements IntSorter {
 
 
     @Override
-    public void sort(int[] data) {
-        int size = data.length;
+    public void sort(int[] array) {
+        int size = array.length;
         RadixSorter rs = new RadixSorter();
-        rs.radixSort(data, size);
+        rs.radixSort(array, size);
     }
 }

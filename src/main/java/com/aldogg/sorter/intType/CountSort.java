@@ -6,32 +6,32 @@ import static com.aldogg.sorter.BitSorterUtils.*;
 
 public class CountSort {
 
-    public static void countSort(final int[] list, final int start, final int end, int[] kList,  int kIndex) {
-        int countBufferSize = twoPowerX(kList.length - kIndex);
+    public static void countSort(final int[] array, final int start, final int end, int[] kList,  int kIndex) {
+        int twoPowerK = twoPowerX(kList.length - kIndex);
         kList = Arrays.copyOfRange(kList, kIndex, kList.length);
         int[][] sections = getMaskAsSections(kList);
         kIndex = 0;
-        int[] countBuffer = new int[countBufferSize];
+        int[] countBuffer = new int[twoPowerK];
         int[] numberBuffer = null;
         if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
         } else {
-            numberBuffer = new int[countBufferSize];
+            numberBuffer = new int[twoPowerK];
         }
         int sortMask = getMaskLastBits(kList, kIndex);
-        countSort(list, start, end, sortMask, sections, countBuffer, numberBuffer);
+        countSort(array, start, end, sortMask, sections, countBuffer, numberBuffer);
     }
 
     /**
      * CPU: N + MAX(2^K, N)
      * MEM: 2 * (2^K)
      */
-    public static void countSort(final int[] list, final int start, final int end, int sortMask, int[][] sections, int[] countBuffer, int[] numberBuffer) {
+    public static void countSort(final int[] array, final int start, final int end, int mask, int[][] sections, int[] countBuffer, int[] numberBuffer) {
         if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
-            int elementSample = list[start];
-            elementSample = elementSample & ~sortMask;
+            int elementSample = array[start];
+            elementSample = elementSample & ~mask;
             if (elementSample == 0) { //last bits and includes all numbers
                 for (int i = start; i < end; i++) {
-                    int element = list[i];
+                    int element = array[i];
                     countBuffer[element] = countBuffer[element] + 1;
                 }
                 int i = start;
@@ -39,7 +39,7 @@ public class CountSort {
                     int count = countBuffer[j];
                     if (count > 0) {
                         for (int k = 0; k < count; k++) {
-                            list[i] = j;
+                            array[i] = j;
                             i++;
                         }
                         if (i == end) {
@@ -50,8 +50,8 @@ public class CountSort {
 
             } else { //last bits but there is a mask for a bigger number
                 for (int i = start; i < end; i++) {
-                    int element = list[i];
-                    int elementMasked = element & sortMask;
+                    int element = array[i];
+                    int elementMasked = element & mask;
                     countBuffer[elementMasked] = countBuffer[elementMasked] + 1;
                 }
                 int i = start;
@@ -60,7 +60,7 @@ public class CountSort {
                     if (count > 0) {
                         int value = j | elementSample;
                         for (int k = 0; k < count; k++) {
-                            list[i] = value;
+                            array[i] = value;
                             i++;
                         }
                         if (i == end) {
@@ -72,14 +72,14 @@ public class CountSort {
         } else {
             if (sections.length == 1) {
                 for (int i = start; i < end; i++) {
-                    int element = list[i];
+                    int element = array[i];
                     int key = getKeySec1(element, sections[0]);
                     countBuffer[key] = countBuffer[key] + 1;
                     numberBuffer[key] = element;
                 }
             } else {
                 for (int i = start; i < end; i++) {
-                    int element = list[i];
+                    int element = array[i];
                     int key = getKeySN(element, sections);
                     countBuffer[key] = countBuffer[key] + 1;
                     numberBuffer[key] = element;
@@ -91,7 +91,7 @@ public class CountSort {
                 if (count > 0) {
                     int value = numberBuffer[j];
                     for (int k = 0; k < count; k++) {
-                        list[i] = value;
+                        array[i] = value;
                         i++;
                     }
                     if (i == end) {

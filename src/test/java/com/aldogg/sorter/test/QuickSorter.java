@@ -15,8 +15,8 @@ public class QuickSorter implements IntSorter {
         this.unsigned = unsigned;
     }
     @Override
-    public void sort(int[] list) {
-        quickSort(list, 0, list.length - 1);
+    public void sort(int[] array) {
+        quickSort(array, 0, array.length - 1);
     }
 
     private void quickSort(int arr[], int begin, int end) {

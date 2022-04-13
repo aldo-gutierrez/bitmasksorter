@@ -21,19 +21,19 @@ public class RadixBitSorterInt implements IntSorter {
     }
 
     @Override
-    public void sort(int[] list) {
-        if (list.length < 2) {
+    public void sort(int[] array) {
+        if (array.length < 2) {
             return;
         }
         final int start = 0;
-        final int end = list.length;
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end);
+        final int end = array.length;
+        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
         if (ordered == AnalysisResult.DESCENDING) {
-            IntSorterUtils.reverseList(list, start, end);
+            IntSorterUtils.reverse(array, start, end);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        int[] maskParts = getMaskBit(list, start, end);
+        int[] maskParts = getMaskBit(array, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
         if (kList.length == 0) {
@@ -42,40 +42,40 @@ public class RadixBitSorterInt implements IntSorter {
         if (kList[0] == 31) { //there are negative numbers and positive numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
             int finalLeft = isUnsigned()
-                    ? IntSorterUtils.partitionNotStable(list, start, end, sortMask)
-                    : IntSorterUtils.partitionReverseNotStable(list, start, end, sortMask);
+                    ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
+                    : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
             if (finalLeft - start > 1) { //sort negative numbers
                 int[] aux = new int[finalLeft - start];
-                maskParts = getMaskBit(list, start, finalLeft);
+                maskParts = getMaskBit(array, start, finalLeft);
                 mask = maskParts[0] & maskParts[1];
                 kList = getMaskAsList(mask);
-                radixSort(list, start, finalLeft, aux, kList, kList.length - 1, 0);
+                radixSort(array, start, finalLeft, aux, kList, kList.length - 1, 0);
             }
             if (end - finalLeft > 1) { //sort positive numbers
                 int[] aux = new int[end - finalLeft];
-                maskParts = getMaskBit(list, finalLeft, end);
+                maskParts = getMaskBit(array, finalLeft, end);
                 mask = maskParts[0] & maskParts[1];
                 kList = getMaskAsList(mask);
-                radixSort(list, finalLeft, end, aux, kList, kList.length - 1, 0);
+                radixSort(array, finalLeft, end, aux, kList, kList.length - 1, 0);
             }
         } else {
             int[] aux = new int[end - start];
-            radixSort(list, start, end, aux, kList, kList.length - 1, 0);
+            radixSort(array, start, end, aux, kList, kList.length - 1, 0);
         }
     }
 
-    public static void radixSort(int[] list, int start, int end, int[] aux, int[] kList, int kIndexStart, int kIndexEnd) {
+    public static void radixSort(int[] array, int start, int end, int[] aux, int[] kList, int kIndexStart, int kIndexEnd) {
         for (int i = kIndexStart; i >= kIndexEnd; i--) {
             int kListI = kList[i];
-            int sortMask1 = BitSorterUtils.getMaskBit(kListI);
+            int maskI = BitSorterUtils.getMaskBit(kListI);
             int bits = 1;
             int imm = 0;
             for (int j = 1; j <= 11; j++) { //11bits looks faster than 8 on AMD 4800H, 15 is slower
                 if (i - j >= kIndexEnd) {
                     int kListIm1 = kList[i - j];
                     if (kListIm1 == kListI + j) {
-                        int sortMask2 = BitSorterUtils.getMaskBit(kListIm1);
-                        sortMask1 = sortMask1 | sortMask2;
+                        int maskIm1 = BitSorterUtils.getMaskBit(kListIm1);
+                        maskI = maskI | maskIm1;
                         bits++;
                         imm++;
                     } else {
@@ -85,13 +85,13 @@ public class RadixBitSorterInt implements IntSorter {
             }
             i -= imm;
             if (bits == 1) {
-                IntSorterUtils.partitionStable(list, start, end, sortMask1, aux);
+                IntSorterUtils.partitionStable(array, start, end, maskI, aux);
             } else {
-                int lengthBitsToNumber = BitSorterUtils.twoPowerX(bits);
+                int twoPowerBits = BitSorterUtils.twoPowerX(bits);
                 if (kListI == 0) {
-                    partitionStableLastBits(list, start, end, lengthBitsToNumber, aux, sortMask1);
+                    partitionStableLastBits(array, start, end, maskI, twoPowerBits, aux);
                 } else {
-                    partitionStableGroupBits(list, start, end, lengthBitsToNumber, aux, sortMask1, kListI);
+                    partitionStableGroupBits(array, start, end, maskI, kListI, twoPowerBits, aux);
                 }
             }
         }

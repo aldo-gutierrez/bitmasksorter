@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public class JavaSorterObject implements ObjectSorter {
     @Override
-    public void sort(Object[] list, IntComparator comparator) {
-        Arrays.sort(list, comparator);
+    public void sort(Object[] array, IntComparator comparator) {
+        Arrays.sort(array, comparator);
     }
 
     @Override

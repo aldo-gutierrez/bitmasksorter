@@ -4,11 +4,11 @@ import java.util.*;
 
 public class BitSorterUtils {
 
-    public static int[] getMaskBit(final int[] list, final int start, final int end) {
+    public static int[] getMaskBit(final int[] array, final int start, final int end) {
         int mask = 0x00000000;
         int inv_mask = 0x00000000;
         for (int i = start; i < end; i++) {
-            int ei = list[i];
+            int ei = array[i];
             mask = mask | ei;
             inv_mask = inv_mask | (~ei);
         }
@@ -110,11 +110,11 @@ public class BitSorterUtils {
     }
 
 
-    public static int listIsOrderedSigned(int[] list, int start, int end) {
-        int i1 = list[start];
+    public static int listIsOrderedSigned(int[] array, int start, int end) {
+        int i1 = array[start];
         int i = start + 1;
         while (i < end) {
-            int i2 = list[i];
+            int i2 = array[i];
             if (i2 != i1) {
                 break;
             }
@@ -126,11 +126,11 @@ public class BitSorterUtils {
         }
 
         //ascending
-        i1 = list[i];
-        if (list[i-1] < i1) {
+        i1 = array[i];
+        if (array[i-1] < i1) {
             i++;
             for (; i < end; i++)  {
-                int i2 = list[i];
+                int i2 = array[i];
                 if (i1 > i2) {
                     break;
                 }
@@ -144,7 +144,7 @@ public class BitSorterUtils {
         else {
             i++;
             for (; i < end; i++)  {
-                int i2 = list[i];
+                int i2 = array[i];
                 if (i1 < i2) {
                     break;
                 }
@@ -157,11 +157,11 @@ public class BitSorterUtils {
         return AnalysisResult.UNORDERED;
     }
 
-    public static int listIsOrderedUnSigned(int[] list, int start, int end) {
-        int i1 = list[start];
+    public static int listIsOrderedUnSigned(int[] array, int start, int end) {
+        int i1 = array[start];
         int i = start + 1;
         while (i < end) {
-            int i2 = list[i];
+            int i2 = array[i];
             if (i2 != i1) {
                 break;
             }
@@ -173,11 +173,11 @@ public class BitSorterUtils {
         }
 
         //ascending
-        i1 = list[i];
-        if (list[i-1] < i1) {
+        i1 = array[i];
+        if (array[i-1] < i1) {
             i++;
             for (; i < end; i++)  {
-                int i2 = list[i];
+                int i2 = array[i];
                 if (Integer.compareUnsigned(i1, i2) ==  1) {
                     break;
                 }
@@ -191,7 +191,7 @@ public class BitSorterUtils {
         else {
             i++;
             for (; i < end; i++)  {
-                int i2 = list[i];
+                int i2 = array[i];
                 if (Integer.compareUnsigned(i1, i2) == -1) {
                     break;
                 }

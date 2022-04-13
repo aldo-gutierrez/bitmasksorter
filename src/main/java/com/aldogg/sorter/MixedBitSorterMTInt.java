@@ -31,19 +31,19 @@ public class MixedBitSorterMTInt implements IntSorter {
     }
 
     @Override
-    public void sort(int[] list) {
-        if (list.length < 2) {
+    public void sort(int[] array) {
+        if (array.length < 2) {
             return;
         }
         final int start = 0;
-        final int end = list.length;
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end);
+        final int end = array.length;
+        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
         if (ordered == AnalysisResult.DESCENDING) {
-            IntSorterUtils.reverseList(list, start, end);
+            IntSorterUtils.reverse(array, start, end);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        int[] maskParts = getMaskBit(list, start, end);
+        int[] maskParts = getMaskBit(array, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsList(mask);
         if (kList.length == 0) {
@@ -53,38 +53,38 @@ public class MixedBitSorterMTInt implements IntSorter {
         if (kList[0] == 31) { //there are negative numbers and positive numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
             int finalLeft = isUnsigned()
-                    ? IntSorterUtils.partitionNotStable(list, start, end, sortMask)
-                    : IntSorterUtils.partitionReverseNotStable(list, start, end, sortMask);
+                    ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
+                    : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
 
             int size1 = finalLeft - start;
             int size2 = end - finalLeft;
             SorterRunner.runTwoRunnable(
                     size1 > 1 ? () -> { //sort negative numbers
-                        int[] maskParts1 = getMaskBit(list, start, finalLeft);
+                        int[] maskParts1 = getMaskBit(array, start, finalLeft);
                         int mask1 = maskParts1[0] & maskParts1[1];
                         int[] kList1 = getMaskAsList(mask1);
-                        sort(list, start, finalLeft, kList1, 0);
+                        sort(array, start, finalLeft, kList1, 0);
                     } : null, size1,
                     size2 > 1 ? () -> { //sort positive numbers
-                        int[] maskParts2 = getMaskBit(list, finalLeft, end);
+                        int[] maskParts2 = getMaskBit(array, finalLeft, end);
                         int mask2 = maskParts2[0] & maskParts2[1];
                         int[] kList2 = getMaskAsList(mask2);
-                        sort(list, finalLeft, end, kList2, 0);
+                        sort(array, finalLeft, end, kList2, 0);
                     } : null, size2, params.getDataSizeForThreads(),params.getMaxThreads(),  numThreads);
         } else {
-            sort(list, start, end, kList, 0);
+            sort(array, start, end, kList, 0);
         }
     }
 
 
 
-    public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex) {
+    public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex) {
         final int listLength = end - start;
         if (listLength <= SMALL_LIST_SIZE) {
             if (unsigned) {
-                SortingNetworks.sortVerySmallListUnSigned(list, start, end);
+                SortingNetworks.sortVerySmallListUnSigned(array, start, end);
             } else {
-                SortingNetworks.sortVerySmallListSigned(list, start, end);
+                SortingNetworks.sortVerySmallListSigned(array, start, end);
             }
             return;
         }
@@ -94,31 +94,31 @@ public class MixedBitSorterMTInt implements IntSorter {
         }
 
         if (kDiff  <= params.getCountingSortBits()) {
-            sortShortKList(list, start, end, kList, kIndex);
+            sortShortKList(array, start, end, kList, kIndex);
             return;
         }
 
         //kIndex == level, starting with 0
         if (kIndex >= params.getMaxThreadsBits() - 1) {
-            radixCountSort(list, start, end, kList, kIndex);
+            radixCountSort(array, start, end, kList, kIndex);
         } else {
             int sortMask = getMaskBit(kList[kIndex]);
-            int finalLeft = IntSorterUtils.partitionNotStable(list, start, end, sortMask);
+            int finalLeft = IntSorterUtils.partitionNotStable(array, start, end, sortMask);
             Thread t1 = null;
             int size1 = finalLeft - start;
             if (size1 > 1) {
                 if (numThreads.get() < params.getMaxThreads() + 1) {
-                    Runnable r1 = () -> sort(list, start, finalLeft, kList, kIndex + 1);
+                    Runnable r1 = () -> sort(array, start, finalLeft, kList, kIndex + 1);
                     t1 = new Thread(r1);
                     t1.start();
                     numThreads.addAndGet(1);
                 } else {
-                    sort(list, start, finalLeft, kList, kIndex + 1);
+                    sort(array, start, finalLeft, kList, kIndex + 1);
                 }
             }
             int size2 = end - finalLeft;
             if (size2 > 1) {
-                sort(list, finalLeft, end, kList, kIndex + 1);
+                sort(array, finalLeft, end, kList, kIndex + 1);
             }
 
             if (t1 != null) {

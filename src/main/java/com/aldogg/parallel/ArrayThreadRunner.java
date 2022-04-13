@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ArrayThreadRunner {
 
-    public static <R> R runInParallel(final int[] list, final int start, final int end, final int maxThreads,
+    public static <R> R runInParallel(final int[] array, final int start, final int end, final int maxThreads,
                                       AtomicInteger numThreads, R initial, ArrayRunnable<R> mapReducer) {
         int length = end - start;
         int range = length/maxThreads;
@@ -14,7 +14,7 @@ public class ArrayThreadRunner {
             int startThread = start + i * range;
             int endThread = (i == maxThreads -1) ? end: startThread + range;
             int finalI = i;
-            Runnable runnable = () -> partialResults[finalI] = mapReducer.map(list, startThread, endThread);
+            Runnable runnable = () -> partialResults[finalI] = mapReducer.map(array, startThread, endThread);
             if (i == maxThreads -1) {
                 runnable.run();
             } else {

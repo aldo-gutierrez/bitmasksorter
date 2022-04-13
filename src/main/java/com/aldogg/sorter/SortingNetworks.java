@@ -111,49 +111,49 @@ public class SortingNetworks {
                     {6, 7}, {8, 9}}
     };
 
-    public static void sortVerySmallListSigned(final int[] list, final int start, final int end) {
+    public static void sortVerySmallListSigned(final int[] array, final int start, final int end) {
         int listLength = end - start;
         if (listLength == 2) {
-            compareAndSwapSigned(list, start, end - 1);
+            compareAndSwapSigned(array, start, end - 1);
         } else if (listLength == 3) {
-            compareAndSwapSigned(list, start, end - 1);
-            compareAndSwapSigned(list, start, end - 2);
-            compareAndSwapSigned(list, end - 2, end - 1);
+            compareAndSwapSigned(array, start, end - 1);
+            compareAndSwapSigned(array, start, end - 2);
+            compareAndSwapSigned(array, end - 2, end - 1);
         } else if (listLength == 4) {
-            compareAndSwapSigned(list, start, start + 1);
-            compareAndSwapSigned(list, end - 2, end - 1);
-            compareAndSwapSigned(list, start, end - 2);
-            compareAndSwapSigned(list, start + 1, end - 1);
-            compareAndSwapSigned(list, start + 1, end - 2);
+            compareAndSwapSigned(array, start, start + 1);
+            compareAndSwapSigned(array, end - 2, end - 1);
+            compareAndSwapSigned(array, start, end - 2);
+            compareAndSwapSigned(array, start + 1, end - 1);
+            compareAndSwapSigned(array, start + 1, end - 2);
         } else {
             int[][] swap = swaps[listLength];
             for (int i = 0; i < swap.length; i++) {
                 int[] parts = swap[i];
-                compareAndSwapSigned(list, start + parts[0], start + parts[1]);
+                compareAndSwapSigned(array, start + parts[0], start + parts[1]);
             }
         }
     }
 
     //is this necessary?? verify
-    public static void sortVerySmallListUnSigned(final int[] list, final int start, final int end) {
+    public static void sortVerySmallListUnSigned(final int[] array, final int start, final int end) {
         int listLength = end - start;
         if (listLength == 2) {
-            compareAndSwapUnsigned(list, start, end - 1);
+            compareAndSwapUnsigned(array, start, end - 1);
         } else if (listLength == 3) {
-            compareAndSwapUnsigned(list, start, end - 1);
-            compareAndSwapUnsigned(list, start, end - 2);
-            compareAndSwapUnsigned(list, end - 2, end - 1);
+            compareAndSwapUnsigned(array, start, end - 1);
+            compareAndSwapUnsigned(array, start, end - 2);
+            compareAndSwapUnsigned(array, end - 2, end - 1);
         } else if (listLength == 4) {
-            compareAndSwapUnsigned(list, start, start + 1);
-            compareAndSwapUnsigned(list, end - 2, end - 1);
-            compareAndSwapUnsigned(list, start, end - 2);
-            compareAndSwapUnsigned(list, start + 1, end - 1);
-            compareAndSwapUnsigned(list, start + 1, end - 2);
+            compareAndSwapUnsigned(array, start, start + 1);
+            compareAndSwapUnsigned(array, end - 2, end - 1);
+            compareAndSwapUnsigned(array, start, end - 2);
+            compareAndSwapUnsigned(array, start + 1, end - 1);
+            compareAndSwapUnsigned(array, start + 1, end - 2);
         } else {
             int[][] swap = swaps[listLength];
             for (int i = 0; i < swap.length; i++) {
                 int[] parts = swap[i];
-                compareAndSwapUnsigned(list, start + parts[0], start + parts[1]);
+                compareAndSwapUnsigned(array, start + parts[0], start + parts[1]);
             }
         }
     }

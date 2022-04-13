@@ -7,8 +7,8 @@ import java.util.Arrays;
 
 public class JavaSorterInt implements IntSorter {
     @Override
-    public void sort(int[] list) {
-        Arrays.sort(list);
+    public void sort(int[] array) {
+        Arrays.sort(array);
     }
     @Override
     public void setUnsigned(boolean unsigned) {
