@@ -1,5 +1,6 @@
 package com.aldogg.sorter;
 
+import com.aldogg.parallel.SorterRunner;
 import com.aldogg.sorter.intType.CountSort;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
@@ -36,9 +37,7 @@ public class MixedBitSorterMTInt implements IntSorter {
         }
         final int start = 0;
         final int end = list.length;
-        //AnalysisResult analysisResult = new AnalysisResult();
-        AnalysisResult analysisResult1 = isUnsigned() ? AnalysisResult.analyzeUnsigned(list, start, end) : AnalysisResult.analyzeSigned(list, start, end);
-        int ordered = analysisResult1.ordered;
+        int ordered = isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end);
         if (ordered == AnalysisResult.DESCENDING) {
             IntSorterUtils.reverseList(list, start, end);
         }
@@ -56,32 +55,22 @@ public class MixedBitSorterMTInt implements IntSorter {
             int finalLeft = isUnsigned()
                     ? IntSorterUtils.partitionNotStable(list, start, end, sortMask)
                     : IntSorterUtils.partitionReverseNotStable(list, start, end, sortMask);
-            Thread t1 = null;
-            if (finalLeft - start > 1) { //sort negative numbers
-                maskParts = getMaskBit(list, start, finalLeft);
-                mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsList(mask);
-                int[] finalKList = kList;
-                Runnable r1 = () -> sort(list, start, finalLeft, finalKList, 0);
-                t1 = new Thread(r1);
-                t1.start();
-                numThreads.addAndGet(1);
-            }
-            if (end - finalLeft > 1) { //sort positive numbers
-                maskParts = getMaskBit(list, finalLeft, end);
-                mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsList(mask);
-                sort(list, finalLeft, end, kList, 0);
-            }
-            if (t1 != null) {
-                try {
-                    t1.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    numThreads.addAndGet(-1);
-                }
-            }
+
+            int size1 = finalLeft - start;
+            int size2 = end - finalLeft;
+            SorterRunner.runTwoRunnable(
+                    size1 > 1 ? () -> { //sort negative numbers
+                        int[] maskParts1 = getMaskBit(list, start, finalLeft);
+                        int mask1 = maskParts1[0] & maskParts1[1];
+                        int[] kList1 = getMaskAsList(mask1);
+                        sort(list, start, finalLeft, kList1, 0);
+                    } : null, size1,
+                    size2 > 1 ? () -> { //sort positive numbers
+                        int[] maskParts2 = getMaskBit(list, finalLeft, end);
+                        int mask2 = maskParts2[0] & maskParts2[1];
+                        int[] kList2 = getMaskAsList(mask2);
+                        sort(list, finalLeft, end, kList2, 0);
+                    } : null, size2, params.getDataSizeForThreads(),params.getMaxThreads(),  numThreads);
         } else {
             sort(list, start, end, kList, 0);
         }

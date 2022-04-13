@@ -138,8 +138,6 @@ public class BitSorterUtils {
             }
             if (i == end) {
                 return AnalysisResult.ASCENDING;
-            } else {
-                return AnalysisResult.UNORDERED;
             }
         }
         //descending
@@ -154,10 +152,9 @@ public class BitSorterUtils {
             }
             if (i == end) {
                 return AnalysisResult.DESCENDING;
-            } else {
-                return AnalysisResult.UNORDERED;
             }
         }
+        return AnalysisResult.UNORDERED;
     }
 
     public static int listIsOrderedUnSigned(int[] list, int start, int end) {
@@ -188,8 +185,6 @@ public class BitSorterUtils {
             }
             if (i == end) {
                 return AnalysisResult.ASCENDING;
-            } else {
-                return AnalysisResult.UNORDERED;
             }
         }
         //descending
@@ -204,10 +199,9 @@ public class BitSorterUtils {
             }
             if (i == end) {
                 return AnalysisResult.DESCENDING;
-            } else {
-                return AnalysisResult.UNORDERED;
             }
         }
+        return AnalysisResult.UNORDERED;
     }
 
 }

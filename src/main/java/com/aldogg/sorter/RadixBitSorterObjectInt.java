@@ -35,7 +35,7 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
         int ordered = isUnsigned() ? listIsOrderedUnSigned(list, start, end) : listIsOrderedSigned(list, start, end);
         if (ordered == AnalysisResult.DESCENDING) {
             IntSorterUtils.reverseList(list, start, end);
-            reverseList(oList, start, end);
+            ObjectSorterUtils.reverseList(oList, start, end);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
