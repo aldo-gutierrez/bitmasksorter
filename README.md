@@ -111,12 +111,12 @@ For example:
 - The last 16 bits are done using CountSort while doing RadixBitSort in each thread
 - In total 23 bits are processed only the ones in the bitmask
 
+# Stability
+int[] sort in java use a not stable algorithm, it doesn't make sense to have a stable algorithm. 
+Object[] sort in java is a stable algorithm, so ObjectSorter has the parameter setStable but that uses more memory offcourse
+
 # Speed
 Most of the algorithms are faster than the Java default and Parallel sorters in most of the cases
-
-# Stability
-int[] sort in java use a not stable algorithm, it doesn't make sense to have a stable algorithm
-Object[] sort in java is a stable algorithm, so ObjectSorter has the parameter setStable but that uses more memory offcourse
 
 ###Example 1: 
 
@@ -169,6 +169,28 @@ Comparison for sorting 40 Million int elements with range from 0 to 1000000000 i
 |RadixBitSorterMTInt|466|
 
 ![Graph2](plot-S40000000-Range0-1000000000-random.png?raw=true "Graph2")
+
+###Table of 1st and 2nd algorithm by speed AMD Ryzen 7 4800H processor, Java 11, pluged in
+
+| N / range | 10                                    | 1,000                                   | 100,000                               | 10,000,000                                | 1,000,000,000                            |
+|---------------|---------------------------------------|-----------------------------------------|---------------------------------------|-------------------------------------------|-------------------------------------------|
+| 10,000        | RadixBitSorterInt RadixBitSorterMTInt | MixedBitSorterMTInt RadixBitSorterInt   | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt     | RadixBitSorterInt RadixBitSorterMTInt     |
+| 100,000       | QuickBitSorterInt RadixBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterInt QuickBitSorterInt   | RadixBitSorterInt RadixByteSorterInt      | RadixBitSorterInt RadixByteSorterInt      |
+| 1,000,000     | QuickBitSorterInt MixedBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt | JavaParallelSorterInt RadixBitSorterMTInt |
+| 10,000,000    | MixedBitSorterMTInt QuickBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt | RadixBitSorterMTInt JavaParallelSorterInt |
+| 40,000,000    | QuickBitSorterMTInt MixedBitSorterMTInt | MixedBitSorterMTInt RadixBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt |
+
+###Table of 1st and 2nd algorithm by speed AMD Ryzen 7 4800H processor, Java 11, with battery
+
+
+| N / range | 10                                    | 1,000                                 | 100,000                             | 10,000,000                           | 1,000,000,000                        |
+|---------------|---------------------------------------|---------------------------------------|-------------------------------------|--------------------------------------|--------------------------------------|
+| 10,000        | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt |
+| 100,000       | QuickBitSorterInt MixedBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterInt QuickBitSorterInt | RadixBitSorterInt RadixByteSorterInt | RadixBitSorterInt RadixByteSorterInt |
+| 1,000,000     | RadixBitSorterMTInt MixedBitSorterMTInt | QuickBitSorterMTInt QuickBitSorterInt | QuickBitSorterInt MixedBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterMTInt RadixBitSorterInt |
+| 10,000,000    | MixedBitSorterMTInt QuickBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt |
+| 40,000,000    | QuickBitSorterMTInt QuickBitSorterInt | QuickBitSorterMTInt MixedBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | MixedBitSorterMTInt JavaParallelSorterInt | JavaParallelSorterInt RadixBitSorterMTInt |
+
 
 Object Sort using the Interface IntComparator
 
@@ -257,15 +279,15 @@ More comparison is needed.
 - Find the number N where Parallelization  of isOrdered is faster than serial
 - Find the number N where Parallelization  of partition is faster than serial
 - Tests with repeatable random seeds
+- Have comparations and documentation of speed in powers of two instead of powers of ten
 
 ## Algorithms Testing
-|Algorithm|Positive random numbers|Negative random numbers|Unsigned numbers| Sorted         | Reverse sorted     |
-|---------|-----------------------|-----------------------|--------------|----------------|--------------------|
-|QuickBitSorterInt|ok|ok|ok| ok | ok |
-|RadixBitSorterInt|ok|ok|ok| ok | ok |
-|RadixByteSorterInt|ok|ok|ok| ok | ok |
-|JavaParallelSorterInt|ok|ok|ok|ok|ok|
-|QuickBitSorterMTInt|ok|ok|ok| ok | ok |
-|MixedBitSorterMTInt|ok|ok|ok| ok | ok |
-|RadixBitSorterMTInt|ok|ok|ok| ok | ok |
-|RadixBitSorterObject|ok|ok|not tested| ok | ok |
+|Algorithm|Positive random numbers|Negative random numbers| Unsigned numbers | Sorted         | Reverse sorted     |
+|---------|-----------------------|-----------------------|------------------|----------------|--------------------|
+|QuickBitSorterInt|ok|ok| ok               | ok | ok |
+|RadixBitSorterInt|ok|ok| ok               | ok | ok |
+|RadixByteSorterInt|ok|ok| ok               | ok | ok |
+|QuickBitSorterMTInt|ok|ok| ok               | ok | ok |
+|MixedBitSorterMTInt|ok|ok| ok               | ok | ok |
+|RadixBitSorterMTInt|ok|ok| ok               | ok | ok |
+|RadixBitSorterObject|ok|ok| not tested       | ok | ok |

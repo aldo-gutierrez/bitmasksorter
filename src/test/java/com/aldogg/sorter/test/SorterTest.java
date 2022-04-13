@@ -428,19 +428,37 @@ public class SorterTest {
            }
            String sorterWinner = "";
            long sorterWinnerTime = 0;
+           String sorter2ndWinner = "";
+           long sorter2ndWinnerTime = 0;
            for (int i = 0; i < sorters.length; i++) {
                Sorter sorter = sorters[i];
                if (i==0) {
                    sorterWinner = sorter.name();
                    sorterWinnerTime = testSortResults.getAVG(i);
-               } else {
+               } if (i==1) {
                    if (testSortResults.getAVG(i) < sorterWinnerTime) {
+                       sorter2ndWinner = sorterWinner;
+                       sorter2ndWinnerTime = sorterWinnerTime;
                        sorterWinner = sorter.name();
                        sorterWinnerTime = testSortResults.getAVG(i);
+                   } else {
+                       sorter2ndWinner = sorter.name();
+                       sorter2ndWinnerTime = testSortResults.getAVG(i);
+                   }
+               } else {
+                   if (testSortResults.getAVG(i) < sorterWinnerTime) {
+                       sorter2ndWinner = sorterWinner;
+                       sorter2ndWinnerTime = sorterWinnerTime;
+                       sorterWinner = sorter.name();
+                       sorterWinnerTime = testSortResults.getAVG(i);
+                   } else if (testSortResults.getAVG(i) < sorter2ndWinnerTime) {
+                       sorter2ndWinner = sorter.name();
+                       sorter2ndWinnerTime = testSortResults.getAVG(i);
                    }
                }
            }
-            System.out.printf("%21s %,13d ", sorterWinner, sorterWinnerTime);
+           System.out.printf("%21s %,13d ", sorterWinner, sorterWinnerTime);
+           System.out.printf("%21s %,13d ", sorter2ndWinner, sorter2ndWinnerTime);
            System.out.println();
        }
     }
