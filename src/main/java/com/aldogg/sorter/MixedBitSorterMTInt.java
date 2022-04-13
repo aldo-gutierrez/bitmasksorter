@@ -146,18 +146,18 @@ public class MixedBitSorterMTInt implements IntSorter {
             sortMask1 = sortMask1 | sortMaskij;
             bits++;
         }
-        int lengthBitsToNumber = twoPowerX(bits);
-        partitionStableNonConsecutiveBitsAndCountSort(list, start, end, lengthBitsToNumber, aux2, sortMask1, kList, kIndexCountSort);
+        int twoPowerBits = twoPowerX(bits);
+        partitionStableNonConsecutiveBitsAndCountSort(list, start, end, sortMask1, kList, kIndexCountSort, twoPowerBits, aux2);
     }
 
     //partitionStableLastBits
-    protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] list, final int start, final int end, int lengthBitsToNumber, final int[] aux, int sortMask, int[] kList, int kIndex) {
+    protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] list, final int start, final int end, int sortMask, int[] kList, int kIndex, int twoPowerK, final int[] aux) {
         int[] kListAux = getMaskAsList(sortMask);
         int[][] sections = getMaskAsSections(kListAux);
 
 
-        int[] leftX = new int[lengthBitsToNumber];
-        int[] count = new int[lengthBitsToNumber];
+        int[] leftX = new int[twoPowerK];
+        int[] count = new int[twoPowerK];
 
         if (sections.length == 1) {
             for (int i = start; i < end; i++) {
@@ -173,7 +173,7 @@ public class MixedBitSorterMTInt implements IntSorter {
             }
         }
 
-        for (int i = 1; i < lengthBitsToNumber; i++) {
+        for (int i = 1; i < twoPowerK; i++) {
             leftX[i] = leftX[i - 1] + count[i - 1];
         }
 
@@ -205,7 +205,7 @@ public class MixedBitSorterMTInt implements IntSorter {
                 Runnable r1 = () -> {
                     int[] bufferCount = new int[bufferCountSSize];
                     int[] bufferSize = new int[bufferCountSSize];
-                    for (int i = 0; i < lengthBitsToNumber / 2; i++) {
+                    for (int i = 0; i < twoPowerK / 2; i++) {
                         smallListUtil(aux, leftX[i] - count[i], leftX[i], kListCountS, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
                     }
                 };
@@ -214,7 +214,7 @@ public class MixedBitSorterMTInt implements IntSorter {
                 numThreads.addAndGet(1);
                 int[] bufferCount = new int[bufferCountSSize];
                 int[] bufferSize = new int[bufferCountSSize];
-                for (int i = lengthBitsToNumber / 2; i < lengthBitsToNumber; i++) {
+                for (int i = twoPowerK / 2; i < twoPowerK; i++) {
                     smallListUtil(aux, leftX[i] - count[i], leftX[i], kListCountS, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
                 }
                 try {
@@ -227,7 +227,7 @@ public class MixedBitSorterMTInt implements IntSorter {
             } else {
                 int[] bufferCount = new int[bufferCountSSize];
                 int[] bufferSize = new int[bufferCountSSize];
-                for (int i = 0; i < lengthBitsToNumber; i++) {
+                for (int i = 0; i < twoPowerK; i++) {
                     smallListUtil(aux, leftX[i] - count[i], leftX[i], kListCountS,sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
                 }
             }

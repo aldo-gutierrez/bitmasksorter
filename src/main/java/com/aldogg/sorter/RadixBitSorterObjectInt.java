@@ -73,7 +73,7 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
                 maskParts = getMaskBit(list, start, finalLeft);
                 mask = maskParts[0] & maskParts[1];
                 kList = getMaskAsList(mask);
-                radixSort(array, list, start, finalLeft, oAux, aux, kList, kList.length - 1, 0);
+                radixSort(array, list, start, finalLeft, kList, 0, kList.length - 1, oAux, aux);
             }
             if (end - finalLeft > 1) { //sort positive numbers
                 int[] aux = new int[end - finalLeft];
@@ -81,16 +81,16 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
                 maskParts = getMaskBit(list, finalLeft, end);
                 mask = maskParts[0] & maskParts[1];
                 kList = getMaskAsList(mask);
-                radixSort(array, list, finalLeft, end, oAux, aux, kList, kList.length - 1, 0);
+                radixSort(array, list, finalLeft, end, kList, 0, kList.length - 1, oAux, aux);
             }
         } else {
             int[] aux = new int[end - start];
             Object[] oAux = new Object[end - start];
-            radixSort(array, list, start, end, oAux, aux, kList, kList.length - 1, 0);
+            radixSort(array, list, start, end, kList, 0, kList.length - 1, oAux, aux);
         }
     }
 
-    public static void radixSort(Object[] oArray, int[] array, int start, int end, Object[] oAux, int[] aux, int[] kList, int kIndexStart, int kIndexEnd) {
+    public static void radixSort(Object[] oArray, int[] array, int start, int end, int[] kList, int kIndexEnd, int kIndexStart, Object[] oAux, int[] aux) {
         for (int i = kIndexStart; i >= kIndexEnd; i--) {
             int kListI = kList[i];
             int sortMask1 = BitSorterUtils.getMaskBit(kListI);

@@ -89,10 +89,10 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
             sortMask1 = sortMask1 | sortMaskI;
             threadBits++;
         }
-        partitionStableNonConsecutiveBitsAndRadixSort(array, start, end, threadBits, aux2, sortMask1, kList);
+        partitionStableNonConsecutiveBitsAndRadixSort(array, start, end, sortMask1, threadBits, kList, aux2);
     }
 
-    protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] list, final int start, final int end, int threadBits, final int[] aux, int sortMask, int[] kList) {
+    protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] list, final int start, final int end, int sortMask, int threadBits, int[] kList, final int[] aux) {
         int maxProcessNumber = twoPowerX(threadBits);
         int remainingBits = kList.length - threadBits;
 
