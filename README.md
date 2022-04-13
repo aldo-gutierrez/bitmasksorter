@@ -1,4 +1,4 @@
-# Mask Bit Sorter
+# Mask Bit Sorters
 This project tests different ideas for sorting algorithms. 
 
 We use a bitmask as a way to get statistical information about the numbers to be sorted
@@ -31,13 +31,13 @@ int[] list = ....
 sorter.sort(list);
 ```
 ```
-//Parallel sorting uint numbers 
+//Parallel sorting int numbers 
 IntSorter sorter = new QuickBitSorterMTInt();
 int[] list = ....
 sorter.sort(list);
 ```
 ```
-//Sorting uint numbers 
+//Sorting unsinged int numbers 
 IntSorter sorter = new QuickBitSorterInt();
 sorter.setUnsigned(true);
 int[] list = ....
@@ -52,19 +52,19 @@ that is probably a good pivot.
 In the worst case (32 bit mask) the last recursion level is 32, but we use CountSort on the last 16 bits (countingSortBits default value) so
  the max recursion level is 16
  
-The application of count sort in the last bits of the mask works even if the mask doesn't have consecutive 1s. 
-For example for example: 1110011, only 5 bits change, we could use 5 bits 2^5 32 slots for Count Sort
+The application of count sort in the last bits of the mask works even if the mask doesn't have consecutive ones (1). 
+For example in the mask 1110011, only 5 bits change, we could use 5 bits 2^5 32 slots for Count Sort
 
 Optimizations:
 - The partition is only done by the bits in the mask as described above
-- Optimization for small lists and or for the last bits, to choose between count sort and two different radix sorts
+- Optimization for small lists and or for the last bits, to choose between count sort and two different radix sort implementations
 - Multithreading support
 
 ## RadixBitSorter:
 
 Usage:
 ```
-//Sorting uint numbers 
+//Sorting unsigned int  numbers 
 IntSorter sorter = RadixBitSorterInt();
 sorter.setUnsigned(true);
 int[] list = ....
@@ -79,15 +79,19 @@ sorter.sort(list);
 ### How it works:
 
 Is similar to the traditional Radix Sorter but instead of using a 10 Base it uses a 2 Base.
-As is binary the Count Sort is a little different. Also, it doesn't need to sort by all bits
+As is binary the Count Sort is a different implementation but similar in intention. Also, it doesn't need to sort by all bits
 just by the bits that are in the bit mask.
 
 If you test the traditional stackoverflow, baeldung, hackerearth or any other site, you will see
 a radix sort that is 10Base and that normally is slower than TimSort (JavaSort)
 
-On the last week of february i hear about the project called Ska Sort, that is a radix sort implementation
-that works on any type of data but it works at byte level. The difference with this implementation is
-that we use a bitmask and do the radix sort only with those bits but not with all bytes.
+On the last week of february 2022 i hear about the project called Ska Sort, that is a radix sort implementation
+that works on any type of data but it works at byte level. I still need to compare with a java version
+of Ska Sort. Using some of the ideas of Ska Sort (not all) and many forums a RadixByteSorterInt sorter has been
+developed to. The difference between RadixByteSorterInt and RadixBitSorterInt is that the later use 
+only the bits in the bitmask to do the sorting and not sorting with all the bytes.
+Comparing the performance of RadixBitSorterInt is faster when the range of the numbers is 30-32 bits but similar
+to RadixByteSorter otherwise.
 
 
 Optimizations:
@@ -95,21 +99,24 @@ Optimizations:
 - It sorts by 11 bits at a time as maximum (Instead of 8 as suggested in other sites, more faster in my machine but more test in different machines needs to be done)
 
 ## MixedBitSorter:
-It is a multi thread sorter, it combines previous Bit QuickSort until having enough threads, then RadixBitSort and lastly CountSort for the last bits
+It is a multi thread sorter, it combines previous QuickBitSorter until having the same threads as the hardware threads in the processor,
+then it uses RadixBitSort for the middle bits and lastly it uses CountSort for the last bits
 For example if the bitmask is 00000000111111111111111111111110  
-Then there are 23 bits, if we have a 32 thread processor then:
+Then there are 23 bits, if we have a 32 thread hardware processor then:
 
 For example:
 
-- The first 5 bits are recursively processed by doing Bit QuickSort in multiple threads, supposing your machine has 32 threads
-- The next 2 bits are recursively processed by doing RadixBitSort
-- The last 16 bits are done using CountSort while doing RadixBitSort
-- In total 23 bits are processed, the last bit 0 is not used
+- The first 5 bits are recursively processed by doing QuickBitSorter in multiple threads
+- The next 2 bits are recursively processed by doing RadixBitSort in each thread
+- The last 16 bits are done using CountSort while doing RadixBitSort in each thread
+- In total 23 bits are processed only the ones in the bitmask
 
 # Speed
-Most of the algorithms are faster than the Java default and Parallel sort
-In the test from 10000 to 40000000 in list size and from range 10 to 1000000000 RadixBitSorterMTInt
-wins the majority.
+Most of the algorithms are faster than the Java default and Parallel sorters in most of the cases
+
+# Stability
+int[] sort in java use a not stable algorithm, it doesn't make sense to have a stable algorithm
+Object[] sort in java is a stable algorithm, so ObjectSorter has the parameter setStable but that uses more memory offcourse
 
 ###Example 1: 
 
@@ -166,26 +173,26 @@ Comparison for sorting 40 Million int elements with range from 0 to 1000000000 i
 Object Sort using the Interface IntComparator
 
 ```
-public class Entity1 {
-    int id;
-    String name;
-}
+        public class Entity1 {
+            int id;
+            String name;
+        }
 
-IntComparator comparator = new IntComparator() {
+        IntComparator<Entity1> comparator = new IntComparator<Entity1>() {
             @Override
-            public int intValue(Object o) {
-                return ((Entity1) o).getId();
+            public int intValue(Entity1 o) {
+                return o.getId();
             }
 
             @Override
-            public int compare(Object entity1, Object t1) {
-                return Integer.compare(((Entity1)entity1).getId(), ((Entity1) t1).getId());
+            public int compare(Entity1 entity1, Entity1 t1) {
+                return Integer.compare(entity1.getId(), t1.getId());
             }
-};
+        };
 
-Object[] list = ...;
-ObjectSorter sorter = new RadixBitSorterInt();
-sorter.sort(list, comparator);
+        Object[] list = ...;
+        ObjectSorter sorter = new RadixBitSorterObjectInt();
+        sorter.sort(list, comparator);
 ```
 
 ###Example 4: 
@@ -216,8 +223,8 @@ Comparison for sorting 10 Million elements with int key range from 0 to 100000 i
 # O(N) Complexity. Needs to be evaluated
 
 - n = number of elements
-- k = number of bits on mask
-- t = number of threads
+- k = number of bits on mask, 2^k is the range of numbers
+- t = number of hardware threads
 - c = number of bits for counting sort
 - q = number of bits for quick sort
 
@@ -231,22 +238,27 @@ Comparison for sorting 10 Million elements with int key range from 0 to 100000 i
 | RadixBitSorterMT | O(n * log(n)) | O(n * k), k<log2(n) | O(n), k = 1    | O(n)      | O(n)        |    1     |
 
 ## Comparing to Ska Sort
-I Still didn't implement the same algorithm but RadixByteSorterInt should be equivalent to Ska Sort
-Ska Sort is faster when the range of the number is 30 bit of more, and RadixBitSorter is faster if the range 
-has less than 30 bits.
+I Still didn't implement the same algorithm but RadixByteSorterInt uses some ideas of Ska Sort
+Ska Sort is faster sometimes when the range of the number is 2^30 (30 bits) or more, and RadixBitSorter is faster otherwise
 
 More comparison is needed.
 
-## Things to DO
-- Add More Object sorters besides RadixBitSorter
-- Add Long, Short, Byte sorters
+## TODO
+- Add More Object sorters in addition to RadixBitSorter
+- Add Long, Short, Byte sorters (Long is the priority)
 - Add C#, C++, Python, Javascript Implementations
-- More evaluation on complexity
-- More testing
+- More Detailed evaluation on complexity
+- More Testing
 - Compare with [Ska Sort] (https://github.com/skarupke/ska_sort)
 - Compare with [Wolf Sort] (https://github.com/scandum/wolfsort) 
+- Merge partition with bitmask extraction or isSorted with partition and bitmask and compare speed
+- Test different algorithms for stable partition with less memory and compare speed
+- Find the number N where Parallelization  of bitmask is faster than serial
+- Find the number N where Parallelization  of isOrdered is faster than serial
+- Find the number N where Parallelization  of partition is faster than serial
+- Tests with repeatable random seeds
 
-## Algorithms Ready for Prod
+## Algorithms Testing
 |Algorithm|Positive random numbers|Negative random numbers|Unsigned numbers| Sorted         | Reverse sorted     |
 |---------|-----------------------|-----------------------|--------------|----------------|--------------------|
 |QuickBitSorterInt|ok|ok|ok| ok | ok |

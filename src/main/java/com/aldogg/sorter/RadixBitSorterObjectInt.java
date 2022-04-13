@@ -11,6 +11,7 @@ import static com.aldogg.sorter.collection.ObjectSorterUtils.*;
 public class RadixBitSorterObjectInt implements ObjectSorter {
 
     boolean unsigned = false;
+    boolean stable = false;
 
     @Override
     public boolean isUnsigned() {
@@ -19,6 +20,16 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
 
     public void setUnsigned(boolean unsigned) {
         this.unsigned = unsigned;
+    }
+
+    @Override
+    public boolean isStable() {
+        return stable;
+    }
+
+    @Override
+    public void setStable(boolean stable) {
+        this.stable = stable;
     }
 
     @Override
@@ -46,15 +57,15 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
             return;
         }
 
-//        int[] aux = new int[end - start];
-//        Object[] oAux = new Object[end - start];
         if (kList[0] == 31) { //there are negative numbers and positive numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
-            int finalLeft = isUnsigned()
+            int finalLeft = isStable()
+                    ? (isUnsigned()
+                    ? ObjectSorterUtils.partitionStable(oList, list, start, end, sortMask)
+                    : ObjectSorterUtils.partitionReverseStable(oList, list, start, end, sortMask))
+                    : (isUnsigned()
                     ? ObjectSorterUtils.partitionNotStable(oList, list, start, end, sortMask)
-                    : ObjectSorterUtils.partitionReverseNotStable(oList, list, start, end, sortMask);
-//                    ? ObjectSorterUtils.partitionStable(oList, list, start, end, sortMask, oAux, aux)
-//                    : ObjectSorterUtils.partitionReverseStable(oList, list, start, end, sortMask, oAux, aux);
+                    : ObjectSorterUtils.partitionReverseNotStable(oList, list, start, end, sortMask));
 
             if (finalLeft - start > 1) { //sort negative numbers
                 int[] aux = new int[finalLeft - start];

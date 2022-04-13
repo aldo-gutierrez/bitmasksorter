@@ -6,4 +6,6 @@ public interface ObjectSorter extends Sorter {
 
     void sort(Object[] list, IntComparator comparator);
 
+    void setStable(boolean stable);
+
 }

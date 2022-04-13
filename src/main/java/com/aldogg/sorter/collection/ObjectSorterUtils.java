@@ -74,6 +74,12 @@ public class ObjectSorterUtils {
         return left;
     }
 
+    public static int partitionStable(final Object[] oList, final int[] list, final int start, final int end, final int sortMask) {
+        int[] aux = new int[end - start];
+        Object[] oAux = new Object[end - start];
+        return partitionStable(oList, list, start, end, sortMask, oAux, aux);
+    }
+
     /**
      *  stable partition with aux memory, only copies right to aux for better performance
      *  CPU: 2*N*K (K=1 for 1 bit) //review
@@ -101,6 +107,13 @@ public class ObjectSorterUtils {
         System.arraycopy(oAux, start, oList, left, lengthRight) ;
         return left;
     }
+
+    public static int partitionReverseStable(final Object[] oList, final int[] list, final int start, final int end, final int sortMask) {
+        int[] aux = new int[end - start];
+        Object[] oAux = new Object[end - start];
+        return partitionReverseStable(oList, list, start, end, sortMask, oAux, aux);
+    }
+
 
     public static int partitionReverseStable(final Object[] oList, final int[] list, final int start, final int end, final int sortMask,
                                       Object[] oAux, int[] aux) {

@@ -13,4 +13,10 @@ public class JavaParallelSorterObjectInt implements ObjectSorter {
     public void setUnsigned(boolean unsigned) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public void setStable(boolean stable) {
+        throw new UnsupportedOperationException();
+    }
+
 }
