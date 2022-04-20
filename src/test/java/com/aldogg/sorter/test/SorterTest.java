@@ -346,7 +346,7 @@ public class SorterTest {
 
     @Test
     public void speedTestIncDec() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("speed.csv"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("speed_sorted.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
 
