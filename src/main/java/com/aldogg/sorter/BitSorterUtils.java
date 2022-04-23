@@ -15,7 +15,7 @@ public class BitSorterUtils {
         return new int[]{mask, inv_mask};
     }
 
-    public static int[] getMaskAsList(final int mask) {
+    public static int[] getMaskAsArray(final int mask) {
         List<Integer> list = new ArrayList<>();
         for (int i = 31; i >= 0; i--) {
             if (((mask >> i) & 1) == 1) {
@@ -178,7 +178,7 @@ public class BitSorterUtils {
             i++;
             for (; i < end; i++)  {
                 int i2 = array[i];
-                if (Integer.compareUnsigned(i1, i2) ==  1) {
+                if (i1 + 0x80000000 > i2 + 0x80000000) {
                     break;
                 }
                 i1 = i2;
@@ -192,7 +192,7 @@ public class BitSorterUtils {
             i++;
             for (; i < end; i++)  {
                 int i2 = array[i];
-                if (Integer.compareUnsigned(i1, i2) == -1) {
+                if (i1 + 0x80000000 < i2 + 0x80000000) {
                     break;
                 }
                 i1 = i2;

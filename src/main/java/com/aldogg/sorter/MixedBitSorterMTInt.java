@@ -45,7 +45,7 @@ public class MixedBitSorterMTInt implements IntSorter {
 
         int[] maskParts = getMaskBit(array, start, end);
         int mask = maskParts[0] & maskParts[1];
-        int[] kList = getMaskAsList(mask);
+        int[] kList = getMaskAsArray(mask);
         if (kList.length == 0) {
             return;
         }
@@ -62,13 +62,13 @@ public class MixedBitSorterMTInt implements IntSorter {
                     size1 > 1 ? () -> { //sort negative numbers
                         int[] maskParts1 = getMaskBit(array, start, finalLeft);
                         int mask1 = maskParts1[0] & maskParts1[1];
-                        int[] kList1 = getMaskAsList(mask1);
+                        int[] kList1 = getMaskAsArray(mask1);
                         sort(array, start, finalLeft, kList1, 0);
                     } : null, size1,
                     size2 > 1 ? () -> { //sort positive numbers
                         int[] maskParts2 = getMaskBit(array, finalLeft, end);
                         int mask2 = maskParts2[0] & maskParts2[1];
-                        int[] kList2 = getMaskAsList(mask2);
+                        int[] kList2 = getMaskAsArray(mask2);
                         sort(array, finalLeft, end, kList2, 0);
                     } : null, size2, params.getDataSizeForThreads(),params.getMaxThreads(),  numThreads);
         } else {
@@ -152,7 +152,7 @@ public class MixedBitSorterMTInt implements IntSorter {
 
     //partitionStableLastBits
     protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] list, final int start, final int end, int sortMask, int[] kList, int kIndex, int twoPowerK, final int[] aux) {
-        int[] kListAux = getMaskAsList(sortMask);
+        int[] kListAux = getMaskAsArray(sortMask);
         int[][] sections = getMaskAsSections(kListAux);
 
 
@@ -252,7 +252,11 @@ public class MixedBitSorterMTInt implements IntSorter {
             }
 
         } else if (length > 1) {
-            SortingNetworks.sortVerySmallListSigned(list, start, end);
+            if (unsigned) {
+                SortingNetworks.sortVerySmallListUnSigned(list, start, end);
+            } else {
+                SortingNetworks.sortVerySmallListSigned(list, start, end);
+            }
         }
     }
 

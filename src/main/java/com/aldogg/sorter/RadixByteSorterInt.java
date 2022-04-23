@@ -9,7 +9,7 @@ public class RadixByteSorterInt implements IntSorter {
 
     boolean unsigned = false;
     boolean stable = true;
-    boolean calculateBitMaskOptimization = false;
+    boolean calculateBitMaskOptimization = true;
 
     @Override
     public boolean isUnsigned() {
@@ -49,7 +49,7 @@ public class RadixByteSorterInt implements IntSorter {
         if (calculateBitMaskOptimization) {
             int[] maskParts = getMaskBit(array, start, end);
             int mask = maskParts[0] & maskParts[1];
-            int[] kList = getMaskAsList(mask);
+            int[] kList = getMaskAsArray(mask);
 
             if (kList.length == 0) {
                 return;

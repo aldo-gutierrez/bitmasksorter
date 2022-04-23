@@ -10,7 +10,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static com.aldogg.sorter.BitSorterUtils.getMaskAsList;
+import static com.aldogg.sorter.BitSorterUtils.getMaskAsArray;
 import static com.aldogg.sorter.BitSorterUtils.getMaskBit;
 import static com.aldogg.sorter.RadixBitSorterInt.radixSort;
 
@@ -73,7 +73,7 @@ public class BasicTest extends SorterTest{
                 final int end = array.length;
                 int[] maskParts = getMaskBit(array, start, end);
                 int mask = maskParts[0] & maskParts[1];
-                int[] kList = getMaskAsList(mask);
+                int[] kList = getMaskAsArray(mask);
                 int length = end - start;
                 int[] aux = new int[length];
                 radixSort(array, start, end, kList, kList.length - 1, 0, aux);
@@ -92,7 +92,7 @@ public class BasicTest extends SorterTest{
             public void sort(int[] array) {
                 int[] maskParts = getMaskBit(array, 0, array.length);
                 int mask = maskParts[0] & maskParts[1];
-                int[] kList = getMaskAsList(mask);
+                int[] kList = getMaskAsArray(mask);
                 int[] aux = new int[array.length];
                 for (int i = kList.length - 1; i >= 0; i--) {
                     int sortMask = getMaskBit(kList[i]);
@@ -113,7 +113,7 @@ public class BasicTest extends SorterTest{
             public void sort(int[] array) {
                 int[] maskParts = getMaskBit(array, 0, array.length);
                 int mask = maskParts[0] & maskParts[1];
-                int[] kList = getMaskAsList(mask);
+                int[] kList = getMaskAsArray(mask);
                 CountSort.countSort(array, 0, array.length, kList, 0);
             }
 
@@ -129,9 +129,15 @@ public class BasicTest extends SorterTest{
         }};
         TestSortResults testSortResults;
 
-        int iterations = 20;
+        int iterations = 200;
         int[] limitHigh = new int[] {2, 4, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192,16384,32768,65536};
+        testSortResults = new TestSortResults(sorters.length);
+        testSpeedInt(iterations, 16, 0, 256, testSortResults, sorters, null);
+        testSpeedInt(iterations, 16, 0, 15, testSortResults, sorters, null);
+        testSpeedInt(iterations, 16, 0, 4096, testSortResults, sorters, null);
 
+
+        iterations = 4000;
         for (int limitH : limitHigh) {
             testSortResults = new TestSortResults(sorters.length);
             testSpeedInt(iterations, 16, 0, limitH, testSortResults, sorters, writer);

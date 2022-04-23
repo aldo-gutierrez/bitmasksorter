@@ -30,7 +30,7 @@ public class QuickBitBaseSorterInt implements IntSorter {
         final int end = array.length;
         int[] maskParts = getMaskBit(array, start, end);
         int mask = maskParts[0] & maskParts[1];
-        int[] kList = getMaskAsList(mask);
+        int[] kList = getMaskAsArray(mask);
         if (kList.length == 0) {
             return;
         }
@@ -42,13 +42,13 @@ public class QuickBitBaseSorterInt implements IntSorter {
             if (finalLeft - start > 1) {
                 maskParts = getMaskBit(array, start, finalLeft);
                 mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsList(mask);
+                kList = getMaskAsArray(mask);
                 sort(array, start, finalLeft, kList, 0);
             }
             if (end - finalLeft > 1) {
                 maskParts = getMaskBit(array, finalLeft, end);
                 mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsList(mask);
+                kList = getMaskAsArray(mask);
                 sort(array, finalLeft, end, kList, 0);
             }
         } else {

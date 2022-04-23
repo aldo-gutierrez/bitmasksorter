@@ -40,7 +40,7 @@ public class QuickBitSorterInt implements IntSorter {
 
         int[] maskParts = getMaskBit(array, start, end);
         int mask = maskParts[0] & maskParts[1];
-        int[] kList = getMaskAsList(mask);
+        int[] kList = getMaskAsArray(mask);
         if (kList.length == 0) {
             return;
         }
@@ -74,7 +74,7 @@ public class QuickBitSorterInt implements IntSorter {
         if (recalculate && kIndex < 3) {
             int[] maskParts = getMaskBit(array, start, end);
             int mask = maskParts[0] & maskParts[1];
-            kList = getMaskAsList(mask);
+            kList = getMaskAsArray(mask);
             kIndex = 0;
         }
 

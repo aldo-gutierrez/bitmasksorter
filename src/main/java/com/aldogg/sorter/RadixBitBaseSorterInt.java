@@ -27,7 +27,7 @@ public class RadixBitBaseSorterInt implements IntSorter {
         final int end = array.length;
         int[] maskParts = getMaskBit(array, start, end);
         int mask = maskParts[0] & maskParts[1];
-        int[] kList = getMaskAsList(mask);
+        int[] kList = getMaskAsArray(mask);
         if (kList.length == 0) {
             return;
         }
@@ -40,7 +40,7 @@ public class RadixBitBaseSorterInt implements IntSorter {
                 int[] aux = new int[finalLeft - start];
                 maskParts = getMaskBit(array, start, finalLeft);
                 mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsList(mask);
+                kList = getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
                     int sortMaskI = BitSorterUtils.getMaskBit(kList[i]);
                     IntSorterUtils.partitionStable(array, start, finalLeft, sortMaskI, aux);
@@ -50,7 +50,7 @@ public class RadixBitBaseSorterInt implements IntSorter {
                 int[] aux = new int[end - finalLeft];
                 maskParts = getMaskBit(array, finalLeft, end);
                 mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsList(mask);
+                kList = getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
                     int sortMaskI = BitSorterUtils.getMaskBit(kList[i]);
                     IntSorterUtils.partitionStable(array, finalLeft, end, sortMaskI, aux);

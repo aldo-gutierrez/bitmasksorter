@@ -1,7 +1,6 @@
 package com.aldogg.sorter;
 
-import static com.aldogg.sorter.intType.IntSorterUtils.compareAndSwapSigned;
-import static com.aldogg.sorter.intType.IntSorterUtils.compareAndSwapUnsigned;
+import static com.aldogg.sorter.intType.IntSorterUtils.*;
 
 //http://users.telenet.be/bertdobbelaere/SorterHunter/sorting_networks.html
 public class SortingNetworks {
@@ -112,50 +111,931 @@ public class SortingNetworks {
     };
 
     public static void sortVerySmallListSigned(final int[] array, final int start, final int end) {
-        int listLength = end - start;
-        if (listLength == 2) {
-            compareAndSwapSigned(array, start, end - 1);
-        } else if (listLength == 3) {
-            compareAndSwapSigned(array, start, end - 1);
-            compareAndSwapSigned(array, start, end - 2);
-            compareAndSwapSigned(array, end - 2, end - 1);
-        } else if (listLength == 4) {
-            compareAndSwapSigned(array, start, start + 1);
-            compareAndSwapSigned(array, end - 2, end - 1);
-            compareAndSwapSigned(array, start, end - 2);
-            compareAndSwapSigned(array, start + 1, end - 1);
-            compareAndSwapSigned(array, start + 1, end - 2);
+        int length = end - start;
+        if (length <= 8) {
+            if (length <= 4) {
+                if (length <= 2) {
+                    if (length == 2) {
+                        compareAndSwapSigned(array, start, start + 1);
+                    }
+                } else {
+                    if (length == 3) {
+                        compareAndSwapSigned(array, start, start + 2);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                    } else { //4
+                        compareAndSwapSigned(array, start, start + 2);
+                        compareAndSwapSigned(array, start + 1, start + 3);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                    }
+                }
+            } else {
+                if (length <= 6) {
+                    if (length == 5) {
+                        compareAndSwapSigned(array, start, start + 3);
+                        compareAndSwapSigned(array, start + 1, start + 4);
+                        compareAndSwapSigned(array, start, start + 2);
+                        compareAndSwapSigned(array, start + 1, start + 3);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 2, start + 4);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                    }
+                    if (length == 6) {
+                        compareAndSwapSigned(array, start, start + 5);
+                        compareAndSwapSigned(array, start + 1, start + 3);
+                        compareAndSwapSigned(array, start + 2, start + 4);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start, start + 3);
+                        compareAndSwapSigned(array, start + 2, start + 5);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                    }
+                } else {
+                    if (length == 7) {
+                        compareAndSwapSigned(array, start, start + 6);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start, start + 2);
+                        compareAndSwapSigned(array, start + 1, start + 4);
+                        compareAndSwapSigned(array, start + 3, start + 6);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 2, start + 5);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 4, start + 6);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                    } else { //8
+                        compareAndSwapSigned(array, start, start + 2);
+                        compareAndSwapSigned(array, start + 1, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 6);
+                        compareAndSwapSigned(array, start + 5, start + 7);
+                        compareAndSwapSigned(array, start, start + 4);
+                        compareAndSwapSigned(array, start + 1, start + 5);
+                        compareAndSwapSigned(array, start + 2, start + 6);
+                        compareAndSwapSigned(array, start + 3, start + 7);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start + 6, start + 7);
+                        compareAndSwapSigned(array, start + 2, start + 4);
+                        compareAndSwapSigned(array, start + 3, start + 5);
+                        compareAndSwapSigned(array, start + 1, start + 4);
+                        compareAndSwapSigned(array, start + 3, start + 6);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                    }
+                }
+            }
         } else {
-            int[][] swap = swaps[listLength];
-            for (int i = 0; i < swap.length; i++) {
-                int[] parts = swap[i];
-                compareAndSwapSigned(array, start + parts[0], start + parts[1]);
+            if (length <= 12) {
+                if (length <= 10) {
+                    if (length == 9) {
+                        compareAndSwapSigned(array, start, start + 3);
+                        compareAndSwapSigned(array, start + 1, start + 7);
+                        compareAndSwapSigned(array, start + 2, start + 5);
+                        compareAndSwapSigned(array, start + 4, start + 8);
+                        compareAndSwapSigned(array, start, start + 7);
+                        compareAndSwapSigned(array, start + 2, start + 4);
+                        compareAndSwapSigned(array, start + 3, start + 8);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                        compareAndSwapSigned(array, start, start + 2);
+                        compareAndSwapSigned(array, start + 1, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                        compareAndSwapSigned(array, start + 1, start + 4);
+                        compareAndSwapSigned(array, start + 3, start + 6);
+                        compareAndSwapSigned(array, start + 5, start + 7);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 2, start + 4);
+                        compareAndSwapSigned(array, start + 3, start + 5);
+                        compareAndSwapSigned(array, start + 6, start + 8);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start + 6, start + 7);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                    } else { //10
+                        compareAndSwapSigned(array, start, start + 8);
+                        compareAndSwapSigned(array, start + 1, start + 9);
+                        compareAndSwapSigned(array, start + 2, start + 7);
+                        compareAndSwapSigned(array, start + 3, start + 5);
+                        compareAndSwapSigned(array, start + 4, start + 6);
+                        compareAndSwapSigned(array, start, start + 2);
+                        compareAndSwapSigned(array, start + 1, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 8);
+                        compareAndSwapSigned(array, start + 7, start + 9);
+                        compareAndSwapSigned(array, start, start + 3);
+                        compareAndSwapSigned(array, start + 2, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 7);
+                        compareAndSwapSigned(array, start + 6, start + 9);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 3, start + 6);
+                        compareAndSwapSigned(array, start + 8, start + 9);
+                        compareAndSwapSigned(array, start + 1, start + 5);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 8);
+                        compareAndSwapSigned(array, start + 6, start + 7);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 5);
+                        compareAndSwapSigned(array, start + 4, start + 6);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start + 6, start + 7);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                    }
+                } else {
+                    if (length == 11) {
+                        compareAndSwapSigned(array, start, start + 9);
+                        compareAndSwapSigned(array, start + 1, start + 6);
+                        compareAndSwapSigned(array, start + 2, start + 4);
+                        compareAndSwapSigned(array, start + 3, start + 7);
+                        compareAndSwapSigned(array, start + 5, start + 8);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 3, start + 5);
+                        compareAndSwapSigned(array, start + 4, start + 10);
+                        compareAndSwapSigned(array, start + 6, start + 9);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                        compareAndSwapSigned(array, start + 1, start + 3);
+                        compareAndSwapSigned(array, start + 2, start + 5);
+                        compareAndSwapSigned(array, start + 4, start + 7);
+                        compareAndSwapSigned(array, start + 8, start + 10);
+                        compareAndSwapSigned(array, start, start + 4);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 7);
+                        compareAndSwapSigned(array, start + 5, start + 9);
+                        compareAndSwapSigned(array, start + 6, start + 8);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 2, start + 6);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                        compareAndSwapSigned(array, start + 9, start + 10);
+                        compareAndSwapSigned(array, start + 2, start + 4);
+                        compareAndSwapSigned(array, start + 3, start + 6);
+                        compareAndSwapSigned(array, start + 5, start + 7);
+                        compareAndSwapSigned(array, start + 8, start + 9);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start + 6, start + 7);
+                    } else { //12
+                        compareAndSwapSigned(array, start, start + 8);
+                        compareAndSwapSigned(array, start + 1, start + 7);
+                        compareAndSwapSigned(array, start + 2, start + 6);
+                        compareAndSwapSigned(array, start + 3, start + 11);
+                        compareAndSwapSigned(array, start + 4, start + 10);
+                        compareAndSwapSigned(array, start + 5, start + 9);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 2, start + 5);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 6, start + 9);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                        compareAndSwapSigned(array, start + 10, start + 11);
+                        compareAndSwapSigned(array, start, start + 2);
+                        compareAndSwapSigned(array, start + 1, start + 6);
+                        compareAndSwapSigned(array, start + 5, start + 10);
+                        compareAndSwapSigned(array, start + 9, start + 11);
+                        compareAndSwapSigned(array, start, start + 3);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 4, start + 6);
+                        compareAndSwapSigned(array, start + 5, start + 7);
+                        compareAndSwapSigned(array, start + 8, start + 11);
+                        compareAndSwapSigned(array, start + 9, start + 10);
+                        compareAndSwapSigned(array, start + 1, start + 4);
+                        compareAndSwapSigned(array, start + 3, start + 5);
+                        compareAndSwapSigned(array, start + 6, start + 8);
+                        compareAndSwapSigned(array, start + 7, start + 10);
+                        compareAndSwapSigned(array, start + 1, start + 3);
+                        compareAndSwapSigned(array, start + 2, start + 5);
+                        compareAndSwapSigned(array, start + 6, start + 9);
+                        compareAndSwapSigned(array, start + 8, start + 10);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start + 6, start + 7);
+                        compareAndSwapSigned(array, start + 8, start + 9);
+                        compareAndSwapSigned(array, start + 4, start + 6);
+                        compareAndSwapSigned(array, start + 5, start + 7);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                    }
+                }
+            } else {
+                if (length <= 14) {
+                    if (length == 13) {
+                        compareAndSwapSigned(array, start, start + 12);
+                        compareAndSwapSigned(array, start + 1, start + 10);
+                        compareAndSwapSigned(array, start + 2, start + 9);
+                        compareAndSwapSigned(array, start + 3, start + 7);
+                        compareAndSwapSigned(array, start + 5, start + 11);
+                        compareAndSwapSigned(array, start + 6, start + 8);
+                        compareAndSwapSigned(array, start + 1, start + 6);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 11);
+                        compareAndSwapSigned(array, start + 7, start + 9);
+                        compareAndSwapSigned(array, start + 8, start + 10);
+                        compareAndSwapSigned(array, start, start + 4);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 6);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                        compareAndSwapSigned(array, start + 9, start + 10);
+                        compareAndSwapSigned(array, start + 11, start + 12);
+                        compareAndSwapSigned(array, start + 4, start + 6);
+                        compareAndSwapSigned(array, start + 5, start + 9);
+                        compareAndSwapSigned(array, start + 8, start + 11);
+                        compareAndSwapSigned(array, start + 10, start + 12);
+                        compareAndSwapSigned(array, start, start + 5);
+                        compareAndSwapSigned(array, start + 3, start + 8);
+                        compareAndSwapSigned(array, start + 4, start + 7);
+                        compareAndSwapSigned(array, start + 6, start + 11);
+                        compareAndSwapSigned(array, start + 9, start + 10);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 2, start + 5);
+                        compareAndSwapSigned(array, start + 6, start + 9);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                        compareAndSwapSigned(array, start + 10, start + 11);
+                        compareAndSwapSigned(array, start + 1, start + 3);
+                        compareAndSwapSigned(array, start + 2, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                        compareAndSwapSigned(array, start + 9, start + 10);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 7);
+                        compareAndSwapSigned(array, start + 6, start + 8);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start + 6, start + 7);
+                        compareAndSwapSigned(array, start + 8, start + 9);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                    } else { //14
+                        compareAndSwapSigned(array, start, start + 6);
+                        compareAndSwapSigned(array, start + 1, start + 11);
+                        compareAndSwapSigned(array, start + 2, start + 12);
+                        compareAndSwapSigned(array, start + 3, start + 10);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start + 7, start + 13);
+                        compareAndSwapSigned(array, start + 8, start + 9);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 7);
+                        compareAndSwapSigned(array, start + 4, start + 8);
+                        compareAndSwapSigned(array, start + 5, start + 9);
+                        compareAndSwapSigned(array, start + 6, start + 10);
+                        compareAndSwapSigned(array, start + 11, start + 12);
+                        compareAndSwapSigned(array, start, start + 4);
+                        compareAndSwapSigned(array, start + 1, start + 3);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                        compareAndSwapSigned(array, start + 9, start + 13);
+                        compareAndSwapSigned(array, start + 10, start + 12);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 2, start + 9);
+                        compareAndSwapSigned(array, start + 3, start + 7);
+                        compareAndSwapSigned(array, start + 4, start + 11);
+                        compareAndSwapSigned(array, start + 6, start + 10);
+                        compareAndSwapSigned(array, start + 12, start + 13);
+                        compareAndSwapSigned(array, start + 2, start + 5);
+                        compareAndSwapSigned(array, start + 4, start + 7);
+                        compareAndSwapSigned(array, start + 6, start + 9);
+                        compareAndSwapSigned(array, start + 8, start + 11);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 6, start + 7);
+                        compareAndSwapSigned(array, start + 9, start + 10);
+                        compareAndSwapSigned(array, start + 11, start + 12);
+                        compareAndSwapSigned(array, start + 1, start + 3);
+                        compareAndSwapSigned(array, start + 2, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                        compareAndSwapSigned(array, start + 9, start + 11);
+                        compareAndSwapSigned(array, start + 10, start + 12);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 7);
+                        compareAndSwapSigned(array, start + 6, start + 9);
+                        compareAndSwapSigned(array, start + 10, start + 11);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start + 6, start + 7);
+                        compareAndSwapSigned(array, start + 8, start + 9);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                        compareAndSwapSigned(array, start + 9, start + 10);
+                    }
+
+                } else {
+                    if (length == 15) {
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 10);
+                        compareAndSwapSigned(array, start + 4, start + 14);
+                        compareAndSwapSigned(array, start + 5, start + 8);
+                        compareAndSwapSigned(array, start + 6, start + 13);
+                        compareAndSwapSigned(array, start + 7, start + 12);
+                        compareAndSwapSigned(array, start + 9, start + 11);
+                        compareAndSwapSigned(array, start, start + 14);
+                        compareAndSwapSigned(array, start + 1, start + 5);
+                        compareAndSwapSigned(array, start + 2, start + 8);
+                        compareAndSwapSigned(array, start + 3, start + 7);
+                        compareAndSwapSigned(array, start + 6, start + 9);
+                        compareAndSwapSigned(array, start + 10, start + 12);
+                        compareAndSwapSigned(array, start + 11, start + 13);
+                        compareAndSwapSigned(array, start, start + 7);
+                        compareAndSwapSigned(array, start + 1, start + 6);
+                        compareAndSwapSigned(array, start + 2, start + 9);
+                        compareAndSwapSigned(array, start + 4, start + 10);
+                        compareAndSwapSigned(array, start + 5, start + 11);
+                        compareAndSwapSigned(array, start + 8, start + 13);
+                        compareAndSwapSigned(array, start + 12, start + 14);
+                        compareAndSwapSigned(array, start, start + 6);
+                        compareAndSwapSigned(array, start + 2, start + 4);
+                        compareAndSwapSigned(array, start + 3, start + 5);
+                        compareAndSwapSigned(array, start + 7, start + 11);
+                        compareAndSwapSigned(array, start + 8, start + 10);
+                        compareAndSwapSigned(array, start + 9, start + 12);
+                        compareAndSwapSigned(array, start + 13, start + 14);
+                        compareAndSwapSigned(array, start, start + 3);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 4, start + 7);
+                        compareAndSwapSigned(array, start + 5, start + 9);
+                        compareAndSwapSigned(array, start + 6, start + 8);
+                        compareAndSwapSigned(array, start + 10, start + 11);
+                        compareAndSwapSigned(array, start + 12, start + 13);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 6);
+                        compareAndSwapSigned(array, start + 7, start + 9);
+                        compareAndSwapSigned(array, start + 10, start + 12);
+                        compareAndSwapSigned(array, start + 11, start + 13);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 5);
+                        compareAndSwapSigned(array, start + 8, start + 10);
+                        compareAndSwapSigned(array, start + 11, start + 12);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                        compareAndSwapSigned(array, start + 9, start + 10);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start + 6, start + 7);
+                        compareAndSwapSigned(array, start + 8, start + 9);
+                        compareAndSwapSigned(array, start + 10, start + 11);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                    } else if (length == 16) {
+                        compareAndSwapSigned(array, start, start + 13);
+                        compareAndSwapSigned(array, start + 1, start + 12);
+                        compareAndSwapSigned(array, start + 2, start + 15);
+                        compareAndSwapSigned(array, start + 3, start + 14);
+                        compareAndSwapSigned(array, start + 4, start + 8);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                        compareAndSwapSigned(array, start + 7, start + 11);
+                        compareAndSwapSigned(array, start + 9, start + 10);
+                        compareAndSwapSigned(array, start, start + 5);
+                        compareAndSwapSigned(array, start + 1, start + 7);
+                        compareAndSwapSigned(array, start + 2, start + 9);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 6, start + 13);
+                        compareAndSwapSigned(array, start + 8, start + 14);
+                        compareAndSwapSigned(array, start + 10, start + 15);
+                        compareAndSwapSigned(array, start + 11, start + 12);
+                        compareAndSwapSigned(array, start, start + 1);
+                        compareAndSwapSigned(array, start + 2, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 5);
+                        compareAndSwapSigned(array, start + 6, start + 8);
+                        compareAndSwapSigned(array, start + 7, start + 9);
+                        compareAndSwapSigned(array, start + 10, start + 11);
+                        compareAndSwapSigned(array, start + 12, start + 13);
+                        compareAndSwapSigned(array, start + 14, start + 15);
+                        compareAndSwapSigned(array, start, start + 2);
+                        compareAndSwapSigned(array, start + 1, start + 3);
+                        compareAndSwapSigned(array, start + 4, start + 10);
+                        compareAndSwapSigned(array, start + 5, start + 11);
+                        compareAndSwapSigned(array, start + 6, start + 7);
+                        compareAndSwapSigned(array, start + 8, start + 9);
+                        compareAndSwapSigned(array, start + 12, start + 14);
+                        compareAndSwapSigned(array, start + 13, start + 15);
+                        compareAndSwapSigned(array, start + 1, start + 2);
+                        compareAndSwapSigned(array, start + 3, start + 12);
+                        compareAndSwapSigned(array, start + 4, start + 6);
+                        compareAndSwapSigned(array, start + 5, start + 7);
+                        compareAndSwapSigned(array, start + 8, start + 10);
+                        compareAndSwapSigned(array, start + 9, start + 11);
+                        compareAndSwapSigned(array, start + 13, start + 14);
+                        compareAndSwapSigned(array, start + 1, start + 4);
+                        compareAndSwapSigned(array, start + 2, start + 6);
+                        compareAndSwapSigned(array, start + 5, start + 8);
+                        compareAndSwapSigned(array, start + 7, start + 10);
+                        compareAndSwapSigned(array, start + 9, start + 13);
+                        compareAndSwapSigned(array, start + 11, start + 14);
+                        compareAndSwapSigned(array, start + 2, start + 4);
+                        compareAndSwapSigned(array, start + 3, start + 6);
+                        compareAndSwapSigned(array, start + 9, start + 12);
+                        compareAndSwapSigned(array, start + 11, start + 13);
+                        compareAndSwapSigned(array, start + 3, start + 5);
+                        compareAndSwapSigned(array, start + 6, start + 8);
+                        compareAndSwapSigned(array, start + 7, start + 9);
+                        compareAndSwapSigned(array, start + 10, start + 12);
+                        compareAndSwapSigned(array, start + 3, start + 4);
+                        compareAndSwapSigned(array, start + 5, start + 6);
+                        compareAndSwapSigned(array, start + 7, start + 8);
+                        compareAndSwapSigned(array, start + 9, start + 10);
+                        compareAndSwapSigned(array, start + 11, start + 12);
+                        compareAndSwapSigned(array, start + 6, start + 7);
+                        compareAndSwapSigned(array, start + 8, start + 9);
+                    }
+                }
             }
         }
     }
 
     //is this necessary?? verify
     public static void sortVerySmallListUnSigned(final int[] array, final int start, final int end) {
-        int listLength = end - start;
-        if (listLength == 2) {
-            compareAndSwapUnsigned(array, start, end - 1);
-        } else if (listLength == 3) {
-            compareAndSwapUnsigned(array, start, end - 1);
-            compareAndSwapUnsigned(array, start, end - 2);
-            compareAndSwapUnsigned(array, end - 2, end - 1);
-        } else if (listLength == 4) {
-            compareAndSwapUnsigned(array, start, start + 1);
-            compareAndSwapUnsigned(array, end - 2, end - 1);
-            compareAndSwapUnsigned(array, start, end - 2);
-            compareAndSwapUnsigned(array, start + 1, end - 1);
-            compareAndSwapUnsigned(array, start + 1, end - 2);
+        int length = end - start;
+        if (length <= 8) {
+            if (length <= 4) {
+                if (length <= 2) {
+                    if (length == 2) {
+                        compareAndSwapUnsigned(array, start, start + 1);
+                    }
+                } else {
+                    if (length == 3) {
+                        compareAndSwapUnsigned(array, start, start + 2);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                    } else { //4
+                        compareAndSwapUnsigned(array, start, start + 2);
+                        compareAndSwapUnsigned(array, start + 1, start + 3);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                    }
+                }
+            } else {
+                if (length <= 6) {
+                    if (length == 5) {
+                        compareAndSwapUnsigned(array, start, start + 3);
+                        compareAndSwapUnsigned(array, start + 1, start + 4);
+                        compareAndSwapUnsigned(array, start, start + 2);
+                        compareAndSwapUnsigned(array, start + 1, start + 3);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 2, start + 4);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                    }
+                    if (length == 6) {
+                        compareAndSwapUnsigned(array, start, start + 5);
+                        compareAndSwapUnsigned(array, start + 1, start + 3);
+                        compareAndSwapUnsigned(array, start + 2, start + 4);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start, start + 3);
+                        compareAndSwapUnsigned(array, start + 2, start + 5);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                    }
+                } else {
+                    if (length == 7) {
+                        compareAndSwapUnsigned(array, start, start + 6);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start, start + 2);
+                        compareAndSwapUnsigned(array, start + 1, start + 4);
+                        compareAndSwapUnsigned(array, start + 3, start + 6);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 2, start + 5);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 4, start + 6);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                    } else { //8
+                        compareAndSwapUnsigned(array, start, start + 2);
+                        compareAndSwapUnsigned(array, start + 1, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 6);
+                        compareAndSwapUnsigned(array, start + 5, start + 7);
+                        compareAndSwapUnsigned(array, start, start + 4);
+                        compareAndSwapUnsigned(array, start + 1, start + 5);
+                        compareAndSwapUnsigned(array, start + 2, start + 6);
+                        compareAndSwapUnsigned(array, start + 3, start + 7);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start + 6, start + 7);
+                        compareAndSwapUnsigned(array, start + 2, start + 4);
+                        compareAndSwapUnsigned(array, start + 3, start + 5);
+                        compareAndSwapUnsigned(array, start + 1, start + 4);
+                        compareAndSwapUnsigned(array, start + 3, start + 6);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                    }
+                }
+            }
         } else {
-            int[][] swap = swaps[listLength];
-            for (int i = 0; i < swap.length; i++) {
-                int[] parts = swap[i];
-                compareAndSwapUnsigned(array, start + parts[0], start + parts[1]);
+            if (length <= 12) {
+                if (length <= 10) {
+                    if (length == 9) {
+                        compareAndSwapUnsigned(array, start, start + 3);
+                        compareAndSwapUnsigned(array, start + 1, start + 7);
+                        compareAndSwapUnsigned(array, start + 2, start + 5);
+                        compareAndSwapUnsigned(array, start + 4, start + 8);
+                        compareAndSwapUnsigned(array, start, start + 7);
+                        compareAndSwapUnsigned(array, start + 2, start + 4);
+                        compareAndSwapUnsigned(array, start + 3, start + 8);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                        compareAndSwapUnsigned(array, start, start + 2);
+                        compareAndSwapUnsigned(array, start + 1, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                        compareAndSwapUnsigned(array, start + 1, start + 4);
+                        compareAndSwapUnsigned(array, start + 3, start + 6);
+                        compareAndSwapUnsigned(array, start + 5, start + 7);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 2, start + 4);
+                        compareAndSwapUnsigned(array, start + 3, start + 5);
+                        compareAndSwapUnsigned(array, start + 6, start + 8);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start + 6, start + 7);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                    } else { //10
+                        compareAndSwapUnsigned(array, start, start + 8);
+                        compareAndSwapUnsigned(array, start + 1, start + 9);
+                        compareAndSwapUnsigned(array, start + 2, start + 7);
+                        compareAndSwapUnsigned(array, start + 3, start + 5);
+                        compareAndSwapUnsigned(array, start + 4, start + 6);
+                        compareAndSwapUnsigned(array, start, start + 2);
+                        compareAndSwapUnsigned(array, start + 1, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 8);
+                        compareAndSwapUnsigned(array, start + 7, start + 9);
+                        compareAndSwapUnsigned(array, start, start + 3);
+                        compareAndSwapUnsigned(array, start + 2, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 7);
+                        compareAndSwapUnsigned(array, start + 6, start + 9);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 3, start + 6);
+                        compareAndSwapUnsigned(array, start + 8, start + 9);
+                        compareAndSwapUnsigned(array, start + 1, start + 5);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 8);
+                        compareAndSwapUnsigned(array, start + 6, start + 7);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 5);
+                        compareAndSwapUnsigned(array, start + 4, start + 6);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start + 6, start + 7);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                    }
+                } else {
+                    if (length == 11) {
+                        compareAndSwapUnsigned(array, start, start + 9);
+                        compareAndSwapUnsigned(array, start + 1, start + 6);
+                        compareAndSwapUnsigned(array, start + 2, start + 4);
+                        compareAndSwapUnsigned(array, start + 3, start + 7);
+                        compareAndSwapUnsigned(array, start + 5, start + 8);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 3, start + 5);
+                        compareAndSwapUnsigned(array, start + 4, start + 10);
+                        compareAndSwapUnsigned(array, start + 6, start + 9);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                        compareAndSwapUnsigned(array, start + 1, start + 3);
+                        compareAndSwapUnsigned(array, start + 2, start + 5);
+                        compareAndSwapUnsigned(array, start + 4, start + 7);
+                        compareAndSwapUnsigned(array, start + 8, start + 10);
+                        compareAndSwapUnsigned(array, start, start + 4);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 7);
+                        compareAndSwapUnsigned(array, start + 5, start + 9);
+                        compareAndSwapUnsigned(array, start + 6, start + 8);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 2, start + 6);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                        compareAndSwapUnsigned(array, start + 9, start + 10);
+                        compareAndSwapUnsigned(array, start + 2, start + 4);
+                        compareAndSwapUnsigned(array, start + 3, start + 6);
+                        compareAndSwapUnsigned(array, start + 5, start + 7);
+                        compareAndSwapUnsigned(array, start + 8, start + 9);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start + 6, start + 7);
+                    } else { //12
+                        compareAndSwapUnsigned(array, start, start + 8);
+                        compareAndSwapUnsigned(array, start + 1, start + 7);
+                        compareAndSwapUnsigned(array, start + 2, start + 6);
+                        compareAndSwapUnsigned(array, start + 3, start + 11);
+                        compareAndSwapUnsigned(array, start + 4, start + 10);
+                        compareAndSwapUnsigned(array, start + 5, start + 9);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 2, start + 5);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 6, start + 9);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                        compareAndSwapUnsigned(array, start + 10, start + 11);
+                        compareAndSwapUnsigned(array, start, start + 2);
+                        compareAndSwapUnsigned(array, start + 1, start + 6);
+                        compareAndSwapUnsigned(array, start + 5, start + 10);
+                        compareAndSwapUnsigned(array, start + 9, start + 11);
+                        compareAndSwapUnsigned(array, start, start + 3);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 4, start + 6);
+                        compareAndSwapUnsigned(array, start + 5, start + 7);
+                        compareAndSwapUnsigned(array, start + 8, start + 11);
+                        compareAndSwapUnsigned(array, start + 9, start + 10);
+                        compareAndSwapUnsigned(array, start + 1, start + 4);
+                        compareAndSwapUnsigned(array, start + 3, start + 5);
+                        compareAndSwapUnsigned(array, start + 6, start + 8);
+                        compareAndSwapUnsigned(array, start + 7, start + 10);
+                        compareAndSwapUnsigned(array, start + 1, start + 3);
+                        compareAndSwapUnsigned(array, start + 2, start + 5);
+                        compareAndSwapUnsigned(array, start + 6, start + 9);
+                        compareAndSwapUnsigned(array, start + 8, start + 10);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start + 6, start + 7);
+                        compareAndSwapUnsigned(array, start + 8, start + 9);
+                        compareAndSwapUnsigned(array, start + 4, start + 6);
+                        compareAndSwapUnsigned(array, start + 5, start + 7);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                    }
+                }
+            } else {
+                if (length <= 14) {
+                    if (length == 13) {
+                        compareAndSwapUnsigned(array, start, start + 12);
+                        compareAndSwapUnsigned(array, start + 1, start + 10);
+                        compareAndSwapUnsigned(array, start + 2, start + 9);
+                        compareAndSwapUnsigned(array, start + 3, start + 7);
+                        compareAndSwapUnsigned(array, start + 5, start + 11);
+                        compareAndSwapUnsigned(array, start + 6, start + 8);
+                        compareAndSwapUnsigned(array, start + 1, start + 6);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 11);
+                        compareAndSwapUnsigned(array, start + 7, start + 9);
+                        compareAndSwapUnsigned(array, start + 8, start + 10);
+                        compareAndSwapUnsigned(array, start, start + 4);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 6);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                        compareAndSwapUnsigned(array, start + 9, start + 10);
+                        compareAndSwapUnsigned(array, start + 11, start + 12);
+                        compareAndSwapUnsigned(array, start + 4, start + 6);
+                        compareAndSwapUnsigned(array, start + 5, start + 9);
+                        compareAndSwapUnsigned(array, start + 8, start + 11);
+                        compareAndSwapUnsigned(array, start + 10, start + 12);
+                        compareAndSwapUnsigned(array, start, start + 5);
+                        compareAndSwapUnsigned(array, start + 3, start + 8);
+                        compareAndSwapUnsigned(array, start + 4, start + 7);
+                        compareAndSwapUnsigned(array, start + 6, start + 11);
+                        compareAndSwapUnsigned(array, start + 9, start + 10);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 2, start + 5);
+                        compareAndSwapUnsigned(array, start + 6, start + 9);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                        compareAndSwapUnsigned(array, start + 10, start + 11);
+                        compareAndSwapUnsigned(array, start + 1, start + 3);
+                        compareAndSwapUnsigned(array, start + 2, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                        compareAndSwapUnsigned(array, start + 9, start + 10);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 7);
+                        compareAndSwapUnsigned(array, start + 6, start + 8);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start + 6, start + 7);
+                        compareAndSwapUnsigned(array, start + 8, start + 9);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                    } else { //14
+                        compareAndSwapUnsigned(array, start, start + 6);
+                        compareAndSwapUnsigned(array, start + 1, start + 11);
+                        compareAndSwapUnsigned(array, start + 2, start + 12);
+                        compareAndSwapUnsigned(array, start + 3, start + 10);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start + 7, start + 13);
+                        compareAndSwapUnsigned(array, start + 8, start + 9);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 7);
+                        compareAndSwapUnsigned(array, start + 4, start + 8);
+                        compareAndSwapUnsigned(array, start + 5, start + 9);
+                        compareAndSwapUnsigned(array, start + 6, start + 10);
+                        compareAndSwapUnsigned(array, start + 11, start + 12);
+                        compareAndSwapUnsigned(array, start, start + 4);
+                        compareAndSwapUnsigned(array, start + 1, start + 3);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                        compareAndSwapUnsigned(array, start + 9, start + 13);
+                        compareAndSwapUnsigned(array, start + 10, start + 12);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 2, start + 9);
+                        compareAndSwapUnsigned(array, start + 3, start + 7);
+                        compareAndSwapUnsigned(array, start + 4, start + 11);
+                        compareAndSwapUnsigned(array, start + 6, start + 10);
+                        compareAndSwapUnsigned(array, start + 12, start + 13);
+                        compareAndSwapUnsigned(array, start + 2, start + 5);
+                        compareAndSwapUnsigned(array, start + 4, start + 7);
+                        compareAndSwapUnsigned(array, start + 6, start + 9);
+                        compareAndSwapUnsigned(array, start + 8, start + 11);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 6, start + 7);
+                        compareAndSwapUnsigned(array, start + 9, start + 10);
+                        compareAndSwapUnsigned(array, start + 11, start + 12);
+                        compareAndSwapUnsigned(array, start + 1, start + 3);
+                        compareAndSwapUnsigned(array, start + 2, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                        compareAndSwapUnsigned(array, start + 9, start + 11);
+                        compareAndSwapUnsigned(array, start + 10, start + 12);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 7);
+                        compareAndSwapUnsigned(array, start + 6, start + 9);
+                        compareAndSwapUnsigned(array, start + 10, start + 11);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start + 6, start + 7);
+                        compareAndSwapUnsigned(array, start + 8, start + 9);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                        compareAndSwapUnsigned(array, start + 9, start + 10);
+                    }
+
+                } else {
+                    if (length == 15) {
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 10);
+                        compareAndSwapUnsigned(array, start + 4, start + 14);
+                        compareAndSwapUnsigned(array, start + 5, start + 8);
+                        compareAndSwapUnsigned(array, start + 6, start + 13);
+                        compareAndSwapUnsigned(array, start + 7, start + 12);
+                        compareAndSwapUnsigned(array, start + 9, start + 11);
+                        compareAndSwapUnsigned(array, start, start + 14);
+                        compareAndSwapUnsigned(array, start + 1, start + 5);
+                        compareAndSwapUnsigned(array, start + 2, start + 8);
+                        compareAndSwapUnsigned(array, start + 3, start + 7);
+                        compareAndSwapUnsigned(array, start + 6, start + 9);
+                        compareAndSwapUnsigned(array, start + 10, start + 12);
+                        compareAndSwapUnsigned(array, start + 11, start + 13);
+                        compareAndSwapUnsigned(array, start, start + 7);
+                        compareAndSwapUnsigned(array, start + 1, start + 6);
+                        compareAndSwapUnsigned(array, start + 2, start + 9);
+                        compareAndSwapUnsigned(array, start + 4, start + 10);
+                        compareAndSwapUnsigned(array, start + 5, start + 11);
+                        compareAndSwapUnsigned(array, start + 8, start + 13);
+                        compareAndSwapUnsigned(array, start + 12, start + 14);
+                        compareAndSwapUnsigned(array, start, start + 6);
+                        compareAndSwapUnsigned(array, start + 2, start + 4);
+                        compareAndSwapUnsigned(array, start + 3, start + 5);
+                        compareAndSwapUnsigned(array, start + 7, start + 11);
+                        compareAndSwapUnsigned(array, start + 8, start + 10);
+                        compareAndSwapUnsigned(array, start + 9, start + 12);
+                        compareAndSwapUnsigned(array, start + 13, start + 14);
+                        compareAndSwapUnsigned(array, start, start + 3);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 4, start + 7);
+                        compareAndSwapUnsigned(array, start + 5, start + 9);
+                        compareAndSwapUnsigned(array, start + 6, start + 8);
+                        compareAndSwapUnsigned(array, start + 10, start + 11);
+                        compareAndSwapUnsigned(array, start + 12, start + 13);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 6);
+                        compareAndSwapUnsigned(array, start + 7, start + 9);
+                        compareAndSwapUnsigned(array, start + 10, start + 12);
+                        compareAndSwapUnsigned(array, start + 11, start + 13);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 5);
+                        compareAndSwapUnsigned(array, start + 8, start + 10);
+                        compareAndSwapUnsigned(array, start + 11, start + 12);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                        compareAndSwapUnsigned(array, start + 9, start + 10);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start + 6, start + 7);
+                        compareAndSwapUnsigned(array, start + 8, start + 9);
+                        compareAndSwapUnsigned(array, start + 10, start + 11);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                    } else if (length == 16) {
+                        compareAndSwapUnsigned(array, start, start + 13);
+                        compareAndSwapUnsigned(array, start + 1, start + 12);
+                        compareAndSwapUnsigned(array, start + 2, start + 15);
+                        compareAndSwapUnsigned(array, start + 3, start + 14);
+                        compareAndSwapUnsigned(array, start + 4, start + 8);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                        compareAndSwapUnsigned(array, start + 7, start + 11);
+                        compareAndSwapUnsigned(array, start + 9, start + 10);
+                        compareAndSwapUnsigned(array, start, start + 5);
+                        compareAndSwapUnsigned(array, start + 1, start + 7);
+                        compareAndSwapUnsigned(array, start + 2, start + 9);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 6, start + 13);
+                        compareAndSwapUnsigned(array, start + 8, start + 14);
+                        compareAndSwapUnsigned(array, start + 10, start + 15);
+                        compareAndSwapUnsigned(array, start + 11, start + 12);
+                        compareAndSwapUnsigned(array, start, start + 1);
+                        compareAndSwapUnsigned(array, start + 2, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 5);
+                        compareAndSwapUnsigned(array, start + 6, start + 8);
+                        compareAndSwapUnsigned(array, start + 7, start + 9);
+                        compareAndSwapUnsigned(array, start + 10, start + 11);
+                        compareAndSwapUnsigned(array, start + 12, start + 13);
+                        compareAndSwapUnsigned(array, start + 14, start + 15);
+                        compareAndSwapUnsigned(array, start, start + 2);
+                        compareAndSwapUnsigned(array, start + 1, start + 3);
+                        compareAndSwapUnsigned(array, start + 4, start + 10);
+                        compareAndSwapUnsigned(array, start + 5, start + 11);
+                        compareAndSwapUnsigned(array, start + 6, start + 7);
+                        compareAndSwapUnsigned(array, start + 8, start + 9);
+                        compareAndSwapUnsigned(array, start + 12, start + 14);
+                        compareAndSwapUnsigned(array, start + 13, start + 15);
+                        compareAndSwapUnsigned(array, start + 1, start + 2);
+                        compareAndSwapUnsigned(array, start + 3, start + 12);
+                        compareAndSwapUnsigned(array, start + 4, start + 6);
+                        compareAndSwapUnsigned(array, start + 5, start + 7);
+                        compareAndSwapUnsigned(array, start + 8, start + 10);
+                        compareAndSwapUnsigned(array, start + 9, start + 11);
+                        compareAndSwapUnsigned(array, start + 13, start + 14);
+                        compareAndSwapUnsigned(array, start + 1, start + 4);
+                        compareAndSwapUnsigned(array, start + 2, start + 6);
+                        compareAndSwapUnsigned(array, start + 5, start + 8);
+                        compareAndSwapUnsigned(array, start + 7, start + 10);
+                        compareAndSwapUnsigned(array, start + 9, start + 13);
+                        compareAndSwapUnsigned(array, start + 11, start + 14);
+                        compareAndSwapUnsigned(array, start + 2, start + 4);
+                        compareAndSwapUnsigned(array, start + 3, start + 6);
+                        compareAndSwapUnsigned(array, start + 9, start + 12);
+                        compareAndSwapUnsigned(array, start + 11, start + 13);
+                        compareAndSwapUnsigned(array, start + 3, start + 5);
+                        compareAndSwapUnsigned(array, start + 6, start + 8);
+                        compareAndSwapUnsigned(array, start + 7, start + 9);
+                        compareAndSwapUnsigned(array, start + 10, start + 12);
+                        compareAndSwapUnsigned(array, start + 3, start + 4);
+                        compareAndSwapUnsigned(array, start + 5, start + 6);
+                        compareAndSwapUnsigned(array, start + 7, start + 8);
+                        compareAndSwapUnsigned(array, start + 9, start + 10);
+                        compareAndSwapUnsigned(array, start + 11, start + 12);
+                        compareAndSwapUnsigned(array, start + 6, start + 7);
+                        compareAndSwapUnsigned(array, start + 8, start + 9);
+                    }
+                }
             }
         }
+    }
+
+    public static void main(String[] args) {
+        StringBuilder sb = new StringBuilder();
+        for (int listLength = 2; listLength <= 16; listLength++) {
+            int[][] swap = swaps[listLength];
+            sb.append("if (length == " + listLength + ") {\n");
+            for (int i = 0; i < swap.length; i++) {
+                int[] parts = swap[i];
+                //        left = 0; right = 1; aL = array[left]; aR = array[right]; if (aL > aR) { array[left] = aR; array[right] = aL;}
+                //sb.append("\tcompareAndSwapUnsigned(array, start "+(parts[0] > 0 ? "+ "+parts[0]:"")
+                //        +", start " +(parts[1] > 0 ? "+ "+parts[1]:"") + ");\n");
+                sb.append("left = start" + (parts[0] > 0 ? " + " + parts[0] : "") + "; right = start" + (parts[1] > 0 ? "+ " + parts[1] : "") + "; aL = array[left]; aR = array[right]; if (aL > aR) { array[left] = aR; array[right] = aL;};\n");
+            }
+            sb.append("}\n");
+        }
+        System.out.println(sb.toString());
     }
 
     /*

@@ -25,20 +25,19 @@ public class CountSort {
      * CPU: N + MAX(2^K, N)
      * MEM: 2 * (2^K)
      */
-    public static void countSort(final int[] array, final int start, final int end, int mask, int[][] sections, int[] countBuffer, int[] numberBuffer) {
+    public static void countSort(final int[] array, final int start, final int end, int mask, int[][] sections, int[] count, int[] auxTPK) {
         if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
             int elementSample = array[start];
             elementSample = elementSample & ~mask;
             if (elementSample == 0) { //last bits and includes all numbers
                 for (int i = start; i < end; i++) {
-                    int element = array[i];
-                    countBuffer[element] = countBuffer[element] + 1;
+                    count[array[i]]++;
                 }
                 int i = start;
-                for (int j = 0; j < countBuffer.length; j++) {
-                    int count = countBuffer[j];
-                    if (count > 0) {
-                        for (int k = 0; k < count; k++) {
+                for (int j = 0; j < count.length; j++) {
+                    int countJ = count[j];
+                    if (countJ > 0) {
+                        for (int k = 0; k < countJ; k++) {
                             array[i] = j;
                             i++;
                         }
@@ -50,16 +49,14 @@ public class CountSort {
 
             } else { //last bits but there is a mask for a bigger number
                 for (int i = start; i < end; i++) {
-                    int element = array[i];
-                    int elementMasked = element & mask;
-                    countBuffer[elementMasked] = countBuffer[elementMasked] + 1;
+                    count[array[i] & mask]++;
                 }
                 int i = start;
-                for (int j = 0; j < countBuffer.length; j++) {
-                    int count = countBuffer[j];
-                    if (count > 0) {
+                for (int j = 0; j < count.length; j++) {
+                    int countJ = count[j];
+                    if (countJ > 0) {
                         int value = j | elementSample;
-                        for (int k = 0; k < count; k++) {
+                        for (int k = 0; k < countJ; k++) {
                             array[i] = value;
                             i++;
                         }
@@ -74,23 +71,23 @@ public class CountSort {
                 for (int i = start; i < end; i++) {
                     int element = array[i];
                     int key = getKeySec1(element, sections[0]);
-                    countBuffer[key] = countBuffer[key] + 1;
-                    numberBuffer[key] = element;
+                    count[key]++;
+                    auxTPK[key] = element;
                 }
             } else {
                 for (int i = start; i < end; i++) {
                     int element = array[i];
                     int key = getKeySN(element, sections);
-                    countBuffer[key] = countBuffer[key] + 1;
-                    numberBuffer[key] = element;
+                    count[key]++;
+                    auxTPK[key] = element;
                 }
             }
             int i = start;
-            for (int j = 0; j < countBuffer.length; j++) {
-                int count = countBuffer[j];
-                if (count > 0) {
-                    int value = numberBuffer[j];
-                    for (int k = 0; k < count; k++) {
+            for (int j = 0; j < count.length; j++) {
+                int countJ = count[j];
+                if (countJ > 0) {
+                    int value = auxTPK[j];
+                    for (int k = 0; k < countJ; k++) {
                         array[i] = value;
                         i++;
                     }

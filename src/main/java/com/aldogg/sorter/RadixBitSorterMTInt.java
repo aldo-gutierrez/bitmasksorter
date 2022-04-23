@@ -33,7 +33,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
 
         int[] maskParts = getMaskBit(array, start, end);
         int mask = maskParts[0] & maskParts[1];
-        int[] kList = getMaskAsList(mask);
+        int[] kList = getMaskAsArray(mask);
 
         if (kList.length == 0) {
             return;
@@ -50,13 +50,13 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
                     size1 > 1 ? (Runnable) () -> { //sort negative numbers
                         int[] maskParts1 = getMaskBit(array, start, finalLeft);
                         int mask1 = maskParts1[0] & maskParts1[1];
-                        int[] kList1 = getMaskAsList(mask1);
+                        int[] kList1 = getMaskAsArray(mask1);
                         sort(array, start, finalLeft, kList1, 0, params.getMaxThreadsBits() - 1);
                     } : null, size1,
                     size2 > 1 ? (Runnable) () -> { //sort positive numbers
                         int[] maskParts2 = getMaskBit(array, finalLeft, end);
                         int mask2 = maskParts2[0] & maskParts2[1];
-                        int[] kList2 = getMaskAsList(mask2);
+                        int[] kList2 = getMaskAsArray(mask2);
                         sort(array, finalLeft, end, kList2, 0, params.getMaxThreadsBits() - 1);
                     } : null, size2, params.getDataSizeForThreads(),0, null);
 
@@ -96,7 +96,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
         int maxProcessNumber = twoPowerX(threadBits);
         int remainingBits = kList.length - threadBits;
 
-        int[] kListAux = getMaskAsList(sortMask);
+        int[] kListAux = getMaskAsArray(sortMask);
         int[][] sections = getMaskAsSections(kListAux);
 
 

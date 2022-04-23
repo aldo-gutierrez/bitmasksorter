@@ -143,7 +143,7 @@ public class IntSorterUtilsE {
                     mask_high = mask_high | i2;
                     inv_mask_high = inv_mask_high | (~i2);
                 }
-                if (Integer.compareUnsigned(i1, i2) == 1) {
+                if (i1 + 0x80000000 > i2 + 0x80000000) {
                     break;
                 }
                 i1 = i2;
@@ -166,7 +166,7 @@ public class IntSorterUtilsE {
                     mask_high = mask_high | i2;
                     inv_mask_high = inv_mask_high | (~i2);
                 }
-                if (Integer.compareUnsigned(i1, i2) == -1) {
+                if (i1 + 0x80000000 < i2 + 0x80000000) {
                     break;
                 }
                 i1 = i2;

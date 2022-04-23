@@ -52,7 +52,7 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
 
         int[] maskParts = getMaskBit(list, start, end);
         int mask = maskParts[0] & maskParts[1];
-        int[] kList = getMaskAsList(mask);
+        int[] kList = getMaskAsArray(mask);
         if (kList.length == 0) { //all numbers are equal
             return;
         }
@@ -72,7 +72,7 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
                 Object[] oAux = new Object[finalLeft - start];
                 maskParts = getMaskBit(list, start, finalLeft);
                 mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsList(mask);
+                kList = getMaskAsArray(mask);
                 radixSort(array, list, start, finalLeft, kList, 0, kList.length - 1, oAux, aux);
             }
             if (end - finalLeft > 1) { //sort positive numbers
@@ -80,7 +80,7 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
                 Object[] oAux = new Object[end - finalLeft];
                 maskParts = getMaskBit(list, finalLeft, end);
                 mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsList(mask);
+                kList = getMaskAsArray(mask);
                 radixSort(array, list, finalLeft, end, kList, 0, kList.length - 1, oAux, aux);
             }
         } else {

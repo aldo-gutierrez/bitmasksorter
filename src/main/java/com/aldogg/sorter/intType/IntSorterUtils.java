@@ -10,20 +10,18 @@ public class IntSorterUtils {
     public static void compareAndSwapSigned(final int[] array, final int left, final int right) {
         int aL = array[left];
         int aR = array[right];
-        if ((aL > aR)) {
-            int aux = aL;
+        if (aL > aR) {
             array[left] = aR;
-            array[right] = aux;
+            array[right] = aL;
         }
     }
 
     public static void compareAndSwapUnsigned(final int[] array, final int left, final int right) {
         int aL = array[left];
         int aR = array[right];
-        if (Integer.compareUnsigned(aL, aR) ==  1) {
-            int aux = aL;
+        if (aL + 0x80000000 > aR + 0x80000000) { //if (aL + Integer.MIN_VALUE > aR + Integer.MIN_VALUE) {
             array[left] = aR;
-            array[right] = aux;
+            array[right] = aL;
         }
     }
 
@@ -49,7 +47,7 @@ public class IntSorterUtils {
                 while (left <= right) {
                     element = array[right];
                     if ((element & mask) == 0) {
-                        IntSorterUtils.swap(array, left, right);
+                        swap(array, left, right);
                         left++;
                         right--;
                         break;
@@ -78,7 +76,7 @@ public class IntSorterUtils {
                     if (((element & mask) == 0)) {
                         right--;
                     } else {
-                        IntSorterUtils.swap(array, left, right);
+                        swap(array, left, right);
                         left++;
                         right--;
                         break;
@@ -145,8 +143,7 @@ public class IntSorterUtils {
         int[] leftX = new int[twoPowerK];
         int[] count = new int[twoPowerK];
         for (int i = start; i < end; i++) {
-            int element = array[i];
-            count[(element & mask) >> shiftRight]++;
+            count[(array[i] & mask) >> shiftRight]++;
         }
         for (int i = 1; i < twoPowerK; i++) {
             leftX[i] = leftX[i - 1] + count[i - 1];
@@ -210,9 +207,7 @@ public class IntSorterUtils {
         int length = end - start;
         int end2 = start + length / 2;
         for (int i = start; i < end2; i++) {
-            int swap = array[i];
-            array[i] = array[end - i - 1];
-            array[end - i - 1] = swap;
+            swap(array, i, end - i - 1);
         }
     }
 

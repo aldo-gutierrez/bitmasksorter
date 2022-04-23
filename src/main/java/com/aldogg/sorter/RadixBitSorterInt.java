@@ -35,7 +35,7 @@ public class RadixBitSorterInt implements IntSorter {
 
         int[] maskParts = getMaskBit(array, start, end);
         int mask = maskParts[0] & maskParts[1];
-        int[] kList = getMaskAsList(mask);
+        int[] kList = getMaskAsArray(mask);
         if (kList.length == 0) {
             return;
         }
@@ -48,14 +48,14 @@ public class RadixBitSorterInt implements IntSorter {
                 int[] aux = new int[finalLeft - start];
                 maskParts = getMaskBit(array, start, finalLeft);
                 mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsList(mask);
+                kList = getMaskAsArray(mask);
                 radixSort(array, start, finalLeft, kList, kList.length - 1, 0, aux);
             }
             if (end - finalLeft > 1) { //sort positive numbers
                 int[] aux = new int[end - finalLeft];
                 maskParts = getMaskBit(array, finalLeft, end);
                 mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsList(mask);
+                kList = getMaskAsArray(mask);
                 radixSort(array, finalLeft, end, kList, kList.length - 1, 0, aux);
             }
         } else {
