@@ -1,5 +1,8 @@
 # Mask Bit Sorters
-This project tests different ideas for sorting algorithms. 
+This project tests different ideas for sorting algorithms in Java. 
+
+[C# Version] (https://github.com/aldo-gutierrez/bitmasksorterCSharp)
+[C++ Version] (https://github.com/aldo-gutierrez/bitmasksorterCpp)
 
 We use a bitmask as a way to get statistical information about the numbers to be sorted
 

@@ -30,8 +30,7 @@ public class BitSorterUtils {
     }
 
     public static int getMaskBit(final int k) {
-        final int n = 1;
-        return (n << k);
+        return 1 << k;
     }
 
     public static int getMaskLastBits(final int[] kList, final int kIndex) {
