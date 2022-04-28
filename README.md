@@ -1,17 +1,24 @@
 # Mask Bit Sorters
 This project tests different ideas for sorting algorithms in Java. 
 
+To see other language implementations see:
+
 [C# Version] (https://github.com/aldo-gutierrez/bitmasksorterCSharp)
+
 [C++ Version] (https://github.com/aldo-gutierrez/bitmasksorterCpp)
 
-We use a bitmask as a way to get statistical information about the numbers to be sorted
+[Javascript Version] (https://github.com/aldo-gutierrez/bitmasksorterJS)
+
+[Python Version] (https://github.com/aldo-gutierrez/bitmasksorterPython)
+
+For all the algorithms we use a bitmask as a way to get statistical information about the numbers to be sorted
 
 All the algorithms use this bitmask, For example suppose the list contains numbers from 0 to 127 
 then the bitmask is 1111111. Another example if the list contains the numbers 85, 84, 21 and 5 the mask is 1010001, 
 only the bits that change are part of the mask in this case 3 bits
 
-| Number        | Bits |
-| ---------------- |:-------------:|
+| Number       | Bits |
+| ------------ |:-------------:|
 |85  |0000000001010101|
 |84  |0000000001010100|
 |21  |0000000000010101|
@@ -88,18 +95,19 @@ just by the bits that are in the bit mask.
 If you test the traditional stackoverflow, baeldung, hackerearth or any other site, you will see
 a radix sort that is 10Base and that normally is slower than TimSort (JavaSort)
 
-On the last week of february 2022 i hear about the project called Ska Sort, that is a radix sort implementation
-that works on any type of data but it works at byte level. I still need to compare with a java version
-of Ska Sort. Using some of the ideas of Ska Sort (not all) and many forums a RadixByteSorterInt sorter has been
-developed to. The difference between RadixByteSorterInt and RadixBitSorterInt is that the later use 
-only the bits in the bitmask to do the sorting and not sorting with all the bytes.
+Using some ideas of Ska Sort and many forums describing radix sort, the class RadixByteSorterInt sorter has been
+developed. The difference between RadixByteSorterInt and RadixBitSorterInt is that the later use 
+only the bits in the bitmask to do the sorting, so it doesn't use all the bytes except when then rang of the data includes all the range.
 Comparing the performance of RadixBitSorterInt is faster when the range of the numbers is 30-32 bits but similar
 to RadixByteSorter otherwise.
 
 
-Optimizations:
+Radix Bit Sorter Optimizations:
 - It does not need to sort by all the bits just the ones in the bitmask
 - It sorts by 11 bits at a time as maximum (Instead of 8 as suggested in other sites, more faster in my machine but more test in different machines needs to be done)
+
+Radix Byte Sorter Optimizations:
+- An option to detect which bytes to not order has been added to the algorithm (calculateBitMaskOptimization) and enable by default
 
 ## MixedBitSorter:
 It is a multi thread sorter, it combines previous QuickBitSorter until having the same threads as the hardware threads in the processor,
@@ -263,18 +271,16 @@ Comparison for sorting 10 Million elements with int key range from 0 to 100000 i
 | RadixBitSorterMT | O(n * log(n)) | O(n * k), k<log2(n) | O(n), k = 1    | O(n)      | O(n)        |    1     |
 
 ## Comparing to Ska Sort
-I Still didn't implement the same algorithm but RadixByteSorterInt uses some ideas of Ska Sort
-Ska Sort is faster sometimes when the range of the number is 2^30 (30 bits) or more, and RadixBitSorter is faster otherwise
+See the repository (https://github.com/aldo-gutierrez/bitmasksorterCpp) where a comparison has been done.
+In summary RadixBitSorterInt is faster than SkaSort when the numbers range is bellow 30 bits (the range of different bits).
 
-More comparison is needed.
+RadixByteSorterInt with calculateBitMaskOptimization=false looks similar in performance than SkaSort
 
 ## TODO
 - Add More Object sorters in addition to RadixBitSorter
 - Add Long, Short, Byte sorters (Long is the priority)
-- Add C#, C++, Python, Javascript Implementations
 - More Detailed evaluation on complexity
 - More Testing
-- Compare with [Ska Sort] (https://github.com/skarupke/ska_sort)
 - Compare with [Wolf Sort] (https://github.com/scandum/wolfsort) 
 - Merge partition with bitmask extraction or isSorted with partition and bitmask and compare speed
 - Test different algorithms for stable partition with less memory and compare speed
@@ -282,7 +288,7 @@ More comparison is needed.
 - Find the number N where Parallelization  of isOrdered is faster than serial
 - Find the number N where Parallelization  of partition is faster than serial
 - Tests with repeatable random seeds
-- Have comparations and documentation of speed in powers of two instead of powers of ten
+- Have comparisons and documentation of speed in powers of two instead of powers of ten
 
 ## Algorithms Testing
 |Algorithm|Positive random numbers|Negative random numbers| Unsigned numbers | Sorted         | Reverse sorted     |
