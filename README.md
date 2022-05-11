@@ -1,5 +1,7 @@
 # Mask Bit Sorters
-This project tests different ideas for sorting algorithms in Java. 
+This project tests different ideas for sorting algorithms using a bitmask. 
+
+This repository has the Java implementation.
 
 To see other language implementations see:
 
@@ -11,27 +13,91 @@ To see other language implementations see:
 
 [Python Version] (https://github.com/aldo-gutierrez/bitmasksorterPython)
 
-For all the algorithms we use a bitmask as a way to get statistical information about the numbers to be sorted
+I use a bitmask as a way to get statistical information about the numbers to be sorted.
 
-All the algorithms use this bitmask, For example suppose the list contains numbers from 0 to 127 
-then the bitmask is 1111111. Another example if the list contains the numbers 85, 84, 21 and 5 the mask is 1010001, 
+For example suppose the list contains numbers from 0 to 127 then the bitmask is 1111111.
+
+|                           | Number |             Bits | 
+|---------------------------|-------:|-----------------:|
+| Plausible Min:            |      0 | 0000000000000000 |
+| Plausible Max:            |    127 | 0000000001111111 |
+| Plausible Average/Median: |     64 | 0000000001000000 |
+| Bits Used (K):            |      7 | 0000000001111111 |
+
+For this case We can do a Count Sort with a Count array of 128 for values  0 to 127.
+
+Another example, if the list contains the numbers 85, 84, 21 and 5 the mask is 1010001, 
 only the bits that change are part of the mask in this case 3 bits
 
-| Number       | Bits |
-| ------------ |:-------------:|
-|85  |0000000001010101|
-|84  |0000000001010100|
-|21  |0000000000010101|
-|5   |0000000000000100|
-|MASK|0000000001010001|
+|        Number |             Bits |     Changing Bits |
+|--------------:|-----------------:|------------------:|
+|            85 | 0000000001010101 |               111 | 
+|            84 | 0000000001010100 |               110 |
+|            21 | 0000000000010101 |               011 |
+|             5 | 0000000000000101 |               001 |
+|          MASK | 0000000001010001 |               111 |
+| CONSTANT MASK | 0000000000000100 |                   |
+
+|                           | Number |             Bits | 
+|---------------------------|-------:|-----------------:|
+| Plausible Min:            |      4 | 0000000000000100 |
+| Plausible Max:            |     85 | 0000000001010101 |
+| Plausible Average/Median: |     64 | 0000000001000000 |
+| Bits Used (K):            |      3 | 0000000001010001 |
+
+For this case I can do a Count Sort with a Count array of 8 for values  000 to 111.
+
+First for each number we need to extract the bits that are part of the mask put the bits together, do the count
+sort and reverse the procedure, to reverse the procedure I can OR it with the Constant Mask or have an auxiliary original number array.
+
+BitMask Algorithm:
+```
+    public static int[] getMaskBit(int[] array, int start, int end) {
+        int mask = 0x00000000;
+        int inv_mask = 0x00000000;
+        for (int i = start; i < end; i++) {
+            int ei = array[i];
+            mask = mask | ei;
+            inv_mask = inv_mask | (~ei);
+        }
+        return new int[]{mask, inv_mask};
+    }
+```
+
+So in cases of hybrid algorithms this adds another dimension to the selection of the best algorithms. 
+For example TimSort uses merge sort for big lists and insertion sort for small lists, so it depends on N the size of the array
+I suppose that other hybrid algorithms use or could use the range to know if a Count Sort could be performed instead.
+
+What I am proposing is better than range we could use the Bits Used (K) range that is (2 ^ K). So for example if a list contains
+only the values 1111111110000000(65408) and 0000000111111111(511) the range could be too large(64897) to decide to use a Count Sort, 
+but if we use the mask 0000000110000000 and the range 2^2 (4) we could correctly decide to use a Count Sort.
+
+So in the fastest  Hybrid algorithm we could have two dimensions N and 2^K to decide which algorithm to use.
 
 
 ## QuickBitSorter
-Is similar to QuickSort but for choosing the pivot we use the bit mask. 
-Having the bit mask also helps when doing a CountSort or Radix sort for the last bits.
+Is similar to QuickSort but for choosing the pivot I use the bit mask. To be precise the palausible Average/Median according to the bit mask. 
+Having the bit mask helps when doing a Count Sort or Radix Sort for the last bits too.
 
 This is different to other QuickSort algorithms that normally use the last element as pivot or choose the average of three
 pivots.
+
+For example if list contains all the numbers from 0 to 127  the bit mask is 1111111 and the first partition is done using the plausible average/median
+that is zeroing all bits but the first in the bit mask:  1000000 (64). 
+
+This could be a good or bad pivot depending on the distribution of the numbers, information I don't have.
+
+This algorithm when not using the Count Sort for the last X bits is slower than TimSort but faster than a Naive Stack Overflow QuickSort.
+The reason I think is that in the worst case there could be 32 levels of recursion and Count Sort could reduce that to (32 - Number Bits for CountSort)
+For example when using 16 bits for quicksort the max level of recursion in the worst case scenario is 32-16=16
+
+Optimizations:
+- The partition is only done by the bits in the bit mask as described above
+- Optimization for small lists and or for the last bits, to choose between count sort and two different radix sort implementations
+- Multithreading support
+
+See an analysis of the performance in the section Speed and Performance
+
 
 Usage:
 ```
@@ -54,23 +120,27 @@ int[] list = ....
 sorter.sort(list);
 ```
 
-### How the selection of the pivot works:
-
-For example suppose the list contains all the numbers from 0 to 127  the mask is 1111111 and to choose the middle 1000000 (64) 
-that is probably a good pivot.
-
-In the worst case (32 bit mask) the last recursion level is 32, but we use CountSort on the last 16 bits (countingSortBits default value) so
- the max recursion level is 16
- 
-The application of count sort in the last bits of the mask works even if the mask doesn't have consecutive ones (1). 
-For example in the mask 1110011, only 5 bits change, we could use 5 bits 2^5 32 slots for Count Sort
-
-Optimizations:
-- The partition is only done by the bits in the mask as described above
-- Optimization for small lists and or for the last bits, to choose between count sort and two different radix sort implementations
-- Multithreading support
-
 ## RadixBitSorter:
+
+Is similar to the traditional Radix Sorter but instead of using a number in base 10  it uses a number in base 2 binary format.
+Radix Bit Sorter also uses an adhoc Count Sort. It doesn't need to sort by all bits  just by the bits that are in the bit mask.
+
+RadixBitSorter is a lot faster than to the typical stackoverflow, baeldung, hackerearth implementations.
+The reason is that sometimes they use base 10 implementations with modulo operation, or they use bytes but not the binary form with binary operations.
+
+After hearing about Ska Sort using the ideas described in the forums I created the class RadixByteSorter which uses bytes instead of bits.
+The main difference between RadixByteSorterInt and RadixBitSorter is that RadixByteSorter works on bytes and RadixBitSorter works on bits.
+
+RadixByteSorterInt when working an all bytes should have the same performance than SkaSort. See the C++ Implementation for more details on SkaSort
+RadixBitSorter is faster than RadixByteSorter and SkaSort when less than 31 bits are in the bitmask otherwise SkaSort and RadixByteSorter are faster
+
+Radix Bit Sorter Optimizations:
+- It does not need to sort by all the bits just the ones in the bitmask
+- It sorts by 11 bits at a time as maximum and 1 as minimum (Instead of 8 as SkaSort and RadixByteSorterInt do)
+
+Radix Byte Sorter Optimizations:
+- An option to detect which bytes do not use has been added to the algorithm (calculateBitMaskOptimization) and enable by default.
+
 
 Usage:
 ```
@@ -86,63 +156,39 @@ int[] list = ....
 sorter.sort(list);
 
 ```
-### How it works:
-
-Is similar to the traditional Radix Sorter but instead of using a 10 Base it uses a 2 Base.
-As is binary the Count Sort is a different implementation but similar in intention. Also, it doesn't need to sort by all bits
-just by the bits that are in the bit mask.
-
-If you test the traditional stackoverflow, baeldung, hackerearth or any other site, you will see
-a radix sort that is 10Base and that normally is slower than TimSort (JavaSort)
-
-Using some ideas of Ska Sort and many forums describing radix sort, the class RadixByteSorterInt sorter has been
-developed. The difference between RadixByteSorterInt and RadixBitSorterInt is that the later use 
-only the bits in the bitmask to do the sorting, so it doesn't use all the bytes except when then rang of the data includes all the range.
-Comparing the performance of RadixBitSorterInt is faster when the range of the numbers is 30-32 bits but similar
-to RadixByteSorter otherwise.
-
-
-Radix Bit Sorter Optimizations:
-- It does not need to sort by all the bits just the ones in the bitmask
-- It sorts by 11 bits at a time as maximum (Instead of 8 as suggested in other sites, more faster in my machine but more test in different machines needs to be done)
-
-Radix Byte Sorter Optimizations:
-- An option to detect which bytes to not order has been added to the algorithm (calculateBitMaskOptimization) and enable by default
 
 ## MixedBitSorter:
-It is a multi thread sorter, it combines previous QuickBitSorter until having the same threads as the hardware threads in the processor,
-then it uses RadixBitSort for the middle bits and lastly it uses CountSort for the last bits
-For example if the bitmask is 00000000111111111111111111111110  
-Then there are 23 bits, if we have a 32 thread hardware processor then:
+It is a multi thread sorter, it combines previous QuickBitSorter and RadixBitSorter
 
-For example:
+For example if the bitmask is 00000000111111111111111111111110  23 bits, and we have a 32 thread processor then:
 
 - The first 5 bits are recursively processed by doing QuickBitSorter in multiple threads
 - The next 2 bits are recursively processed by doing RadixBitSort in each thread
-- The last 16 bits are done using CountSort while doing RadixBitSort in each thread
-- In total 23 bits are processed only the ones in the bitmask
+- The last 16 bits are done using RadixBitSort + CountSort in each thread
 
 # Stability
-int[] sort in java use a not stable algorithm, it doesn't make sense to have a stable algorithm. 
-Object[] sort in java is a stable algorithm, so ObjectSorter has the parameter setStable but that uses more memory offcourse
+int[] sort in java use a not stable algorithm, it doesn't make sense to have a stable algorithm for ints. 
+Object[] sort in java is a stable algorithm, so ObjectSorter has the parameter setStable but that uses more memory off course.
 
 # Speed
-Most of the algorithms are faster than the Java default and Parallel sorters in most of the cases
+Most of the algorithms are faster than the Java default and Parallel sorters in most of the cases.
+
+See the performance analysis at the end of this section:
 
 ### Example 1: 
 
 Comparison for sorting 10 Million int elements with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 11
 
-| Algorithm        | AVG CPU time [ms] |
-| ---------------- |:-------------:|
-|JavaIntSorter|721|
-|QuickBitSorterInt|355|
-|RadixBitSorterInt|106|
-|JavaParallelSorterInt|85|
-|RadixByteSorterInt|186|
-|QuickBitSorterMTInt|104|
-|MixedBitSorterMTInt|97|
-|RadixBitSorterMTInt|105|
+| Algorithm             | AVG CPU time [ms] |
+|-----------------------|------------------:|
+| JavaIntSorter         |               721 |
+| QuickBitSorterInt     |               355 |
+| RadixBitSorterInt     |               106 |
+| JavaParallelSorterInt |                85 |
+| RadixByteSorterInt    |               186 |
+| QuickBitSorterMTInt   |               104 |
+| MixedBitSorterMTInt   |                97 |
+| RadixBitSorterMTInt   |               105 |
 
 
 ![Graph2](plot-S10000000-Range0-10000000-random.png?raw=true "Graph2")
@@ -151,16 +197,16 @@ Comparison for sorting 10 Million int elements with range from 0 to 10 Million i
 
 Comparison for sorting 10 Million int elements with range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 11
 
-| Algorithm        | AVG CPU time  [ms]|
-| ---------------- |:-------------:|
-|JavaSorterInt|533|
-|QuickBitSorterInt|53|
-|RadixBitSorterInt|101|
-|RadixByteSorterInt|188|
-|JavaParallelSorterInt|85|
-|QuickBitSorterMTInt|51|
-|MixedBitSorterMTInt|50|
-|RadixBitSorterMTInt|82|
+| Algorithm             | AVG CPU time  [ms] |
+|-----------------------|-------------------:|
+| JavaSorterInt         |                533 |
+| QuickBitSorterInt     |                 53 |
+| RadixBitSorterInt     |                101 |
+| RadixByteSorterInt    |                188 |
+| JavaParallelSorterInt |                 85 |
+| QuickBitSorterMTInt   |                 51 |
+| MixedBitSorterMTInt   |                 50 |
+| RadixBitSorterMTInt   |                 82 |
 
 ![Graph2](plot-S10000000-Range0-100000-random.png?raw=true "Graph2")
 
@@ -168,28 +214,28 @@ Comparison for sorting 10 Million int elements with range from 0 to 100000 in an
 
 Comparison for sorting 40 Million int elements with range from 0 to 1000000000 in an AMD Ryzen 7 4800H processor, Java 11
 
-| Algorithm        | AVG CPU time  [ms]|
-| ---------------- |:-------------:|
-|JavaSorterInt|3160|
-|QuickBitSorterInt|2868|
-|RadixBitSorterInt|681|
-|RadixByteSorterInt|673|
-|JavaParallelSorterInt|382|
-|QuickBitSorterMTInt|558|
-|MixedBitSorterMTInt|601|
-|RadixBitSorterMTInt|466|
+| Algorithm             |AVG CPU time  [ms] |
+|-----------------------|------------------:|
+| JavaSorterInt         |              3160 |
+| QuickBitSorterInt     |              2868 |
+| RadixBitSorterInt     |               681 |
+| RadixByteSorterInt    |               673 |
+| JavaParallelSorterInt |               382 |
+| QuickBitSorterMTInt   |               558 |
+| MixedBitSorterMTInt   |               601 |
+| RadixBitSorterMTInt   |               466 |
 
 ![Graph2](plot-S40000000-Range0-1000000000-random.png?raw=true "Graph2")
 
 ### Table of 1st and 2nd algorithm by speed AMD Ryzen 7 4800H processor, Java 11, pluged in
 
-| N / range | 10                                    | 1,000                                   | 100,000                               | 10,000,000                                | 1,000,000,000                            |
-|---------------|---------------------------------------|-----------------------------------------|---------------------------------------|-------------------------------------------|-------------------------------------------|
-| 10,000        | RadixBitSorterInt RadixBitSorterMTInt | MixedBitSorterMTInt RadixBitSorterInt   | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt     | RadixBitSorterInt RadixBitSorterMTInt     |
-| 100,000       | QuickBitSorterInt RadixBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterInt QuickBitSorterInt   | RadixBitSorterInt RadixByteSorterInt      | RadixBitSorterInt RadixByteSorterInt      |
-| 1,000,000     | QuickBitSorterInt MixedBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt | JavaParallelSorterInt RadixBitSorterMTInt |
-| 10,000,000    | MixedBitSorterMTInt QuickBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt | RadixBitSorterMTInt JavaParallelSorterInt |
-| 40,000,000    | QuickBitSorterMTInt MixedBitSorterMTInt | MixedBitSorterMTInt RadixBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt |
+| N / range  | 10                                    | 1,000                                   | 100,000                               | 10,000,000                                | 1,000,000,000                            |
+|------------|---------------------------------------|-----------------------------------------|---------------------------------------|-------------------------------------------|-------------------------------------------|
+| 10,000     | RadixBitSorterInt RadixBitSorterMTInt | MixedBitSorterMTInt RadixBitSorterInt   | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt     | RadixBitSorterInt RadixBitSorterMTInt     |
+| 100,000    | QuickBitSorterInt RadixBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterInt QuickBitSorterInt   | RadixBitSorterInt RadixByteSorterInt      | RadixBitSorterInt RadixByteSorterInt      |
+| 1,000,000  | QuickBitSorterInt MixedBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt | JavaParallelSorterInt RadixBitSorterMTInt |
+| 10,000,000 | MixedBitSorterMTInt QuickBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt | RadixBitSorterMTInt JavaParallelSorterInt |
+| 40,000,000 | QuickBitSorterMTInt MixedBitSorterMTInt | MixedBitSorterMTInt RadixBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt |
 
 ### Table of 1st and 2nd algorithm by speed AMD Ryzen 7 4800H processor, Java 11, with battery
 
@@ -232,11 +278,11 @@ Object Sort using the Interface IntComparator
 
 Comparison for sorting 10 Million objects with int key  with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 11
 
-| Algorithm        | AVG CPU time [ms] |
-| ---------------- |:-------------:|
-|JavaSorterObject|7715|
-|JavaParallelSorterObjectInt|1510|
-|RadixBitSorterObjectInt|1274|
+| Algorithm                   | AVG CPU time [ms] |
+|-----------------------------|------------------:|
+| JavaSorterObject            |              7715 |
+| JavaParallelSorterObjectInt |              1510 |
+| RadixBitSorterObjectInt     |              1274 |
 
 ![Graph2](plot-S10000000-Range0-10000000-random-object.png?raw=true "Graph2")
 
@@ -244,19 +290,25 @@ Comparison for sorting 10 Million objects with int key  with range from 0 to 10 
 
 Comparison for sorting 10 Million elements with int key range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 11
 
-| Algorithm        | AVG CPU time  [ms]|
-| ---------------- |:-------------:|
-|JavaSorterObject|6149|
-|JavaParallelSorterObjectInt|1355|
-|RadixBitSorterObjectInt|1250|
+| Algorithm                   |AVG CPU time  [ms] |
+|-----------------------------|------------------:|
+| JavaSorterObject            |              6149 |
+| JavaParallelSorterObjectInt |              1355 |
+| RadixBitSorterObjectInt     |              1250 |
 
 ![Graph2](plot-S10000000-Range0-100000-random-object.png?raw=true "Graph2")
 
 
-# O(N) Complexity. Needs to be evaluated
+##Analysis of Speed and Performance:
+
+TODO: need to separate single threaded vs multithreaded benchmarks and analyze
+
+# O(N) Complexity
+
+TODO Needs to be evaluated in detail
 
 - n = number of elements
-- k = number of bits on mask, 2^k is the range of numbers
+- k = number of bits on mask, 2^k is the plausible range of numbers
 - t = number of hardware threads
 - c = number of bits for counting sort
 - q = number of bits for quick sort
