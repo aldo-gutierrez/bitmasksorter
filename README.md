@@ -68,12 +68,15 @@ So in cases of hybrid algorithms this adds another dimension to the selection of
 For example TimSort uses merge sort for big lists and insertion sort for small lists, so it depends on N the size of the array
 I suppose that other hybrid algorithms use or could use the range to know if a Count Sort could be performed instead.
 
-What I am proposing is better than range we could use the Bits Used (K) range that is (2 ^ K). So for example if a list contains
-only the values 1111111110000000(65408) and 0000000111111111(511) the range could be too large(64897) to decide to use a Count Sort, 
-but if we use the mask 0000000110000000 and the range 2^2 (4) we could correctly decide to use a Count Sort.
-
+What I am proposing is better than range we could use the Bits Used (K) range that is (2 ^ K).
 So in the fastest  Hybrid algorithm we could have two dimensions N and 2^K to decide which algorithm to use.
 
+Off course there are bad cases, so for example if a list contains only the values 1111111110000000(65408) and 0000000111111111(511) the range is (64897)
+but if we use the bit mask 1111111001111111 then the k range (2^k) is also high (65151). 
+If we partition by the first bit in QuickBitSorter then half the numbers will go correctly to the first partition and half to the other partition,
+and then in the next level of recursion after the partition all numbers will go to one partition, this is the case were a bitmask recalculation is needed.
+The bitmask recalculation will produce 0000000000000000 that means everything is the same value and already sorted
+RadixBitSorter doesn't consider this Bad case.
 
 ## QuickBitSorter
 Is similar to QuickSort but for choosing the pivot I use the bit mask. To be precise the palausible Average/Median according to the bit mask. 
