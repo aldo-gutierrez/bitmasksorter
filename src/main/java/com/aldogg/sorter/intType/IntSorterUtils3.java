@@ -141,14 +141,14 @@ public class IntSorterUtils3 {
                 if (mayorLeft) {
                     //close sizes
                     if ((lengthLeftAux - lengthRightAux) < lengthRightAux) {
-                        int aux[] = new int[lengthLeftAux - lengthRightAux];
+                        int[] aux = new int[lengthLeftAux - lengthRightAux];
                         System.arraycopy(array, left, aux, 0, aux.length);
                         for (int i=0; i < lengthRightAux; i++) {
                             swap3(array, leftAux - lengthRightAux + i, leftAux + i, leftAux + i, left + i);
                         }
                         System.arraycopy(aux, 0, array, left + lengthRightAux, aux.length);
                     } else {
-                        int aux[] = new int[lengthRightAux];
+                        int[] aux = new int[lengthRightAux];
                         System.arraycopy(array, leftAux, aux, 0, aux.length);
                         System.arraycopy(array, left, array, left + lengthRightAux, lengthLeftAux);
                         System.arraycopy(aux, 0, array, left, aux.length);
@@ -156,14 +156,14 @@ public class IntSorterUtils3 {
                 } else {
                     //close sizes
                     if ((lengthRightAux - lengthLeftAux) < lengthLeftAux) {
-                        int aux[] = new int[lengthRightAux - lengthLeftAux];
+                        int[] aux = new int[lengthRightAux - lengthLeftAux];
                         System.arraycopy(array, right - aux.length, aux, 0, aux.length);
                         for (int i=0; i < lengthLeftAux; i++) {
                             swap3(array, leftAux - 1 -i, leftAux + lengthLeftAux - 1 - i, right -1 -i ,  leftAux -1 -i);
                         }
                         System.arraycopy(aux, 0, array, left + lengthLeftAux, aux.length);
                     } else {
-                        int aux[] = new int[lengthLeftAux];
+                        int[] aux = new int[lengthLeftAux];
                         System.arraycopy(array, left, aux, 0, aux.length);
                         System.arraycopy(array, leftAux, array, left, lengthRightAux);
                         System.arraycopy(aux, 0, array, right - aux.length, aux.length);

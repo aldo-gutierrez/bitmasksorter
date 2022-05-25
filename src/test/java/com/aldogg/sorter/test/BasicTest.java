@@ -1,6 +1,7 @@
 package com.aldogg.sorter.test;
 
 import com.aldogg.sorter.*;
+import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.intType.CountSort;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Random;
 
 import static com.aldogg.sorter.BitSorterUtils.getMaskAsArray;
 import static com.aldogg.sorter.BitSorterUtils.getMaskBit;
@@ -132,51 +134,76 @@ public class BasicTest extends SorterTest{
         int iterations = 200;
         int[] limitHigh = new int[] {2, 4, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192,16384,32768,65536};
         testSortResults = new TestSortResults(sorters.length);
-        testSpeedInt(iterations, 16, 0, 256, testSortResults, sorters, null);
-        testSpeedInt(iterations, 16, 0, 15, testSortResults, sorters, null);
-        testSpeedInt(iterations, 16, 0, 4096, testSortResults, sorters, null);
+        GeneratorParams params = new GeneratorParams();
+        params.random = new Random();
+        params.size = 16;
+        params.limitLow = 0;
+
+        params.limitHigh = 256;
+        testSpeedInt(iterations, params, testSortResults, sorters, null);
+
+        params.limitHigh = 15;
+        testSpeedInt(iterations, params, testSortResults, sorters, null);
+
+        params.limitHigh = 4096;
+        testSpeedInt(iterations, params, testSortResults, sorters, null);
 
 
         iterations = 4000;
         for (int limitH : limitHigh) {
-            testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 16, 0, limitH, testSortResults, sorters, writer);
+            params.limitHigh = limitH;
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 32, 0, limitH, testSortResults, sorters, writer);
+            params.size = 16;
+            testSpeedInt(iterations, params, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 64, 0, limitH, testSortResults, sorters, writer);
+            params.size = 32;
+            testSpeedInt(iterations, params, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 128, 0, limitH, testSortResults, sorters, writer);
+            params.size = 64;
+            testSpeedInt(iterations, params, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 256, 0, limitH, testSortResults, sorters, writer);
+            params.size = 128;
+            testSpeedInt(iterations, params, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 512, 0, limitH, testSortResults, sorters, writer);
+            params.size = 256;
+            testSpeedInt(iterations, params, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 1024, 0, limitH, testSortResults, sorters, writer);
+            params.size = 512;
+            testSpeedInt(iterations, params, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 2048, 0, limitH, testSortResults, sorters, writer);
+            params.size = 1024;
+            testSpeedInt(iterations, params, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 4096, 0, limitH, testSortResults, sorters, writer);
+            params.size = 2048;
+            testSpeedInt(iterations, params, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 8192, 0, limitH, testSortResults, sorters, writer);
+            params.size = 4096;
+            testSpeedInt(iterations, params, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 16384, 0, limitH, testSortResults, sorters, writer);
+            params.size = 8192;
+            testSpeedInt(iterations, params, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 32768, 0, limitH, testSortResults, sorters, writer);
+            params.size = 16384;
+            testSpeedInt(iterations, params, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(iterations, 65536, 0, limitH, testSortResults, sorters, writer);
+            params.size = 32768;
+            testSpeedInt(iterations, params, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            params.size = 65536;
+            testSpeedInt(iterations, params, testSortResults, sorters, writer);
 
             //System.out.println("----------------------");
         }

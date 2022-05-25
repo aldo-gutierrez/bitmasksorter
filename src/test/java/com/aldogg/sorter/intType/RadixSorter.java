@@ -1,7 +1,5 @@
 package com.aldogg.sorter.intType;
 
-import com.aldogg.sorter.test.GenerateBarPlots;
-
 // Radix Sort in Java Programming
 public class RadixSorter implements IntSorter {
     boolean unsigned = false;

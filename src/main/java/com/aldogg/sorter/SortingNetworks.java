@@ -1035,7 +1035,7 @@ public class SortingNetworks {
             }
             sb.append("}\n");
         }
-        System.out.println(sb.toString());
+        System.out.println(sb);
     }
 
     /*
