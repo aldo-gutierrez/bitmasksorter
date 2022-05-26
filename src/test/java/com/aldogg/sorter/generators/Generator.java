@@ -8,47 +8,52 @@ import java.util.function.Function;
  * https://github.com/Morwenn/vergesort/blob/master/bench/bench.cpp
  */
 public class Generator {
-    public static final String SHUFFLED_INT = "shuffled_int";
-    public static final String SHUFFLED_16_VALUES_INT = "shuffled_16_values_int";
-    public static final String ALL_EQUAL_INT = "all_equal_int";
-    public static final String ASCENDING_INT = "ascending_int";
-    public static final String DESCENDING_INT = "descending_int";
-    public static final String PIPE_ORGAN_INT = "pipe_organ_int";
-    public static final String PUSH_FRONT_INT = "push_front_int";
-    public static final String PUSH_MIDDLE_INT = "push_middle_int";
-    public static final String ASCENDING_SAWTOOTH_INT = "ascending_sawtooth_int";
-    public static final String DESCENDING_SAWTOOTH_INT = "descending_sawtooth_int";
-    public static final String ALTERNATING_INT = "alternating_int";
-    public static final String ALTERNATING_16_VALUES_INT = "alternating_16_values_int";
-    public static final String ORIGINAL_INT = "original_int";
-    public static final String ORIGINAL_UNSIGNED_INT = "original_unsigned_int";
-    ConcurrentHashMap<String, Function<GeneratorParams, int[]>> functions = new ConcurrentHashMap<>();
+    public enum GeneratorFunctions {
+        SHUFFLED_INT,
+        SHUFFLED_16_VALUES_INT,
+        ALL_EQUAL_INT,
+        ASCENDING_INT,
+        DESCENDING_INT,
+        PIPE_ORGAN_INT,
+        PUSH_FRONT_INT,
+        PUSH_MIDDLE_INT,
+        ASCENDING_SAWTOOTH_INT,
+        DESCENDING_SAWTOOTH_INT,
+        ALTERNATING_INT,
+        ALTERNATING_16_VALUES_INT,
+        ORIGINAL_INT_RANGE,
+        ORIGINAL_UNSIGNED_INT
+    }
+    private static final ConcurrentHashMap<String, Function<GeneratorParams, int[]>> functions = new ConcurrentHashMap<>();
 
-
-    public Generator() {
-        functions.put(SHUFFLED_INT, this::shuffled_int);
-        functions.put(SHUFFLED_16_VALUES_INT, this::shuffled_16_values_int);
-        functions.put(ALL_EQUAL_INT, this::all_equal_int);
-        functions.put(ASCENDING_INT, this::ascending_int);
-        functions.put(DESCENDING_INT, this::descending_int);
-        functions.put(PIPE_ORGAN_INT, this::pipe_organ_int);
-        functions.put(PUSH_FRONT_INT, this::push_front_int);
-        functions.put(PUSH_MIDDLE_INT, this::push_middle_int);
-        functions.put(ASCENDING_SAWTOOTH_INT, this::ascending_sawtooth_int);
-        functions.put(DESCENDING_SAWTOOTH_INT, this::descending_sawtooth_int);
-        functions.put(ALTERNATING_INT, this::alternating_int);
-        functions.put(ALTERNATING_16_VALUES_INT, this::alternating_16_values_int);
-        functions.put(ORIGINAL_INT, this::original_int);
-        functions.put(ORIGINAL_UNSIGNED_INT, this::original_unsigned_int);
+    static {
+        functions.put(String.valueOf(GeneratorFunctions.SHUFFLED_INT), Generator::shuffled_int);
+        functions.put(String.valueOf(GeneratorFunctions.SHUFFLED_16_VALUES_INT), Generator::shuffled_16_values_int);
+        functions.put(String.valueOf(GeneratorFunctions.ALL_EQUAL_INT), Generator::all_equal_int);
+        functions.put(String.valueOf(GeneratorFunctions.ASCENDING_INT), Generator::ascending_int);
+        functions.put(String.valueOf(GeneratorFunctions.DESCENDING_INT), Generator::descending_int);
+        functions.put(String.valueOf(GeneratorFunctions.PIPE_ORGAN_INT), Generator::pipe_organ_int);
+        functions.put(String.valueOf(GeneratorFunctions.PUSH_FRONT_INT), Generator::push_front_int);
+        functions.put(String.valueOf(GeneratorFunctions.PUSH_MIDDLE_INT), Generator::push_middle_int);
+        functions.put(String.valueOf(GeneratorFunctions.ASCENDING_SAWTOOTH_INT), Generator::ascending_sawtooth_int);
+        functions.put(String.valueOf(GeneratorFunctions.DESCENDING_SAWTOOTH_INT), Generator::descending_sawtooth_int);
+        functions.put(String.valueOf(GeneratorFunctions.ALTERNATING_INT), Generator::alternating_int);
+        functions.put(String.valueOf(GeneratorFunctions.ALTERNATING_16_VALUES_INT), Generator::alternating_16_values_int);
+        functions.put(String.valueOf(GeneratorFunctions.ORIGINAL_INT_RANGE), Generator::original_int);
+        functions.put(String.valueOf(GeneratorFunctions.ORIGINAL_UNSIGNED_INT), Generator::original_unsigned_int);
     }
 
-    public Function<GeneratorParams, int[]> getGeneratorFunction(String functionName) {
-        return functions.get(functionName);
+    public static Function<GeneratorParams, int[]> getGFunction(GeneratorFunctions functionName) {
+        return functions.get(String.valueOf(functionName));
+    }
+
+    public Generator(){
+
     }
 
 
 
-    int[] shuffled_int(GeneratorParams params) {
+    static int[] shuffled_int(GeneratorParams params) {
         int size = params.size;
         int[] v = new int[size];
         for (int i = 0; i < size; ++i) {
@@ -58,7 +63,7 @@ public class Generator {
         return v;
     }
 
-    int[] shuffled_16_values_int(GeneratorParams params) {
+    static int[] shuffled_16_values_int(GeneratorParams params) {
         int size = params.size;
         int[] v = new int[size];
         for (int i = 0; i < size; ++i) {
@@ -68,7 +73,7 @@ public class Generator {
         return v;
     }
 
-    int[] all_equal_int(GeneratorParams params) {
+    static int[] all_equal_int(GeneratorParams params) {
         int size = params.size;
         int[] v = new int[size];
         for (int i = 0; i < size; ++i) {
@@ -77,7 +82,7 @@ public class Generator {
         return v;
     }
 
-    int[] ascending_int(GeneratorParams params) {
+    static int[] ascending_int(GeneratorParams params) {
         int size = params.size;
         int[] v = new int[size];
         for (int i = 0; i < size; ++i) {
@@ -86,7 +91,7 @@ public class Generator {
         return v;
     }
 
-    int[] descending_int(GeneratorParams params) {
+    static int[] descending_int(GeneratorParams params) {
         int size = params.size;
         int[] v = new int[size];
         for (int i = size - 1; i >= 0; --i) {
@@ -95,7 +100,7 @@ public class Generator {
         return v;
     }
 
-    int[] pipe_organ_int(GeneratorParams params) {
+    static int[] pipe_organ_int(GeneratorParams params) {
         int size = params.size;
         int[] v = new int[size];
         for (int i = 0; i < size / 2; ++i) {
@@ -107,7 +112,7 @@ public class Generator {
         return v;
     }
 
-    int[] push_front_int(GeneratorParams params) {
+    static int[] push_front_int(GeneratorParams params) {
         int size = params.size;
         int[] v = new int[size];
         int i = 1;
@@ -118,7 +123,7 @@ public class Generator {
         return v;
     }
 
-    int[] push_middle_int(GeneratorParams params) {
+    static int[] push_middle_int(GeneratorParams params) {
         int size = params.size;
         int[] v = new int[size];
         int i = 0;
@@ -131,7 +136,7 @@ public class Generator {
         return v;
     }
 
-    int[] ascending_sawtooth_int(GeneratorParams params) {
+    static int[] ascending_sawtooth_int(GeneratorParams params) {
         int size = params.size;
         int[] v = new int[size];
         int limit = (int) (size / log2(size) * 1.1);
@@ -141,7 +146,7 @@ public class Generator {
         return v;
     }
 
-    int[] descending_sawtooth_int(GeneratorParams params) {
+    static int[] descending_sawtooth_int(GeneratorParams params) {
         int size = params.size;
         int[] v = new int[size];
         int limit = (int) (size / log2(size) * 1.1);
@@ -151,7 +156,7 @@ public class Generator {
         return v;
     }
 
-    int[] alternating_int(GeneratorParams params) {
+    static int[] alternating_int(GeneratorParams params) {
         int size = params.size;
         int[] v = new int[size];
         for (int i = 0; i < size; ++i) {
@@ -161,7 +166,7 @@ public class Generator {
         return v;
     }
 
-    int[] alternating_16_values_int(GeneratorParams params) {
+    static int[] alternating_16_values_int(GeneratorParams params) {
         int size = params.size;
         int[] v = new int[size];
         for (int i = 0; i < size; ++i) {
@@ -171,7 +176,7 @@ public class Generator {
         return v;
     }
 
-    int[] original_int(GeneratorParams params) {
+    static int[] original_int(GeneratorParams params) {
         int size = params.size;
         int f = (int) (params.limitHigh - params.limitLow);
         int[] v = new int[size];
@@ -182,7 +187,7 @@ public class Generator {
         return v;
     }
 
-    int[] original_unsigned_int(GeneratorParams params) {
+    static int[] original_unsigned_int(GeneratorParams params) {
         int limitLow = Integer.MAX_VALUE - 1000;
         int size = params.size;
         int[] v = new int[size];
@@ -194,7 +199,7 @@ public class Generator {
     }
 
 
-    private void shuffleArray(int[] array, Random random) {
+    private static void shuffleArray(int[] array, Random random) {
         int index, temp;
         for (int i = array.length - 1; i > 0; i--) {
             index = random.nextInt(i + 1);
@@ -203,7 +208,7 @@ public class Generator {
             array[i] = temp;
         }
     }
-    private double log2(int N)
+    static private double log2(int N)
     {
 
         // calculate log2 N indirectly

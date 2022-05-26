@@ -1,6 +1,7 @@
 package com.aldogg.sorter.test;
 
 import com.aldogg.sorter.*;
+import com.aldogg.sorter.generators.Generator;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.intType.CountSort;
 import com.aldogg.sorter.intType.IntSorter;
@@ -138,6 +139,7 @@ public class BasicTest extends SorterTest{
         params.random = new Random();
         params.size = 16;
         params.limitLow = 0;
+        params.generatorFunction = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_INT_RANGE);
 
         params.limitHigh = 256;
         testSpeedInt(iterations, params, testSortResults, sorters, null);
