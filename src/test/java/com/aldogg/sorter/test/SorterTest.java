@@ -6,6 +6,8 @@ import com.aldogg.sorter.generators.Generator;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.Sorter;
+import com.aldogg.sorter.sorters.JavaParallelSorterInt;
+import com.aldogg.sorter.sorters.JavaSorterInt;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
@@ -21,7 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SorterTest {
 
-    public static final int ITERATIONS = 2;
+    public static final long seed = 1234567890;
+    public static final int ITERATIONS = 20;
     public static final int HEAT_ITERATIONS = 10;
 
     public void testIntSort(int[] list, TestSortResults testSortResults, IntSorter[] sorters) {
@@ -129,12 +132,13 @@ public class SorterTest {
         //heatup
         testSortResults = new TestSortResults(sorters.length);
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random();
+        params.random = new Random(seed);
         params.size=80000;
         params.limitLow = 0;
         params.limitHigh = 80000;
-        params.generatorFunction = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_INT_RANGE);
+        params.function = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_INT_RANGE);
         testSpeedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
+        System.out.println("----------------------");
 
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
 
@@ -190,11 +194,11 @@ public class SorterTest {
         };
 
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random();
+        params.random = new Random(seed);
         params.size = 80000;
         params.limitLow = 0;
         params.limitHigh = 80000;
-        params.generatorFunction = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_INT_RANGE);
+        params.function = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_INT_RANGE);
 
         //heatup
         testSortResults = new TestSortResults(sorters.length);
@@ -241,11 +245,11 @@ public class SorterTest {
         //heatup
         testSortResults = new TestSortResults(sorters.length);
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random();
+        params.random = new Random(seed);
         params.size = 80000;
         params.limitLow = -80000;
         params.limitHigh = 80000;
-        params.generatorFunction = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_INT_RANGE);
+        params.function = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_INT_RANGE);
 
         testSpeedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
 
@@ -295,11 +299,11 @@ public class SorterTest {
         TestSortResults testSortResults;
 
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random();
+        params.random = new Random(seed);
         params.size = 80000;
         params.limitLow = Integer.MAX_VALUE - 1000;
         params.limitHigh = ((long) Integer.MAX_VALUE) + 2000L;
-        params.generatorFunction = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_UNSIGNED_INT);
+        params.function = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_UNSIGNED_INT);
 
         //heatup
         testSortResults = new TestSortResults(sorters.length);
@@ -345,7 +349,7 @@ public class SorterTest {
         //heatup
         testSortResults = new TestSortResults(sorters.length);
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random();
+        params.random = new Random(seed);
         params.size = 10000;
 
         testSpeedIncDec(HEAT_ITERATIONS, params, testSortResults, sorters, writer);
@@ -381,7 +385,7 @@ public class SorterTest {
 
     public void testSpeedInt(int iterations, GeneratorParams params, TestSortResults testSortResults, IntSorter[] sorters, Writer writer) throws IOException {
         for (int iter = 0; iter < iterations; iter++) {
-            int[] list = params.generatorFunction.apply(params);
+            int[] list = params.function.apply(params);
             testIntSort(list, testSortResults, sorters);
         }
         printTestSpeed(params, testSortResults, sorters, writer);
@@ -391,7 +395,7 @@ public class SorterTest {
         Function<GeneratorParams, int[]> allEqualFunction = Generator.getGFunction(Generator.GeneratorFunctions.ALL_EQUAL_INT);
         Function<GeneratorParams, int[]> ascendingFunction = Generator.getGFunction(Generator.GeneratorFunctions.ASCENDING_INT);
         Function<GeneratorParams, int[]> descendingFunction = Generator.getGFunction(Generator.GeneratorFunctions.DESCENDING_INT);
-        Random random = new Random();
+        Random random = new Random(seed);
         for (int iter = 0; iter < iterations; iter++) {
             int type = random.nextInt();
             Function<GeneratorParams, int[]> function = type == 0 ? allEqualFunction : (type == 1 ? ascendingFunction : descendingFunction);
@@ -406,7 +410,7 @@ public class SorterTest {
         IntSorter base = new RadixByteSorterInt();
         base.setUnsigned(true);
         for (int iter = 0; iter < iterations; iter++) {
-            int[] list = params.generatorFunction.apply(params);
+            int[] list = params.function.apply(params);
             testIntSort(list, testSortResults, sorters, base);
         }
         printTestSpeed(params, testSortResults, sorters, writer);
@@ -414,7 +418,7 @@ public class SorterTest {
 
     private void testSpeedObject(int iterations, GeneratorParams params, TestSortResults testSortResults, ObjectSorter[] sorters, IntComparator comparator, Writer writer) throws IOException {
         for (int iter = 0; iter < iterations; iter++) {
-            int[] listInt = params.generatorFunction.apply(params);
+            int[] listInt = params.function.apply(params);
             Entity1[] list = new Entity1[params.size];
             for (int i = 0; i < params.size; i++) {
                 int randomInt = listInt[i];
@@ -429,52 +433,52 @@ public class SorterTest {
         int size = params.size;
         int limitLow = params.limitLow;
         long limitHigh = params.limitHigh;
-        if (writer != null) {
-           for (int i = 0; i < sorters.length; i++) {
-               Sorter sorter = sorters[i];
-               writer.write(size + ",\"" + limitLow + ":" + limitHigh + "\",\""+sorter.name()+"\"," + testSortResults.getAVG(i)/1000000 + "\n");
-               writer.flush();
-           }
-           System.out.printf("%,13d %,13d ", size,  limitHigh);
-           for (int i = 0; i < sorters.length; i++) {
-               Sorter sorter = sorters[i];
-               System.out.printf("%21s %,13d ", sorter.name(), testSortResults.getAVG(i));
-           }
-           String sorterWinner = "";
-           long sorterWinnerTime = 0;
-           String sorter2ndWinner = "";
-           long sorter2ndWinnerTime = 0;
-           for (int i = 0; i < sorters.length; i++) {
-               Sorter sorter = sorters[i];
-               if (i==0) {
-                   sorterWinner = sorter.name();
-                   sorterWinnerTime = testSortResults.getAVG(i);
-               } if (i==1) {
-                   if (testSortResults.getAVG(i) < sorterWinnerTime) {
-                       sorter2ndWinner = sorterWinner;
-                       sorter2ndWinnerTime = sorterWinnerTime;
-                       sorterWinner = sorter.name();
-                       sorterWinnerTime = testSortResults.getAVG(i);
-                   } else {
-                       sorter2ndWinner = sorter.name();
-                       sorter2ndWinnerTime = testSortResults.getAVG(i);
-                   }
-               } else {
-                   if (testSortResults.getAVG(i) < sorterWinnerTime) {
-                       sorter2ndWinner = sorterWinner;
-                       sorter2ndWinnerTime = sorterWinnerTime;
-                       sorterWinner = sorter.name();
-                       sorterWinnerTime = testSortResults.getAVG(i);
-                   } else if (testSortResults.getAVG(i) < sorter2ndWinnerTime) {
-                       sorter2ndWinner = sorter.name();
-                       sorter2ndWinnerTime = testSortResults.getAVG(i);
-                   }
-               }
-           }
-           System.out.printf("%21s %,13d ", sorterWinner, sorterWinnerTime);
-           System.out.printf("%21s %,13d ", sorter2ndWinner, sorter2ndWinnerTime);
-           System.out.println();
-       }
+        for (int i = 0; i < sorters.length; i++) {
+            Sorter sorter = sorters[i];
+            if (writer != null)
+                writer.write(size + ",\"" + limitLow + ":" + limitHigh + "\",\"" + sorter.name() + "\"," + testSortResults.getAVG(i) / 1000000 + "\n");
+            if (writer != null) writer.flush();
+        }
+        System.out.printf("%,13d %18s %25s", size, limitLow+":"+limitHigh, params.name);
+        for (int i = 0; i < sorters.length; i++) {
+            Sorter sorter = sorters[i];
+            System.out.printf("%21s %,13d ", sorter.name(), testSortResults.getAVG(i));
+        }
+        String sorterWinner = "";
+        long sorterWinnerTime = 0;
+        String sorter2ndWinner = "";
+        long sorter2ndWinnerTime = 0;
+        for (int i = 0; i < sorters.length; i++) {
+            Sorter sorter = sorters[i];
+            if (i == 0) {
+                sorterWinner = sorter.name();
+                sorterWinnerTime = testSortResults.getAVG(i);
+            }
+            if (i == 1) {
+                if (testSortResults.getAVG(i) < sorterWinnerTime) {
+                    sorter2ndWinner = sorterWinner;
+                    sorter2ndWinnerTime = sorterWinnerTime;
+                    sorterWinner = sorter.name();
+                    sorterWinnerTime = testSortResults.getAVG(i);
+                } else {
+                    sorter2ndWinner = sorter.name();
+                    sorter2ndWinnerTime = testSortResults.getAVG(i);
+                }
+            } else {
+                if (testSortResults.getAVG(i) < sorterWinnerTime) {
+                    sorter2ndWinner = sorterWinner;
+                    sorter2ndWinnerTime = sorterWinnerTime;
+                    sorterWinner = sorter.name();
+                    sorterWinnerTime = testSortResults.getAVG(i);
+                } else if (testSortResults.getAVG(i) < sorter2ndWinnerTime) {
+                    sorter2ndWinner = sorter.name();
+                    sorter2ndWinnerTime = testSortResults.getAVG(i);
+                }
+            }
+        }
+        System.out.printf("%21s %,13d ", sorterWinner, sorterWinnerTime);
+        System.out.printf("%21s %,13d ", sorter2ndWinner, sorter2ndWinnerTime);
+        System.out.println();
     }
 
 

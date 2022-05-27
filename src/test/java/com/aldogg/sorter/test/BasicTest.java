@@ -6,6 +6,8 @@ import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.intType.CountSort;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
+import com.aldogg.sorter.sorters.JavaParallelSorterInt;
+import com.aldogg.sorter.sorters.JavaSorterInt;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
@@ -139,7 +141,7 @@ public class BasicTest extends SorterTest{
         params.random = new Random();
         params.size = 16;
         params.limitLow = 0;
-        params.generatorFunction = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_INT_RANGE);
+        params.function = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_INT_RANGE);
 
         params.limitHigh = 256;
         testSpeedInt(iterations, params, testSortResults, sorters, null);

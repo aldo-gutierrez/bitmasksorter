@@ -1,6 +1,8 @@
 package com.aldogg.sorter;
 
-import static com.aldogg.sorter.intType.IntSorterUtils.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 //http://users.telenet.be/bertdobbelaere/SorterHunter/sorting_networks.html
 public class SortingNetworks {
@@ -110,933 +112,980 @@ public class SortingNetworks {
                     {6, 7}, {8, 9}}
     };
 
+    private static Map<Integer, BiConsumer<int[], Integer>> sFunctions = new HashMap<>();
+    private static Map<Integer, BiConsumer<int[], Integer>> uFunctions = new HashMap<>();
+
+    static {
+        sFunctions.put(2, SortingNetworks::sortVSLS2);
+        sFunctions.put(3, SortingNetworks::sortVSLS3);
+        sFunctions.put(4, SortingNetworks::sortVSLS4);
+        sFunctions.put(5, SortingNetworks::sortVSLS5);
+        sFunctions.put(6, SortingNetworks::sortVSLS6);
+        sFunctions.put(7, SortingNetworks::sortVSLS7);
+        sFunctions.put(8, SortingNetworks::sortVSLS8);
+        sFunctions.put(9, SortingNetworks::sortVSLS9);
+        sFunctions.put(10, SortingNetworks::sortVSLS10);
+        sFunctions.put(11, SortingNetworks::sortVSLS11);
+        sFunctions.put(12, SortingNetworks::sortVSLS12);
+        sFunctions.put(13, SortingNetworks::sortVSLS13);
+        sFunctions.put(14, SortingNetworks::sortVSLS14);
+        sFunctions.put(15, SortingNetworks::sortVSLS15);
+        sFunctions.put(16, SortingNetworks::sortVSLS16);
+
+        uFunctions.put(2, SortingNetworks::sortVSLU2);
+        uFunctions.put(3, SortingNetworks::sortVSLU3);
+        uFunctions.put(4, SortingNetworks::sortVSLU4);
+        uFunctions.put(5, SortingNetworks::sortVSLU5);
+        uFunctions.put(6, SortingNetworks::sortVSLU6);
+        uFunctions.put(7, SortingNetworks::sortVSLU7);
+        uFunctions.put(8, SortingNetworks::sortVSLU8);
+        uFunctions.put(9, SortingNetworks::sortVSLU9);
+        uFunctions.put(10, SortingNetworks::sortVSLU10);
+        uFunctions.put(11, SortingNetworks::sortVSLU11);
+        uFunctions.put(12, SortingNetworks::sortVSLU12);
+        uFunctions.put(13, SortingNetworks::sortVSLU13);
+        uFunctions.put(14, SortingNetworks::sortVSLU14);
+        uFunctions.put(15, SortingNetworks::sortVSLU15);
+        uFunctions.put(16, SortingNetworks::sortVSLU16);
+        
+    }
+
     public static void sortVerySmallListSigned(final int[] array, final int start, final int end) {
         int length = end - start;
-        if (length <= 8) {
-            if (length <= 4) {
-                if (length <= 2) {
-                    if (length == 2) {
-                        compareAndSwapSigned(array, start, start + 1);
-                    }
-                } else {
-                    if (length == 3) {
-                        compareAndSwapSigned(array, start, start + 2);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                    } else { //4
-                        compareAndSwapSigned(array, start, start + 2);
-                        compareAndSwapSigned(array, start + 1, start + 3);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                    }
-                }
-            } else {
-                if (length <= 6) {
-                    if (length == 5) {
-                        compareAndSwapSigned(array, start, start + 3);
-                        compareAndSwapSigned(array, start + 1, start + 4);
-                        compareAndSwapSigned(array, start, start + 2);
-                        compareAndSwapSigned(array, start + 1, start + 3);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 2, start + 4);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                    }
-                    if (length == 6) {
-                        compareAndSwapSigned(array, start, start + 5);
-                        compareAndSwapSigned(array, start + 1, start + 3);
-                        compareAndSwapSigned(array, start + 2, start + 4);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start, start + 3);
-                        compareAndSwapSigned(array, start + 2, start + 5);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                    }
-                } else {
-                    if (length == 7) {
-                        compareAndSwapSigned(array, start, start + 6);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start, start + 2);
-                        compareAndSwapSigned(array, start + 1, start + 4);
-                        compareAndSwapSigned(array, start + 3, start + 6);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 2, start + 5);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 4, start + 6);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                    } else { //8
-                        compareAndSwapSigned(array, start, start + 2);
-                        compareAndSwapSigned(array, start + 1, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 6);
-                        compareAndSwapSigned(array, start + 5, start + 7);
-                        compareAndSwapSigned(array, start, start + 4);
-                        compareAndSwapSigned(array, start + 1, start + 5);
-                        compareAndSwapSigned(array, start + 2, start + 6);
-                        compareAndSwapSigned(array, start + 3, start + 7);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start + 6, start + 7);
-                        compareAndSwapSigned(array, start + 2, start + 4);
-                        compareAndSwapSigned(array, start + 3, start + 5);
-                        compareAndSwapSigned(array, start + 1, start + 4);
-                        compareAndSwapSigned(array, start + 3, start + 6);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                    }
-                }
-            }
-        } else {
-            if (length <= 12) {
-                if (length <= 10) {
-                    if (length == 9) {
-                        compareAndSwapSigned(array, start, start + 3);
-                        compareAndSwapSigned(array, start + 1, start + 7);
-                        compareAndSwapSigned(array, start + 2, start + 5);
-                        compareAndSwapSigned(array, start + 4, start + 8);
-                        compareAndSwapSigned(array, start, start + 7);
-                        compareAndSwapSigned(array, start + 2, start + 4);
-                        compareAndSwapSigned(array, start + 3, start + 8);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                        compareAndSwapSigned(array, start, start + 2);
-                        compareAndSwapSigned(array, start + 1, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                        compareAndSwapSigned(array, start + 1, start + 4);
-                        compareAndSwapSigned(array, start + 3, start + 6);
-                        compareAndSwapSigned(array, start + 5, start + 7);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 2, start + 4);
-                        compareAndSwapSigned(array, start + 3, start + 5);
-                        compareAndSwapSigned(array, start + 6, start + 8);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start + 6, start + 7);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                    } else { //10
-                        compareAndSwapSigned(array, start, start + 8);
-                        compareAndSwapSigned(array, start + 1, start + 9);
-                        compareAndSwapSigned(array, start + 2, start + 7);
-                        compareAndSwapSigned(array, start + 3, start + 5);
-                        compareAndSwapSigned(array, start + 4, start + 6);
-                        compareAndSwapSigned(array, start, start + 2);
-                        compareAndSwapSigned(array, start + 1, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 8);
-                        compareAndSwapSigned(array, start + 7, start + 9);
-                        compareAndSwapSigned(array, start, start + 3);
-                        compareAndSwapSigned(array, start + 2, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 7);
-                        compareAndSwapSigned(array, start + 6, start + 9);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 3, start + 6);
-                        compareAndSwapSigned(array, start + 8, start + 9);
-                        compareAndSwapSigned(array, start + 1, start + 5);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 8);
-                        compareAndSwapSigned(array, start + 6, start + 7);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 5);
-                        compareAndSwapSigned(array, start + 4, start + 6);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start + 6, start + 7);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                    }
-                } else {
-                    if (length == 11) {
-                        compareAndSwapSigned(array, start, start + 9);
-                        compareAndSwapSigned(array, start + 1, start + 6);
-                        compareAndSwapSigned(array, start + 2, start + 4);
-                        compareAndSwapSigned(array, start + 3, start + 7);
-                        compareAndSwapSigned(array, start + 5, start + 8);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 3, start + 5);
-                        compareAndSwapSigned(array, start + 4, start + 10);
-                        compareAndSwapSigned(array, start + 6, start + 9);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                        compareAndSwapSigned(array, start + 1, start + 3);
-                        compareAndSwapSigned(array, start + 2, start + 5);
-                        compareAndSwapSigned(array, start + 4, start + 7);
-                        compareAndSwapSigned(array, start + 8, start + 10);
-                        compareAndSwapSigned(array, start, start + 4);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 7);
-                        compareAndSwapSigned(array, start + 5, start + 9);
-                        compareAndSwapSigned(array, start + 6, start + 8);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 2, start + 6);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                        compareAndSwapSigned(array, start + 9, start + 10);
-                        compareAndSwapSigned(array, start + 2, start + 4);
-                        compareAndSwapSigned(array, start + 3, start + 6);
-                        compareAndSwapSigned(array, start + 5, start + 7);
-                        compareAndSwapSigned(array, start + 8, start + 9);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start + 6, start + 7);
-                    } else { //12
-                        compareAndSwapSigned(array, start, start + 8);
-                        compareAndSwapSigned(array, start + 1, start + 7);
-                        compareAndSwapSigned(array, start + 2, start + 6);
-                        compareAndSwapSigned(array, start + 3, start + 11);
-                        compareAndSwapSigned(array, start + 4, start + 10);
-                        compareAndSwapSigned(array, start + 5, start + 9);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 2, start + 5);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 6, start + 9);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                        compareAndSwapSigned(array, start + 10, start + 11);
-                        compareAndSwapSigned(array, start, start + 2);
-                        compareAndSwapSigned(array, start + 1, start + 6);
-                        compareAndSwapSigned(array, start + 5, start + 10);
-                        compareAndSwapSigned(array, start + 9, start + 11);
-                        compareAndSwapSigned(array, start, start + 3);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 4, start + 6);
-                        compareAndSwapSigned(array, start + 5, start + 7);
-                        compareAndSwapSigned(array, start + 8, start + 11);
-                        compareAndSwapSigned(array, start + 9, start + 10);
-                        compareAndSwapSigned(array, start + 1, start + 4);
-                        compareAndSwapSigned(array, start + 3, start + 5);
-                        compareAndSwapSigned(array, start + 6, start + 8);
-                        compareAndSwapSigned(array, start + 7, start + 10);
-                        compareAndSwapSigned(array, start + 1, start + 3);
-                        compareAndSwapSigned(array, start + 2, start + 5);
-                        compareAndSwapSigned(array, start + 6, start + 9);
-                        compareAndSwapSigned(array, start + 8, start + 10);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start + 6, start + 7);
-                        compareAndSwapSigned(array, start + 8, start + 9);
-                        compareAndSwapSigned(array, start + 4, start + 6);
-                        compareAndSwapSigned(array, start + 5, start + 7);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                    }
-                }
-            } else {
-                if (length <= 14) {
-                    if (length == 13) {
-                        compareAndSwapSigned(array, start, start + 12);
-                        compareAndSwapSigned(array, start + 1, start + 10);
-                        compareAndSwapSigned(array, start + 2, start + 9);
-                        compareAndSwapSigned(array, start + 3, start + 7);
-                        compareAndSwapSigned(array, start + 5, start + 11);
-                        compareAndSwapSigned(array, start + 6, start + 8);
-                        compareAndSwapSigned(array, start + 1, start + 6);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 11);
-                        compareAndSwapSigned(array, start + 7, start + 9);
-                        compareAndSwapSigned(array, start + 8, start + 10);
-                        compareAndSwapSigned(array, start, start + 4);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 6);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                        compareAndSwapSigned(array, start + 9, start + 10);
-                        compareAndSwapSigned(array, start + 11, start + 12);
-                        compareAndSwapSigned(array, start + 4, start + 6);
-                        compareAndSwapSigned(array, start + 5, start + 9);
-                        compareAndSwapSigned(array, start + 8, start + 11);
-                        compareAndSwapSigned(array, start + 10, start + 12);
-                        compareAndSwapSigned(array, start, start + 5);
-                        compareAndSwapSigned(array, start + 3, start + 8);
-                        compareAndSwapSigned(array, start + 4, start + 7);
-                        compareAndSwapSigned(array, start + 6, start + 11);
-                        compareAndSwapSigned(array, start + 9, start + 10);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 2, start + 5);
-                        compareAndSwapSigned(array, start + 6, start + 9);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                        compareAndSwapSigned(array, start + 10, start + 11);
-                        compareAndSwapSigned(array, start + 1, start + 3);
-                        compareAndSwapSigned(array, start + 2, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                        compareAndSwapSigned(array, start + 9, start + 10);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 7);
-                        compareAndSwapSigned(array, start + 6, start + 8);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start + 6, start + 7);
-                        compareAndSwapSigned(array, start + 8, start + 9);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                    } else { //14
-                        compareAndSwapSigned(array, start, start + 6);
-                        compareAndSwapSigned(array, start + 1, start + 11);
-                        compareAndSwapSigned(array, start + 2, start + 12);
-                        compareAndSwapSigned(array, start + 3, start + 10);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start + 7, start + 13);
-                        compareAndSwapSigned(array, start + 8, start + 9);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 7);
-                        compareAndSwapSigned(array, start + 4, start + 8);
-                        compareAndSwapSigned(array, start + 5, start + 9);
-                        compareAndSwapSigned(array, start + 6, start + 10);
-                        compareAndSwapSigned(array, start + 11, start + 12);
-                        compareAndSwapSigned(array, start, start + 4);
-                        compareAndSwapSigned(array, start + 1, start + 3);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                        compareAndSwapSigned(array, start + 9, start + 13);
-                        compareAndSwapSigned(array, start + 10, start + 12);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 2, start + 9);
-                        compareAndSwapSigned(array, start + 3, start + 7);
-                        compareAndSwapSigned(array, start + 4, start + 11);
-                        compareAndSwapSigned(array, start + 6, start + 10);
-                        compareAndSwapSigned(array, start + 12, start + 13);
-                        compareAndSwapSigned(array, start + 2, start + 5);
-                        compareAndSwapSigned(array, start + 4, start + 7);
-                        compareAndSwapSigned(array, start + 6, start + 9);
-                        compareAndSwapSigned(array, start + 8, start + 11);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 6, start + 7);
-                        compareAndSwapSigned(array, start + 9, start + 10);
-                        compareAndSwapSigned(array, start + 11, start + 12);
-                        compareAndSwapSigned(array, start + 1, start + 3);
-                        compareAndSwapSigned(array, start + 2, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                        compareAndSwapSigned(array, start + 9, start + 11);
-                        compareAndSwapSigned(array, start + 10, start + 12);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 7);
-                        compareAndSwapSigned(array, start + 6, start + 9);
-                        compareAndSwapSigned(array, start + 10, start + 11);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start + 6, start + 7);
-                        compareAndSwapSigned(array, start + 8, start + 9);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                        compareAndSwapSigned(array, start + 9, start + 10);
-                    }
-
-                } else {
-                    if (length == 15) {
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 10);
-                        compareAndSwapSigned(array, start + 4, start + 14);
-                        compareAndSwapSigned(array, start + 5, start + 8);
-                        compareAndSwapSigned(array, start + 6, start + 13);
-                        compareAndSwapSigned(array, start + 7, start + 12);
-                        compareAndSwapSigned(array, start + 9, start + 11);
-                        compareAndSwapSigned(array, start, start + 14);
-                        compareAndSwapSigned(array, start + 1, start + 5);
-                        compareAndSwapSigned(array, start + 2, start + 8);
-                        compareAndSwapSigned(array, start + 3, start + 7);
-                        compareAndSwapSigned(array, start + 6, start + 9);
-                        compareAndSwapSigned(array, start + 10, start + 12);
-                        compareAndSwapSigned(array, start + 11, start + 13);
-                        compareAndSwapSigned(array, start, start + 7);
-                        compareAndSwapSigned(array, start + 1, start + 6);
-                        compareAndSwapSigned(array, start + 2, start + 9);
-                        compareAndSwapSigned(array, start + 4, start + 10);
-                        compareAndSwapSigned(array, start + 5, start + 11);
-                        compareAndSwapSigned(array, start + 8, start + 13);
-                        compareAndSwapSigned(array, start + 12, start + 14);
-                        compareAndSwapSigned(array, start, start + 6);
-                        compareAndSwapSigned(array, start + 2, start + 4);
-                        compareAndSwapSigned(array, start + 3, start + 5);
-                        compareAndSwapSigned(array, start + 7, start + 11);
-                        compareAndSwapSigned(array, start + 8, start + 10);
-                        compareAndSwapSigned(array, start + 9, start + 12);
-                        compareAndSwapSigned(array, start + 13, start + 14);
-                        compareAndSwapSigned(array, start, start + 3);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 4, start + 7);
-                        compareAndSwapSigned(array, start + 5, start + 9);
-                        compareAndSwapSigned(array, start + 6, start + 8);
-                        compareAndSwapSigned(array, start + 10, start + 11);
-                        compareAndSwapSigned(array, start + 12, start + 13);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 6);
-                        compareAndSwapSigned(array, start + 7, start + 9);
-                        compareAndSwapSigned(array, start + 10, start + 12);
-                        compareAndSwapSigned(array, start + 11, start + 13);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 5);
-                        compareAndSwapSigned(array, start + 8, start + 10);
-                        compareAndSwapSigned(array, start + 11, start + 12);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                        compareAndSwapSigned(array, start + 9, start + 10);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start + 6, start + 7);
-                        compareAndSwapSigned(array, start + 8, start + 9);
-                        compareAndSwapSigned(array, start + 10, start + 11);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                    } else if (length == 16) {
-                        compareAndSwapSigned(array, start, start + 13);
-                        compareAndSwapSigned(array, start + 1, start + 12);
-                        compareAndSwapSigned(array, start + 2, start + 15);
-                        compareAndSwapSigned(array, start + 3, start + 14);
-                        compareAndSwapSigned(array, start + 4, start + 8);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                        compareAndSwapSigned(array, start + 7, start + 11);
-                        compareAndSwapSigned(array, start + 9, start + 10);
-                        compareAndSwapSigned(array, start, start + 5);
-                        compareAndSwapSigned(array, start + 1, start + 7);
-                        compareAndSwapSigned(array, start + 2, start + 9);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 6, start + 13);
-                        compareAndSwapSigned(array, start + 8, start + 14);
-                        compareAndSwapSigned(array, start + 10, start + 15);
-                        compareAndSwapSigned(array, start + 11, start + 12);
-                        compareAndSwapSigned(array, start, start + 1);
-                        compareAndSwapSigned(array, start + 2, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 5);
-                        compareAndSwapSigned(array, start + 6, start + 8);
-                        compareAndSwapSigned(array, start + 7, start + 9);
-                        compareAndSwapSigned(array, start + 10, start + 11);
-                        compareAndSwapSigned(array, start + 12, start + 13);
-                        compareAndSwapSigned(array, start + 14, start + 15);
-                        compareAndSwapSigned(array, start, start + 2);
-                        compareAndSwapSigned(array, start + 1, start + 3);
-                        compareAndSwapSigned(array, start + 4, start + 10);
-                        compareAndSwapSigned(array, start + 5, start + 11);
-                        compareAndSwapSigned(array, start + 6, start + 7);
-                        compareAndSwapSigned(array, start + 8, start + 9);
-                        compareAndSwapSigned(array, start + 12, start + 14);
-                        compareAndSwapSigned(array, start + 13, start + 15);
-                        compareAndSwapSigned(array, start + 1, start + 2);
-                        compareAndSwapSigned(array, start + 3, start + 12);
-                        compareAndSwapSigned(array, start + 4, start + 6);
-                        compareAndSwapSigned(array, start + 5, start + 7);
-                        compareAndSwapSigned(array, start + 8, start + 10);
-                        compareAndSwapSigned(array, start + 9, start + 11);
-                        compareAndSwapSigned(array, start + 13, start + 14);
-                        compareAndSwapSigned(array, start + 1, start + 4);
-                        compareAndSwapSigned(array, start + 2, start + 6);
-                        compareAndSwapSigned(array, start + 5, start + 8);
-                        compareAndSwapSigned(array, start + 7, start + 10);
-                        compareAndSwapSigned(array, start + 9, start + 13);
-                        compareAndSwapSigned(array, start + 11, start + 14);
-                        compareAndSwapSigned(array, start + 2, start + 4);
-                        compareAndSwapSigned(array, start + 3, start + 6);
-                        compareAndSwapSigned(array, start + 9, start + 12);
-                        compareAndSwapSigned(array, start + 11, start + 13);
-                        compareAndSwapSigned(array, start + 3, start + 5);
-                        compareAndSwapSigned(array, start + 6, start + 8);
-                        compareAndSwapSigned(array, start + 7, start + 9);
-                        compareAndSwapSigned(array, start + 10, start + 12);
-                        compareAndSwapSigned(array, start + 3, start + 4);
-                        compareAndSwapSigned(array, start + 5, start + 6);
-                        compareAndSwapSigned(array, start + 7, start + 8);
-                        compareAndSwapSigned(array, start + 9, start + 10);
-                        compareAndSwapSigned(array, start + 11, start + 12);
-                        compareAndSwapSigned(array, start + 6, start + 7);
-                        compareAndSwapSigned(array, start + 8, start + 9);
-                    }
-                }
-            }
-        }
+        sFunctions.get(length).accept(array, start);
     }
+
 
     //is this necessary?? verify
     public static void sortVerySmallListUnSigned(final int[] array, final int start, final int end) {
         int length = end - start;
-        if (length <= 8) {
-            if (length <= 4) {
-                if (length <= 2) {
-                    if (length == 2) {
-                        compareAndSwapUnsigned(array, start, start + 1);
-                    }
-                } else {
-                    if (length == 3) {
-                        compareAndSwapUnsigned(array, start, start + 2);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                    } else { //4
-                        compareAndSwapUnsigned(array, start, start + 2);
-                        compareAndSwapUnsigned(array, start + 1, start + 3);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                    }
-                }
-            } else {
-                if (length <= 6) {
-                    if (length == 5) {
-                        compareAndSwapUnsigned(array, start, start + 3);
-                        compareAndSwapUnsigned(array, start + 1, start + 4);
-                        compareAndSwapUnsigned(array, start, start + 2);
-                        compareAndSwapUnsigned(array, start + 1, start + 3);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 2, start + 4);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                    }
-                    if (length == 6) {
-                        compareAndSwapUnsigned(array, start, start + 5);
-                        compareAndSwapUnsigned(array, start + 1, start + 3);
-                        compareAndSwapUnsigned(array, start + 2, start + 4);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start, start + 3);
-                        compareAndSwapUnsigned(array, start + 2, start + 5);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                    }
-                } else {
-                    if (length == 7) {
-                        compareAndSwapUnsigned(array, start, start + 6);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start, start + 2);
-                        compareAndSwapUnsigned(array, start + 1, start + 4);
-                        compareAndSwapUnsigned(array, start + 3, start + 6);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 2, start + 5);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 4, start + 6);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                    } else { //8
-                        compareAndSwapUnsigned(array, start, start + 2);
-                        compareAndSwapUnsigned(array, start + 1, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 6);
-                        compareAndSwapUnsigned(array, start + 5, start + 7);
-                        compareAndSwapUnsigned(array, start, start + 4);
-                        compareAndSwapUnsigned(array, start + 1, start + 5);
-                        compareAndSwapUnsigned(array, start + 2, start + 6);
-                        compareAndSwapUnsigned(array, start + 3, start + 7);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start + 6, start + 7);
-                        compareAndSwapUnsigned(array, start + 2, start + 4);
-                        compareAndSwapUnsigned(array, start + 3, start + 5);
-                        compareAndSwapUnsigned(array, start + 1, start + 4);
-                        compareAndSwapUnsigned(array, start + 3, start + 6);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                    }
-                }
-            }
-        } else {
-            if (length <= 12) {
-                if (length <= 10) {
-                    if (length == 9) {
-                        compareAndSwapUnsigned(array, start, start + 3);
-                        compareAndSwapUnsigned(array, start + 1, start + 7);
-                        compareAndSwapUnsigned(array, start + 2, start + 5);
-                        compareAndSwapUnsigned(array, start + 4, start + 8);
-                        compareAndSwapUnsigned(array, start, start + 7);
-                        compareAndSwapUnsigned(array, start + 2, start + 4);
-                        compareAndSwapUnsigned(array, start + 3, start + 8);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                        compareAndSwapUnsigned(array, start, start + 2);
-                        compareAndSwapUnsigned(array, start + 1, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                        compareAndSwapUnsigned(array, start + 1, start + 4);
-                        compareAndSwapUnsigned(array, start + 3, start + 6);
-                        compareAndSwapUnsigned(array, start + 5, start + 7);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 2, start + 4);
-                        compareAndSwapUnsigned(array, start + 3, start + 5);
-                        compareAndSwapUnsigned(array, start + 6, start + 8);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start + 6, start + 7);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                    } else { //10
-                        compareAndSwapUnsigned(array, start, start + 8);
-                        compareAndSwapUnsigned(array, start + 1, start + 9);
-                        compareAndSwapUnsigned(array, start + 2, start + 7);
-                        compareAndSwapUnsigned(array, start + 3, start + 5);
-                        compareAndSwapUnsigned(array, start + 4, start + 6);
-                        compareAndSwapUnsigned(array, start, start + 2);
-                        compareAndSwapUnsigned(array, start + 1, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 8);
-                        compareAndSwapUnsigned(array, start + 7, start + 9);
-                        compareAndSwapUnsigned(array, start, start + 3);
-                        compareAndSwapUnsigned(array, start + 2, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 7);
-                        compareAndSwapUnsigned(array, start + 6, start + 9);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 3, start + 6);
-                        compareAndSwapUnsigned(array, start + 8, start + 9);
-                        compareAndSwapUnsigned(array, start + 1, start + 5);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 8);
-                        compareAndSwapUnsigned(array, start + 6, start + 7);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 5);
-                        compareAndSwapUnsigned(array, start + 4, start + 6);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start + 6, start + 7);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                    }
-                } else {
-                    if (length == 11) {
-                        compareAndSwapUnsigned(array, start, start + 9);
-                        compareAndSwapUnsigned(array, start + 1, start + 6);
-                        compareAndSwapUnsigned(array, start + 2, start + 4);
-                        compareAndSwapUnsigned(array, start + 3, start + 7);
-                        compareAndSwapUnsigned(array, start + 5, start + 8);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 3, start + 5);
-                        compareAndSwapUnsigned(array, start + 4, start + 10);
-                        compareAndSwapUnsigned(array, start + 6, start + 9);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                        compareAndSwapUnsigned(array, start + 1, start + 3);
-                        compareAndSwapUnsigned(array, start + 2, start + 5);
-                        compareAndSwapUnsigned(array, start + 4, start + 7);
-                        compareAndSwapUnsigned(array, start + 8, start + 10);
-                        compareAndSwapUnsigned(array, start, start + 4);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 7);
-                        compareAndSwapUnsigned(array, start + 5, start + 9);
-                        compareAndSwapUnsigned(array, start + 6, start + 8);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 2, start + 6);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                        compareAndSwapUnsigned(array, start + 9, start + 10);
-                        compareAndSwapUnsigned(array, start + 2, start + 4);
-                        compareAndSwapUnsigned(array, start + 3, start + 6);
-                        compareAndSwapUnsigned(array, start + 5, start + 7);
-                        compareAndSwapUnsigned(array, start + 8, start + 9);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start + 6, start + 7);
-                    } else { //12
-                        compareAndSwapUnsigned(array, start, start + 8);
-                        compareAndSwapUnsigned(array, start + 1, start + 7);
-                        compareAndSwapUnsigned(array, start + 2, start + 6);
-                        compareAndSwapUnsigned(array, start + 3, start + 11);
-                        compareAndSwapUnsigned(array, start + 4, start + 10);
-                        compareAndSwapUnsigned(array, start + 5, start + 9);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 2, start + 5);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 6, start + 9);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                        compareAndSwapUnsigned(array, start + 10, start + 11);
-                        compareAndSwapUnsigned(array, start, start + 2);
-                        compareAndSwapUnsigned(array, start + 1, start + 6);
-                        compareAndSwapUnsigned(array, start + 5, start + 10);
-                        compareAndSwapUnsigned(array, start + 9, start + 11);
-                        compareAndSwapUnsigned(array, start, start + 3);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 4, start + 6);
-                        compareAndSwapUnsigned(array, start + 5, start + 7);
-                        compareAndSwapUnsigned(array, start + 8, start + 11);
-                        compareAndSwapUnsigned(array, start + 9, start + 10);
-                        compareAndSwapUnsigned(array, start + 1, start + 4);
-                        compareAndSwapUnsigned(array, start + 3, start + 5);
-                        compareAndSwapUnsigned(array, start + 6, start + 8);
-                        compareAndSwapUnsigned(array, start + 7, start + 10);
-                        compareAndSwapUnsigned(array, start + 1, start + 3);
-                        compareAndSwapUnsigned(array, start + 2, start + 5);
-                        compareAndSwapUnsigned(array, start + 6, start + 9);
-                        compareAndSwapUnsigned(array, start + 8, start + 10);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start + 6, start + 7);
-                        compareAndSwapUnsigned(array, start + 8, start + 9);
-                        compareAndSwapUnsigned(array, start + 4, start + 6);
-                        compareAndSwapUnsigned(array, start + 5, start + 7);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                    }
-                }
-            } else {
-                if (length <= 14) {
-                    if (length == 13) {
-                        compareAndSwapUnsigned(array, start, start + 12);
-                        compareAndSwapUnsigned(array, start + 1, start + 10);
-                        compareAndSwapUnsigned(array, start + 2, start + 9);
-                        compareAndSwapUnsigned(array, start + 3, start + 7);
-                        compareAndSwapUnsigned(array, start + 5, start + 11);
-                        compareAndSwapUnsigned(array, start + 6, start + 8);
-                        compareAndSwapUnsigned(array, start + 1, start + 6);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 11);
-                        compareAndSwapUnsigned(array, start + 7, start + 9);
-                        compareAndSwapUnsigned(array, start + 8, start + 10);
-                        compareAndSwapUnsigned(array, start, start + 4);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 6);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                        compareAndSwapUnsigned(array, start + 9, start + 10);
-                        compareAndSwapUnsigned(array, start + 11, start + 12);
-                        compareAndSwapUnsigned(array, start + 4, start + 6);
-                        compareAndSwapUnsigned(array, start + 5, start + 9);
-                        compareAndSwapUnsigned(array, start + 8, start + 11);
-                        compareAndSwapUnsigned(array, start + 10, start + 12);
-                        compareAndSwapUnsigned(array, start, start + 5);
-                        compareAndSwapUnsigned(array, start + 3, start + 8);
-                        compareAndSwapUnsigned(array, start + 4, start + 7);
-                        compareAndSwapUnsigned(array, start + 6, start + 11);
-                        compareAndSwapUnsigned(array, start + 9, start + 10);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 2, start + 5);
-                        compareAndSwapUnsigned(array, start + 6, start + 9);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                        compareAndSwapUnsigned(array, start + 10, start + 11);
-                        compareAndSwapUnsigned(array, start + 1, start + 3);
-                        compareAndSwapUnsigned(array, start + 2, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                        compareAndSwapUnsigned(array, start + 9, start + 10);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 7);
-                        compareAndSwapUnsigned(array, start + 6, start + 8);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start + 6, start + 7);
-                        compareAndSwapUnsigned(array, start + 8, start + 9);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                    } else { //14
-                        compareAndSwapUnsigned(array, start, start + 6);
-                        compareAndSwapUnsigned(array, start + 1, start + 11);
-                        compareAndSwapUnsigned(array, start + 2, start + 12);
-                        compareAndSwapUnsigned(array, start + 3, start + 10);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start + 7, start + 13);
-                        compareAndSwapUnsigned(array, start + 8, start + 9);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 7);
-                        compareAndSwapUnsigned(array, start + 4, start + 8);
-                        compareAndSwapUnsigned(array, start + 5, start + 9);
-                        compareAndSwapUnsigned(array, start + 6, start + 10);
-                        compareAndSwapUnsigned(array, start + 11, start + 12);
-                        compareAndSwapUnsigned(array, start, start + 4);
-                        compareAndSwapUnsigned(array, start + 1, start + 3);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                        compareAndSwapUnsigned(array, start + 9, start + 13);
-                        compareAndSwapUnsigned(array, start + 10, start + 12);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 2, start + 9);
-                        compareAndSwapUnsigned(array, start + 3, start + 7);
-                        compareAndSwapUnsigned(array, start + 4, start + 11);
-                        compareAndSwapUnsigned(array, start + 6, start + 10);
-                        compareAndSwapUnsigned(array, start + 12, start + 13);
-                        compareAndSwapUnsigned(array, start + 2, start + 5);
-                        compareAndSwapUnsigned(array, start + 4, start + 7);
-                        compareAndSwapUnsigned(array, start + 6, start + 9);
-                        compareAndSwapUnsigned(array, start + 8, start + 11);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 6, start + 7);
-                        compareAndSwapUnsigned(array, start + 9, start + 10);
-                        compareAndSwapUnsigned(array, start + 11, start + 12);
-                        compareAndSwapUnsigned(array, start + 1, start + 3);
-                        compareAndSwapUnsigned(array, start + 2, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                        compareAndSwapUnsigned(array, start + 9, start + 11);
-                        compareAndSwapUnsigned(array, start + 10, start + 12);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 7);
-                        compareAndSwapUnsigned(array, start + 6, start + 9);
-                        compareAndSwapUnsigned(array, start + 10, start + 11);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start + 6, start + 7);
-                        compareAndSwapUnsigned(array, start + 8, start + 9);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                        compareAndSwapUnsigned(array, start + 9, start + 10);
-                    }
-
-                } else {
-                    if (length == 15) {
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 10);
-                        compareAndSwapUnsigned(array, start + 4, start + 14);
-                        compareAndSwapUnsigned(array, start + 5, start + 8);
-                        compareAndSwapUnsigned(array, start + 6, start + 13);
-                        compareAndSwapUnsigned(array, start + 7, start + 12);
-                        compareAndSwapUnsigned(array, start + 9, start + 11);
-                        compareAndSwapUnsigned(array, start, start + 14);
-                        compareAndSwapUnsigned(array, start + 1, start + 5);
-                        compareAndSwapUnsigned(array, start + 2, start + 8);
-                        compareAndSwapUnsigned(array, start + 3, start + 7);
-                        compareAndSwapUnsigned(array, start + 6, start + 9);
-                        compareAndSwapUnsigned(array, start + 10, start + 12);
-                        compareAndSwapUnsigned(array, start + 11, start + 13);
-                        compareAndSwapUnsigned(array, start, start + 7);
-                        compareAndSwapUnsigned(array, start + 1, start + 6);
-                        compareAndSwapUnsigned(array, start + 2, start + 9);
-                        compareAndSwapUnsigned(array, start + 4, start + 10);
-                        compareAndSwapUnsigned(array, start + 5, start + 11);
-                        compareAndSwapUnsigned(array, start + 8, start + 13);
-                        compareAndSwapUnsigned(array, start + 12, start + 14);
-                        compareAndSwapUnsigned(array, start, start + 6);
-                        compareAndSwapUnsigned(array, start + 2, start + 4);
-                        compareAndSwapUnsigned(array, start + 3, start + 5);
-                        compareAndSwapUnsigned(array, start + 7, start + 11);
-                        compareAndSwapUnsigned(array, start + 8, start + 10);
-                        compareAndSwapUnsigned(array, start + 9, start + 12);
-                        compareAndSwapUnsigned(array, start + 13, start + 14);
-                        compareAndSwapUnsigned(array, start, start + 3);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 4, start + 7);
-                        compareAndSwapUnsigned(array, start + 5, start + 9);
-                        compareAndSwapUnsigned(array, start + 6, start + 8);
-                        compareAndSwapUnsigned(array, start + 10, start + 11);
-                        compareAndSwapUnsigned(array, start + 12, start + 13);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 6);
-                        compareAndSwapUnsigned(array, start + 7, start + 9);
-                        compareAndSwapUnsigned(array, start + 10, start + 12);
-                        compareAndSwapUnsigned(array, start + 11, start + 13);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 5);
-                        compareAndSwapUnsigned(array, start + 8, start + 10);
-                        compareAndSwapUnsigned(array, start + 11, start + 12);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                        compareAndSwapUnsigned(array, start + 9, start + 10);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start + 6, start + 7);
-                        compareAndSwapUnsigned(array, start + 8, start + 9);
-                        compareAndSwapUnsigned(array, start + 10, start + 11);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                    } else if (length == 16) {
-                        compareAndSwapUnsigned(array, start, start + 13);
-                        compareAndSwapUnsigned(array, start + 1, start + 12);
-                        compareAndSwapUnsigned(array, start + 2, start + 15);
-                        compareAndSwapUnsigned(array, start + 3, start + 14);
-                        compareAndSwapUnsigned(array, start + 4, start + 8);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                        compareAndSwapUnsigned(array, start + 7, start + 11);
-                        compareAndSwapUnsigned(array, start + 9, start + 10);
-                        compareAndSwapUnsigned(array, start, start + 5);
-                        compareAndSwapUnsigned(array, start + 1, start + 7);
-                        compareAndSwapUnsigned(array, start + 2, start + 9);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 6, start + 13);
-                        compareAndSwapUnsigned(array, start + 8, start + 14);
-                        compareAndSwapUnsigned(array, start + 10, start + 15);
-                        compareAndSwapUnsigned(array, start + 11, start + 12);
-                        compareAndSwapUnsigned(array, start, start + 1);
-                        compareAndSwapUnsigned(array, start + 2, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 5);
-                        compareAndSwapUnsigned(array, start + 6, start + 8);
-                        compareAndSwapUnsigned(array, start + 7, start + 9);
-                        compareAndSwapUnsigned(array, start + 10, start + 11);
-                        compareAndSwapUnsigned(array, start + 12, start + 13);
-                        compareAndSwapUnsigned(array, start + 14, start + 15);
-                        compareAndSwapUnsigned(array, start, start + 2);
-                        compareAndSwapUnsigned(array, start + 1, start + 3);
-                        compareAndSwapUnsigned(array, start + 4, start + 10);
-                        compareAndSwapUnsigned(array, start + 5, start + 11);
-                        compareAndSwapUnsigned(array, start + 6, start + 7);
-                        compareAndSwapUnsigned(array, start + 8, start + 9);
-                        compareAndSwapUnsigned(array, start + 12, start + 14);
-                        compareAndSwapUnsigned(array, start + 13, start + 15);
-                        compareAndSwapUnsigned(array, start + 1, start + 2);
-                        compareAndSwapUnsigned(array, start + 3, start + 12);
-                        compareAndSwapUnsigned(array, start + 4, start + 6);
-                        compareAndSwapUnsigned(array, start + 5, start + 7);
-                        compareAndSwapUnsigned(array, start + 8, start + 10);
-                        compareAndSwapUnsigned(array, start + 9, start + 11);
-                        compareAndSwapUnsigned(array, start + 13, start + 14);
-                        compareAndSwapUnsigned(array, start + 1, start + 4);
-                        compareAndSwapUnsigned(array, start + 2, start + 6);
-                        compareAndSwapUnsigned(array, start + 5, start + 8);
-                        compareAndSwapUnsigned(array, start + 7, start + 10);
-                        compareAndSwapUnsigned(array, start + 9, start + 13);
-                        compareAndSwapUnsigned(array, start + 11, start + 14);
-                        compareAndSwapUnsigned(array, start + 2, start + 4);
-                        compareAndSwapUnsigned(array, start + 3, start + 6);
-                        compareAndSwapUnsigned(array, start + 9, start + 12);
-                        compareAndSwapUnsigned(array, start + 11, start + 13);
-                        compareAndSwapUnsigned(array, start + 3, start + 5);
-                        compareAndSwapUnsigned(array, start + 6, start + 8);
-                        compareAndSwapUnsigned(array, start + 7, start + 9);
-                        compareAndSwapUnsigned(array, start + 10, start + 12);
-                        compareAndSwapUnsigned(array, start + 3, start + 4);
-                        compareAndSwapUnsigned(array, start + 5, start + 6);
-                        compareAndSwapUnsigned(array, start + 7, start + 8);
-                        compareAndSwapUnsigned(array, start + 9, start + 10);
-                        compareAndSwapUnsigned(array, start + 11, start + 12);
-                        compareAndSwapUnsigned(array, start + 6, start + 7);
-                        compareAndSwapUnsigned(array, start + 8, start + 9);
-                    }
-                }
-            }
-        }
+        uFunctions.get(length).accept(array, start);
     }
+
+    public static void sortVSLS2(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLS3(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLS4(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLS5(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLS6(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLS7(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLS8(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLS9(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLS10(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLS11(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLS12(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLS13(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLS14(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 13; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 13; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 12; right = start+ 13; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLS15(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 14; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 13; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 14; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 13; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 13; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 12; right = start+ 14; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 13; right = start+ 14; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 12; right = start+ 13; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 13; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLS16(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 13; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 15; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 14; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 13; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 14; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 15; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 12; right = start+ 13; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 14; right = start+ 15; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 12; right = start+ 14; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 13; right = start+ 15; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 11; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 13; right = start+ 14; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 13; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 14; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 13; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 12; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+    }
+
+    public static void sortVSLU2(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLU3(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLU4(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLU5(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLU6(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLU7(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLU8(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLU9(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLU10(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLU11(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLU12(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLU13(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLU14(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 13; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 13; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 12; right = start+ 13; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLU15(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 14; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 13; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 14; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 13; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 13; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 12; right = start+ 14; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 13; right = start+ 14; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 12; right = start+ 13; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 13; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    public static void sortVSLU16(final int[] array, final int start) {
+        int left; int right; int aL;int aR;
+        left = start; right = start+ 13; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 15; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 14; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 13; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 14; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 15; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 12; right = start+ 13; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 14; right = start+ 15; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 3; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 12; right = start+ 14; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 13; right = start+ 15; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 2; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 4; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 11; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 13; right = start+ 14; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 1; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 13; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 14; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 2; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 13; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 5; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 10; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 3; right = start+ 4; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 5; right = start+ 6; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 7; right = start+ 8; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 9; right = start+ 10; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 11; right = start+ 12; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 6; right = start+ 7; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+    }
+    
 
     public static void main(String[] args) {
         StringBuilder sb = new StringBuilder();
+        boolean unsigned =false;
         for (int listLength = 2; listLength <= 16; listLength++) {
             int[][] swap = swaps[listLength];
-            sb.append("if (length == " + listLength + ") {\n");
+            sb.append("\tpublic static void sortVSL"+(unsigned?"U":"S")+listLength+"(final int[] array, final int start) {\n");
+            sb.append("\t\tint left; int right; int aL;int aR;\n");
+            //sb.append("if (length == " + listLength + ") {\n");
             for (int i = 0; i < swap.length; i++) {
                 int[] parts = swap[i];
                 //        left = 0; right = 1; aL = array[left]; aR = array[right]; if (aL > aR) { array[left] = aR; array[right] = aL;}
                 //sb.append("\tcompareAndSwapUnsigned(array, start "+(parts[0] > 0 ? "+ "+parts[0]:"")
                 //        +", start " +(parts[1] > 0 ? "+ "+parts[1]:"") + ");\n");
-                sb.append("left = start" + (parts[0] > 0 ? " + " + parts[0] : "") + "; right = start" + (parts[1] > 0 ? "+ " + parts[1] : "") + "; aL = array[left]; aR = array[right]; if (aL > aR) { array[left] = aR; array[right] = aL;};\n");
+                sb.append("\t\tleft = start" + (parts[0] > 0 ? " + " + parts[0] : "") + "; right = start" + (parts[1] > 0 ? "+ " + parts[1] : "") + "; aL = array[left]; aR = array[right]; if (aL "+(unsigned? "+ 0x80000000":"")+"> aR "+(unsigned? "+ 0x80000000":"")+") { array[left] = aR; array[right] = aL;}\n");
             }
+            //sb.append("}\n");
             sb.append("}\n");
         }
         System.out.println(sb);
     }
+
 
     /*
         } else if (listLength == 5) {

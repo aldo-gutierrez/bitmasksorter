@@ -119,7 +119,7 @@ public class Generator {
         for (; i < size; ++i) {
             v[i] = i;
         }
-        v[i] = 0;
+        v[size-1] = 0;
         return v;
     }
 
@@ -132,7 +132,7 @@ public class Generator {
                 v[i] = i;
             }
         }
-        v[i] = size / 2;
+        v[size-1] = size / 2;
         return v;
     }
 

@@ -1,14 +1,14 @@
-package com.aldogg.sorter.test;
+package com.aldogg.sorter.sorters;
 
 
 import com.aldogg.sorter.intType.IntSorter;
 
 import java.util.Arrays;
 
-public class JavaSorterInt implements IntSorter {
+public class JavaParallelSorterInt implements IntSorter {
     @Override
     public void sort(int[] array) {
-        Arrays.sort(array);
+        Arrays.parallelSort(array);
     }
     @Override
     public void setUnsigned(boolean unsigned) {
