@@ -24,10 +24,10 @@ For example suppose the list contains numbers from 0 to 127 then the bitmask is 
 | Plausible Average/Median: |     64 | 0000000001000000 |
 | Bits Used (K):            |      7 | 0000000001111111 |
 
-For this case We can do a Count Sort with a Count array of 128 for values  0 to 127.
+For this case we can do a Count Sort with a Count array of 128 values:  0 to 127.
 
-Another example, if the list contains the numbers 85, 84, 21 and 5 the mask is 1010001, 
-only the bits that change are part of the mask in this case 3 bits
+If the list contains the numbers 85, 84, 21 and 5 then the mask is 1010001, 
+only the bits that change are part of the mask, in this case only 3 bits
 
 |        Number |             Bits |     Changing Bits |
 |--------------:|-----------------:|------------------:|
@@ -45,7 +45,7 @@ only the bits that change are part of the mask in this case 3 bits
 | Plausible Average/Median: |     64 | 0000000001000000 |
 | Bits Used (K):            |      3 | 0000000001010001 |
 
-For this case I can do a Count Sort with a Count array of 8 for values  000 to 111.
+For this case I can do a Count Sort with a Count array of size 8, for values: 000 to 111.
 
 First for each number we need to extract the bits that are part of the mask put the bits together, do the count
 sort and reverse the procedure, to reverse the procedure I can OR it with the Constant Mask or have an auxiliary original number array.
@@ -62,33 +62,39 @@ BitMask Algorithm:
         }
         return new int[]{mask, inv_mask};
     }
+
+    int mask = maskParts[0] & maskParts[1];
 ```
 
-So in cases of hybrid algorithms this adds another dimension to the selection of the best algorithms. 
-For example TimSort uses merge sort for big lists and insertion sort for small lists, so it depends on N the size of the array
+So in cases of hybrid algorithms this mask adds another dimension to the selection of the best algorithms. 
+For example TimSort uses merge sort for big lists and insertion sort for small lists, so it depends  the size of the array (N)
 I suppose that other hybrid algorithms use or could use the range to know if a Count Sort could be performed instead.
 
-What I am proposing is better than range we could use the Bits Used (K) range that is (2 ^ K).
-So in the fastest  Hybrid algorithm we could have two dimensions N and 2^K to decide which algorithm to use.
+K is the number of bits in the bitmask. I am proposing to use N and (2 ^ K) as a way to decide what algorithm or optimization to use in a hybrid sorting algorithm.
+(2 ^ K) could be better than the simple range. I think it could be faster as the bitmask calculation doesn't have an IF instruction in the for loop
+So  we could have two dimensions N and 2^K to decide which algorithm to use, there could be a better algorithm for each combination.
 
-Off course there are bad cases, so for example if a list contains only the values 1111111110000000(65408) and 0000000111111111(511) the range is (64897)
-but if we use the bit mask 1111111001111111 then the k range (2^k) is also high (65151). 
+Off course there are bad cases, so for example if a list contains only the values 1111111110000000(65408) and 0000000111111111(511). In this case the range is (64897)
+, but if we use the bit mask 1111111001111111 then the k range (2^k) is also (65151). 
 If we partition by the first bit in QuickBitSorter then half the numbers will go correctly to the first partition and half to the other partition,
 and then in the next level of recursion after the partition all numbers will go to one partition, this is the case were a bitmask recalculation is needed.
 The bitmask recalculation will produce 0000000000000000 that means everything is the same value and already sorted
-RadixBitSorter doesn't consider this Bad case.
+RadixBitSorter doesn't consider this Bad case but QuickBitSorter does.
 
 ## QuickBitSorter
-Is similar to QuickSort but for choosing the pivot I use the bit mask. To be precise the palausible Average/Median according to the bit mask. 
+Is similar to QuickSort but for choosing the pivot I use the bit mask. To be precise the plausible Average/Median according to the bit mask. 
 Having the bit mask helps when doing a Count Sort or Radix Sort for the last bits too.
 
 This is different to other QuickSort algorithms that normally use the last element as pivot or choose the average of three
 pivots.
 
+This is similar to Binary MSD radix sort, but I think that the final bits count sort is different. And also Binary MSD radix sort uses all bits.
+I need to do more reading and comparisons to understand the differences
+
 For example if list contains all the numbers from 0 to 127  the bit mask is 1111111 and the first partition is done using the plausible average/median
 that is zeroing all bits but the first in the bit mask:  1000000 (64). 
 
-This could be a good or bad pivot depending on the distribution of the numbers, information I don't have.
+This could be a good or bad pivot depending on the distribution of the numbers. The bitmask doesn't provide information of the distribution
 
 This algorithm when not using the Count Sort for the last X bits is slower than TimSort but faster than a Naive Stack Overflow QuickSort.
 The reason I think is that in the worst case there could be 32 levels of recursion and Count Sort could reduce that to (32 - Number Bits for CountSort)
@@ -180,76 +186,76 @@ See the performance analysis at the end of this section:
 
 ### Example 1: 
 
-Comparison for sorting 10 Million int elements with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 11
+Comparison for sorting 10 Million int elements with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 11.0.13
 
 | Algorithm             | AVG CPU time [ms] |
 |-----------------------|------------------:|
-| JavaIntSorter         |               721 |
-| QuickBitSorterInt     |               355 |
-| RadixBitSorterInt     |               106 |
-| JavaParallelSorterInt |                85 |
-| RadixByteSorterInt    |               186 |
+| JavaIntSorter         |               832 |
+| QuickBitSorterInt     |               358 |
+| RadixBitSorterInt     |               112 |
+| RadixByteSorterInt    |               155 |
+| JavaParallelSorterInt |                93 |
 | QuickBitSorterMTInt   |               104 |
 | MixedBitSorterMTInt   |                97 |
-| RadixBitSorterMTInt   |               105 |
+| RadixBitSorterMTInt   |                84 |
 
 
-![Graph2](plot-S10000000-Range0-10000000-random.png?raw=true "Graph2")
+![Graph2](test-results/old/plot-S10000000-Range0-10000000-random.png?raw=true "Graph2")
 
 ### Example 2:
 
-Comparison for sorting 10 Million int elements with range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 11
+Comparison for sorting 10 Million int elements with range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 11.0.13
 
 | Algorithm             | AVG CPU time  [ms] |
 |-----------------------|-------------------:|
-| JavaSorterInt         |                533 |
+| JavaSorterInt         |                605 |
 | QuickBitSorterInt     |                 53 |
-| RadixBitSorterInt     |                101 |
-| RadixByteSorterInt    |                188 |
-| JavaParallelSorterInt |                 85 |
+| RadixBitSorterInt     |                103 |
+| RadixByteSorterInt    |                151 |
+| JavaParallelSorterInt |                 92 |
 | QuickBitSorterMTInt   |                 51 |
-| MixedBitSorterMTInt   |                 50 |
-| RadixBitSorterMTInt   |                 82 |
+| MixedBitSorterMTInt   |                 51 |
+| RadixBitSorterMTInt   |                 60 |
 
-![Graph2](plot-S10000000-Range0-100000-random.png?raw=true "Graph2")
+![Graph2](test-results/old/plot-S10000000-Range0-100000-random.png?raw=true "Graph2")
 
 ### Example 3:
 
-Comparison for sorting 40 Million int elements with range from 0 to 1000000000 in an AMD Ryzen 7 4800H processor, Java 11
+Comparison for sorting 40 Million int elements with range from 0 to 1000000000 in an AMD Ryzen 7 4800H processor, Java 11.0.13
 
-| Algorithm             |AVG CPU time  [ms] |
-|-----------------------|------------------:|
-| JavaSorterInt         |              3160 |
-| QuickBitSorterInt     |              2868 |
-| RadixBitSorterInt     |               681 |
-| RadixByteSorterInt    |               673 |
-| JavaParallelSorterInt |               382 |
-| QuickBitSorterMTInt   |               558 |
-| MixedBitSorterMTInt   |               601 |
-| RadixBitSorterMTInt   |               466 |
+| Algorithm             | AVG CPU time  [ms] |
+|-----------------------|-------------------:|
+| JavaSorterInt         |               3623 |
+| QuickBitSorterInt     |               2849 |
+| RadixBitSorterInt     |                701 |
+| RadixByteSorterInt    |                703 |
+| JavaParallelSorterInt |                406 |
+| QuickBitSorterMTInt   |                578 |
+| MixedBitSorterMTInt   |                571 |
+| RadixBitSorterMTInt   |                372 |
 
-![Graph2](plot-S40000000-Range0-1000000000-random.png?raw=true "Graph2")
+![Graph2](test-results/old/plot-S40000000-Range0-1000000000-random.png?raw=true "Graph2")
 
-### Table of 1st and 2nd algorithm by speed AMD Ryzen 7 4800H processor, Java 11, pluged in
+### Table of 1st and 2nd algorithm by speed AMD Ryzen 7 4800H processor, Java 11.0.13, pluged in
+
+| N / range  | 10                                    | 1,000                                   | 100,000                               | 10,000,000                             | 1,000,000,000                            |
+|------------|---------------------------------------|-----------------------------------------|---------------------------------------|----------------------------------------|-------------------------------------------|
+| 10,000     | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt   | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt  | RadixBitSorterInt RadixBitSorterMTInt     |
+| 100,000    | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterInt QuickBitSorterInt   | RadixBitSorterInt RadixByteSorterInt   | RadixBitSorterInt RadixByteSorterInt      |
+| 1,000,000  | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt QuickBitSorterMTInt | QuickBitSorterInt QuickBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt | RadixBitSorterMTInt JavaParallelSorterInt |
+| 10,000,000 | QuickBitSorterMTInt MixedBitSorterMTInt | QuickBitSorterInt QuickBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt  | RadixBitSorterMTInt JavaParallelSorterInt |
+| 40,000,000 | MixedBitSorterMTInt RadixBitSorterMTInt | QuickBitSorterInt RadixBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt |
+
+### Table of 1st and 2nd algorithm by speed AMD Ryzen 7 4800H processor, Java 11.0.13, with battery
+
 
 | N / range  | 10                                    | 1,000                                   | 100,000                               | 10,000,000                                | 1,000,000,000                            |
 |------------|---------------------------------------|-----------------------------------------|---------------------------------------|-------------------------------------------|-------------------------------------------|
-| 10,000     | RadixBitSorterInt RadixBitSorterMTInt | MixedBitSorterMTInt RadixBitSorterInt   | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt     | RadixBitSorterInt RadixBitSorterMTInt     |
-| 100,000    | QuickBitSorterInt RadixBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterInt QuickBitSorterInt   | RadixBitSorterInt RadixByteSorterInt      | RadixBitSorterInt RadixByteSorterInt      |
-| 1,000,000  | QuickBitSorterInt MixedBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt | JavaParallelSorterInt RadixBitSorterMTInt |
-| 10,000,000 | MixedBitSorterMTInt QuickBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt | RadixBitSorterMTInt JavaParallelSorterInt |
-| 40,000,000 | QuickBitSorterMTInt MixedBitSorterMTInt | MixedBitSorterMTInt RadixBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt |
-
-### Table of 1st and 2nd algorithm by speed AMD Ryzen 7 4800H processor, Java 11, with battery
-
-
-| N / range | 10                                    | 1,000                                 | 100,000                             | 10,000,000                           | 1,000,000,000                        |
-|---------------|---------------------------------------|---------------------------------------|-------------------------------------|--------------------------------------|--------------------------------------|
-| 10,000        | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt |
-| 100,000       | QuickBitSorterInt MixedBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterInt QuickBitSorterInt | RadixBitSorterInt RadixByteSorterInt | RadixBitSorterInt RadixByteSorterInt |
-| 1,000,000     | RadixBitSorterMTInt MixedBitSorterMTInt | QuickBitSorterMTInt QuickBitSorterInt | QuickBitSorterInt MixedBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterMTInt RadixBitSorterInt |
-| 10,000,000    | MixedBitSorterMTInt QuickBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt |
-| 40,000,000    | QuickBitSorterMTInt QuickBitSorterInt | QuickBitSorterMTInt MixedBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | MixedBitSorterMTInt JavaParallelSorterInt | JavaParallelSorterInt RadixBitSorterMTInt |
+| 10,000     | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterMTInt RadixBitSorterInt   | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixByteSorterInt     | RadixBitSorterInt RadixBitSorterMTInt     |
+| 100,000    | RadixBitSorterMTInt QuickBitSorterInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterInt QuickBitSorterInt   | RadixBitSorterInt RadixByteSorterInt      | RadixBitSorterInt RadixByteSorterInt      |
+| 1,000,000  | MixedBitSorterMTInt QuickBitSorterMTInt | QuickBitSorterInt RadixBitSorterMTInt | QuickBitSorterInt QuickBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt |
+| 10,000,000 | MixedBitSorterMTInt QuickBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | QuickBitSorterMTInt QuickBitSorterInt | RadixBitSorterMTInt RadixBitSorterInt | RadixBitSorterMTInt JavaParallelSorterInt |
+| 40,000,000 | QuickBitSorterMTInt QuickBitSorterInt | QuickBitSorterMTInt RadixBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt |
 
 
 Object Sort using the Interface IntComparator
@@ -279,7 +285,7 @@ Object Sort using the Interface IntComparator
 
 ###Example 4: 
 
-Comparison for sorting 10 Million objects with int key  with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 11
+Comparison for sorting 10 Million objects with int key  with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 11.0.13
 
 | Algorithm                   | AVG CPU time [ms] |
 |-----------------------------|------------------:|
@@ -291,7 +297,7 @@ Comparison for sorting 10 Million objects with int key  with range from 0 to 10 
 
 ###Example 5:
 
-Comparison for sorting 10 Million elements with int key range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 11
+Comparison for sorting 10 Million elements with int key range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 11.0.13
 
 | Algorithm                   | AVG CPU time  [ms] |
 |-----------------------------|-------------------:|
