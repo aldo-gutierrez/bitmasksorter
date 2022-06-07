@@ -7,24 +7,6 @@ import static com.aldogg.sorter.RadixBitSorterInt.radixSort;
 
 public class IntSorterUtils {
 
-    public static void compareAndSwapSigned(final int[] array, final int left, final int right) {
-        int aL = array[left];
-        int aR = array[right];
-        if (aL > aR) {
-            array[left] = aR;
-            array[right] = aL;
-        }
-    }
-
-    public static void compareAndSwapUnsigned(final int[] array, final int left, final int right) {
-        int aL = array[left];
-        int aR = array[right];
-        if (aL + 0x80000000 > aR + 0x80000000) { //if (aL + Integer.MIN_VALUE > aR + Integer.MIN_VALUE) {
-            array[left] = aR;
-            array[right] = aL;
-        }
-    }
-
     public static void swap(final int[] array, final int left, final int right) {
         int aux = array[left];
         array[left] = array[right];

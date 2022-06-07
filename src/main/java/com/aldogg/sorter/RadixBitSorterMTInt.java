@@ -47,13 +47,13 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
             int size1 = finalLeft - start;
             int size2 = end - finalLeft;
             SorterRunner.runTwoRunnable(
-                    size1 > 1 ? (Runnable) () -> { //sort negative numbers
+                    size1 > 1 ? () -> { //sort negative numbers
                         int[] maskParts1 = getMaskBit(array, start, finalLeft);
                         int mask1 = maskParts1[0] & maskParts1[1];
                         int[] kList1 = getMaskAsArray(mask1);
                         sort(array, start, finalLeft, kList1, 0, params.getMaxThreadsBits() - 1);
                     } : null, size1,
-                    size2 > 1 ? (Runnable) () -> { //sort positive numbers
+                    size2 > 1 ? () -> { //sort positive numbers
                         int[] maskParts2 = getMaskBit(array, finalLeft, end);
                         int mask2 = maskParts2[0] & maskParts2[1];
                         int[] kList2 = getMaskAsArray(mask2);
