@@ -283,23 +283,23 @@ Comparison for sorting 10 Million objects with int key  with range from 0 to 10 
 
 | Algorithm                   | AVG CPU time [ms] |
 |-----------------------------|------------------:|
-| JavaSorterObject            |              7715 |
-| JavaParallelSorterObjectInt |              1510 |
-| RadixBitSorterObjectInt     |              1274 |
+| JavaSorterObject            |              6750 |
+| JavaParallelSorterObjectInt |               946 |
+| RadixBitSorterObjectInt     |               801 |
 
-![Graph2](plot-S10000000-Range0-10000000-random-object.png?raw=true "Graph2")
+![Graph2](test-results/old/plot-S10000000-Range0-10000000-random-object.png?raw=true "Graph2")
 
 ###Example 5:
 
 Comparison for sorting 10 Million elements with int key range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 11
 
-| Algorithm                   |AVG CPU time  [ms] |
-|-----------------------------|------------------:|
-| JavaSorterObject            |              6149 |
-| JavaParallelSorterObjectInt |              1355 |
-| RadixBitSorterObjectInt     |              1250 |
+| Algorithm                   | AVG CPU time  [ms] |
+|-----------------------------|-------------------:|
+| JavaSorterObject            |               5008 |
+| JavaParallelSorterObjectInt |                876 |
+| RadixBitSorterObjectInt     |                742 |
 
-![Graph2](plot-S10000000-Range0-100000-random-object.png?raw=true "Graph2")
+![Graph2](test-results/old/plot-S10000000-Range0-100000-random-object.png?raw=true "Graph2")
 
 
 ##Analysis of Speed and Performance:
