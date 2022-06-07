@@ -153,17 +153,26 @@ public class MixedBitSorterMTInt implements IntSorter {
     //partitionStableLastBits
     protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] list, final int start, final int end, int sortMask, int[] kList, int kIndex, int twoPowerK, final int[] aux) {
         int[] kListAux = getMaskAsArray(sortMask);
-        int[][] sections = getMaskAsSections(kListAux);
+        Section[] sections = getMaskAsSections(kListAux);
 
 
         int[] leftX = new int[twoPowerK];
         int[] count = new int[twoPowerK];
 
         if (sections.length == 1) {
-            for (int i = start; i < end; i++) {
-                int element = list[i];
-                int elementMaskedShifted = getKeySec1(element, sections[0]);
-                count[elementMaskedShifted]++;
+            Section section = sections[0];
+            if (section.isSectionAtEnd()) {
+                for (int i = start; i < end; i++) {
+                    int element = list[i];
+                    int elementMaskedShifted = element & section.sortMask;
+                    count[elementMaskedShifted]++;
+                }
+            } else {
+                for (int i = start; i < end; i++) {
+                    int element = list[i];
+                    int elementMaskedShifted = (element & section.sortMask) >> section.shiftRight;
+                    count[elementMaskedShifted]++;
+                }
             }
         } else {
             for (int i = start; i < end; i++) {
@@ -178,11 +187,21 @@ public class MixedBitSorterMTInt implements IntSorter {
         }
 
         if (sections.length == 1) {
-            for (int i = start; i < end; i++) {
-                int element = list[i];
-                int elementMaskedShifted = getKeySec1(element, sections[0]);
-                aux[leftX[elementMaskedShifted]] = element;
-                leftX[elementMaskedShifted]++;
+            Section section = sections[0];
+            if (section.isSectionAtEnd()) {
+                for (int i = start; i < end; i++) {
+                    int element = list[i];
+                    int elementMaskedShifted = element & section.sortMask;
+                    aux[leftX[elementMaskedShifted]] = element;
+                    leftX[elementMaskedShifted]++;
+                }
+            } else {
+                for (int i = start; i < end; i++) {
+                    int element = list[i];
+                    int elementMaskedShifted = (element & section.sortMask) >> section.shiftRight;
+                    aux[leftX[elementMaskedShifted]] = element;
+                    leftX[elementMaskedShifted]++;
+                }
             }
 
         } else {
@@ -198,7 +217,7 @@ public class MixedBitSorterMTInt implements IntSorter {
             final int[] kListCountS = Arrays.copyOfRange(kList, kIndex, kList.length);
             final int kIndexCountS = 0;
             final int bufferCountSSize = twoPowerX(kListCountS.length - kIndexCountS);
-            final int[][] sectionsCountS = getMaskAsSections(kListCountS);
+            final Section[] sectionsCountS = getMaskAsSections(kListCountS);
             final int sortMaskCountS = getMaskLastBits(kListCountS, kIndexCountS);
             final int[] zeroBuffer = new int[bufferCountSSize];
             if (numThreads.get() < params.getMaxThreads() + 1) {
@@ -236,7 +255,7 @@ public class MixedBitSorterMTInt implements IntSorter {
         System.arraycopy(aux, 0, list, start, end - start);
     }
 
-    private void smallListUtil(final int[] list, final int start, final int end, int[] kList, final int[][] sections, final int sortMask, final int[] bufferCount, final int[] bufferNumber, final int[] zeroBuffer) {
+    private void smallListUtil(final int[] list, final int start, final int end, int[] kList, final Section[] sections, final int sortMask, final int[] bufferCount, final int[] bufferNumber, final int[] zeroBuffer) {
         int length = end - start;
         if (length > SMALL_LIST_SIZE) {
             int bufferLength = bufferCount.length;

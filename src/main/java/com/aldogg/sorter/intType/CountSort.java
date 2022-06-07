@@ -1,5 +1,7 @@
 package com.aldogg.sorter.intType;
 
+import com.aldogg.sorter.Section;
+
 import java.util.Arrays;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
@@ -9,11 +11,11 @@ public class CountSort {
     public static void countSort(final int[] array, final int start, final int end, int[] kList,  int kIndex) {
         int twoPowerK = twoPowerX(kList.length - kIndex);
         kList = Arrays.copyOfRange(kList, kIndex, kList.length);
-        int[][] sections = getMaskAsSections(kList);
+        Section[] sections = getMaskAsSections(kList);
         kIndex = 0;
         int[] countBuffer = new int[twoPowerK];
         int[] numberBuffer = null;
-        if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
+        if (sections.length == 1 && sections[0].isSectionAtEnd()) {
         } else {
             numberBuffer = new int[twoPowerK];
         }
@@ -25,8 +27,8 @@ public class CountSort {
      * CPU: N + MAX(2^K, N)
      * MEM: 2 * (2^K)
      */
-    public static void countSort(final int[] array, final int start, final int end, int mask, int[][] sections, int[] count, int[] auxTPK) {
-        if (sections.length == 1 && sections[0][0] + 1 == sections[0][1]) {
+    public static void countSort(final int[] array, final int start, final int end, int mask, Section[] sections, int[] count, int[] auxTPK) {
+        if (sections.length == 1 && sections[0].isSectionAtEnd()) {
             int elementSample = array[start];
             elementSample = elementSample & ~mask;
             if (elementSample == 0) { //last bits and includes all numbers
@@ -68,11 +70,22 @@ public class CountSort {
             }
         } else {
             if (sections.length == 1) {
-                for (int i = start; i < end; i++) {
-                    int element = array[i];
-                    int key = getKeySec1(element, sections[0]);
-                    count[key]++;
-                    auxTPK[key] = element;
+                Section section = sections[0];
+                if (section.isSectionAtEnd()) {
+                    //TODO check if this code is executed or not
+                    for (int i = start; i < end; i++) {
+                        int element = array[i];
+                        int key = element & section.sortMask;
+                        count[key]++;
+                        auxTPK[key] = element;
+                    }
+                } else {
+                    for (int i = start; i < end; i++) {
+                        int element = array[i];
+                        int key = (element & section.sortMask) >> section.shiftRight;
+                        count[key]++;
+                        auxTPK[key] = element;
+                    }
                 }
             } else {
                 for (int i = start; i < end; i++) {

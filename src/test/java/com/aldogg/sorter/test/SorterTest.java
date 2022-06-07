@@ -121,12 +121,14 @@ public class SorterTest {
 
 
     @Test
-    public void speedTestPositiveInt() throws IOException {
+    public void speedTestPositiveIntST() throws IOException {
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+
+        //IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+        //BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_st.csv"));
         BufferedWriter writer = new BufferedWriter(new FileWriter("speed.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
-
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         TestSortResults testSortResults;
 
         //heatup
@@ -136,16 +138,66 @@ public class SorterTest {
         params.size=80000;
         params.limitLow = 0;
         params.limitHigh = 80000;
-        params.function = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_INT_RANGE);
+        params.function = Generator.GeneratorFunctions.RANDOM_RANGE_INT;
         testSpeedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
         System.out.println("----------------------");
 
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
-            testSortResults = new TestSortResults(sorters.length);
             params.limitHigh = limitH;
 
+            testSortResults = new TestSortResults(sorters.length);
+            params.size = 10000;
+            testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            params.size = 100000;
+            testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            params.size = 1000000;
+            testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            params.size = 10000000;
+            testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            params.size = 40000000;
+            testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
+
+            System.out.println("----------------------");
+        }
+        System.out.println();
+        writer.close();
+    }
+
+    @Test
+    public void speedTestPositiveIntMT() throws IOException {
+        IntSorter[] sorters = new IntSorter[] {new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_mt.csv"));
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
+
+        TestSortResults testSortResults;
+
+        //heatup
+        testSortResults = new TestSortResults(sorters.length);
+        GeneratorParams params = new GeneratorParams();
+        params.random = new Random(seed);
+        params.size=80000;
+        params.limitLow = 0;
+        params.limitHigh = 80000;
+        params.function = Generator.GeneratorFunctions.RANDOM_RANGE_INT;
+        testSpeedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
+        System.out.println("----------------------");
+
+        int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
+
+        for (int limitH : limitHigh) {
+            params.limitHigh = limitH;
+
+            testSortResults = new TestSortResults(sorters.length);
             params.size = 10000;
             testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
 
@@ -198,7 +250,7 @@ public class SorterTest {
         params.size = 80000;
         params.limitLow = 0;
         params.limitHigh = 80000;
-        params.function = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_INT_RANGE);
+        params.function = Generator.GeneratorFunctions.RANDOM_RANGE_INT;
 
         //heatup
         testSortResults = new TestSortResults(sorters.length);
@@ -235,10 +287,11 @@ public class SorterTest {
 
 
     @Test
-    public void speedTestPositiveNegativeInt() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("speed_negative.csv"));
-        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+    public void speedTestSignedIntSt() throws IOException {
+        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_signedInt_st.csv"));
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestSortResults testSortResults;
 
@@ -249,17 +302,19 @@ public class SorterTest {
         params.size = 80000;
         params.limitLow = -80000;
         params.limitHigh = 80000;
-        params.function = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_INT_RANGE);
+        params.function = Generator.GeneratorFunctions.RANDOM_RANGE_INT;
 
         testSpeedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
 
-        int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
+        int[] limitHigh = new int[]{10, 1000, 100000, 10000000, 1000000000};
+
+        System.out.println("----------------------");
 
         for (int limitH : limitHigh) {
-            testSortResults = new TestSortResults(sorters.length);
             params.limitLow = -limitH;
             params.limitHigh = limitH;
 
+            testSortResults = new TestSortResults(sorters.length);
             params.size = 10000;
             testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
 
@@ -268,7 +323,61 @@ public class SorterTest {
             testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
+            params.size = 1000000;
+            testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            params.size = 10000000;
+            testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            params.size = 40000000;
+            testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
+
+            System.out.println("----------------------");
+        }
+        System.out.println();
+        writer.close();
+    }
+
+    @Test
+    public void speedTestSignedIntMt() throws IOException {
+        IntSorter[] sorters = new IntSorter[]{new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_signedInt_mt.csv"));
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
+
+        TestSortResults testSortResults;
+
+        //heatup
+        testSortResults = new TestSortResults(sorters.length);
+        GeneratorParams params = new GeneratorParams();
+        params.random = new Random(seed);
+        params.size = 80000;
+        params.limitLow = -80000;
+        params.limitHigh = 80000;
+        params.function = Generator.GeneratorFunctions.RANDOM_RANGE_INT;
+
+        testSpeedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
+
+        int[] limitHigh = new int[]{10, 1000, 100000, 10000000, 1000000000};
+
+        System.out.println("----------------------");
+
+        for (int limitH : limitHigh) {
+            params.limitLow = -limitH;
+            params.limitHigh = limitH;
+
+            testSortResults = new TestSortResults(sorters.length);
+            params.size = 10000;
+            testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
             params.size = 100000;
+            testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
+
+            testSortResults = new TestSortResults(sorters.length);
+            params.size = 1000000;
             testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
 
             testSortResults = new TestSortResults(sorters.length);
@@ -289,10 +398,10 @@ public class SorterTest {
     @Test
     public void speedTestUnsigned() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter("speed_unsigned.csv"));
-        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
-        IntSorter[] sorters = new IntSorter[] {new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
+        IntSorter[] sorters = new IntSorter[]{new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
-        for (IntSorter sorter: sorters) {
+        for (IntSorter sorter : sorters) {
             sorter.setUnsigned(true);
         }
 
@@ -303,14 +412,14 @@ public class SorterTest {
         params.size = 80000;
         params.limitLow = Integer.MAX_VALUE - 1000;
         params.limitHigh = ((long) Integer.MAX_VALUE) + 2000L;
-        params.function = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_UNSIGNED_INT);
+        params.function = Generator.GeneratorFunctions.RANDOM_RANGE_INT;
 
         //heatup
         testSortResults = new TestSortResults(sorters.length);
         testSpeedUnsignedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
 
-        int[] limitHigh = new int[] {214748364};
-        for (int limitH : limitHigh) {
+        System.out.println("----------------------");
+        {
             testSortResults = new TestSortResults(sorters.length);
             params.size = 10000;
             testSpeedUnsignedInt(ITERATIONS, params, testSortResults, sorters, writer);
@@ -339,11 +448,11 @@ public class SorterTest {
 
     @Test
     public void speedTestIncDec() throws IOException {
+        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         BufferedWriter writer = new BufferedWriter(new FileWriter("speed_sorted.csv"));
-        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
 
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         TestSortResults testSortResults;
 
         //heatup
@@ -354,9 +463,8 @@ public class SorterTest {
 
         testSpeedIncDec(HEAT_ITERATIONS, params, testSortResults, sorters, writer);
 
-        int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
-
-        for (int limitH : limitHigh) {
+        System.out.println("----------------------");
+        {
             testSortResults = new TestSortResults(sorters.length);
             params.size = 10000;
             testSpeedIncDec(ITERATIONS, params, testSortResults, sorters, writer);
@@ -384,22 +492,22 @@ public class SorterTest {
     }
 
     public void testSpeedInt(int iterations, GeneratorParams params, TestSortResults testSortResults, IntSorter[] sorters, Writer writer) throws IOException {
+        Function<GeneratorParams, int[]> function = Generator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
-            int[] list = params.function.apply(params);
+            int[] list = function.apply(params);
             testIntSort(list, testSortResults, sorters);
         }
         printTestSpeed(params, testSortResults, sorters, writer);
     }
 
     public void testSpeedIncDec(int iterations, GeneratorParams params, TestSortResults testSortResults, IntSorter[] sorters, Writer writer) throws IOException {
-        Function<GeneratorParams, int[]> allEqualFunction = Generator.getGFunction(Generator.GeneratorFunctions.ALL_EQUAL_INT);
-        Function<GeneratorParams, int[]> ascendingFunction = Generator.getGFunction(Generator.GeneratorFunctions.ASCENDING_INT);
-        Function<GeneratorParams, int[]> descendingFunction = Generator.getGFunction(Generator.GeneratorFunctions.DESCENDING_INT);
         Random random = new Random(seed);
         for (int iter = 0; iter < iterations; iter++) {
             int type = random.nextInt();
-            Function<GeneratorParams, int[]> function = type == 0 ? allEqualFunction : (type == 1 ? ascendingFunction : descendingFunction);
-            int[] list = function.apply(params);
+            Generator.GeneratorFunctions functionEnum = type == 0 ? Generator.GeneratorFunctions.ALL_EQUAL_INT : (type == 1 ? Generator.GeneratorFunctions.ASCENDING_INT : Generator.GeneratorFunctions.DESCENDING_INT);
+            Function<GeneratorParams, int[]> gFunction = Generator.getGFunction(functionEnum);
+            params.function = functionEnum;
+            int[] list = gFunction.apply(params);
             testIntSort(list, testSortResults, sorters);
         }
         printTestSpeed(params, testSortResults, sorters, writer);
@@ -409,16 +517,18 @@ public class SorterTest {
     private void testSpeedUnsignedInt(int iterations, GeneratorParams params, TestSortResults testSortResults, IntSorter[] sorters, Writer writer) throws IOException {
         IntSorter base = new RadixByteSorterInt();
         base.setUnsigned(true);
+        Function<GeneratorParams, int[]> function = Generator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
-            int[] list = params.function.apply(params);
+            int[] list = function.apply(params);
             testIntSort(list, testSortResults, sorters, base);
         }
         printTestSpeed(params, testSortResults, sorters, writer);
     }
 
     private void testSpeedObject(int iterations, GeneratorParams params, TestSortResults testSortResults, ObjectSorter[] sorters, IntComparator comparator, Writer writer) throws IOException {
+        Function<GeneratorParams, int[]> function = Generator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
-            int[] listInt = params.function.apply(params);
+            int[] listInt = function.apply(params);
             Entity1[] list = new Entity1[params.size];
             for (int i = 0; i < params.size; i++) {
                 int randomInt = listInt[i];
@@ -439,7 +549,7 @@ public class SorterTest {
                 writer.write(size + ",\"" + limitLow + ":" + limitHigh + "\",\"" + sorter.name() + "\"," + testSortResults.getAVG(i) / 1000000 + "\n");
             if (writer != null) writer.flush();
         }
-        System.out.printf("%,13d %18s %25s", size, limitLow+":"+limitHigh, params.name);
+        System.out.printf("%,13d %18s %25s", size, limitLow+":"+limitHigh, params.function.toString());
         for (int i = 0; i < sorters.length; i++) {
             Sorter sorter = sorters[i];
             System.out.printf("%21s %,13d ", sorter.name(), testSortResults.getAVG(i));

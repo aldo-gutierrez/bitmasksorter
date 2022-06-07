@@ -141,7 +141,7 @@ public class BasicTest extends SorterTest{
         params.random = new Random();
         params.size = 16;
         params.limitLow = 0;
-        params.function = Generator.getGFunction(Generator.GeneratorFunctions.ORIGINAL_INT_RANGE);
+        params.function = Generator.GeneratorFunctions.RANDOM_RANGE_INT;
 
         params.limitHigh = 256;
         testSpeedInt(iterations, params, testSortResults, sorters, null);

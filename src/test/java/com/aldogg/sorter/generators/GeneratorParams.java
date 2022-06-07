@@ -8,7 +8,6 @@ public class GeneratorParams {
     public int limitLow;
     public long limitHigh;
     public Random random;
-    public Function<GeneratorParams, int[]> function;
+    public Generator.GeneratorFunctions function;
 
-    public String name;
 }

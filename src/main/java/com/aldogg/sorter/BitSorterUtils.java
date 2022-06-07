@@ -50,35 +50,24 @@ public class BitSorterUtils {
         return mask;
     }
 
-    public static int getKeySN(int element, int[][] sections) {
+    public static int getKeySN(final int element, final Section[] sections) {
         int result = 0;
         for (int i = 0; i < sections.length; i++) {
-            int[] section = sections[i];
-            int length = section[1];
-            int sortMask = section[2];
-            int shiftRight = section[3];
+            Section section = sections[i];
+            int length = section.length;
+            int sortMask = section.sortMask;
+            int shiftRight = section.shiftRight;
             int bits = (element & sortMask) >> shiftRight;
             result = result << length | bits;
         }
         return result;
     }
 
-    public static int getKeySec1(int element, int[] section) {
-        int sortMask = section[2];
-        int length = section[1];
-        if  (section[0] + 1 == length) {
-            return element & sortMask;
-        } else {
-            int shiftRight = section[3];
-            return  (element & sortMask) >> shiftRight;
-        }
-    }
-
     public static int twoPowerX(int k) {
         return 1<<k;
     }
 
-    public static int[][] getMaskAsSections(final int[] kList) {
+    public static Section[] getMaskAsSections(final int[] kList) {
         LinkedHashMap<Integer, Integer> sections = new LinkedHashMap<>();
         int currentSection = -1;
         for (int i = 0; i < kList.length; i++) {
@@ -95,14 +84,15 @@ public class BitSorterUtils {
                 }
             }
         }
-        int[][] sectionsAsInts = new int[sections.size()][];
+        Section[] sectionsAsInts = new Section[sections.size()];
         int i = 0;
         for (Map.Entry<Integer, Integer> entry : sections.entrySet()) {
-            sectionsAsInts[i] = new int[4];
-            sectionsAsInts[i][0] = entry.getKey();
-            sectionsAsInts[i][1] = entry.getValue();
-            sectionsAsInts[i][2] = getMaskRangeBits(entry.getKey(), entry.getKey() - entry.getValue() + 1);
-            sectionsAsInts[i][3] = entry.getKey() - entry.getValue() + 1;
+            sectionsAsInts[i] = new Section();
+            sectionsAsInts[i].k = entry.getKey();
+            sectionsAsInts[i].length = entry.getValue();
+            int aux = entry.getKey() - entry.getValue() + 1;
+            sectionsAsInts[i].sortMask = getMaskRangeBits(entry.getKey(), aux);
+            sectionsAsInts[i].shiftRight = aux;
             i++;
         }
         return sectionsAsInts;

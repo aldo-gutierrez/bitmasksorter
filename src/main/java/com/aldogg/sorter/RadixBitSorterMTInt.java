@@ -97,29 +97,45 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
         int remainingBits = kList.length - threadBits;
 
         int[] kListAux = getMaskAsArray(sortMask);
-        int[][] sections = getMaskAsSections(kListAux);
-
+        Section[] sections = getMaskAsSections(kListAux);
 
         int[] leftX = new int[maxProcessNumber];
         int[] count = new int[maxProcessNumber];
 
 
         if (sections.length == 1) {
-            for (int i = start; i < end; i++) {
-                int element = list[i];
-                int elementMaskedShifted = getKeySec1(element, sections[0]);
-                count[elementMaskedShifted]++;
+            Section section = sections[0];
+            if (section.isSectionAtEnd()) {
+                for (int i = start; i < end; i++) {
+                    int element = list[i];
+                    int elementMaskedShifted = element & section.sortMask;
+                    count[elementMaskedShifted]++;
+                }
+            } else {
+                for (int i = start; i < end; i++) {
+                    int element = list[i];
+                    int elementMaskedShifted = (element & section.sortMask) >> section.shiftRight;
+                    count[elementMaskedShifted]++;
+                }
             }
             for (int i = 1; i < maxProcessNumber; i++) {
                 leftX[i] = leftX[i - 1] + count[i - 1];
             }
-            for (int i = start; i < end; i++) {
-                int element = list[i];
-                int elementMaskedShifted = getKeySec1(element, sections[0]);
-                aux[leftX[elementMaskedShifted]] = element;
-                leftX[elementMaskedShifted]++;
+            if (section.isSectionAtEnd()) {
+                for (int i = start; i < end; i++) {
+                    int element = list[i];
+                    int elementMaskedShifted = element & section.sortMask;
+                    aux[leftX[elementMaskedShifted]] = element;
+                    leftX[elementMaskedShifted]++;
+                }
+            } else {
+                for (int i = start; i < end; i++) {
+                    int element = list[i];
+                    int elementMaskedShifted = (element & section.sortMask) >> section.shiftRight;
+                    aux[leftX[elementMaskedShifted]] = element;
+                    leftX[elementMaskedShifted]++;
+                }
             }
-
         } else {
             for (int i = start; i < end; i++) {
                 int element = list[i];

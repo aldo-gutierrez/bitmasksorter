@@ -21,8 +21,7 @@ public class Generator {
         DESCENDING_SAWTOOTH_INT,
         ALTERNATING_INT,
         ALTERNATING_16_VALUES_INT,
-        ORIGINAL_INT_RANGE,
-        ORIGINAL_UNSIGNED_INT
+        RANDOM_RANGE_INT,
     }
     private static final ConcurrentHashMap<String, Function<GeneratorParams, int[]>> functions = new ConcurrentHashMap<>();
 
@@ -39,8 +38,7 @@ public class Generator {
         functions.put(String.valueOf(GeneratorFunctions.DESCENDING_SAWTOOTH_INT), Generator::descending_sawtooth_int);
         functions.put(String.valueOf(GeneratorFunctions.ALTERNATING_INT), Generator::alternating_int);
         functions.put(String.valueOf(GeneratorFunctions.ALTERNATING_16_VALUES_INT), Generator::alternating_16_values_int);
-        functions.put(String.valueOf(GeneratorFunctions.ORIGINAL_INT_RANGE), Generator::original_int);
-        functions.put(String.valueOf(GeneratorFunctions.ORIGINAL_UNSIGNED_INT), Generator::original_unsigned_int);
+        functions.put(String.valueOf(GeneratorFunctions.RANDOM_RANGE_INT), Generator::random_int_range);
     }
 
     public static Function<GeneratorParams, int[]> getGFunction(GeneratorFunctions functionName) {
@@ -176,24 +174,21 @@ public class Generator {
         return v;
     }
 
-    static int[] original_int(GeneratorParams params) {
-        int size = params.size;
-        int f = (int) (params.limitHigh - params.limitLow);
-        int[] v = new int[size];
-        for (int i = 0; i < size; ++i) {
-            int randomInt = params.random.nextInt(f) + params.limitLow;
-            v[i] = randomInt;
-        }
-        return v;
-    }
-
-    static int[] original_unsigned_int(GeneratorParams params) {
-        int limitLow = Integer.MAX_VALUE - 1000;
+    static int[] random_int_range(GeneratorParams params) {
         int size = params.size;
         int[] v = new int[size];
-        for (int i = 0; i < size; ++i) {
-            long randomInt = (long) params.random.nextInt(3000)  + (long) limitLow;
-            v[i] =  ((Long) randomInt).intValue();
+        if (params.limitHigh > Integer.MAX_VALUE) {
+            int range = (int) (params.limitHigh - (long) params.limitLow);
+            for (int i = 0; i < size; ++i) {
+                long randomLong = params.random.nextInt(range) + (long) params.limitLow;
+                v[i] =  ((Long) randomLong).intValue();
+            }
+        } else {
+            int range = (int) (params.limitHigh - params.limitLow);
+            for (int i = 0; i < size; ++i) {
+                int randomInt = params.random.nextInt(range) + params.limitLow;
+                v[i] = randomInt;
+            }
         }
         return v;
     }
