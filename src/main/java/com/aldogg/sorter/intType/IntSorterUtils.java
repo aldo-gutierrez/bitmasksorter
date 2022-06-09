@@ -8,9 +8,9 @@ import static com.aldogg.sorter.RadixBitSorterInt.radixSort;
 public class IntSorterUtils {
 
     public static void swap(final int[] array, final int left, final int right) {
-        int aux = array[left];
+        int auxS = array[left];
         array[left] = array[right];
-        array[right] = aux;
+        array[right] = auxS;
     }
 
     /**
@@ -139,7 +139,7 @@ public class IntSorterUtils {
         System.arraycopy(aux, 0, array, start, end - start);
     }
 
-    public static void sortShortKList(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
+    public static void sortShortK(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
         int kDiff = kList.length - kIndex; //K
         int listLength = end - start; //N
         int twoPowerK = twoPowerX(kDiff);

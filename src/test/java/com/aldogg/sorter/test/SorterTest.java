@@ -8,6 +8,7 @@ import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.Sorter;
 import com.aldogg.sorter.sorters.JavaParallelSorterInt;
 import com.aldogg.sorter.sorters.JavaSorterInt;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
@@ -26,6 +27,11 @@ public class SorterTest {
     public static final long seed = 1234567890;
     public static final int ITERATIONS = 20;
     public static final int HEAT_ITERATIONS = 10;
+
+    @BeforeEach
+    public void beforeEach() {
+        System.out.println("Java: "+System.getProperty("java.version"));
+    }
 
     public void testIntSort(int[] list, TestSortResults testSortResults, IntSorter[] sorters) {
         IntSorter base = new JavaSorterInt();
@@ -122,11 +128,11 @@ public class SorterTest {
 
     @Test
     public void speedTestPositiveIntST() throws IOException {
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+//        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+//        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/old/speed.csv"));
 
-        //IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
-        //BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_st.csv"));
-        BufferedWriter writer = new BufferedWriter(new FileWriter("speed.csv"));
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_st.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
         TestSortResults testSortResults;
@@ -226,7 +232,7 @@ public class SorterTest {
 
     @Test
     public void speedTestObjectPositiveIntKey() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("speed_object.csv"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results\\old\\speed_object.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
 
@@ -255,6 +261,7 @@ public class SorterTest {
         //heatup
         testSortResults = new TestSortResults(sorters.length);
         testSpeedObject(HEAT_ITERATIONS, params, testSortResults, sorters, comparator, null);
+        System.out.println("----------------------");
 
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
 
@@ -272,12 +279,13 @@ public class SorterTest {
             params.size = 1000000;
             testSpeedObject(ITERATIONS, params, testSortResults, sorters, comparator, writer);
 
-//            testSortResults = new TestSortResults(sorters.length);
-//            params.size = 10000000;
-//            testSpeedObject(ITERATIONS, params, testSortResults, sorters, comparator, writer);
+            testSortResults = new TestSortResults(sorters.length);
+            params.size = 10000000;
+            testSpeedObject(ITERATIONS, params, testSortResults, sorters, comparator, writer);
 
-            //testSortResults = new TestSortResults(sorters.length);
-            //testSpeedObject(ITERATIONS, 40000000, 0, limitH, testSortResults, sorters, comparator, writer);
+//            testSortResults = new TestSortResults(sorters.length);
+//            params.size = 40000000;
+//            testSpeedObject(ITERATIONS, params, testSortResults, sorters, comparator, writer);
 
             System.out.println("----------------------");
         }

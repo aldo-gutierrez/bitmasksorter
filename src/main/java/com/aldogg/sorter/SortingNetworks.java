@@ -112,54 +112,42 @@ public class SortingNetworks {
                     {6, 7}, {8, 9}}
     };
 
-    private static Map<Integer, BiConsumer<int[], Integer>> sFunctions = new HashMap<>();
-    private static Map<Integer, BiConsumer<int[], Integer>> uFunctions = new HashMap<>();
+    public static Map<Integer, BiConsumer<int[], Integer>> signedSNFunctions = new HashMap<>();
+    public static Map<Integer, BiConsumer<int[], Integer>> unsignedSNFunctions = new HashMap<>();
 
     static {
-        sFunctions.put(2, SortingNetworks::sortVSLS2);
-        sFunctions.put(3, SortingNetworks::sortVSLS3);
-        sFunctions.put(4, SortingNetworks::sortVSLS4);
-        sFunctions.put(5, SortingNetworks::sortVSLS5);
-        sFunctions.put(6, SortingNetworks::sortVSLS6);
-        sFunctions.put(7, SortingNetworks::sortVSLS7);
-        sFunctions.put(8, SortingNetworks::sortVSLS8);
-        sFunctions.put(9, SortingNetworks::sortVSLS9);
-        sFunctions.put(10, SortingNetworks::sortVSLS10);
-        sFunctions.put(11, SortingNetworks::sortVSLS11);
-        sFunctions.put(12, SortingNetworks::sortVSLS12);
-        sFunctions.put(13, SortingNetworks::sortVSLS13);
-        sFunctions.put(14, SortingNetworks::sortVSLS14);
-        sFunctions.put(15, SortingNetworks::sortVSLS15);
-        sFunctions.put(16, SortingNetworks::sortVSLS16);
+        signedSNFunctions.put(2, SortingNetworks::sortVSLS2);
+        signedSNFunctions.put(3, SortingNetworks::sortVSLS3);
+        signedSNFunctions.put(4, SortingNetworks::sortVSLS4);
+        signedSNFunctions.put(5, SortingNetworks::sortVSLS5);
+        signedSNFunctions.put(6, SortingNetworks::sortVSLS6);
+        signedSNFunctions.put(7, SortingNetworks::sortVSLS7);
+        signedSNFunctions.put(8, SortingNetworks::sortVSLS8);
+        signedSNFunctions.put(9, SortingNetworks::sortVSLS9);
+        signedSNFunctions.put(10, SortingNetworks::sortVSLS10);
+        signedSNFunctions.put(11, SortingNetworks::sortVSLS11);
+        signedSNFunctions.put(12, SortingNetworks::sortVSLS12);
+        signedSNFunctions.put(13, SortingNetworks::sortVSLS13);
+        signedSNFunctions.put(14, SortingNetworks::sortVSLS14);
+        signedSNFunctions.put(15, SortingNetworks::sortVSLS15);
+        signedSNFunctions.put(16, SortingNetworks::sortVSLS16);
 
-        uFunctions.put(2, SortingNetworks::sortVSLU2);
-        uFunctions.put(3, SortingNetworks::sortVSLU3);
-        uFunctions.put(4, SortingNetworks::sortVSLU4);
-        uFunctions.put(5, SortingNetworks::sortVSLU5);
-        uFunctions.put(6, SortingNetworks::sortVSLU6);
-        uFunctions.put(7, SortingNetworks::sortVSLU7);
-        uFunctions.put(8, SortingNetworks::sortVSLU8);
-        uFunctions.put(9, SortingNetworks::sortVSLU9);
-        uFunctions.put(10, SortingNetworks::sortVSLU10);
-        uFunctions.put(11, SortingNetworks::sortVSLU11);
-        uFunctions.put(12, SortingNetworks::sortVSLU12);
-        uFunctions.put(13, SortingNetworks::sortVSLU13);
-        uFunctions.put(14, SortingNetworks::sortVSLU14);
-        uFunctions.put(15, SortingNetworks::sortVSLU15);
-        uFunctions.put(16, SortingNetworks::sortVSLU16);
+        unsignedSNFunctions.put(2, SortingNetworks::sortVSLU2);
+        unsignedSNFunctions.put(3, SortingNetworks::sortVSLU3);
+        unsignedSNFunctions.put(4, SortingNetworks::sortVSLU4);
+        unsignedSNFunctions.put(5, SortingNetworks::sortVSLU5);
+        unsignedSNFunctions.put(6, SortingNetworks::sortVSLU6);
+        unsignedSNFunctions.put(7, SortingNetworks::sortVSLU7);
+        unsignedSNFunctions.put(8, SortingNetworks::sortVSLU8);
+        unsignedSNFunctions.put(9, SortingNetworks::sortVSLU9);
+        unsignedSNFunctions.put(10, SortingNetworks::sortVSLU10);
+        unsignedSNFunctions.put(11, SortingNetworks::sortVSLU11);
+        unsignedSNFunctions.put(12, SortingNetworks::sortVSLU12);
+        unsignedSNFunctions.put(13, SortingNetworks::sortVSLU13);
+        unsignedSNFunctions.put(14, SortingNetworks::sortVSLU14);
+        unsignedSNFunctions.put(15, SortingNetworks::sortVSLU15);
+        unsignedSNFunctions.put(16, SortingNetworks::sortVSLU16);
         
-    }
-
-    public static void sortVerySmallListSigned(final int[] array, final int start, final int end) {
-        int length = end - start;
-        sFunctions.get(length).accept(array, start);
-    }
-
-
-    //is this necessary?? verify
-    public static void sortVerySmallListUnSigned(final int[] array, final int start, final int end) {
-        int length = end - start;
-        uFunctions.get(length).accept(array, start);
     }
 
     public static void sortVSLS2(final int[] array, final int start) {

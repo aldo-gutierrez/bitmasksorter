@@ -3,18 +3,22 @@ package com.aldogg.sorter;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
+import java.util.Map;
+import java.util.function.BiConsumer;
+
 import static com.aldogg.sorter.BitSorterParams.*;
 import static com.aldogg.sorter.BitSorterUtils.*;
-import static com.aldogg.sorter.intType.IntSorterUtils.sortShortKList;
+import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 
 public class QuickBitSorterInt implements IntSorter {
     protected BitSorterParams params = BitSorterParams.getSTParams();
+    boolean unsigned = false;
+    private Map<Integer, BiConsumer<int[], Integer>> snFunction;
 
     public void setParams(BitSorterParams params) {
         this.params = params;
     }
 
-    boolean unsigned = false;
 
     @Override
     public boolean isUnsigned() {
@@ -44,6 +48,8 @@ public class QuickBitSorterInt implements IntSorter {
         if (kList.length == 0) {
             return;
         }
+        snFunction = unsigned ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions;
+
         if (kList[0] == 31) { //there are negative numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
             int finalLeft = isUnsigned()
@@ -60,14 +66,11 @@ public class QuickBitSorterInt implements IntSorter {
         }
     }
 
+
     public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
-        final int listLength = end - start;
-        if (listLength <= SMALL_LIST_SIZE) {
-            if (unsigned) {
-                SortingNetworks.sortVerySmallListUnSigned(array, start, end);
-            } else {
-                SortingNetworks.sortVerySmallListSigned(array, start, end);
-            }
+        final int n = end - start;
+        if (n <= VERY_SMALL_N_SIZE) {
+            snFunction.get(n).accept(array, start);
             return;
         }
 
@@ -83,8 +86,8 @@ public class QuickBitSorterInt implements IntSorter {
             return;
         }
 
-        if (kDiff <= params.getCountingSortBits()) {
-            sortShortKList(array, start, end, kList, kIndex);
+        if (kDiff <= params.getShortKBits()) {
+            sortShortK(array, start, end, kList, kIndex);
             return;
         }
 
@@ -109,14 +112,10 @@ public class QuickBitSorterInt implements IntSorter {
         }
     }
 
-    public void sort(final int[] list, final int start, final int end, int[] kList, int kIndex) {
-        final int listLength = end - start;
-        if (listLength <= SMALL_LIST_SIZE) {
-            if (unsigned) {
-                SortingNetworks.sortVerySmallListUnSigned(list, start, end);
-            } else {
-                SortingNetworks.sortVerySmallListSigned(list, start, end);
-            }
+    public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex) {
+        final int n = end - start;
+        if (n <= VERY_SMALL_N_SIZE) {
+            snFunction.get(n).accept(array, start);
             return;
         }
 
@@ -125,19 +124,19 @@ public class QuickBitSorterInt implements IntSorter {
             return;
         }
 
-        if (kDiff <= params.getCountingSortBits()) {
-            sortShortKList(list, start, end, kList, kIndex);
+        if (kDiff <= params.getShortKBits()) {
+            sortShortK(array, start, end, kList, kIndex);
             return;
         }
 
         int sortMask = getMaskBit(kList[kIndex]);
-        int finalLeft = IntSorterUtils.partitionNotStable(list, start, end, sortMask);
+        int finalLeft = IntSorterUtils.partitionNotStable(array, start, end, sortMask);
 
         if (finalLeft - start > 1) {
-            sort(list, start, finalLeft, kList, kIndex + 1);
+            sort(array, start, finalLeft, kList, kIndex + 1);
         }
         if (end - finalLeft > 1) {
-            sort(list, finalLeft, end, kList, kIndex + 1);
+            sort(array, finalLeft, end, kList, kIndex + 1);
         }
     }
 

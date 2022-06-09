@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
-import static com.aldogg.sorter.intType.IntSorterUtils.sortShortKList;
+import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 
 public class RadixBitSorterMTInt extends RadixBitSorterInt {
     protected final BitSorterParams params = BitSorterParams.getMTParams();
@@ -72,13 +72,13 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
             return;
         }
 
-        if (kDiff <= params.getCountingSortBits()) {
-            sortShortKList(array, start, end, kList, kIndex);
+        if (kDiff <= params.getShortKBits()) {
+            sortShortK(array, start, end, kList, kIndex);
             return;
         }
 
-        int length = end - start;
-        int[] aux2 = new int[length];
+        int n = end - start;
+        int[] aux2 = new int[n];
 
         int threadBits = 0;
         int sortMask1 = 0;
@@ -164,8 +164,8 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
                 if (lengthT > 1) {
                     Runnable r = () -> {
                         int endT = leftX[finalI];
-                        if (remainingBits <= params.getCountingSortBits()) {
-                            sortShortKList(list, start + endT - lengthT, start + endT, kList, threadBits);
+                        if (remainingBits <= params.getShortKBits()) {
+                            sortShortK(list, start + endT - lengthT, start + endT, kList, threadBits);
                         } else {
                             int[] auxT = new int[lengthT];
                             RadixBitSorterInt.radixSort(list, start + endT - lengthT, start + endT, kList, kList.length - 1, threadBits, auxT);

@@ -7,7 +7,7 @@ import com.aldogg.sorter.intType.IntSorterUtils;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
-import static com.aldogg.sorter.intType.IntSorterUtils.sortShortKList;
+import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 
 public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter {
 
@@ -75,8 +75,8 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
     }
 
     public void sortMT(final int[] array, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
-        final int listLength = end - start;
-        if (listLength < params.getDataSizeForThreads()) {
+        final int n = end - start;
+        if (n < params.getDataSizeForThreads()) {
             sort(array, start, end, kList, kIndex, recalculate);
             return;
         }
@@ -94,8 +94,8 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
             return;
         }
 
-        if (kDiff <= params.getCountingSortBits()) {
-            sortShortKList(array, start, end, kList, kIndex);
+        if (kDiff <= params.getShortKBits()) {
+            sortShortK(array, start, end, kList, kIndex);
             return;
         }
 

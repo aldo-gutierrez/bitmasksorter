@@ -3,7 +3,7 @@ package com.aldogg.sorter.sorters;
 import com.aldogg.sorter.SortingNetworks;
 import com.aldogg.sorter.intType.IntSorter;
 
-import static com.aldogg.sorter.BitSorterParams.SMALL_LIST_SIZE;
+import static com.aldogg.sorter.BitSorterParams.VERY_SMALL_N_SIZE;
 
 /*
   MergeSort implementation
@@ -35,8 +35,9 @@ public class MergeSorter2Int implements IntSorter {
         if (n < 2) {
             return;
         }
-        if (n <= SMALL_LIST_SIZE) {
-            SortingNetworks.sortVerySmallListSigned(a, start, end);
+        if (n <= VERY_SMALL_N_SIZE) {
+            int length = end - start;
+            SortingNetworks.signedSNFunctions.get(length).accept(a, start);
             return;
         }
 

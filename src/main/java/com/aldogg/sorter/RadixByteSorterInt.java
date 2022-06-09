@@ -91,8 +91,8 @@ public class RadixByteSorterInt implements IntSorter {
     }
 
     private void sortBytes(int[] array, int start, int end, boolean s0, boolean s8, boolean s16, boolean s24) {
-        int length = end - start;
-        int[] aux = new int[length];
+        int n = end - start;
+        int[] aux = new int[n];
         int[] leftX = new int[256];
         if (s0) {
             int[] count = new int[256];
@@ -109,7 +109,7 @@ public class RadixByteSorterInt implements IntSorter {
                 aux[leftX[elementShiftMasked]] = element;
                 leftX[elementShiftMasked]++;
             }
-            System.arraycopy(aux, 0, array, start, length);
+            System.arraycopy(aux, 0, array, start, n);
         }
         if (s8){
             int[] count = new int[256];
@@ -126,7 +126,7 @@ public class RadixByteSorterInt implements IntSorter {
                 aux[leftX[elementShiftMasked]] = element;
                 leftX[elementShiftMasked]++;
             }
-            System.arraycopy(aux, 0, array, start, length);
+            System.arraycopy(aux, 0, array, start, n);
         }
         if (s16) {
             int[] count = new int[256];
@@ -143,7 +143,7 @@ public class RadixByteSorterInt implements IntSorter {
                 aux[leftX[elementShiftMasked]] = element;
                 leftX[elementShiftMasked]++;
             }
-            System.arraycopy(aux, 0, array, start, length);
+            System.arraycopy(aux, 0, array, start, n);
 
         }
         if (s24) {
@@ -163,14 +163,14 @@ public class RadixByteSorterInt implements IntSorter {
                 leftX[elementShiftMasked]++;
             }
             if (unsigned) {
-                System.arraycopy(aux, 0, array, start, length);
+                System.arraycopy(aux, 0, array, start, n);
             } else {
-                if (lengthPositive < length) {
-                    int lengthNegative = length - lengthPositive;
+                if (lengthPositive < n) {
+                    int lengthNegative = n - lengthPositive;
                     System.arraycopy(aux, lengthPositive, array, start, lengthNegative);
                     System.arraycopy(aux, 0, array, start + lengthNegative, lengthPositive);
                 } else {
-                    System.arraycopy(aux, 0, array, start, length);
+                    System.arraycopy(aux, 0, array, start, n);
                 }
             }
         }
