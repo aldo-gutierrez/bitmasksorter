@@ -116,6 +116,7 @@ public class SortingNetworks {
     public static Map<Integer, BiConsumer<int[], Integer>> unsignedSNFunctions = new HashMap<>();
 
     static {
+        signedSNFunctions.put(1, SortingNetworks::sort1);
         signedSNFunctions.put(2, SortingNetworks::sortVSLS2);
         signedSNFunctions.put(3, SortingNetworks::sortVSLS3);
         signedSNFunctions.put(4, SortingNetworks::sortVSLS4);
@@ -132,6 +133,7 @@ public class SortingNetworks {
         signedSNFunctions.put(15, SortingNetworks::sortVSLS15);
         signedSNFunctions.put(16, SortingNetworks::sortVSLS16);
 
+        unsignedSNFunctions.put(1, SortingNetworks::sort1);
         unsignedSNFunctions.put(2, SortingNetworks::sortVSLU2);
         unsignedSNFunctions.put(3, SortingNetworks::sortVSLU3);
         unsignedSNFunctions.put(4, SortingNetworks::sortVSLU4);
@@ -151,8 +153,8 @@ public class SortingNetworks {
     }
 
     public static void sortVSLS2(final int[] array, final int start) {
-        int left; int right; int aL;int aR;
-        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
+        int right; int aL;int aR;
+        right = start+ 1; aL = array[start]; aR = array[right]; if (aL > aR ) { array[start] = aR; array[right] = aL;}
     }
     public static void sortVSLS3(final int[] array, final int start) {
         int left; int right; int aL;int aR;
@@ -601,9 +603,11 @@ public class SortingNetworks {
         left = start + 8; right = start+ 9; aL = array[left]; aR = array[right]; if (aL > aR ) { array[left] = aR; array[right] = aL;}
     }
 
+    public static void sort1(final int[] array, final int start) {
+    }
     public static void sortVSLU2(final int[] array, final int start) {
-        int left; int right; int aL;int aR;
-        left = start; right = start+ 1; aL = array[left]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[left] = aR; array[right] = aL;}
+        int right; int aL;int aR;
+        right = start+ 1; aL = array[start]; aR = array[right]; if (aL + 0x80000000> aR + 0x80000000) { array[start] = aR; array[right] = aL;}
     }
     public static void sortVSLU3(final int[] array, final int start) {
         int left; int right; int aL;int aR;

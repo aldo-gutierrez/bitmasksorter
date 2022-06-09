@@ -90,11 +90,10 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
         }
 
         int kDiff = kList.length - kIndex;
-        if (kDiff < 1) {
-            return;
-        }
-
         if (kDiff <= params.getShortKBits()) {
+            if (kDiff < 1) {
+                return;
+            }
             sortShortK(array, start, end, kList, kIndex);
             return;
         }

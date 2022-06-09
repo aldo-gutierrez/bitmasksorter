@@ -141,42 +141,42 @@ public class IntSorterUtils {
 
     public static void sortShortK(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
         int kDiff = kList.length - kIndex; //K
-        int listLength = end - start; //N
+        int N = end - start; //N
         int twoPowerK = twoPowerX(kDiff);
         if (twoPowerK <= 16) { //16
-            if (listLength >= twoPowerK*128) {
+            if (N >= twoPowerK*128) {
                 CountSort.countSort(array, start, end, kList, kIndex);
-            } else if (listLength >=32 ){
-                int[] aux = new int[listLength];
+            } else if (N >=32 ){
+                int[] aux = new int[N];
                 radixSort(array, start, end, kList, kList.length - 1, 0, aux);
             } else {
-                int[] aux = new int[listLength];
+                int[] aux = new int[N];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
                     int sortMask = BitSorterUtils.getMaskBit(kList[i]);
                     IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
                 }
             }
         } else  if (twoPowerK <= 512) { //512
-            if (listLength >= twoPowerK*16) {
+            if (N >= twoPowerK*16) {
                 CountSort.countSort(array, start, end, kList, kIndex);
-            } else if (listLength >=32 ){
-                int[] aux = new int[listLength];
+            } else if (N >=32 ){
+                int[] aux = new int[N];
                 radixSort(array, start, end, kList, kList.length - 1, 0, aux);
             } else {
-                int[] aux = new int[listLength];
+                int[] aux = new int[N];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
                     int sortMask = BitSorterUtils.getMaskBit(kList[i]);
                     IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
                 }
             }
         } else {
-            if (listLength >= twoPowerK*2) {
+            if (N >= twoPowerK*2) {
                 CountSort.countSort(array, start, end, kList, kIndex);
-            } else if (listLength >=128 ){
-                int[] aux = new int[listLength];
+            } else if (N >=128 ){
+                int[] aux = new int[N];
                 radixSort(array, start, end, kList, kList.length - 1, 0, aux);
             } else {
-                int[] aux = new int[listLength];
+                int[] aux = new int[N];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
                     int sortMask = BitSorterUtils.getMaskBit(kList[i]);
                     IntSorterUtils.partitionStable(array, start, end, sortMask, aux);

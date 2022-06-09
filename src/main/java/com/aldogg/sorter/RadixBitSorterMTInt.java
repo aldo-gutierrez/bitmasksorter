@@ -68,11 +68,10 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
 
     public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, int paramsMaxThreadBits) {
         int kDiff = kList.length - kIndex;
-        if (kDiff < 1) {
-            return;
-        }
-
         if (kDiff <= params.getShortKBits()) {
+            if (kDiff < 1) {
+                return;
+            }
             sortShortK(array, start, end, kList, kIndex);
             return;
         }
