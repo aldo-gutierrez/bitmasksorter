@@ -13,7 +13,7 @@ import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 public class QuickBitSorterInt implements IntSorter {
     protected BitSorterParams params = BitSorterParams.getSTParams();
     boolean unsigned = false;
-    private Map<Integer, BiConsumer<int[], Integer>> snFunction;
+    protected Map<Integer, BiConsumer<int[], Integer>> snFunction;
 
     public void setParams(BitSorterParams params) {
         this.params = params;
@@ -30,12 +30,11 @@ public class QuickBitSorterInt implements IntSorter {
     }
 
     @Override
-    public void sort(int[] array) {
-        if (array.length < 2) {
+    public void sort(int[] array, int start, int end) {
+        int n = end - start;
+        if (n < 2) {
             return;
         }
-        final int start = 0;
-        final int end = array.length;
         int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
         if (ordered == AnalysisResult.DESCENDING) {
             IntSorterUtils.reverse(array, start, end);
@@ -49,7 +48,11 @@ public class QuickBitSorterInt implements IntSorter {
             return;
         }
         snFunction = unsigned ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions;
+        sort(array, start, end, kList);
+    }
 
+    @Override
+    public void sort(int[] array, int start, int end, int[] kList) {
         if (kList[0] == 31) { //there are negative numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
             int finalLeft = isUnsigned()
@@ -65,7 +68,6 @@ public class QuickBitSorterInt implements IntSorter {
             sort(array, start, end, kList, 0, false);
         }
     }
-
 
     public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
         final int n = end - start;

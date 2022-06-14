@@ -22,23 +22,30 @@ public class QuickBitBaseSorterInt implements IntSorter {
         this.unsigned = unsigned;
     }
 
-    public void sort(int[] array) {
-        if (array.length < 2) {
+    @Override
+    public void sort(int[] array, int start, int end) {
+        int n = end - start;
+        if (n < 2) {
             return;
         }
-        final int start = 0;
-        final int end = array.length;
         int[] maskParts = getMaskBit(array, start, end);
         int mask = maskParts[0] & maskParts[1];
         int[] kList = getMaskAsArray(mask);
         if (kList.length == 0) {
             return;
         }
+        sort(array, start, end, kList);
+    }
+
+    @Override
+    public void sort(int[] array, int start, int end, int[] kList) {
         if (kList[0] == 31) { //there are negative numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
             int finalLeft = isUnsigned()
                     ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
                     : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
+            int[] maskParts;
+            int mask;
             if (finalLeft - start > 1) {
                 maskParts = getMaskBit(array, start, finalLeft);
                 mask = maskParts[0] & maskParts[1];
@@ -54,12 +61,6 @@ public class QuickBitBaseSorterInt implements IntSorter {
         } else {
             sort(array, start, end, kList, 0);
         }
-
-    }
-
-    @Override
-    public String name() {
-        return this.getClass().getSimpleName();
     }
 
     public void sort(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {

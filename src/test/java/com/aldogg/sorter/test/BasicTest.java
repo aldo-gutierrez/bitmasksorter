@@ -73,9 +73,7 @@ public class BasicTest extends SorterTest{
 
         IntSorter[] sorters = new IntSorter[] {new IntSorter() {
             @Override
-            public void sort(int[] array) {
-                final int start = 0;
-                final int end = array.length;
+            public void sort(int[] array, int start, int end) {
                 int[] maskParts = getMaskBit(array, start, end);
                 int mask = maskParts[0] & maskParts[1];
                 int[] kList = getMaskAsArray(mask);
@@ -94,14 +92,14 @@ public class BasicTest extends SorterTest{
             }
         },  new IntSorter() {
             @Override
-            public void sort(int[] array) {
-                int[] maskParts = getMaskBit(array, 0, array.length);
+            public void sort(int[] array, int start, int end) {
+                int[] maskParts = getMaskBit(array, start, end);
                 int mask = maskParts[0] & maskParts[1];
                 int[] kList = getMaskAsArray(mask);
-                int[] aux = new int[array.length];
+                int[] aux = new int[end - start];
                 for (int i = kList.length - 1; i >= 0; i--) {
                     int sortMask = getMaskBit(kList[i]);
-                    IntSorterUtils.partitionStable(array, 0, array.length, sortMask, aux);
+                    IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
                 }
             }
             @Override
@@ -115,11 +113,11 @@ public class BasicTest extends SorterTest{
             }
         }, new IntSorter() {
             @Override
-            public void sort(int[] array) {
+            public void sort(int[] array, int start, int end) {
                 int[] maskParts = getMaskBit(array, 0, array.length);
                 int mask = maskParts[0] & maskParts[1];
                 int[] kList = getMaskAsArray(mask);
-                CountSort.countSort(array, 0, array.length, kList, 0);
+                CountSort.countSort(array, start, end, kList, 0);
             }
 
             @Override

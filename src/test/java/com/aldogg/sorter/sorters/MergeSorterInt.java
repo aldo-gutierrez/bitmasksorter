@@ -6,22 +6,12 @@ import com.aldogg.sorter.intType.IntSorter;
  * Default MergeSort Implementation
  */
 public class MergeSorterInt implements IntSorter {
-    boolean unsigned = false;
 
     @Override
-    public void sort(int[] array) {
-        mergeSort(array, array.length);
+    public void sort(int[] array, int start, int end) {
+        mergeSort(array, end - start);
     }
 
-    @Override
-    public void setUnsigned(boolean unsigned) {
-
-    }
-
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
 
     public static void mergeSort(int[] a, int n) {
         if (n < 2) {

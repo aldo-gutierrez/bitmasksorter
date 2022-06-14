@@ -1,20 +1,10 @@
 package com.aldogg.sorter.intType;
 
 public class QuickSorter implements IntSorter {
-    boolean unsigned = false;
 
     @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    @Override
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
-    @Override
-    public void sort(int[] array) {
-        quickSort(array, 0, array.length - 1);
+    public void sort(int[] array, int start, int end) {
+        quickSort(array, 0, end - 1);
     }
 
     private void quickSort(int arr[], int begin, int end) {

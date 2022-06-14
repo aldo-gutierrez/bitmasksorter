@@ -30,31 +30,43 @@ public class RadixByteSorterInt implements IntSorter {
     }
 
     @Override
-    public void sort(int[] array) {
-        if (array.length < 2) {
+    public void sort(int[] array, final int start, final int end) {
+        int n = end - start;
+        if (n < 2) {
             return;
         }
-        final int start = 0;
-        final int end = array.length;
         int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
         if (ordered == AnalysisResult.DESCENDING) {
             IntSorterUtils.reverse(array, start, end);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
+        int[] kList = null;
+
+        if (calculateBitMaskOptimization) {
+            int[] maskParts = getMaskBit(array, start, end);
+            int mask = maskParts[0] & maskParts[1];
+            kList = getMaskAsArray(mask);
+            if (kList.length == 0) {
+                return;
+            }
+        }
+        sort(array, start, end, kList);
+    }
+
+    @Override
+    public void sort(int[] array, int start, int end, int[] kList) {
         boolean s0 = true;
         boolean s8 = true;
         boolean s16 = true;
         boolean s24 = true;
         if (calculateBitMaskOptimization) {
-            int[] maskParts = getMaskBit(array, start, end);
-            int mask = maskParts[0] & maskParts[1];
-            int[] kList = getMaskAsArray(mask);
-
             if (kList.length == 0) {
                 return;
             }
-            if (kList[0] == 31 && !isUnsigned()) { //there are negative numbers and positive numbers
+            int[] maskParts;
+            int mask;
+            if (kList[0] == 31 && !isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
                 int sortMask = BitSorterUtils.getMaskBit(kList[0]);
                 int finalLeft = isUnsigned()
                         ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
@@ -80,7 +92,9 @@ public class RadixByteSorterInt implements IntSorter {
                     sortBytes(array, finalLeft, end, s0, s8, s16, s24);
                 }
                 return;
-            }  else {
+            } else {
+                //TODO check if mask should be passed directly
+                mask = BitSorterUtils.getMaskLastBits(kList, 0);
                 s0 = (mask & 0xFF) != 0;
                 s8 = (mask & 0xFF00) != 0;
                 s16 = (mask & 0xFF0000) != 0;
@@ -111,7 +125,7 @@ public class RadixByteSorterInt implements IntSorter {
             }
             System.arraycopy(aux, 0, array, start, n);
         }
-        if (s8){
+        if (s8) {
             int[] count = new int[256];
             for (int i = start; i < end; i++) {
                 count[array[i] >> 8 & 0xFF]++;
@@ -149,7 +163,7 @@ public class RadixByteSorterInt implements IntSorter {
         if (s24) {
             int[] count = new int[256];
             for (int i = start; i < end; i++) {
-                count[array[i] >>24 & 0xFF]++;
+                count[array[i] >> 24 & 0xFF]++;
             }
             leftX[0] = 0;
             for (int i = 1; i < 256; i++) {
@@ -158,7 +172,7 @@ public class RadixByteSorterInt implements IntSorter {
             int lengthPositive = leftX[128];
             for (int i = start; i < end; i++) {
                 int element = array[i];
-                int elementShiftMasked = element>>24 & 0xFF;
+                int elementShiftMasked = element >> 24 & 0xFF;
                 aux[leftX[elementShiftMasked]] = element;
                 leftX[elementShiftMasked]++;
             }

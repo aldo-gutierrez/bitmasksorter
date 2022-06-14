@@ -99,7 +99,7 @@ public class BitSorterUtils {
     }
 
 
-    public static int listIsOrderedSigned(int[] array, int start, int end) {
+    public static int listIsOrderedSigned(final int[] array, final int start, final int end) {
         int i1 = array[start];
         int i = start + 1;
         while (i < end) {

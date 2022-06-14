@@ -8,18 +8,8 @@ public class BitSorterParams {
 
     private int countingSortBits = 16;
 
-    private int dataSizeForThreads = 65536;
-
-    private int maxThreads = 1;
-
-    private int maxThreadsBits = 1;
-
     public int getShortKBits() {
         return countingSortBits;
-    }
-
-    public int getMaxThreadsBits() {
-        return maxThreadsBits;
     }
 
     public void setCountingSortBits(int countingSortBits) {
@@ -29,39 +19,15 @@ public class BitSorterParams {
         this.countingSortBits = countingSortBits;
     }
 
-    public int getDataSizeForThreads() {
-        return dataSizeForThreads;
-    }
-
-    public void setDataSizeForThreads(int dataSizeForThreads) {
-        this.dataSizeForThreads = dataSizeForThreads;
-    }
-
-    public int getMaxThreads() {
-        return maxThreads;
-    }
-
-    public void setMaxThreads(int maxThreads) {
-        this.maxThreads = maxThreads;
-    }
-
-    private BitSorterParams() {
+    public BitSorterParams() {
 
     }
 
     public static BitSorterParams getSTParams() {
         BitSorterParams params = new BitSorterParams();
-        params.maxThreads = 1;
         return params;
     }
 
-    public static BitSorterParams getMTParams() {
-        int cpuMaxThreadCount = Runtime.getRuntime().availableProcessors();
-        BitSorterParams params = new BitSorterParams();
-        params.maxThreads = cpuMaxThreadCount;
-        params.maxThreadsBits = (int)(Math.log(cpuMaxThreadCount) / Math.log(2));
-        return params;
-    }
 
 }
 

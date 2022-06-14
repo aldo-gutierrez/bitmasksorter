@@ -19,7 +19,7 @@ import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
  */
 public class MixedBitSorterMTInt implements IntSorter {
     final AtomicInteger numThreads = new AtomicInteger(1);
-    protected final BitSorterParams params = BitSorterParams.getMTParams();
+    protected final BitSorterMTParams params = BitSorterMTParams.getMTParams();
     boolean unsigned = false;
 
     private Map<Integer, BiConsumer<int[], Integer>> snFunction;
@@ -35,12 +35,11 @@ public class MixedBitSorterMTInt implements IntSorter {
     }
 
     @Override
-    public void sort(int[] array) {
-        if (array.length < 2) {
+    public void sort(int[] array, int start, int end) {
+        int n = end - start;
+        if (n < 2) {
             return;
         }
-        final int start = 0;
-        final int end = array.length;
         int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
         if (ordered == AnalysisResult.DESCENDING) {
             IntSorterUtils.reverse(array, start, end);
@@ -54,7 +53,11 @@ public class MixedBitSorterMTInt implements IntSorter {
             return;
         }
         snFunction = unsigned ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions;
+        sort(array, start, end, kList);
+    }
 
+    @Override
+    public void sort(int[] array, int start, int end, int[] kList) {
         if (kList[0] == 31) { //there are negative numbers and positive numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
             int finalLeft = isUnsigned()
@@ -75,13 +78,11 @@ public class MixedBitSorterMTInt implements IntSorter {
                         int mask2 = maskParts2[0] & maskParts2[1];
                         int[] kList2 = getMaskAsArray(mask2);
                         sort(array, finalLeft, end, kList2, 0);
-                    } : null, size2, params.getDataSizeForThreads(),params.getMaxThreads(),  numThreads);
+                    } : null, size2, params.getDataSizeForThreads(), params.getMaxThreads(), numThreads);
         } else {
             sort(array, start, end, kList, 0);
         }
     }
-
-
 
     public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex) {
         final int n = end - start;
@@ -90,7 +91,7 @@ public class MixedBitSorterMTInt implements IntSorter {
             return;
         }
         int kDiff = kList.length - kIndex;
-        if (kDiff  <= params.getShortKBits()) {
+        if (kDiff <= params.getShortKBits()) {
             if (kDiff < 1) {
                 return;
             }

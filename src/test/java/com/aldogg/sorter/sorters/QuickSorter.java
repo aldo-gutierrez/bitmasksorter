@@ -3,19 +3,9 @@ package com.aldogg.sorter.sorters;
 import com.aldogg.sorter.intType.IntSorter;
 
 public class QuickSorter implements IntSorter {
-    boolean unsigned = false;
 
     @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    @Override
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
-    @Override
-    public void sort(int[] array) {
+    public void sort(int[] array, int start, int end) {
         quickSort(array, 0, array.length - 1);
     }
 

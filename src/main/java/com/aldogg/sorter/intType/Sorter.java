@@ -9,7 +9,9 @@ public interface Sorter {
         return false;
     }
 
-    void setUnsigned(boolean unsigned);
+    default void setUnsigned(boolean unsigned) {
+        throw new UnsupportedOperationException();
+    }
 
     default boolean isStable() {
         return false;

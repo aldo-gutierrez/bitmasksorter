@@ -12,22 +12,12 @@ import static com.aldogg.sorter.BitSorterParams.VERY_SMALL_N_SIZE;
   - use of aux array created once
  */
 public class MergeSorter2Int implements IntSorter {
-    boolean unsigned = false;
 
     @Override
-    public void sort(int[] array) {
-        int[] aux = new int[array.length];
-        mergeSort(array, aux, 0, array.length);
-    }
-
-    @Override
-    public void setUnsigned(boolean unsigned) {
-
-    }
-
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
+    public void sort(int[] array, int start, int end) {
+        int n = end - start;
+        int[] aux = new int[n];
+        mergeSort(array, aux, start, end);
     }
 
     public static void mergeSort(int[] a, int[] aux, int start, int end) {

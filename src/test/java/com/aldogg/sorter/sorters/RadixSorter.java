@@ -4,17 +4,6 @@ import com.aldogg.sorter.intType.IntSorter;
 
 // Radix Sort in Java Programming
 public class RadixSorter implements IntSorter {
-    boolean unsigned = false;
-
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    @Override
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
     // Using counting sort to sort the elements in the basis of significant places
     void countingSort(int array[], int size, int place) {
         int[] output = new int[size + 1];
@@ -65,11 +54,9 @@ public class RadixSorter implements IntSorter {
             countingSort(array, size, place);
     }
 
-
     @Override
-    public void sort(int[] array) {
-        int size = array.length;
+    public void sort(int[] array, int start, int end) {
         RadixSorter rs = new RadixSorter();
-        rs.radixSort(array, size);
+        rs.radixSort(array, end - start);
     }
 }

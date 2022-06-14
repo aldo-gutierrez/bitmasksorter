@@ -10,6 +10,12 @@ public class JavaSorterInt implements IntSorter {
     public void sort(int[] array) {
         Arrays.sort(array);
     }
+
+    @Override
+    public void sort(int[] array, int start, int end) {
+        Arrays.sort(array, start, end);
+    }
+
     @Override
     public void setUnsigned(boolean unsigned) {
         throw new UnsupportedOperationException();

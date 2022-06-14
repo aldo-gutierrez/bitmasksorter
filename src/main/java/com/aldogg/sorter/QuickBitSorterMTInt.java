@@ -13,23 +13,21 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
 
     AtomicInteger numThreads = new AtomicInteger(1);
 
-    protected BitSorterParams params = BitSorterParams.getMTParams();
-
+    protected  BitSorterMTParams params = BitSorterMTParams.getMTParams();
     @Override
     public void setParams(BitSorterParams params) {
-        this.params = params;
+        this.params = (BitSorterMTParams) params;
     }
 
     @Override
-    public void sort(int[] array) {
-        if (array.length < 2) {
+    public void sort(int[] array, int start, int end) {
+        int n = end - start;
+        if (n < 2) {
             return;
         }
         if (params.getMaxThreads() < 2) {
             super.sort(array);
         }
-        final int start = 0;
-        final int end = array.length;
         int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
         if (ordered == AnalysisResult.DESCENDING) {
             IntSorterUtils.reverse(array, start, end);
@@ -42,7 +40,12 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
         if (kList.length == 0) {
             return;
         }
+        snFunction = unsigned ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions;
+        sort(array, start, end, kList);
+    }
 
+    @Override
+    public void sort(int[] array, int start, int end, int[] kList) {
         if (kList[0] == 31) { //there are negative numbers and positive numbers
             int sortMask = BitSorterUtils.getMaskBit(kList[0]);
             int finalLeft = isUnsigned()
@@ -62,16 +65,10 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
                         int mask2 = maskParts2[0] & maskParts2[1];
                         int[] kList2 = getMaskAsArray(mask2);
                         sortMT(array, finalLeft, end, kList2, 0, false);
-                    } : null, size2, params.getDataSizeForThreads(),params.getMaxThreads(),  numThreads);
+                    } : null, size2, params.getDataSizeForThreads(), params.getMaxThreads(), numThreads);
         } else {
             sortMT(array, start, end, kList, 0, false);
         }
-
-    }
-
-    @Override
-    public String name() {
-        return this.getClass().getSimpleName();
     }
 
     public void sortMT(final int[] array, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
