@@ -15,8 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 
-import static com.aldogg.sorter.BitSorterUtils.getMaskAsArray;
-import static com.aldogg.sorter.BitSorterUtils.getMaskBit;
+import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.RadixBitSorterInt.radixSort;
 
 public class BasicTest extends SorterTest{
@@ -133,10 +132,10 @@ public class BasicTest extends SorterTest{
         TestSortResults testSortResults;
 
         int iterations = 200;
-        int[] limitHigh = new int[] {2, 4, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192,16384,32768,65536};
+        int[] limitHigh = new int[] {1, 3, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191,1637,32767,65535};
         testSortResults = new TestSortResults(sorters.length);
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random();
+        params.random = new Random(123456789);
         params.size = 16;
         params.limitLow = 0;
         params.function = Generator.GeneratorFunctions.RANDOM_RANGE_INT;
@@ -152,6 +151,8 @@ public class BasicTest extends SorterTest{
 
 
         iterations = 4000;
+        System.out.println("----------------------");
+
         for (int limitH : limitHigh) {
             params.limitHigh = limitH;
 
@@ -207,7 +208,7 @@ public class BasicTest extends SorterTest{
             params.size = 65536;
             testSpeedInt(iterations, params, testSortResults, sorters, writer);
 
-            //System.out.println("----------------------");
+            System.out.println("----------------------");
         }
         System.out.println();
         writer.close();
