@@ -67,7 +67,7 @@ public class RadixByteSorterInt implements IntSorter {
             int[] maskParts;
             int mask;
             if (kList[0] == 31 && !isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
-                int sortMask = BitSorterUtils.getMaskBit(kList[0]);
+                int sortMask = 1 << kList[0];
                 int finalLeft = isUnsigned()
                         ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
                         : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);

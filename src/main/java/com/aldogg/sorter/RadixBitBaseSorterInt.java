@@ -39,7 +39,7 @@ public class RadixBitBaseSorterInt implements IntSorter {
         if (kList[0] == 31) { //there are negative numbers and positive numbers
             int[] maskParts;
             int mask;
-            int sortMask = BitSorterUtils.getMaskBit(kList[0]);
+            int sortMask = 1 << kList[0];
             int finalLeft = isUnsigned()
                     ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
                     : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
@@ -49,7 +49,7 @@ public class RadixBitBaseSorterInt implements IntSorter {
                 mask = maskParts[0] & maskParts[1];
                 kList = getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
-                    int sortMaskI = BitSorterUtils.getMaskBit(kList[i]);
+                    int sortMaskI = 1 << kList[i];
                     IntSorterUtils.partitionStable(array, start, finalLeft, sortMaskI, aux);
                 }
             }
@@ -59,14 +59,14 @@ public class RadixBitBaseSorterInt implements IntSorter {
                 mask = maskParts[0] & maskParts[1];
                 kList = getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
-                    int sortMaskI = BitSorterUtils.getMaskBit(kList[i]);
+                    int sortMaskI = 1 << kList[i];
                     IntSorterUtils.partitionStable(array, finalLeft, end, sortMaskI, aux);
                 }
             }
         } else {
             int[] aux = new int[end - start];
             for (int i = kList.length - 1; i >= 0; i--) {
-                int sortMask = BitSorterUtils.getMaskBit(kList[i]);
+                int sortMask = 1 << kList[i];
                 IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
             }
         }

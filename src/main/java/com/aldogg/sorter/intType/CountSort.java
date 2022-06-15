@@ -9,7 +9,7 @@ import static com.aldogg.sorter.BitSorterUtils.*;
 public class CountSort {
 
     public static void countSort(final int[] array, final int start, final int end, int[] kList,  int kIndex) {
-        int twoPowerK = twoPowerX(kList.length - kIndex);
+        int twoPowerK = 1 << kList.length - kIndex;
         kList = Arrays.copyOfRange(kList, kIndex, kList.length);
         Section[] sections = getMaskAsSections(kList);
         kIndex = 0;

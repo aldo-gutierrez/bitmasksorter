@@ -47,7 +47,7 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {
         if (kList[0] == 31) { //there are negative numbers and positive numbers
-            int sortMask = BitSorterUtils.getMaskBit(kList[0]);
+            int sortMask = 1 << kList[0];
             int finalLeft = isUnsigned()
                     ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
                     : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
@@ -95,7 +95,7 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
             return;
         }
 
-        int sortMask = getMaskBit(kList[kIndex]);
+        int sortMask = 1 << kList[kIndex];
         int finalLeft = IntSorterUtils.partitionNotStable(array, start, end, sortMask);
         final boolean recalculateBitMask = (finalLeft == start || finalLeft == end);
 

@@ -98,7 +98,7 @@ public class BasicTest extends SorterTest{
                 int[] kList = getMaskAsArray(mask);
                 int[] aux = new int[end - start];
                 for (int i = kList.length - 1; i >= 0; i--) {
-                    int sortMask = getMaskBit(kList[i]);
+                    int sortMask = 1 << kList[i];
                     IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
                 }
             }

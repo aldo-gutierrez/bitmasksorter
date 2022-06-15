@@ -29,15 +29,11 @@ public class BitSorterUtils {
         return res;
     }
 
-    public static int getMaskBit(final int k) {
-        return 1 << k;
-    }
-
     public static int getMaskLastBits(final int[] kList, final int kIndex) {
         int mask = 0;
         for (int i = kIndex; i < kList.length; i++) {
             int k = kList[i];
-            mask = mask | getMaskBit(k);
+            mask = mask | 1 << k;
         }
         return mask;
     }
@@ -45,7 +41,7 @@ public class BitSorterUtils {
     public static int getMaskRangeBits(final int kIndexStart, final int kIndexEnd) {
         int mask = 0;
         for (int k = kIndexStart; k >= kIndexEnd; k--) {
-            mask = mask | getMaskBit(k);
+            mask = mask | 1 << k;
         }
         return mask;
     }
@@ -61,10 +57,6 @@ public class BitSorterUtils {
             result = result << length | bits;
         }
         return result;
-    }
-
-    public static int twoPowerX(int k) {
-        return 1<<k;
     }
 
     public static Section[] getMaskAsSections(final int[] kList) {

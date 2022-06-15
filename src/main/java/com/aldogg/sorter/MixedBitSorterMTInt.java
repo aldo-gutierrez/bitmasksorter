@@ -59,7 +59,7 @@ public class MixedBitSorterMTInt implements IntSorter {
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {
         if (kList[0] == 31) { //there are negative numbers and positive numbers
-            int sortMask = BitSorterUtils.getMaskBit(kList[0]);
+            int sortMask = 1 << kList[0];
             int finalLeft = isUnsigned()
                     ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
                     : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
@@ -103,7 +103,7 @@ public class MixedBitSorterMTInt implements IntSorter {
         if (kIndex >= params.getMaxThreadsBits() - 1) {
             radixCountSort(array, start, end, kList, kIndex);
         } else {
-            int sortMask = getMaskBit(kList[kIndex]);
+            int sortMask = 1 << kList[kIndex];
             int finalLeft = IntSorterUtils.partitionNotStable(array, start, end, sortMask);
             Thread t1 = null;
             int size1 = finalLeft - start;
@@ -143,11 +143,11 @@ public class MixedBitSorterMTInt implements IntSorter {
         int sortMask1 = 0;
         for (int i = kIndexCountSort - 1; i >= kIndexEnd; i--) {
             int kListIj = kList[i];
-            int sortMaskij = getMaskBit(kListIj);
+            int sortMaskij = 1 << kListIj;
             sortMask1 = sortMask1 | sortMaskij;
             bits++;
         }
-        int twoPowerBits = twoPowerX(bits);
+        int twoPowerBits = 1 << bits;
         partitionStableNonConsecutiveBitsAndCountSort(list, start, end, sortMask1, kList, kIndexCountSort, twoPowerBits, aux2);
     }
 
@@ -217,7 +217,7 @@ public class MixedBitSorterMTInt implements IntSorter {
         if (kIndex > 0) {
             final int[] kListCountS = Arrays.copyOfRange(kList, kIndex, kList.length);
             final int kIndexCountS = 0;
-            final int bufferCountSSize = twoPowerX(kListCountS.length - kIndexCountS);
+            final int bufferCountSSize = 1 << kListCountS.length - kIndexCountS;
             final Section[] sectionsCountS = getMaskAsSections(kListCountS);
             final int sortMaskCountS = getMaskLastBits(kListCountS, kIndexCountS);
             final int[] zeroBuffer = new int[bufferCountSSize];
@@ -263,7 +263,7 @@ public class MixedBitSorterMTInt implements IntSorter {
             if (n < bufferLength >>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
                 int[] aux = new int[n];
                 for (int i = kList.length - 1; i >= 0; i--) {
-                    IntSorterUtils.partitionStable(array, start, end, BitSorterUtils.getMaskBit(kList[i]), aux);
+                    IntSorterUtils.partitionStable(array, start, end, 1 << kList[i], aux);
                 }
             } else {
                 CountSort.countSort(array, start, end, sortMask, sections, bufferCount, bufferNumber);

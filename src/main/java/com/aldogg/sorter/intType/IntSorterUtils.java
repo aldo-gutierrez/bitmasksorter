@@ -1,8 +1,5 @@
 package com.aldogg.sorter.intType;
 
-import com.aldogg.sorter.BitSorterUtils;
-
-import static com.aldogg.sorter.BitSorterUtils.twoPowerX;
 import static com.aldogg.sorter.RadixBitSorterInt.radixSort;
 
 public class IntSorterUtils {
@@ -142,7 +139,7 @@ public class IntSorterUtils {
     public static void sortShortK(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
         int kDiff = kList.length - kIndex; //K
         int n = end - start; //N
-        int twoPowerK = twoPowerX(kDiff);
+        int twoPowerK = 1 << kDiff;
         if (twoPowerK <= 16) { //16
             if (n >= twoPowerK*128) {
                 CountSort.countSort(array, start, end, kList, kIndex);
@@ -152,7 +149,7 @@ public class IntSorterUtils {
             } else {
                 int[] aux = new int[n];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
-                    int sortMask = BitSorterUtils.getMaskBit(kList[i]);
+                    int sortMask = 1 << kList[i];
                     IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
                 }
             }
@@ -165,7 +162,7 @@ public class IntSorterUtils {
             } else {
                 int[] aux = new int[n];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
-                    int sortMask = BitSorterUtils.getMaskBit(kList[i]);
+                    int sortMask = 1 << kList[i];
                     IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
                 }
             }
@@ -178,7 +175,7 @@ public class IntSorterUtils {
             } else {
                 int[] aux = new int[n];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
-                    int sortMask = BitSorterUtils.getMaskBit(kList[i]);
+                    int sortMask = 1 << kList[i];
                     IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
                 }
             }

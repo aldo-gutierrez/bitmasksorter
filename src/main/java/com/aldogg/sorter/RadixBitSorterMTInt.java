@@ -43,7 +43,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {
         if (kList[0] == 31) { //there are negative numbers and positive numbers
-            int sortMask = BitSorterUtils.getMaskBit(kList[0]);
+            int sortMask = 1 << kList[0];
             int finalLeft = isUnsigned()
                     ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
                     : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
@@ -86,7 +86,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
         int maxThreadBits = Math.min(Math.max(paramsMaxThreadBits, 0), kList.length) - 1;
         for (int i = maxThreadBits; i >= 0; i--) {
             int kListI = kList[i];
-            int sortMaskI = getMaskBit(kListI);
+            int sortMaskI = 1 << kListI;
             sortMask1 = sortMask1 | sortMaskI;
             threadBits++;
         }
@@ -94,7 +94,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
     }
 
     protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] list, final int start, final int end, int sortMask, int threadBits, int[] kList, final int[] aux) {
-        int maxProcessNumber = twoPowerX(threadBits);
+        int maxProcessNumber = 1 << threadBits;
         int remainingBits = kList.length - threadBits;
 
         int[] kListAux = getMaskAsArray(sortMask);

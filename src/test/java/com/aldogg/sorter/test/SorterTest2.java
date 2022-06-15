@@ -4,7 +4,6 @@ import com.aldogg.sorter.*;
 import com.aldogg.sorter.generators.Generator;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.intType.IntSorter;
-import com.aldogg.sorter.intType.IntSorterUtils;
 import com.aldogg.sorter.sorters.JavaParallelSorterInt;
 import com.aldogg.sorter.sorters.JavaSorterInt;
 import org.junit.jupiter.api.Test;
@@ -67,7 +66,7 @@ public class SorterTest2 extends SorterTest {
 
         List<Integer> limitHigh = new ArrayList();
         for (int i=1; i<29; i++) {
-            limitHigh.add(BitSorterUtils.twoPowerX(i));
+            limitHigh.add(1 << i);
         }
 
         for (Integer limitH : limitHigh) {
@@ -108,7 +107,7 @@ public class SorterTest2 extends SorterTest {
 
         List<Integer> limitHigh = new ArrayList();
         for (int i=1; i<29; i++) {
-            limitHigh.add(BitSorterUtils.twoPowerX(i));
+            limitHigh.add(1 << i);
         }
 
         for (Integer limitH : limitHigh) {
