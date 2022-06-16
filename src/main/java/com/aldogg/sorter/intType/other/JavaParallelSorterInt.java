@@ -1,4 +1,6 @@
-package com.aldogg.sorter.intType;
+package com.aldogg.sorter.intType.other;
+
+import com.aldogg.sorter.intType.IntSorter;
 
 import java.util.Arrays;
 

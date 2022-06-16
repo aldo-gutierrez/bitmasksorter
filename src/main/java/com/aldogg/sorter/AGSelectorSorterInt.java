@@ -2,6 +2,7 @@ package com.aldogg.sorter;
 
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
+import com.aldogg.sorter.intType.other.JavaSorterInt;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.BitSorterUtils.getMaskAsArray;
@@ -43,17 +44,24 @@ public class AGSelectorSorterInt implements IntSorter {
         if (n < 2) {
             return;
         }
-        if (n == 2) {
-
-        }
-
-        if (n <= 64) {
-            //new JavaIntSorter();
+        if (n <= 32) {
+            if (unsigned) {
+                intSorter = new RadixBitSorterInt();
+                intSorter.setUnsigned(unsigned);
+                intSorter.sort(array, start, end, kList);
+            } else {
+                intSorter = new JavaSorterInt();
+                intSorter.sort(array, start, end, kList);
+            }
         }
 
         if (k >= 19) { //2^19 = 524288 values
-            if (n >= 2048) {
-                if (k >= 28) { //2^28 =268435456 values
+            if (n >= 268435456) {
+                intSorter = new RadixByteSorterInt();
+                intSorter.setUnsigned(unsigned);
+                intSorter.sort(array, start, end, kList);
+            } else {
+                if (n <= 1024) {
                     intSorter = new RadixByteSorterInt();
                     intSorter.setUnsigned(unsigned);
                     intSorter.sort(array, start, end, kList);
@@ -62,24 +70,81 @@ public class AGSelectorSorterInt implements IntSorter {
                     intSorter.setUnsigned(unsigned);
                     intSorter.sort(array, start, end, kList);
                 }
-            } else {
-
             }
         } else { // 2^18
-            //QuickBitSorter/
-
-        }
-
-        if (n >= 2048) {
-        } else {
-            if (n <= 64) {
-                //new JavaIntSorter();
-                //RadixBitSorter or RadixByteSorer
+            if (k == 1) {
+                if (unsigned) {
+                    intSorter = new RadixBitSorterInt();
+                    intSorter.setUnsigned(unsigned);
+                    intSorter.sort(array, start, end, kList);
+                } else {
+                    intSorter = new JavaSorterInt();
+                    intSorter.sort(array, start, end, kList);
+                }
             } else {
-
+                if (n >= 4194304) {
+                    //QuickBitSorter/
+                    intSorter = new QuickBitSorterInt();
+                    intSorter.setUnsigned(unsigned);
+                    intSorter.sort(array, start, end, kList);
+                } else {
+                    if (k <= 16) {
+                        if (n > 32678) {
+                            //QuickBitSorter/
+                            intSorter = new QuickBitSorterInt();
+                            intSorter.setUnsigned(unsigned);
+                            intSorter.sort(array, start, end, kList);
+                        } else {
+                            if (k >= 13) {//13 14 15 16
+                                intSorter = new RadixByteSorterInt();
+                                intSorter.setUnsigned(unsigned);
+                                intSorter.sort(array, start, end, kList);
+                            } else {
+                                if (k >= 10) {
+                                    if (n <= 512) {
+                                        intSorter = new RadixByteSorterInt();
+                                        intSorter.setUnsigned(unsigned);
+                                        intSorter.sort(array, start, end, kList);
+                                    } else {
+                                        intSorter = new RadixBitSorterInt();
+                                        intSorter.setUnsigned(unsigned);
+                                        intSorter.sort(array, start, end, kList);
+                                    }
+                                } else if (k > 2) {
+                                    if (n >= 4096) {
+                                        intSorter = new QuickBitSorterInt();
+                                        intSorter.setUnsigned(unsigned);
+                                        intSorter.sort(array, start, end, kList);
+                                    } else {
+                                        intSorter = new RadixBitSorterInt();
+                                        intSorter.setUnsigned(unsigned);
+                                        intSorter.sort(array, start, end, kList);
+                                    }
+                                } else {//k==2
+                                    intSorter = new RadixBitSorterInt();
+                                    intSorter.setUnsigned(unsigned);
+                                    intSorter.sort(array, start, end, kList);
+                                }
+                            }
+                        }
+                    } else {//k=17 or k=18
+                        if (n <= 1024) {
+                            intSorter = new RadixByteSorterInt();
+                            intSorter.setUnsigned(unsigned);
+                            intSorter.sort(array, start, end, kList);
+                        } else {
+                            intSorter = new RadixBitSorterInt();
+                            intSorter.setUnsigned(unsigned);
+                            intSorter.sort(array, start, end, kList);
+                        }
+                    }
+                    //QuickBitSorter/
+                    intSorter = new QuickBitSorterInt();
+                    intSorter.setUnsigned(unsigned);
+                    intSorter.sort(array, start, end, kList);
+                }
             }
         }
-
     }
 
     @Override
