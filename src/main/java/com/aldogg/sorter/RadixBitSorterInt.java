@@ -80,8 +80,7 @@ public class RadixBitSorterInt implements IntSorter {
                 if (i - j >= kIndexEnd) {
                     int kListIm1 = kList[i - j];
                     if (kListIm1 == kListI + j) {
-                        int maskIm1 = 1 << kListIm1;
-                        maskI = maskI | maskIm1;
+                        maskI = maskI | 1 << kListIm1;
                         bits++;
                         imm++;
                     } else {

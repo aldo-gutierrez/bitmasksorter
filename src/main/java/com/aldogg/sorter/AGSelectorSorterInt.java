@@ -10,6 +10,7 @@ import static com.aldogg.sorter.BitSorterUtils.getMaskAsArray;
 /*
 Algorithm Selector Sorter
 It chooses the best algorithm to use depending on N and K
+SorterTest2.speedTestPositiveIntSTBase2 generates this logic
  */
 public class AGSelectorSorterInt implements IntSorter {
     boolean unsigned = false;

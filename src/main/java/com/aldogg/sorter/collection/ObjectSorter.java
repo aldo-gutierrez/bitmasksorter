@@ -4,8 +4,10 @@ import com.aldogg.sorter.intType.Sorter;
 
 public interface ObjectSorter extends Sorter {
 
-    void sort(Object[] array, IntComparator comparator);
+    default void sort(Object[] arrayObject, IntComparator comparator) {
+        sort(arrayObject, 0, arrayObject.length, comparator);
+    }
 
-    void setStable(boolean stable);
+    void sort(Object[] arrayObject, int start, int end, IntComparator comparator);
 
 }

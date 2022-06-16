@@ -5,18 +5,9 @@ import java.util.Arrays;
 public class JavaParallelSorterObjectInt implements ObjectSorter {
 
     @Override
-    public void sort(Object[] array, IntComparator comparator) {
-        Arrays.parallelSort(array, comparator);
+    public void sort(Object[] array, int start, int end, IntComparator comparator) {
+        Arrays.parallelSort(array, start, end, comparator);
     }
 
-    @Override
-    public void setUnsigned(boolean unsigned) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setStable(boolean stable) {
-        throw new UnsupportedOperationException();
-    }
 
 }

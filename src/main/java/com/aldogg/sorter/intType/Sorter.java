@@ -17,4 +17,8 @@ public interface Sorter {
         return false;
     }
 
+    default void setStable(boolean stable) {
+        throw new UnsupportedOperationException();
+    }
+
 }
