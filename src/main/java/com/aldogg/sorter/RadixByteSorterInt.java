@@ -108,57 +108,26 @@ public class RadixByteSorterInt implements IntSorter {
         int n = end - start;
         int[] aux = new int[n];
         int[] leftX = new int[256];
+        Section section = new Section();
         if (s0) {
+            section.sortMask = 0xFF;
             int[] count = new int[256];
-            for (int i = start; i < end; i++) {
-                count[array[i] & 0xFF]++;
-            }
             leftX[0] = 0;
-            for (int i = 1; i < 256; i++) {
-                leftX[i] = leftX[i - 1] + count[i - 1];
-            }
-            for (int i = start; i < end; i++) {
-                int element = array[i];
-                int elementShiftMasked = element & 0xFF;
-                aux[leftX[elementShiftMasked]] = element;
-                leftX[elementShiftMasked]++;
-            }
-            System.arraycopy(aux, 0, array, start, n);
+            IntSorterUtils.partitionStableLastBits(array, start, end, section, leftX, count, aux);
         }
         if (s8) {
             int[] count = new int[256];
-            for (int i = start; i < end; i++) {
-                count[array[i] >> 8 & 0xFF]++;
-            }
             leftX[0] = 0;
-            for (int i = 1; i < 256; i++) {
-                leftX[i] = leftX[i - 1] + count[i - 1];
-            }
-            for (int i = start; i < end; i++) {
-                int element = array[i];
-                int elementShiftMasked = element >> 8 & 0xFF;
-                aux[leftX[elementShiftMasked]] = element;
-                leftX[elementShiftMasked]++;
-            }
-            System.arraycopy(aux, 0, array, start, n);
+            section.sortMask = 0xFF00;
+            section.shiftRight = 8;
+            IntSorterUtils.partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
         }
         if (s16) {
             int[] count = new int[256];
-            for (int i = start; i < end; i++) {
-                count[array[i] >> 16 & 0xFF]++;
-            }
             leftX[0] = 0;
-            for (int i = 1; i < 256; i++) {
-                leftX[i] = leftX[i - 1] + count[i - 1];
-            }
-            for (int i = start; i < end; i++) {
-                int element = array[i];
-                int elementShiftMasked = element >> 16 & 0xFF;
-                aux[leftX[elementShiftMasked]] = element;
-                leftX[elementShiftMasked]++;
-            }
-            System.arraycopy(aux, 0, array, start, n);
-
+            section.sortMask = 0xFF0000;
+            section.shiftRight = 16;
+            IntSorterUtils.partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
         }
         if (s24) {
             int[] count = new int[256];
