@@ -18,6 +18,8 @@ import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
  * Experimental Bit Sorter
  */
 public class MixedBitSorterMTInt implements IntSorter {
+    public static final int COUNT_SORT_SMALL_NUMBER_SHIFT = 4;
+
     final AtomicInteger numThreads = new AtomicInteger(1);
     protected final BitSorterMTParams params = BitSorterMTParams.getMTParams();
     boolean unsigned = false;
@@ -54,10 +56,12 @@ public class MixedBitSorterMTInt implements IntSorter {
         }
         snFunction = unsigned ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions;
         sort(array, start, end, kList);
+        numThreads.set(1);
     }
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {
+        int maxLevel = params.getMaxThreadsBits() - 1;
         if (kList[0] == 31) { //there are negative numbers and positive numbers
             int sortMask = 1 << kList[0];
             int finalLeft = isUnsigned()
@@ -71,20 +75,20 @@ public class MixedBitSorterMTInt implements IntSorter {
                         int[] maskParts1 = getMaskBit(array, start, finalLeft);
                         int mask1 = maskParts1[0] & maskParts1[1];
                         int[] kList1 = getMaskAsArray(mask1);
-                        sort(array, start, finalLeft, kList1, 0);
+                        sort(array, start, finalLeft, kList1, 0, 1, maxLevel);
                     } : null, size1,
                     size2 > 1 ? () -> { //sort positive numbers
                         int[] maskParts2 = getMaskBit(array, finalLeft, end);
                         int mask2 = maskParts2[0] & maskParts2[1];
                         int[] kList2 = getMaskAsArray(mask2);
-                        sort(array, finalLeft, end, kList2, 0);
+                        sort(array, finalLeft, end, kList2, 0, 1 , maxLevel);
                     } : null, size2, params.getDataSizeForThreads(), params.getMaxThreads(), numThreads);
         } else {
-            sort(array, start, end, kList, 0);
+            sort(array, start, end, kList, 0, 0, maxLevel);
         }
     }
 
-    public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex) {
+    public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, int level, int maxLevel) {
         final int n = end - start;
         if (n <= VERY_SMALL_N_SIZE) {
             snFunction.get(n).accept(array, start);
@@ -99,38 +103,20 @@ public class MixedBitSorterMTInt implements IntSorter {
             return;
         }
 
-        //kIndex == level, starting with 0
-        if (kIndex >= params.getMaxThreadsBits() - 1) {
+        if (level >= maxLevel) {
             radixCountSort(array, start, end, kList, kIndex);
         } else {
             int sortMask = 1 << kList[kIndex];
             int finalLeft = IntSorterUtils.partitionNotStable(array, start, end, sortMask);
-            Thread t1 = null;
             int size1 = finalLeft - start;
-            if (size1 > 1) {
-                if (numThreads.get() < params.getMaxThreads() + 1) {
-                    Runnable r1 = () -> sort(array, start, finalLeft, kList, kIndex + 1);
-                    t1 = new Thread(r1);
-                    t1.start();
-                    numThreads.addAndGet(1);
-                } else {
-                    sort(array, start, finalLeft, kList, kIndex + 1);
-                }
-            }
             int size2 = end - finalLeft;
-            if (size2 > 1) {
-                sort(array, finalLeft, end, kList, kIndex + 1);
-            }
-
-            if (t1 != null) {
-                try {
-                    t1.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    numThreads.addAndGet(-1);
-                }
-            }
+            SorterRunner.runTwoRunnable(
+                    size1 > 1 ? () -> {
+                        sort(array, start, finalLeft, kList, kIndex + 1, level +1, maxLevel);
+                    } : null, size1,
+                    size2 > 1 ? () -> {
+                        sort(array, finalLeft, end, kList, kIndex + 1, level +1 , maxLevel);
+                    } : null, size2, params.getDataSizeForThreads(), params.getMaxThreads(), numThreads);
         }
     }
 
@@ -168,11 +154,30 @@ public class MixedBitSorterMTInt implements IntSorter {
                     int elementMaskedShifted = element & section.sortMask;
                     count[elementMaskedShifted]++;
                 }
+                for (int i = 1; i < twoPowerK; i++) {
+                    leftX[i] = leftX[i - 1] + count[i - 1];
+                }
+                for (int i = start; i < end; i++) {
+                    int element = list[i];
+                    int elementMaskedShifted = element & section.sortMask;
+                    aux[leftX[elementMaskedShifted]] = element;
+                    leftX[elementMaskedShifted]++;
+                }
+
             } else {
                 for (int i = start; i < end; i++) {
                     int element = list[i];
                     int elementMaskedShifted = (element & section.sortMask) >> section.shiftRight;
                     count[elementMaskedShifted]++;
+                }
+                for (int i = 1; i < twoPowerK; i++) {
+                    leftX[i] = leftX[i - 1] + count[i - 1];
+                }
+                for (int i = start; i < end; i++) {
+                    int element = list[i];
+                    int elementMaskedShifted = (element & section.sortMask) >> section.shiftRight;
+                    aux[leftX[elementMaskedShifted]] = element;
+                    leftX[elementMaskedShifted]++;
                 }
             }
         } else {
@@ -181,31 +186,9 @@ public class MixedBitSorterMTInt implements IntSorter {
                 int elementMaskedShifted = getKeySN(element, sections);
                 count[elementMaskedShifted]++;
             }
-        }
-
-        for (int i = 1; i < twoPowerK; i++) {
-            leftX[i] = leftX[i - 1] + count[i - 1];
-        }
-
-        if (sections.length == 1) {
-            Section section = sections[0];
-            if (section.isSectionAtEnd()) {
-                for (int i = start; i < end; i++) {
-                    int element = list[i];
-                    int elementMaskedShifted = element & section.sortMask;
-                    aux[leftX[elementMaskedShifted]] = element;
-                    leftX[elementMaskedShifted]++;
-                }
-            } else {
-                for (int i = start; i < end; i++) {
-                    int element = list[i];
-                    int elementMaskedShifted = (element & section.sortMask) >> section.shiftRight;
-                    aux[leftX[elementMaskedShifted]] = element;
-                    leftX[elementMaskedShifted]++;
-                }
+            for (int i = 1; i < twoPowerK; i++) {
+                leftX[i] = leftX[i - 1] + count[i - 1];
             }
-
-        } else {
             for (int i = start; i < end; i++) {
                 int element = list[i];
                 int elementMaskedShifted = getKeySN(element, sections);

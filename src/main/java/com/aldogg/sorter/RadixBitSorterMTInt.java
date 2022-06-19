@@ -19,7 +19,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
         if (n < 2) {
             return;
         }
-        if (n <= params.getDataSizeForThreads() || params.getMaxThreadsBits() == 0) {
+        if (n <= params.getDataSizeForThreads() || params.getMaxThreads() <= 1) {
             RadixBitSorterInt radixBitSorterInt = new RadixBitSorterInt();
             radixBitSorterInt.setUnsigned(isUnsigned());
             radixBitSorterInt.sort(array);
@@ -42,6 +42,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {
+        int maxThreadsBits = params.getMaxThreadsBits();
         if (kList[0] == 31) { //there are negative numbers and positive numbers
             int sortMask = 1 << kList[0];
             int finalLeft = isUnsigned()
@@ -54,17 +55,17 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
                         int[] maskParts1 = getMaskBit(array, start, finalLeft);
                         int mask1 = maskParts1[0] & maskParts1[1];
                         int[] kList1 = getMaskAsArray(mask1);
-                        sort(array, start, finalLeft, kList1, 0, params.getMaxThreadsBits() - 1);
+                        sort(array, start, finalLeft, kList1, 0, maxThreadsBits - 1);
                     } : null, size1,
                     size2 > 1 ? () -> { //sort positive numbers
                         int[] maskParts2 = getMaskBit(array, finalLeft, end);
                         int mask2 = maskParts2[0] & maskParts2[1];
                         int[] kList2 = getMaskAsArray(mask2);
-                        sort(array, finalLeft, end, kList2, 0, params.getMaxThreadsBits() - 1);
+                        sort(array, finalLeft, end, kList2, 0, maxThreadsBits - 1);
                     } : null, size2, params.getDataSizeForThreads(), 0, null);
 
         } else {
-            sort(array, start, end, kList, 0, params.getMaxThreadsBits());
+            sort(array, start, end, kList, 0, maxThreadsBits);
         }
     }
 

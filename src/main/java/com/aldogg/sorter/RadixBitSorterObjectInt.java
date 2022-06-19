@@ -5,6 +5,7 @@ import com.aldogg.sorter.collection.ObjectSorter;
 import com.aldogg.sorter.collection.ObjectSorterUtils;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
+import static com.aldogg.sorter.BitSorterParams.MAX_BITS_RADIX_SORT;
 import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.collection.ObjectSorterUtils.*;
 
@@ -100,7 +101,7 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
             int maskI = 1 << kListI;
             int bits = 1;
             int imm = 0;
-            for (int j = 1; j <= 11; j++) { //11bits looks faster than 8 on AMD 4800H, 15 is slower
+            for (int j = 1; j <= MAX_BITS_RADIX_SORT; j++) {
                 if (i - j >= kIndexEnd) {
                     int kListIm1 = kList[i - j];
                     if (kListIm1 == kListI + j) {

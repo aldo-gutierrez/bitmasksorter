@@ -42,6 +42,7 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
         }
         snFunction = unsigned ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions;
         sort(array, start, end, kList);
+        numThreads.set(1);
     }
 
     @Override

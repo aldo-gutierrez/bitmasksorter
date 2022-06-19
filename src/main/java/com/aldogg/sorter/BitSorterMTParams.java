@@ -2,7 +2,6 @@ package com.aldogg.sorter;
 
 public class BitSorterMTParams extends BitSorterParams {
     private int maxThreads = 1;
-    private int maxThreadsBits = 1;
     private int dataSizeForThreads = 65536;
 
     public int getMaxThreads() {
@@ -10,7 +9,7 @@ public class BitSorterMTParams extends BitSorterParams {
     }
 
     public int getMaxThreadsBits() {
-        return maxThreadsBits;
+        return (int) (Math.log(maxThreads) / Math.log(2));
     }
 
     public int getDataSizeForThreads() {
@@ -19,7 +18,6 @@ public class BitSorterMTParams extends BitSorterParams {
 
     public void setMaxThreads(int maxThreads) {
         this.maxThreads = maxThreads;
-        calculateMaxThreadBits();
     }
 
     public void setDataSizeForThreads(int dataSizeForThreads) {
@@ -31,9 +29,6 @@ public class BitSorterMTParams extends BitSorterParams {
         BitSorterMTParams params = new BitSorterMTParams();
         params.setMaxThreads(cpuMaxThreadCount);
         return params;
-    }
-    private void calculateMaxThreadBits() {
-        this.maxThreadsBits = (int) (Math.log(maxThreads) / Math.log(2));
     }
 
 }
