@@ -142,59 +142,18 @@ public class MixedBitSorterMTInt implements IntSorter {
         int[] kListAux = getMaskAsArray(sortMask);
         Section[] sections = getMaskAsSections(kListAux);
 
-
         int[] leftX = new int[twoPowerK];
         int[] count = new int[twoPowerK];
 
         if (sections.length == 1) {
             Section section = sections[0];
             if (section.isSectionAtEnd()) {
-                for (int i = start; i < end; i++) {
-                    int element = list[i];
-                    int elementMaskedShifted = element & section.sortMask;
-                    count[elementMaskedShifted]++;
-                }
-                for (int i = 1; i < twoPowerK; i++) {
-                    leftX[i] = leftX[i - 1] + count[i - 1];
-                }
-                for (int i = start; i < end; i++) {
-                    int element = list[i];
-                    int elementMaskedShifted = element & section.sortMask;
-                    aux[leftX[elementMaskedShifted]] = element;
-                    leftX[elementMaskedShifted]++;
-                }
-
+                IntSorterUtils.partitionStableLastBits(list, start, end, section, leftX, count, aux);
             } else {
-                for (int i = start; i < end; i++) {
-                    int element = list[i];
-                    int elementMaskedShifted = (element & section.sortMask) >> section.shiftRight;
-                    count[elementMaskedShifted]++;
-                }
-                for (int i = 1; i < twoPowerK; i++) {
-                    leftX[i] = leftX[i - 1] + count[i - 1];
-                }
-                for (int i = start; i < end; i++) {
-                    int element = list[i];
-                    int elementMaskedShifted = (element & section.sortMask) >> section.shiftRight;
-                    aux[leftX[elementMaskedShifted]] = element;
-                    leftX[elementMaskedShifted]++;
-                }
+                IntSorterUtils.partitionStableOneGroupBits(list, start, end, section, leftX, count, aux);
             }
         } else {
-            for (int i = start; i < end; i++) {
-                int element = list[i];
-                int elementMaskedShifted = getKeySN(element, sections);
-                count[elementMaskedShifted]++;
-            }
-            for (int i = 1; i < twoPowerK; i++) {
-                leftX[i] = leftX[i - 1] + count[i - 1];
-            }
-            for (int i = start; i < end; i++) {
-                int element = list[i];
-                int elementMaskedShifted = getKeySN(element, sections);
-                aux[leftX[elementMaskedShifted]] = element;
-                leftX[elementMaskedShifted]++;
-            }
+            IntSorterUtils.partitionStableNGroupBits(list, start, end, sections, leftX, count, aux);
         }
 
         if (kIndex > 0) {

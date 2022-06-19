@@ -1,5 +1,8 @@
 package com.aldogg.sorter.intType;
 
+import com.aldogg.sorter.Section;
+
+import static com.aldogg.sorter.BitSorterUtils.getKeySN;
 import static com.aldogg.sorter.RadixBitSorterInt.radixSort;
 
 public class IntSorterUtils {
@@ -96,13 +99,12 @@ public class IntSorterUtils {
      *  CPU: O(N), 3*N + 2^K
      *  MEM: O(N), N + 2*2^K
      */
-    public static void partitionStableLastBits(final int[] array, final int start, final int end, final int mask, final int twoPowerK, final int[] aux) {
-        int[] leftX = new int[twoPowerK];
-        int[] count = new int[twoPowerK];
+    public static void partitionStableLastBits(final int[] array, final int start, final int end, final Section section, int[] leftX, int[] count, final int[] aux) {
+        int mask = section.sortMask;
         for (int i = start; i < end; i++) {
             count[array[i] & mask]++;
         }
-        for (int i = 1; i < twoPowerK; i++) {
+        for (int i = 1; i < leftX.length; i++) {
             leftX[i] = leftX[i - 1] + count[i - 1];
         }
         for (int i = start; i < end; i++) {
@@ -113,18 +115,24 @@ public class IntSorterUtils {
         }
         System.arraycopy(aux, 0, array, start, end - start);
     }
-
-    /**
-     *  CPU: O(N), 3*N + 2^K
-     *  MEM: O(N), N + 2*2^K
-     */
-    public static void partitionStableGroupBits(final int[] array, final int start, final int end, final int mask, final int shiftRight, final int twoPowerK, final int[] aux) {
+    public static void partitionStableLastBits(final int[] array, final int start, final int end, final Section section, final int twoPowerK, final int[] aux) {
         int[] leftX = new int[twoPowerK];
         int[] count = new int[twoPowerK];
+        partitionStableLastBits(array, start, end, section, leftX, count, aux);
+    }
+
+
+        /**
+         *  CPU: O(N), 3*N + 2^K
+         *  MEM: O(N), N + 2*2^K
+         */
+    public static void partitionStableOneGroupBits(final int[] array, final int start, final int end, final Section section, final int [] leftX, final int[] count, final int[] aux) {
+        int mask = section.sortMask;
+        int shiftRight = section.shiftRight;
         for (int i = start; i < end; i++) {
             count[(array[i] & mask) >> shiftRight]++;
         }
-        for (int i = 1; i < twoPowerK; i++) {
+        for (int i = 1; i < leftX.length; i++) {
             leftX[i] = leftX[i - 1] + count[i - 1];
         }
         for (int i = start; i < end; i++) {
@@ -135,6 +143,37 @@ public class IntSorterUtils {
         }
         System.arraycopy(aux, 0, array, start, end - start);
     }
+
+    public static void partitionStableOneGroupBits(final int[] array, final int start, final int end, final Section section, final int twoPowerK, final int[] aux) {
+        int[] leftX = new int[twoPowerK];
+        int[] count = new int[twoPowerK];
+        partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
+    }
+
+    public static void partitionStableNGroupBits(final int[] array, final int start, final int end, Section[] sections, final int [] leftX, final int[] count, final int[] aux) {
+        for (int i = start; i < end; i++) {
+            int element = array[i];
+            int elementMaskedShifted = getKeySN(element, sections);
+            count[elementMaskedShifted]++;
+        }
+        for (int i = 1; i < leftX.length; i++) {
+            leftX[i] = leftX[i - 1] + count[i - 1];
+        }
+        for (int i = start; i < end; i++) {
+            int element = array[i];
+            int elementMaskedShifted = getKeySN(element, sections);
+            aux[leftX[elementMaskedShifted]] = element;
+            leftX[elementMaskedShifted]++;
+        }
+        System.arraycopy(aux, 0, array, start, end - start);
+    }
+
+    public static void partitionStableNGroupBits(final int[] array, final int start, final int end, Section[] sections, final int twoPowerK, final int[] aux) {
+        int[] leftX = new int[twoPowerK];
+        int[] count = new int[twoPowerK];
+        partitionStableNGroupBits(array, start, end, sections, leftX, count, aux);
+    }
+
 
     public static void sortShortK(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
         int kDiff = kList.length - kIndex; //K

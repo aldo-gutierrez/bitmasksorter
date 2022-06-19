@@ -5,7 +5,7 @@ import com.aldogg.sorter.intType.IntSorterUtils;
 
 import static com.aldogg.sorter.BitSorterParams.MAX_BITS_RADIX_SORT;
 import static com.aldogg.sorter.BitSorterUtils.*;
-import static com.aldogg.sorter.intType.IntSorterUtils.partitionStableGroupBits;
+import static com.aldogg.sorter.intType.IntSorterUtils.partitionStableOneGroupBits;
 import static com.aldogg.sorter.intType.IntSorterUtils.partitionStableLastBits;
 
 public class RadixBitSorterInt implements IntSorter {
@@ -94,10 +94,13 @@ public class RadixBitSorterInt implements IntSorter {
                 IntSorterUtils.partitionStable(array, start, end, maskI, aux);
             } else {
                 int twoPowerBits = 1 << bits;
+                Section section = new Section();
+                section.sortMask = maskI;
                 if (kListI == 0) {
-                    partitionStableLastBits(array, start, end, maskI, twoPowerBits, aux);
+                    partitionStableLastBits(array, start, end, section, twoPowerBits, aux);
                 } else {
-                    partitionStableGroupBits(array, start, end, maskI, kListI, twoPowerBits, aux);
+                    section.shiftRight = kListI;
+                    partitionStableOneGroupBits(array, start, end, section, twoPowerBits, aux);
                 }
             }
         }
