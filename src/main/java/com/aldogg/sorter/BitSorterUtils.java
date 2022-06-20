@@ -69,11 +69,7 @@ public class BitSorterUtils {
                 currentSection = k;
             } else {
                 if (kList[i - 1] - k == 1) {
-//                    try {
-                        sections.put(currentSection, sections.get(currentSection) + 1);
-//                    } catch (Exception ex) {
-//                        System.out.println(ex.getMessage());
-//                    }
+                    sections.put(currentSection, sections.get(currentSection) + 1);
                 } else {
                     sections.put(k, 1);
                     currentSection = k;

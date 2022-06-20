@@ -78,11 +78,10 @@ public class RadixBitSorterInt implements IntSorter {
             for (int j = sSections.length - 1; j >= 0; j--) {
                 Section sSection = sSections[j];
                 if (sSection.length > 1) {
-                    int twoPowerBits = 1 << sSection.length;
                     if (sSection.isSectionAtEnd()) {
-                        partitionStableLastBits(array, start, end, sSection, twoPowerBits, aux);
+                        partitionStableLastBits(array, start, end, sSection, aux);
                     } else {
-                        partitionStableOneGroupBits(array, start, end, sSection, twoPowerBits, aux);
+                        partitionStableOneGroupBits(array, start, end, sSection, aux);
                     }
                 } else {
                     IntSorterUtils.partitionStable(array, start, end, sSection.sortMask, aux);

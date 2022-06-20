@@ -115,7 +115,8 @@ public class IntSorterUtils {
         }
         System.arraycopy(aux, 0, array, start, end - start);
     }
-    public static void partitionStableLastBits(final int[] array, final int start, final int end, final Section section, final int twoPowerK, final int[] aux) {
+    public static void partitionStableLastBits(final int[] array, final int start, final int end, final Section section, final int[] aux) {
+        int twoPowerK = 1 << section.length;
         int[] leftX = new int[twoPowerK];
         int[] count = new int[twoPowerK];
         partitionStableLastBits(array, start, end, section, leftX, count, aux);
@@ -144,7 +145,8 @@ public class IntSorterUtils {
         System.arraycopy(aux, 0, array, start, end - start);
     }
 
-    public static void partitionStableOneGroupBits(final int[] array, final int start, final int end, final Section section, final int twoPowerK, final int[] aux) {
+    public static void partitionStableOneGroupBits(final int[] array, final int start, final int end, final Section section, final int[] aux) {
+        int twoPowerK = 1 << section.length;
         int[] leftX = new int[twoPowerK];
         int[] count = new int[twoPowerK];
         partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
