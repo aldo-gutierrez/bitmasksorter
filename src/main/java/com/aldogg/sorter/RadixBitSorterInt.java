@@ -3,7 +3,6 @@ package com.aldogg.sorter;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
-import static com.aldogg.sorter.BitSorterParams.MAX_BITS_RADIX_SORT;
 import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.intType.IntSorterUtils.partitionStableOneGroupBits;
 import static com.aldogg.sorter.intType.IntSorterUtils.partitionStableLastBits;
@@ -56,29 +55,49 @@ public class RadixBitSorterInt implements IntSorter {
                 maskParts = getMaskBit(array, start, finalLeft);
                 mask = maskParts[0] & maskParts[1];
                 kList = getMaskAsArray(mask);
-                radixSort(array, start, finalLeft, kList, kList.length - 1, 0, aux);
+                radixSort(array, start, finalLeft, kList, 0, kList.length - 1, aux);
             }
             if (end - finalLeft > 1) { //sort positive numbers
                 int[] aux = new int[end - finalLeft];
                 maskParts = getMaskBit(array, finalLeft, end);
                 mask = maskParts[0] & maskParts[1];
                 kList = getMaskAsArray(mask);
-                radixSort(array, finalLeft, end, kList, kList.length - 1, 0, aux);
+                radixSort(array, finalLeft, end, kList, 0, kList.length - 1, aux);
             }
         } else {
             int[] aux = new int[end - start];
-            radixSort(array, start, end, kList, kList.length - 1, 0, aux);
+            radixSort(array, start, end, kList, 0, kList.length - 1, aux);
         }
     }
 
-    public static void radixSort(int[] array, int start, int end, int[] kList, int kIndexStart, int kIndexEnd, int[] aux) {
-        for (int i = kIndexStart; i >= kIndexEnd; i--) {
+    public static void radixSort(int[] array, int start, int end, int[] kList, int kStart, int kEnd, int[] aux) {
+        Section[] sections = BitSorterUtils.getMaskAsSections(kList, kStart, kEnd);
+        for (int i = sections.length - 1; i >= 0; i--) {
+            Section section = sections[i];
+            Section[] sSections = BitSorterUtils.splitSection(section);
+            for (int j = sSections.length - 1; j >= 0; j--) {
+                Section sSection = sSections[j];
+                if (sSection.length > 1) {
+                    int twoPowerBits = 1 << sSection.length;
+                    if (sSection.isSectionAtEnd()) {
+                        partitionStableLastBits(array, start, end, sSection, twoPowerBits, aux);
+                    } else {
+                        partitionStableOneGroupBits(array, start, end, sSection, twoPowerBits, aux);
+                    }
+                } else {
+                    IntSorterUtils.partitionStable(array, start, end, sSection.sortMask, aux);
+                }
+            }
+        }
+
+/*
+        for (int i = kEnd; i >= kStart; i--) {
             int kListI = kList[i];
             int maskI = 1 << kListI;
             int bits = 1;
             int imm = 0;
             for (int j = 1; j <= MAX_BITS_RADIX_SORT; j++) { //11bits looks faster than 8 on AMD 4800H, 15 is slower
-                if (i - j >= kIndexEnd) {
+                if (i - j >= kStart) {
                     int kListIm1 = kList[i - j];
                     if (kListIm1 == kListI + j) {
                         maskI = maskI | 1 << kListIm1;
@@ -104,6 +123,7 @@ public class RadixBitSorterInt implements IntSorter {
                 }
             }
         }
+*/
     }
 
 }

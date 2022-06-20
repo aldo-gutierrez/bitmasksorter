@@ -59,17 +59,21 @@ public class BitSorterUtils {
         return result;
     }
 
-    public static Section[] getMaskAsSections(final int[] kList) {
+    public static Section[] getMaskAsSections(final int[] kList, int kStart, int kEnd) {
         LinkedHashMap<Integer, Integer> sections = new LinkedHashMap<>();
         int currentSection = -1;
-        for (int i = 0; i < kList.length; i++) {
+        for (int i = kStart; i <= kEnd; i++) {
             int k = kList[i];
-            if (i == 0) {
+            if (i == kStart) {
                 sections.put(k, 1);
                 currentSection = k;
             } else {
                 if (kList[i - 1] - k == 1) {
-                    sections.put(currentSection, sections.get(currentSection) + 1);
+//                    try {
+                        sections.put(currentSection, sections.get(currentSection) + 1);
+//                    } catch (Exception ex) {
+//                        System.out.println(ex.getMessage());
+//                    }
                 } else {
                     sections.put(k, 1);
                     currentSection = k;
@@ -88,6 +92,36 @@ public class BitSorterUtils {
             i++;
         }
         return sectionsAsInts;
+    }
+
+
+    public static Section[] splitSection(Section section) {
+        if (section.length <= BitSorterMTParams.MAX_BITS_RADIX_SORT) {
+            return new Section[]{section};
+        } else {
+            List<Section> sections = new ArrayList<>();
+            int sectionQuantity;
+            if (section.length % BitSorterMTParams.MAX_BITS_RADIX_SORT == 0) {
+                sectionQuantity = section.length / BitSorterMTParams.MAX_BITS_RADIX_SORT;
+            } else {
+                sectionQuantity = (section.length / BitSorterMTParams.MAX_BITS_RADIX_SORT) + 1;
+            }
+            int sectionSize = section.length / sectionQuantity;
+            int sizeAux = 0;
+            for (int i = 0; i < sectionQuantity; i++) {
+                Section sectionAux = new Section();
+                sectionAux.length = (i < sectionQuantity - 1) ? sectionSize : section.length - (sectionSize * (sectionQuantity - 1));
+                sectionAux.k = section.k - sizeAux;
+                sizeAux+=sectionAux.length;
+                sections.add(sectionAux);
+            }
+            for (int i= sectionQuantity-1; i >=0; i--) {
+                Section sectionAux = sections.get(i);
+                sectionAux.shiftRight = (i == sectionQuantity - 1) ? section.shiftRight : sections.get(i+1).shiftRight + sections.get(i+1).length;
+                sectionAux.sortMask = getMaskRangeBits(sectionAux.k, sectionAux.k - sectionAux.length + 1);
+            }
+            return sections.toArray(new Section[]{});
+        }
     }
 
 

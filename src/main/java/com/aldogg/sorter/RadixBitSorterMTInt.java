@@ -99,7 +99,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
         int remainingBits = kList.length - threadBits;
 
         int[] kListAux = getMaskAsArray(sortMask);
-        Section[] sections = getMaskAsSections(kListAux);
+        Section[] sections = getMaskAsSections(kListAux, 0, kListAux.length -1);
 
         int[] leftX = new int[maxProcessNumber];
         int[] count = new int[maxProcessNumber];
@@ -130,7 +130,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
                             sortShortK(list, start + endT - lengthT, start + endT, kList, threadBits);
                         } else {
                             int[] auxT = new int[lengthT];
-                            RadixBitSorterInt.radixSort(list, start + endT - lengthT, start + endT, kList, kList.length - 1, threadBits, auxT);
+                            RadixBitSorterInt.radixSort(list, start + endT - lengthT, start + endT, kList, threadBits, kList.length - 1, auxT);
                         }
                     };
                     runInThreadList.add(r);

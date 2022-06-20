@@ -140,7 +140,7 @@ public class MixedBitSorterMTInt implements IntSorter {
     //partitionStableLastBits
     protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] list, final int start, final int end, int sortMask, int[] kList, int kIndex, int twoPowerK, final int[] aux) {
         int[] kListAux = getMaskAsArray(sortMask);
-        Section[] sections = getMaskAsSections(kListAux);
+        Section[] sections = getMaskAsSections(kListAux, 0, kListAux.length -1);
 
         int[] leftX = new int[twoPowerK];
         int[] count = new int[twoPowerK];
@@ -160,7 +160,7 @@ public class MixedBitSorterMTInt implements IntSorter {
             final int[] kListCountS = Arrays.copyOfRange(kList, kIndex, kList.length);
             final int kIndexCountS = 0;
             final int bufferCountSSize = 1 << kListCountS.length - kIndexCountS;
-            final Section[] sectionsCountS = getMaskAsSections(kListCountS);
+            final Section[] sectionsCountS = getMaskAsSections(kListCountS, 0, kListCountS.length -1);
             final int sortMaskCountS = getMaskLastBits(kListCountS, kIndexCountS);
             final int[] zeroBuffer = new int[bufferCountSSize];
             if (numThreads.get() < params.getMaxThreads() + 1) {

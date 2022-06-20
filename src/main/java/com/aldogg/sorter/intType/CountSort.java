@@ -11,7 +11,7 @@ public class CountSort {
     public static void countSort(final int[] array, final int start, final int end, int[] kList,  int kIndex) {
         int twoPowerK = 1 << kList.length - kIndex;
         kList = Arrays.copyOfRange(kList, kIndex, kList.length);
-        Section[] sections = getMaskAsSections(kList);
+        Section[] sections = getMaskAsSections(kList, 0, kList.length-1 );
         kIndex = 0;
         int[] countBuffer = new int[twoPowerK];
         int[] numberBuffer = null;

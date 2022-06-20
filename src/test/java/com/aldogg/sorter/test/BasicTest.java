@@ -78,7 +78,7 @@ public class BasicTest extends SorterTest{
                 int[] kList = getMaskAsArray(mask);
                 int length = end - start;
                 int[] aux = new int[length];
-                radixSort(array, start, end, kList, kList.length - 1, 0, aux);
+                radixSort(array, start, end, kList, 0, kList.length - 1, aux);
             }
             @Override
             public String name() {

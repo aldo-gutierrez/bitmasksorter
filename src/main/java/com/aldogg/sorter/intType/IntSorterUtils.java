@@ -184,7 +184,7 @@ public class IntSorterUtils {
                 CountSort.countSort(array, start, end, kList, kIndex);
             } else if (n >=32 ){
                 int[] aux = new int[n];
-                radixSort(array, start, end, kList, kList.length - 1, 0, aux);
+                radixSort(array, start, end, kList, 0, kList.length - 1, aux);
             } else {
                 int[] aux = new int[n];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
@@ -197,7 +197,7 @@ public class IntSorterUtils {
                 CountSort.countSort(array, start, end, kList, kIndex);
             } else if (n >=32 ){
                 int[] aux = new int[n];
-                radixSort(array, start, end, kList, kList.length - 1, 0, aux);
+                radixSort(array, start, end, kList, 0, kList.length - 1, aux);
             } else {
                 int[] aux = new int[n];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
@@ -210,7 +210,7 @@ public class IntSorterUtils {
                 CountSort.countSort(array, start, end, kList, kIndex);
             } else if (n >=128 ){
                 int[] aux = new int[n];
-                radixSort(array, start, end, kList, kList.length - 1, 0, aux);
+                radixSort(array, start, end, kList, 0, kList.length - 1, aux);
             } else {
                 int[] aux = new int[n];
                 for (int i = kList.length - 1; i >= kIndex; i--) {

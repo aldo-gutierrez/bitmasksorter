@@ -11,7 +11,7 @@ public class MaskTest {
     @Test
     public void maskTest() {
         int[] kList = new int[] {4,2,1,0};
-        Section[] parts = getMaskAsSections(kList);
+        Section[] parts = getMaskAsSections(kList, 0, kList.length -1);
         int key = getKeySN(20, parts);
         assertEquals(key, 12);
     }
