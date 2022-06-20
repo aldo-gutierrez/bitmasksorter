@@ -88,41 +88,6 @@ public class RadixBitSorterInt implements IntSorter {
                 }
             }
         }
-
-/*
-        for (int i = kEnd; i >= kStart; i--) {
-            int kListI = kList[i];
-            int maskI = 1 << kListI;
-            int bits = 1;
-            int imm = 0;
-            for (int j = 1; j <= MAX_BITS_RADIX_SORT; j++) { //11bits looks faster than 8 on AMD 4800H, 15 is slower
-                if (i - j >= kStart) {
-                    int kListIm1 = kList[i - j];
-                    if (kListIm1 == kListI + j) {
-                        maskI = maskI | 1 << kListIm1;
-                        bits++;
-                        imm++;
-                    } else {
-                        break;
-                    }
-                }
-            }
-            i -= imm;
-            if (bits == 1) {
-                IntSorterUtils.partitionStable(array, start, end, maskI, aux);
-            } else {
-                int twoPowerBits = 1 << bits;
-                Section section = new Section();
-                section.sortMask = maskI;
-                if (kListI == 0) {
-                    partitionStableLastBits(array, start, end, section, twoPowerBits, aux);
-                } else {
-                    section.shiftRight = kListI;
-                    partitionStableOneGroupBits(array, start, end, section, twoPowerBits, aux);
-                }
-            }
-        }
-*/
     }
 
 }

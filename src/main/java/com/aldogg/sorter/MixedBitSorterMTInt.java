@@ -1,7 +1,6 @@
 package com.aldogg.sorter;
 
 import com.aldogg.parallel.SorterRunner;
-import com.aldogg.sorter.intType.CountSort;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
@@ -18,7 +17,6 @@ import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
  * Experimental Bit Sorter
  */
 public class MixedBitSorterMTInt implements IntSorter {
-    public static final int COUNT_SORT_SMALL_NUMBER_SHIFT = 4;
 
     final AtomicInteger numThreads = new AtomicInteger(1);
     protected final BitSorterMTParams params = BitSorterMTParams.getMTParams();
@@ -158,26 +156,25 @@ public class MixedBitSorterMTInt implements IntSorter {
 
         if (kIndex > 0) {
             final int[] kListCountS = Arrays.copyOfRange(kList, kIndex, kList.length);
-            final int kIndexCountS = 0;
-            final int bufferCountSSize = 1 << kListCountS.length - kIndexCountS;
-            final Section[] sectionsCountS = getMaskAsSections(kListCountS, 0, kListCountS.length -1);
-            final int sortMaskCountS = getMaskLastBits(kListCountS, kIndexCountS);
-            final int[] zeroBuffer = new int[bufferCountSSize];
             if (numThreads.get() < params.getMaxThreads() + 1) {
                 Runnable r1 = () -> {
-                    int[] bufferCount = new int[bufferCountSSize];
-                    int[] bufferSize = new int[bufferCountSSize];
                     for (int i = 0; i < twoPowerK / 2; i++) {
-                        smallListUtil(aux, leftX[i] - count[i], leftX[i], kListCountS, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
+                        int start1 = leftX[i] - count[i];
+                        int end1 = leftX[i];
+                        if (end1 - start1 > 1) {
+                            smallListUtil(aux, start1, end1, kListCountS);
+                        }
                     }
                 };
                 Thread t1 = new Thread(r1);
                 t1.start();
                 numThreads.addAndGet(1);
-                int[] bufferCount = new int[bufferCountSSize];
-                int[] bufferSize = new int[bufferCountSSize];
                 for (int i = twoPowerK / 2; i < twoPowerK; i++) {
-                    smallListUtil(aux, leftX[i] - count[i], leftX[i], kListCountS, sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
+                    int start1 = leftX[i] - count[i];
+                    int end1 = leftX[i];
+                    if (end1 - start1 > 1) {
+                        smallListUtil(aux, start1, end1, kListCountS);
+                    }
                 }
                 try {
                     t1.join();
@@ -187,10 +184,12 @@ public class MixedBitSorterMTInt implements IntSorter {
                     numThreads.addAndGet(-1);
                 }
             } else {
-                int[] bufferCount = new int[bufferCountSSize];
-                int[] bufferSize = new int[bufferCountSSize];
                 for (int i = 0; i < twoPowerK; i++) {
-                    smallListUtil(aux, leftX[i] - count[i], leftX[i], kListCountS,sectionsCountS, sortMaskCountS, bufferCount, bufferSize, zeroBuffer);
+                    int start1 = leftX[i] - count[i];
+                    int end1 = leftX[i];
+                    if (end1 - start1 > 1) {
+                        smallListUtil(aux, start1, end1, kListCountS);
+                    }
                 }
             }
 
@@ -198,23 +197,15 @@ public class MixedBitSorterMTInt implements IntSorter {
         System.arraycopy(aux, 0, list, start, end - start);
     }
 
-    private void smallListUtil(final int[] array, final int start, final int end, int[] kList, final Section[] sections, final int sortMask, final int[] bufferCount, final int[] bufferNumber, final int[] zeroBuffer) {
+    private void smallListUtil(final int[] array, final int start, final int end, int[] kList) {
         int n = end - start;
-        if (n > VERY_SMALL_N_SIZE) {
-            int bufferLength = bufferCount.length;
-            if (n < bufferLength >>COUNT_SORT_SMALL_NUMBER_SHIFT ) {
-                int[] aux = new int[n];
-                for (int i = kList.length - 1; i >= 0; i--) {
-                    IntSorterUtils.partitionStable(array, start, end, 1 << kList[i], aux);
-                }
-            } else {
-                CountSort.countSort(array, start, end, sortMask, sections, bufferCount, bufferNumber);
-                System.arraycopy(zeroBuffer, 0, bufferCount, 0, bufferLength);
-                System.arraycopy(zeroBuffer, 0, bufferNumber, 0, bufferLength);
-            }
-
-        } else if (n > 1) {
+        if (n <= VERY_SMALL_N_SIZE) {
             snFunction.get(n).accept(array, start);
+        } else if (kList.length <= params.getShortKBits()) {
+            sortShortK(array, start, end, kList, 0);
+        } else {
+            int[] auxT = new int[n];
+            RadixBitSorterInt.radixSort(array, start, end, kList, 0, kList.length - 1, auxT);
         }
     }
 

@@ -5,6 +5,8 @@ import com.aldogg.sorter.intType.IntSorterUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
@@ -12,6 +14,8 @@ import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 public class RadixBitSorterMTInt extends RadixBitSorterInt {
 
     protected final BitSorterMTParams params = BitSorterMTParams.getMTParams();
+
+    protected Map<Integer, BiConsumer<int[], Integer>> snFunction;
 
     @Override
     public void sort(int[] array, int start, int end) {
@@ -37,6 +41,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
         if (kList.length == 0) {
             return;
         }
+        snFunction = unsigned ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions;
         sort(array, start, end, kList);
     }
 
@@ -94,7 +99,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
         partitionStableNonConsecutiveBitsAndRadixSort(array, start, end, sortMask1, threadBits, kList, aux2);
     }
 
-    protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] list, final int start, final int end, int sortMask, int threadBits, int[] kList, final int[] aux) {
+    protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] array, final int start, final int end, int sortMask, int threadBits, int[] kList, final int[] aux) {
         int maxProcessNumber = 1 << threadBits;
         int remainingBits = kList.length - threadBits;
 
@@ -108,12 +113,12 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
         if (sections.length == 1) {
             Section section = sections[0];
             if (section.isSectionAtEnd()) {
-                IntSorterUtils.partitionStableLastBits(list, start, end, section, leftX, count, aux);
+                IntSorterUtils.partitionStableLastBits(array, start, end, section, leftX, count, aux);
             } else {
-                IntSorterUtils.partitionStableOneGroupBits(list, start, end, section, leftX, count, aux);
+                IntSorterUtils.partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
             }
         } else {
-            IntSorterUtils.partitionStableNGroupBits(list, start, end, sections, leftX, count, aux);
+            IntSorterUtils.partitionStableNGroupBits(array, start, end, sections, leftX, count, aux);
         }
 
 
@@ -127,10 +132,10 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
                     Runnable r = () -> {
                         int endT = leftX[finalI];
                         if (remainingBits <= params.getShortKBits()) {
-                            sortShortK(list, start + endT - lengthT, start + endT, kList, threadBits);
+                            sortShortK(array, start + endT - lengthT, start + endT, kList, threadBits);
                         } else {
                             int[] auxT = new int[lengthT];
-                            RadixBitSorterInt.radixSort(list, start + endT - lengthT, start + endT, kList, threadBits, kList.length - 1, auxT);
+                            RadixBitSorterInt.radixSort(array, start + endT - lengthT, start + endT, kList, threadBits, kList.length - 1, auxT);
                         }
                     };
                     runInThreadList.add(r);
