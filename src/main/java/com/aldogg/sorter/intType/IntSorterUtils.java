@@ -152,7 +152,6 @@ public class IntSorterUtils {
             aux[leftX[elementMaskedShifted]] = element;
             leftX[elementMaskedShifted]++;
         }
-        System.arraycopy(aux, 0, array, start, end - start);
     }
 
     enum ShortSorter {StableByte, StableBit, CountSort}
