@@ -135,7 +135,7 @@ public class RadixByteSorterInt implements IntSorter {
         if (s24) {
             int[] count = new int[256];
             leftX[0] = 0;
-            section.sortMask = 0xFF000000;
+            section.sortMask = 0x7F000000;
             section.shiftRight = 24;
             IntSorterUtils.partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
             int lengthPositive = leftX[128];
