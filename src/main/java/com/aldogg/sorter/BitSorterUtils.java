@@ -102,8 +102,8 @@ public class BitSorterUtils {
             } else {
                 sectionQuantity = (section.length / BitSorterMTParams.MAX_BITS_RADIX_SORT) + 1;
             }
-            //int sectionSize = section.length / sectionQuantity;
-            int sectionSize = BitSorterMTParams.MAX_BITS_RADIX_SORT;
+            int sectionSize = section.length / sectionQuantity;
+            //int sectionSize = BitSorterMTParams.MAX_BITS_RADIX_SORT;
             int sizeAux = 0;
             for (int i = 0; i < sectionQuantity; i++) {
                 Section sectionAux = new Section();
