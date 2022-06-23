@@ -124,14 +124,14 @@ public class IntSorterUtils {
         int mask = section.sortMask;
         int shiftRight = section.shiftRight;
         for (int i = start; i < end; i++) {
-            count[(array[i] & mask) >> shiftRight]++;
+                count[(array[i] & mask) >>> shiftRight]++;
         }
         for (int i = 1; i < leftX.length; i++) {
             leftX[i] = leftX[i - 1] + count[i - 1];
         }
         for (int i = start; i < end; i++) {
             int element = array[i];
-            int elementShiftMasked = (element & mask) >> shiftRight;
+            int elementShiftMasked = (element & mask) >>> shiftRight;
             aux[leftX[elementShiftMasked]] = element;
             leftX[elementShiftMasked]++;
         }
@@ -153,6 +153,15 @@ public class IntSorterUtils {
             leftX[elementMaskedShifted]++;
         }
     }
+
+    public static void reverse(final int[] array, final int start, final int end) {
+        int length = end - start;
+        int end2 = start + length / 2;
+        for (int i = start; i < end2; i++) {
+            swap(array, i, end - i - 1);
+        }
+    }
+
 
     enum ShortSorter {StableByte, StableBit, CountSort}
 
@@ -277,13 +286,6 @@ public class IntSorterUtils {
         }
     }
 
-    public static void reverse(final int[] array, final int start, final int end) {
-        int length = end - start;
-        int end2 = start + length / 2;
-        for (int i = start; i < end2; i++) {
-            swap(array, i, end - i - 1);
-        }
-    }
 
         /*
         int[] maskParts = ArrayThreadRunner.runInParallel(list, start, end, 2, new ArrayRunnable<int[]>() {

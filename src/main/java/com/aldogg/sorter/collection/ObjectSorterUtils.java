@@ -175,7 +175,7 @@ public class ObjectSorterUtils {
         int[] count = new int[twoPowerK];
         for (int i = start; i < end; i++) {
             int element = array[i];
-            int elementShiftMasked = (element & mask) >> shiftRight;
+            int elementShiftMasked = (element & mask) >>> shiftRight;
             count[elementShiftMasked]++;
         }
         for (int i = 1; i < twoPowerK; i++) {
@@ -184,7 +184,7 @@ public class ObjectSorterUtils {
         for (int i = start; i < end; i++) {
             int element = array[i];
             Object oElement = oArray[i];
-            int elementShiftMasked = (element & mask) >> shiftRight;
+            int elementShiftMasked = (element & mask) >>> shiftRight;
             aux[start + leftX[elementShiftMasked]] = element;
             oAux[start + leftX[elementShiftMasked]] = oElement;
             leftX[elementShiftMasked]++;
@@ -197,9 +197,7 @@ public class ObjectSorterUtils {
         int length = end - start;
         int end2 = start + length / 2;
         for (int i = start; i < end2; i++) {
-            Object swap = oArray[i];
-            oArray[i] = oArray[end - i - 1];
-            oArray[end - i - 1] = swap;
+            swap(oArray, i, end - i - 1);
         }
     }
 }

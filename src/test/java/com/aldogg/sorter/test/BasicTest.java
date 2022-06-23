@@ -18,7 +18,7 @@ import java.util.Random;
 import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.RadixBitSorterInt.radixSort;
 
-public class BasicTest extends SorterTest{
+public class BasicTest extends BaseTest{
     @Test
     public void basicTests() {
         IntSorter[] sorters = new IntSorter[] {new MixedBitSorterMTInt(), new QuickBitSorterInt(), new QuickBitSorterMTInt(), new RadixBitSorterInt(), new RadixBitSorterMTInt(), new RadixByteSorterInt()};
