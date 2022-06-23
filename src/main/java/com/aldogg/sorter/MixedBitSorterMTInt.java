@@ -143,15 +143,19 @@ public class MixedBitSorterMTInt implements IntSorter {
         int[] leftX = new int[twoPowerK];
         int[] count = new int[twoPowerK];
 
+        int n = end - start;
         if (sections.length == 1) {
             Section section = sections[0];
             if (section.isSectionAtEnd()) {
                 IntSorterUtils.partitionStableLastBits(list, start, end, section, leftX, count, aux);
+                System.arraycopy(aux, 0, list, start, n);
             } else {
                 IntSorterUtils.partitionStableOneGroupBits(list, start, end, section, leftX, count, aux);
+                System.arraycopy(aux, 0, list, start, n);
             }
         } else {
             IntSorterUtils.partitionStableNGroupBits(list, start, end, sections, leftX, count, aux);
+            System.arraycopy(aux, 0, list, start, n);
         }
 
         if (kIndex > 0) {
@@ -194,7 +198,7 @@ public class MixedBitSorterMTInt implements IntSorter {
             }
 
         }
-        System.arraycopy(aux, 0, list, start, end - start);
+        System.arraycopy(aux, 0, list, start, n);
     }
 
     private void smallListUtil(final int[] array, final int start, final int end, int[] kList) {

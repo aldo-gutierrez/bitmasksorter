@@ -3,6 +3,7 @@ package com.aldogg.sorter;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
+import static com.aldogg.sorter.BitSorterParams.MAX_BITS_RADIX_SORT;
 import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.intType.IntSorterUtils.partitionStableOneGroupBits;
 import static com.aldogg.sorter.intType.IntSorterUtils.partitionStableLastBits;
@@ -71,18 +72,24 @@ public class RadixBitSorterInt implements IntSorter {
     }
 
     public static void radixSort(int[] array, int start, int end, int[] kList, int kStart, int kEnd, int[] aux) {
+
         Section[] sections = BitSorterUtils.getMaskAsSections(kList, kStart, kEnd);
+        int n = end - start;
         for (int i = sections.length - 1; i >= 0; i--) {
             Section section = sections[i];
             Section[] sSections = BitSorterUtils.splitSection(section);
             for (int j = sSections.length - 1; j >= 0; j--) {
                 Section sSection = sSections[j];
                 if (sSection.length > 1) {
+                    int twoPowerK = 1 << sSection.length;
+                    int[] leftX = new int[twoPowerK];
+                    int[] count = new int[twoPowerK];
                     if (sSection.isSectionAtEnd()) {
-                        partitionStableLastBits(array, start, end, sSection, aux);
+                        partitionStableLastBits(array, start, end, sSection, leftX, count, aux);
                     } else {
-                        partitionStableOneGroupBits(array, start, end, sSection, aux);
+                        partitionStableOneGroupBits(array, start, end, sSection, leftX, count, aux);
                     }
+                    System.arraycopy(aux, 0, array, start, n);
                 } else {
                     IntSorterUtils.partitionStable(array, start, end, sSection.sortMask, aux);
                 }

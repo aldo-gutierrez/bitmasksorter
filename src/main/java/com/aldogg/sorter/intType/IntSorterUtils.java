@@ -113,17 +113,10 @@ public class IntSorterUtils {
             aux[leftX[elementShiftMasked]] = element;
             leftX[elementShiftMasked]++;
         }
-        System.arraycopy(aux, 0, array, start, end - start);
-    }
-    public static void partitionStableLastBits(final int[] array, final int start, final int end, final Section section, final int[] aux) {
-        int twoPowerK = 1 << section.length;
-        int[] leftX = new int[twoPowerK];
-        int[] count = new int[twoPowerK];
-        partitionStableLastBits(array, start, end, section, leftX, count, aux);
     }
 
 
-        /**
+    /**
          *  CPU: O(N), 3*N + 2^K
          *  MEM: O(N), N + 2*2^K
          */
@@ -142,14 +135,6 @@ public class IntSorterUtils {
             aux[leftX[elementShiftMasked]] = element;
             leftX[elementShiftMasked]++;
         }
-        System.arraycopy(aux, 0, array, start, end - start);
-    }
-
-    public static void partitionStableOneGroupBits(final int[] array, final int start, final int end, final Section section, final int[] aux) {
-        int twoPowerK = 1 << section.length;
-        int[] leftX = new int[twoPowerK];
-        int[] count = new int[twoPowerK];
-        partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
     }
 
     public static void partitionStableNGroupBits(final int[] array, final int start, final int end, Section[] sections, final int [] leftX, final int[] count, final int[] aux) {
@@ -170,13 +155,83 @@ public class IntSorterUtils {
         System.arraycopy(aux, 0, array, start, end - start);
     }
 
-    public static void partitionStableNGroupBits(final int[] array, final int start, final int end, Section[] sections, final int twoPowerK, final int[] aux) {
-        int[] leftX = new int[twoPowerK];
-        int[] count = new int[twoPowerK];
-        partitionStableNGroupBits(array, start, end, sections, leftX, count, aux);
+    enum ShortSorter {StableByte, StableBit, CountSort}
+
+    /**
+     * Based on BasicTest.smallListAlgorithmSpeedTest
+     */
+    public static void sortShortKNew(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
+        int k = kList.length - kIndex; //K
+        int n = end - start; //N
+        ShortSorter sorter;
+        if (k >= 16) {
+            sorter = ShortSorter.StableByte;
+        } else if (k <= 1) {
+            sorter = ShortSorter.StableBit;
+        } else { //k2 - k15
+            if (n >= 32768) {
+                sorter = ShortSorter.CountSort;
+            } else {
+                if (k >= 14) {
+                    sorter = ShortSorter.StableByte;
+                } else {
+                    if (n >= 8192) {
+                        sorter = ShortSorter.CountSort;
+                    } else {
+                        if (k >= 12) {
+                            sorter = ShortSorter.StableByte;
+                        } else {
+                            if (n >= 512) {
+                                sorter = ShortSorter.CountSort;
+                            } else {
+                                if (k <= 2) {
+                                    if (n >= 64) {
+                                        sorter = ShortSorter.CountSort;
+                                    } else {
+                                        sorter = ShortSorter.StableBit;
+                                    }
+                                } else if (k >= 10) {
+                                    if (n >= 64) {
+                                        sorter = ShortSorter.CountSort;
+                                    } else {
+                                        sorter = ShortSorter.StableBit;
+                                    }
+                                } else if (k <= 6) {
+                                    if (n >= 128) {
+                                        sorter = ShortSorter.CountSort;
+                                    } else {
+                                        sorter = ShortSorter.StableByte;
+                                    }
+                                } else {
+                                    if (n >= 32) {
+                                        sorter = ShortSorter.StableByte;
+                                    } else {
+                                        sorter = ShortSorter.CountSort;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (sorter.equals(ShortSorter.CountSort)) {
+            CountSort.countSort(array, start, end, kList, kIndex);
+        } else if (sorter.equals(ShortSorter.StableByte)) {
+            int[] aux = new int[n];
+            radixSort(array, start, end, kList, kIndex, kList.length - 1, aux);
+        } else {
+            int[] aux = new int[n];
+            for (int i = kList.length - 1; i >= kIndex; i--) {
+                int sortMask = 1 << kList[i];
+                IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
+            }
+        }
     }
 
-
+    /**
+     * Based on BasicTest.smallListAlgorithmSpeedTest
+     */
     public static void sortShortK(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
         int kDiff = kList.length - kIndex; //K
         int n = end - start; //N
@@ -186,7 +241,7 @@ public class IntSorterUtils {
                 CountSort.countSort(array, start, end, kList, kIndex);
             } else if (n >=32 ){
                 int[] aux = new int[n];
-                radixSort(array, start, end, kList, 0, kList.length - 1, aux);
+                radixSort(array, start, end, kList, kIndex, kList.length - 1, aux);
             } else {
                 int[] aux = new int[n];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
@@ -199,7 +254,7 @@ public class IntSorterUtils {
                 CountSort.countSort(array, start, end, kList, kIndex);
             } else if (n >=32 ){
                 int[] aux = new int[n];
-                radixSort(array, start, end, kList, 0, kList.length - 1, aux);
+                radixSort(array, start, end, kList, kIndex, kList.length - 1, aux);
             } else {
                 int[] aux = new int[n];
                 for (int i = kList.length - 1; i >= kIndex; i--) {
@@ -212,7 +267,7 @@ public class IntSorterUtils {
                 CountSort.countSort(array, start, end, kList, kIndex);
             } else if (n >=128 ){
                 int[] aux = new int[n];
-                radixSort(array, start, end, kList, 0, kList.length - 1, aux);
+                radixSort(array, start, end, kList, kIndex, kList.length - 1, aux);
             } else {
                 int[] aux = new int[n];
                 for (int i = kList.length - 1; i >= kIndex; i--) {

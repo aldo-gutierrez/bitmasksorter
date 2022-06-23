@@ -114,6 +114,7 @@ public class RadixByteSorterInt implements IntSorter {
             int[] count = new int[256];
             leftX[0] = 0;
             IntSorterUtils.partitionStableLastBits(array, start, end, section, leftX, count, aux);
+            System.arraycopy(aux, 0, array, start, n);
         }
         if (s8) {
             int[] count = new int[256];
@@ -121,6 +122,7 @@ public class RadixByteSorterInt implements IntSorter {
             section.sortMask = 0xFF00;
             section.shiftRight = 8;
             IntSorterUtils.partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
+            System.arraycopy(aux, 0, array, start, n);
         }
         if (s16) {
             int[] count = new int[256];
@@ -128,23 +130,15 @@ public class RadixByteSorterInt implements IntSorter {
             section.sortMask = 0xFF0000;
             section.shiftRight = 16;
             IntSorterUtils.partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
+            System.arraycopy(aux, 0, array, start, n);
         }
         if (s24) {
             int[] count = new int[256];
-            for (int i = start; i < end; i++) {
-                count[array[i] >> 24 & 0xFF]++;
-            }
             leftX[0] = 0;
-            for (int i = 1; i < 256; i++) {
-                leftX[i] = leftX[i - 1] + count[i - 1];
-            }
+            section.sortMask = 0xFF000000;
+            section.shiftRight = 24;
+            IntSorterUtils.partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
             int lengthPositive = leftX[128];
-            for (int i = start; i < end; i++) {
-                int element = array[i];
-                int elementShiftMasked = element >> 24 & 0xFF;
-                aux[leftX[elementShiftMasked]] = element;
-                leftX[elementShiftMasked]++;
-            }
             if (unsigned) {
                 System.arraycopy(aux, 0, array, start, n);
             } else {

@@ -132,7 +132,7 @@ public class BasicTest extends SorterTest{
         TestSortResults testSortResults;
 
         int iterations = 200;
-        int[] limitHigh = new int[] {1, 3, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191,1637,32767,65535};
+        int[] limitHigh = new int[]{1, 3, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535};
         testSortResults = new TestSortResults(sorters.length);
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(123456789);

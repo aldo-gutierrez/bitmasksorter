@@ -110,15 +110,19 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
         int[] count = new int[maxProcessNumber];
 
 
+        int n = end - start;
         if (sections.length == 1) {
             Section section = sections[0];
             if (section.isSectionAtEnd()) {
                 IntSorterUtils.partitionStableLastBits(array, start, end, section, leftX, count, aux);
+                System.arraycopy(aux, 0, array, start, n);
             } else {
                 IntSorterUtils.partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
+                System.arraycopy(aux, 0, array, start, n);
             }
         } else {
             IntSorterUtils.partitionStableNGroupBits(array, start, end, sections, leftX, count, aux);
+            System.arraycopy(aux, 0, array, start, n);
         }
 
 
