@@ -78,7 +78,7 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
                 maskParts = getMaskBit(array, start, finalLeft);
                 mask = maskParts[0] & maskParts[1];
                 kList = getMaskAsArray(mask);
-                radixSort(oArray, array, start, finalLeft, kList, kList.length - 1, 0, oAux, aux);
+                radixSort(oArray, array, start, finalLeft, kList, 0, kList.length - 1, oAux, aux);
             }
             if (end - finalLeft > 1) { //sort positive numbers
                 int[] aux = new int[end - finalLeft];
@@ -86,23 +86,23 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
                 maskParts = getMaskBit(array, finalLeft, end);
                 mask = maskParts[0] & maskParts[1];
                 kList = getMaskAsArray(mask);
-                radixSort(oArray, array, finalLeft, end, kList, kList.length - 1, 0, oAux, aux);
+                radixSort(oArray, array, finalLeft, end, kList, 0, kList.length - 1, oAux, aux);
             }
         } else {
             int[] aux = new int[end - start];
             Object[] oAux = new Object[end - start];
-            radixSort(oArray, array, start, end, kList, kList.length - 1, 0, oAux, aux);
+            radixSort(oArray, array, start, end, kList, 0, kList.length - 1, oAux, aux);
         }
     }
 
-    public static void radixSort(Object[] oArray, int[] array, int start, int end, int[] kList, int kIndexStart, int kIndexEnd, Object[] oAux, int[] aux) {
-        for (int i = kIndexStart; i >= kIndexEnd; i--) {
+    public static void radixSort(Object[] oArray, int[] array, int start, int end, int[] kList, int kStart, int kEnd, Object[] oAux, int[] aux) {
+        for (int i = kEnd; i >= kStart; i--) {
             int kListI = kList[i];
             int maskI = 1 << kListI;
             int bits = 1;
             int imm = 0;
             for (int j = 1; j <= MAX_BITS_RADIX_SORT; j++) {
-                if (i - j >= kIndexEnd) {
+                if (i - j >= kStart) {
                     int kListIm1 = kList[i - j];
                     if (kListIm1 == kListI + j) {
                         maskI = maskI | 1 << kListIm1;
@@ -117,11 +117,11 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
             if (bits == 1) {
                 partitionStable(oArray, array, start, end, maskI, oAux, aux);
             } else {
-                int twoPowerBits = 1 << bits;
+                int twoPowerK = 1 << bits;
                 if (kListI == 0) {
-                    partitionStableLastBits(oArray, array, start, end, maskI, twoPowerBits, oAux, aux);
+                    partitionStableLastBits(oArray, array, start, end, maskI, twoPowerK, oAux, aux);
                 } else {
-                    partitionStableGroupBits(oArray, array, start, end, maskI, kListI, twoPowerBits, oAux, aux);
+                    partitionStableGroupBits(oArray, array, start, end, maskI, kListI, twoPowerK, oAux, aux);
                 }
             }
         }
