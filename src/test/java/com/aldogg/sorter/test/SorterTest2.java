@@ -1,11 +1,16 @@
 package com.aldogg.sorter.test;
 
-import com.aldogg.sorter.*;
 import com.aldogg.sorter.generators.Generator;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.intType.IntSorter;
-import com.aldogg.sorter.sorters.JavaParallelSorterInt;
-import com.aldogg.sorter.sorters.JavaSorterInt;
+import com.aldogg.sorter.intType.mt.JavaParallelSorterInt;
+import com.aldogg.sorter.intType.mt.MixedBitSorterMTInt;
+import com.aldogg.sorter.intType.mt.QuickBitSorterMTInt;
+import com.aldogg.sorter.intType.mt.RadixBitSorterMTInt;
+import com.aldogg.sorter.intType.st.JavaSorterInt;
+import com.aldogg.sorter.intType.st.QuickBitSorterInt;
+import com.aldogg.sorter.intType.st.RadixBitSorterInt;
+import com.aldogg.sorter.intType.st.RadixByteSorterInt;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
@@ -19,7 +24,7 @@ public class SorterTest2 extends SorterTest {
     @Test
     public void testFunctionsSingleThread() throws IOException {
 //        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new MergeSorterInt(), new MergeSorter2Int()};
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
 
         GeneratorParams params = new GeneratorParams();
         params.random = new Random();

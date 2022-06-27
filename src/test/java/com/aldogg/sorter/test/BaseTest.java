@@ -3,8 +3,8 @@ package com.aldogg.sorter.test;
 import com.aldogg.sorter.generators.Generator;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.intType.IntSorter;
-import com.aldogg.sorter.intType.Sorter;
-import com.aldogg.sorter.sorters.JavaSorterInt;
+import com.aldogg.sorter.Sorter;
+import com.aldogg.sorter.intType.st.JavaSorterInt;
 
 import java.io.IOException;
 import java.io.Writer;

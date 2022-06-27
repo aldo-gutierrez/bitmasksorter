@@ -1,4 +1,6 @@
-package com.aldogg.sorter.intType;
+package com.aldogg.sorter.intType.experimental;
+
+import com.aldogg.sorter.intType.IntSorterUtils;
 
 /**
  *

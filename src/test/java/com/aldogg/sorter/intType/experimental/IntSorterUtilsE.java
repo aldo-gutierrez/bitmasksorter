@@ -1,4 +1,4 @@
-package com.aldogg.sorter.intType;
+package com.aldogg.sorter.intType.experimental;
 
 import static com.aldogg.sorter.AnalysisResult.*;
 

@@ -1,4 +1,4 @@
-package com.aldogg.sorter.intType.other;
+package com.aldogg.sorter.intType.mt;
 
 import com.aldogg.sorter.intType.IntSorter;
 

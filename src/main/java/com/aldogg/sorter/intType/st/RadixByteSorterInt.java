@@ -1,29 +1,16 @@
-package com.aldogg.sorter;
+package com.aldogg.sorter.intType.st;
 
-import com.aldogg.sorter.intType.IntSorter;
+import com.aldogg.sorter.AnalysisResult;
+import com.aldogg.sorter.BitSorterUtils;
+import com.aldogg.sorter.Section;
+import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
 
-public class RadixByteSorterInt implements IntSorter {
+public class RadixByteSorterInt extends IntBitMaskSorter {
 
-    boolean unsigned = false;
-    boolean stable = true;
     boolean calculateBitMaskOptimization = true;
-
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
-
-    @Override
-    public boolean isStable() {
-        return stable;
-    }
 
     public void setCalculateBitMaskOptimization(boolean calculateBitMaskOptimization) {
         this.calculateBitMaskOptimization = calculateBitMaskOptimization;
@@ -139,7 +126,7 @@ public class RadixByteSorterInt implements IntSorter {
             section.shiftRight = 24;
             IntSorterUtils.partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
             int lengthPositive = leftX[128];
-            if (unsigned) {
+            if (isUnsigned()) {
                 System.arraycopy(aux, 0, array, start, n);
             } else {
                 if (lengthPositive < n) {

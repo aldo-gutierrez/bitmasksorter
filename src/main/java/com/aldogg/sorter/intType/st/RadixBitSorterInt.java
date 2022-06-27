@@ -1,45 +1,15 @@
-package com.aldogg.sorter;
+package com.aldogg.sorter.intType.st;
 
-import com.aldogg.sorter.intType.IntSorter;
+import com.aldogg.sorter.BitSorterUtils;
+import com.aldogg.sorter.Section;
+import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
 import static com.aldogg.sorter.BitSorterParams.MAX_BITS_RADIX_SORT;
 import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.intType.IntSorterUtils.*;
 
-public class RadixBitSorterInt implements IntSorter {
-
-    boolean unsigned = false;
-
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
-
-    @Override
-    public void sort(int[] array, int start, int end) {
-        int n = end - start;
-        if (n < 2) {
-            return;
-        }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
-        if (ordered == AnalysisResult.DESCENDING) {
-            IntSorterUtils.reverse(array, start, end);
-        }
-        if (ordered != AnalysisResult.UNORDERED) return;
-
-        int[] maskParts = getMaskBit(array, start, end);
-        int mask = maskParts[0] & maskParts[1];
-        int[] kList = getMaskAsArray(mask);
-        if (kList.length == 0) {
-            return;
-        }
-        sort(array, start, end, kList);
-    }
+public class RadixBitSorterInt extends IntBitMaskSorter {
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {

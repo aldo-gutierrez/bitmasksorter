@@ -1,4 +1,7 @@
-package com.aldogg.sorter.collection;
+package com.aldogg.sorter.collection.st;
+
+import com.aldogg.sorter.collection.IntComparator;
+import com.aldogg.sorter.collection.ObjectSorter;
 
 import java.util.Arrays;
 

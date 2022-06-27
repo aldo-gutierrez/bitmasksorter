@@ -1,55 +1,14 @@
-package com.aldogg.sorter;
+package com.aldogg.sorter.intType.st;
 
-import com.aldogg.sorter.intType.IntSorter;
+import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
-import java.util.Map;
-import java.util.function.BiConsumer;
 
 import static com.aldogg.sorter.BitSorterParams.*;
 import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 
-public class QuickBitSorterInt implements IntSorter {
-    protected BitSorterParams params = BitSorterParams.getSTParams();
-    boolean unsigned = false;
-    protected Map<Integer, BiConsumer<int[], Integer>> snFunction;
-
-    public void setParams(BitSorterParams params) {
-        this.params = params;
-    }
-
-
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
-
-    @Override
-    public void sort(int[] array, int start, int end) {
-        int n = end - start;
-        if (n < 2) {
-            return;
-        }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
-        if (ordered == AnalysisResult.DESCENDING) {
-            IntSorterUtils.reverse(array, start, end);
-        }
-        if (ordered != AnalysisResult.UNORDERED) return;
-
-        int[] maskParts = getMaskBit(array, start, end);
-        int mask = maskParts[0] & maskParts[1];
-        int[] kList = getMaskAsArray(mask);
-        if (kList.length == 0) {
-            return;
-        }
-        snFunction = unsigned ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions;
-        sort(array, start, end, kList);
-    }
+public class QuickBitSorterInt extends IntBitMaskSorter {
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {
@@ -72,7 +31,7 @@ public class QuickBitSorterInt implements IntSorter {
     public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
         final int n = end - start;
         if (n <= VERY_SMALL_N_SIZE) {
-            snFunction.get(n).accept(array, start);
+            snFunctions.get(n).accept(array, start);
             return;
         }
 
@@ -116,7 +75,7 @@ public class QuickBitSorterInt implements IntSorter {
     public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex) {
         final int n = end - start;
         if (n <= VERY_SMALL_N_SIZE) {
-            snFunction.get(n).accept(array, start);
+            snFunctions.get(n).accept(array, start);
             return;
         }
 

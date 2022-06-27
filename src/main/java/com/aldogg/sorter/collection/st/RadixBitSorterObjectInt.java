@@ -1,5 +1,8 @@
-package com.aldogg.sorter;
+package com.aldogg.sorter.collection.st;
 
+import com.aldogg.sorter.AnalysisResult;
+import com.aldogg.sorter.BitSorterUtils;
+import com.aldogg.sorter.Section;
 import com.aldogg.sorter.collection.IntComparator;
 import com.aldogg.sorter.collection.ObjectSorter;
 import com.aldogg.sorter.collection.ObjectSorterUtils;

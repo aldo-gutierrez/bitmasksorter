@@ -1,6 +1,6 @@
-package com.aldogg.sorter;
+package com.aldogg.sorter.intType.st;
 
-import com.aldogg.sorter.intType.IntSorter;
+import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
@@ -10,32 +10,7 @@ import static com.aldogg.sorter.BitSorterUtils.*;
  * It doesn't include a count sort
  * It doesn't include a comparator sort for small lists
  */
-public class QuickBitBaseSorterInt implements IntSorter {
-    boolean unsigned = false;
-
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
-
-    @Override
-    public void sort(int[] array, int start, int end) {
-        int n = end - start;
-        if (n < 2) {
-            return;
-        }
-        int[] maskParts = getMaskBit(array, start, end);
-        int mask = maskParts[0] & maskParts[1];
-        int[] kList = getMaskAsArray(mask);
-        if (kList.length == 0) {
-            return;
-        }
-        sort(array, start, end, kList);
-    }
+public class QuickBitBaseSorterInt extends IntBitMaskSorter {
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {

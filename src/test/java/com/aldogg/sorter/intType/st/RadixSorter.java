@@ -1,4 +1,4 @@
-package com.aldogg.sorter.sorters;
+package com.aldogg.sorter.intType.st;
 
 import com.aldogg.sorter.intType.IntSorter;
 
@@ -54,9 +54,16 @@ public class RadixSorter implements IntSorter {
             countingSort(array, size, place);
     }
 
+
+    @Override
+    public void sort(int[] array) {
+        int size = array.length;
+        RadixSorter rs = new RadixSorter();
+        rs.radixSort(array, size);
+    }
+
     @Override
     public void sort(int[] array, int start, int end) {
-        RadixSorter rs = new RadixSorter();
-        rs.radixSort(array, end - start);
+        throw new UnsupportedOperationException();
     }
 }

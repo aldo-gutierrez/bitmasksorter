@@ -1,4 +1,4 @@
-package com.aldogg.sorter.sorters;
+package com.aldogg.sorter.intType.st;
 
 import com.aldogg.sorter.intType.IntSorter;
 

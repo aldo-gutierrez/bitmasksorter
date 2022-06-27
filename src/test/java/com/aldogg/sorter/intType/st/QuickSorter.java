@@ -1,4 +1,4 @@
-package com.aldogg.sorter.sorters;
+package com.aldogg.sorter.intType.st;
 
 import com.aldogg.sorter.intType.IntSorter;
 
@@ -6,7 +6,7 @@ public class QuickSorter implements IntSorter {
 
     @Override
     public void sort(int[] array, int start, int end) {
-        quickSort(array, 0, array.length - 1);
+        quickSort(array, 0, end - 1);
     }
 
     private void quickSort(int arr[], int begin, int end) {

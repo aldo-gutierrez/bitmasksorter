@@ -3,7 +3,7 @@ package com.aldogg.sorter.intType;
 import com.aldogg.sorter.Section;
 
 import static com.aldogg.sorter.BitSorterUtils.getKeySN;
-import static com.aldogg.sorter.RadixBitSorterInt.radixSort;
+import static com.aldogg.sorter.intType.st.RadixBitSorterInt.radixSort;
 
 public class IntSorterUtils {
 
@@ -224,7 +224,7 @@ public class IntSorterUtils {
             }
         }
         if (sorter.equals(ShortSorter.CountSort)) {
-            CountSort.countSort(array, start, end, kList, kIndex);
+            IntCountSort.countSort(array, start, end, kList, kIndex);
         } else if (sorter.equals(ShortSorter.StableByte)) {
             int[] aux = new int[n];
             radixSort(array, start, end, kList, kIndex, kList.length - 1, aux);
@@ -246,7 +246,7 @@ public class IntSorterUtils {
         int twoPowerK = 1 << kDiff;
         if (twoPowerK <= 16) { //16
             if (n >= twoPowerK*128) {
-                CountSort.countSort(array, start, end, kList, kIndex);
+                IntCountSort.countSort(array, start, end, kList, kIndex);
             } else if (n >=32 ){
                 int[] aux = new int[n];
                 radixSort(array, start, end, kList, kIndex, kList.length - 1, aux);
@@ -259,7 +259,7 @@ public class IntSorterUtils {
             }
         } else  if (twoPowerK <= 512) { //512
             if (n >= twoPowerK*16) {
-                CountSort.countSort(array, start, end, kList, kIndex);
+                IntCountSort.countSort(array, start, end, kList, kIndex);
             } else if (n >=32 ){
                 int[] aux = new int[n];
                 radixSort(array, start, end, kList, kIndex, kList.length - 1, aux);
@@ -272,7 +272,7 @@ public class IntSorterUtils {
             }
         } else {
             if (n >= twoPowerK*2) {
-                CountSort.countSort(array, start, end, kList, kIndex);
+                IntCountSort.countSort(array, start, end, kList, kIndex);
             } else if (n >=128 ){
                 int[] aux = new int[n];
                 radixSort(array, start, end, kList, kIndex, kList.length - 1, aux);

@@ -1,6 +1,6 @@
 package com.aldogg.sorter.collection;
 
-import com.aldogg.sorter.intType.Sorter;
+import com.aldogg.sorter.Sorter;
 
 public interface ObjectSorter extends Sorter {
 

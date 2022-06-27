@@ -1,13 +1,17 @@
-package com.aldogg.sorter;
+package com.aldogg.sorter.intType.mt;
 
 import com.aldogg.parallel.SorterRunner;
-import com.aldogg.sorter.intType.IntSorter;
+import com.aldogg.sorter.AnalysisResult;
+import com.aldogg.sorter.BitSorterMTParams;
+import com.aldogg.sorter.Section;
+import com.aldogg.sorter.SortingNetworks;
+import com.aldogg.sorter.intType.IntBitMaskSorter;
+import com.aldogg.sorter.intType.IntBitMaskSorterMT;
 import com.aldogg.sorter.intType.IntSorterUtils;
+import com.aldogg.sorter.intType.st.RadixBitSorterInt;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
 
 import static com.aldogg.sorter.BitSorterParams.*;
 import static com.aldogg.sorter.BitSorterUtils.*;
@@ -16,23 +20,7 @@ import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 /**
  * Experimental Bit Sorter
  */
-public class MixedBitSorterMTInt implements IntSorter {
-
-    final AtomicInteger numThreads = new AtomicInteger(1);
-    protected final BitSorterMTParams params = BitSorterMTParams.getMTParams();
-    boolean unsigned = false;
-
-    private Map<Integer, BiConsumer<int[], Integer>> snFunction;
-
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    @Override
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
+public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
     public void sort(int[] array, int start, int end) {
@@ -52,7 +40,7 @@ public class MixedBitSorterMTInt implements IntSorter {
         if (kList.length == 0) {
             return;
         }
-        snFunction = unsigned ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions;
+        setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
         sort(array, start, end, kList);
         numThreads.set(1);
     }
@@ -89,7 +77,7 @@ public class MixedBitSorterMTInt implements IntSorter {
     public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, int level, int maxLevel) {
         final int n = end - start;
         if (n <= VERY_SMALL_N_SIZE) {
-            snFunction.get(n).accept(array, start);
+            snFunctions.get(n).accept(array, start);
             return;
         }
         int kDiff = kList.length - kIndex;
@@ -204,7 +192,7 @@ public class MixedBitSorterMTInt implements IntSorter {
     private void smallListUtil(final int[] array, final int start, final int end, int[] kList) {
         int n = end - start;
         if (n <= VERY_SMALL_N_SIZE) {
-            snFunction.get(n).accept(array, start);
+            snFunctions.get(n).accept(array, start);
         } else if (kList.length <= params.getShortKBits()) {
             sortShortK(array, start, end, kList, 0);
         } else {

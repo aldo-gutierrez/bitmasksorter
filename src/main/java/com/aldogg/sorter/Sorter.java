@@ -1,4 +1,4 @@
-package com.aldogg.sorter.intType;
+package com.aldogg.sorter;
 
 public interface Sorter {
     default String name() {

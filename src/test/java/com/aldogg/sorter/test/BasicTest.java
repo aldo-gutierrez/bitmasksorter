@@ -1,13 +1,18 @@
 package com.aldogg.sorter.test;
 
-import com.aldogg.sorter.*;
 import com.aldogg.sorter.generators.Generator;
 import com.aldogg.sorter.generators.GeneratorParams;
-import com.aldogg.sorter.intType.CountSort;
+import com.aldogg.sorter.intType.IntCountSort;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
-import com.aldogg.sorter.sorters.JavaParallelSorterInt;
-import com.aldogg.sorter.sorters.JavaSorterInt;
+import com.aldogg.sorter.intType.mt.JavaParallelSorterInt;
+import com.aldogg.sorter.intType.mt.MixedBitSorterMTInt;
+import com.aldogg.sorter.intType.mt.QuickBitSorterMTInt;
+import com.aldogg.sorter.intType.mt.RadixBitSorterMTInt;
+import com.aldogg.sorter.intType.st.JavaSorterInt;
+import com.aldogg.sorter.intType.st.QuickBitSorterInt;
+import com.aldogg.sorter.intType.st.RadixBitSorterInt;
+import com.aldogg.sorter.intType.st.RadixByteSorterInt;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
@@ -16,7 +21,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
-import static com.aldogg.sorter.RadixBitSorterInt.radixSort;
+import static com.aldogg.sorter.intType.st.RadixBitSorterInt.radixSort;
 
 public class BasicTest extends BaseTest{
     @Test
@@ -116,7 +121,7 @@ public class BasicTest extends BaseTest{
                 int[] maskParts = getMaskBit(array, 0, array.length);
                 int mask = maskParts[0] & maskParts[1];
                 int[] kList = getMaskAsArray(mask);
-                CountSort.countSort(array, start, end, kList, 0);
+                IntCountSort.countSort(array, start, end, kList, 0);
             }
 
             @Override

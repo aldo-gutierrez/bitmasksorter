@@ -1,23 +1,23 @@
-package com.aldogg.sorter;
+package com.aldogg.sorter.intType.mt;
 
 import com.aldogg.parallel.SorterRunner;
+import com.aldogg.sorter.AnalysisResult;
+import com.aldogg.sorter.BitSorterMTParams;
+import com.aldogg.sorter.BitSorterParams;
+import com.aldogg.sorter.SortingNetworks;
+import com.aldogg.sorter.intType.IntBitMaskSorterMT;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
+import com.aldogg.sorter.intType.st.QuickBitSorterInt;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 
-public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter {
+public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
 
-    AtomicInteger numThreads = new AtomicInteger(1);
-
-    protected  BitSorterMTParams params = BitSorterMTParams.getMTParams();
-    @Override
-    public void setParams(BitSorterParams params) {
-        this.params = (BitSorterMTParams) params;
-    }
+    QuickBitSorterInt quickBitSorterInt = new QuickBitSorterInt();
 
     @Override
     public void sort(int[] array, int start, int end) {
@@ -40,13 +40,14 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
         if (kList.length == 0) {
             return;
         }
-        snFunction = unsigned ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions;
+        setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
         sort(array, start, end, kList);
         numThreads.set(1);
     }
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {
+        quickBitSorterInt.setSNFunctions(snFunctions);
         if (kList[0] == 31) { //there are negative numbers and positive numbers
             int sortMask = 1 << kList[0];
             int finalLeft = isUnsigned()
@@ -75,7 +76,7 @@ public class QuickBitSorterMTInt extends QuickBitSorterInt implements IntSorter 
     public void sortMT(final int[] array, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
         final int n = end - start;
         if (n < params.getDataSizeForThreads()) {
-            sort(array, start, end, kList, kIndex, recalculate);
+            quickBitSorterInt.sort(array, start, end, kList, kIndex, recalculate);
             return;
         }
 

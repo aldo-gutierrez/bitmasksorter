@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
 
-public class CountSort {
+public class IntCountSort {
 
     public static void countSort(final int[] array, final int start, final int end, int[] kList,  int kIndex) {
         int twoPowerK = 1 << kList.length - kIndex;

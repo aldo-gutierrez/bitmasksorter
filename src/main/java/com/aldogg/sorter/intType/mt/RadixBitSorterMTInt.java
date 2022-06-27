@@ -1,21 +1,21 @@
-package com.aldogg.sorter;
+package com.aldogg.sorter.intType.mt;
 
 import com.aldogg.parallel.SorterRunner;
+import com.aldogg.sorter.AnalysisResult;
+import com.aldogg.sorter.BitSorterMTParams;
+import com.aldogg.sorter.Section;
+import com.aldogg.sorter.SortingNetworks;
+import com.aldogg.sorter.intType.IntBitMaskSorterMT;
 import com.aldogg.sorter.intType.IntSorterUtils;
+import com.aldogg.sorter.intType.st.RadixBitSorterInt;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 
-public class RadixBitSorterMTInt extends RadixBitSorterInt {
-
-    protected final BitSorterMTParams params = BitSorterMTParams.getMTParams();
-
-    protected Map<Integer, BiConsumer<int[], Integer>> snFunction;
+public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
     public void sort(int[] array, int start, int end) {
@@ -41,7 +41,7 @@ public class RadixBitSorterMTInt extends RadixBitSorterInt {
         if (kList.length == 0) {
             return;
         }
-        snFunction = unsigned ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions;
+        setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
         sort(array, start, end, kList);
     }
 

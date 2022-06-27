@@ -1,7 +1,7 @@
 package com.aldogg.sorter.test;
 
-import com.aldogg.sorter.intType.IntSorterUtils2;
-import com.aldogg.sorter.intType.IntSorterUtils3;
+import com.aldogg.sorter.intType.experimental.IntSorterUtils2;
+import com.aldogg.sorter.intType.experimental.IntSorterUtils3;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
