@@ -5,7 +5,9 @@ import com.aldogg.sorter.AnalysisResult;
 import com.aldogg.sorter.BitSorterMTParams;
 import com.aldogg.sorter.Section;
 import com.aldogg.sorter.SortingNetworks;
+import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntBitMaskSorterMT;
+import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 import com.aldogg.sorter.intType.st.RadixBitSorterInt;
 
@@ -16,34 +18,6 @@ import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 
 public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
-
-    @Override
-    public void sort(int[] array, int start, int end) {
-        int n = end - start;
-        if (n < 2) {
-            return;
-        }
-        if (n <= params.getDataSizeForThreads() || params.getMaxThreads() <= 1) {
-            RadixBitSorterInt radixBitSorterInt = new RadixBitSorterInt();
-            radixBitSorterInt.setUnsigned(isUnsigned());
-            radixBitSorterInt.sort(array);
-            return;
-        }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
-        if (ordered == AnalysisResult.DESCENDING) {
-            IntSorterUtils.reverse(array, start, end);
-        }
-        if (ordered != AnalysisResult.UNORDERED) return;
-
-        int[] maskParts = getMaskBit(array, start, end);
-        int mask = maskParts[0] & maskParts[1];
-        int[] kList = getMaskAsArray(mask);
-        if (kList.length == 0) {
-            return;
-        }
-        setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
-        sort(array, start, end, kList);
-    }
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {
@@ -169,4 +143,8 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
         }
     }
 
+    @Override
+    public IntBitMaskSorter getSTIntSorter() {
+        return new RadixBitSorterInt();
+    }
 }

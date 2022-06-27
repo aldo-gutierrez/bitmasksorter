@@ -8,6 +8,7 @@ import com.aldogg.sorter.SortingNetworks;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntBitMaskSorterMT;
 import com.aldogg.sorter.intType.IntSorterUtils;
+import com.aldogg.sorter.intType.st.QuickBitSorterInt;
 import com.aldogg.sorter.intType.st.RadixBitSorterInt;
 
 import java.util.Arrays;
@@ -21,29 +22,6 @@ import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
  * Experimental Bit Sorter
  */
 public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
-
-    @Override
-    public void sort(int[] array, int start, int end) {
-        int n = end - start;
-        if (n < 2) {
-            return;
-        }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
-        if (ordered == AnalysisResult.DESCENDING) {
-            IntSorterUtils.reverse(array, start, end);
-        }
-        if (ordered != AnalysisResult.UNORDERED) return;
-
-        int[] maskParts = getMaskBit(array, start, end);
-        int mask = maskParts[0] & maskParts[1];
-        int[] kList = getMaskAsArray(mask);
-        if (kList.length == 0) {
-            return;
-        }
-        setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
-        sort(array, start, end, kList);
-        numThreads.set(1);
-    }
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {
@@ -201,4 +179,8 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
         }
     }
 
+    @Override
+    public IntBitMaskSorter getSTIntSorter() {
+        return new QuickBitSorterInt();
+    }
 }
