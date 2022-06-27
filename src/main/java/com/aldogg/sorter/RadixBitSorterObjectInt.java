@@ -95,13 +95,43 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
         }
     }
 
+    /**
+     * BitSorterUtils.splitSection
+     * Improved performance except by
+     * 100000,"0:10000000","RadixBitSorterObjectInt",3->5
+     * 10000000,"0:10000000","RadixBitSorterObjectInt",653->893
+     * 1000000,"0:10000000","RadixBitSorterObjectInt",47->64
+     */
     public static void radixSort(Object[] oArray, int[] array, int start, int end, int[] kList, int kStart, int kEnd, Object[] oAux, int[] aux) {
+
+        Section[] sections = BitSorterUtils.getMaskAsSections(kList, kStart, kEnd);
+//        int n = end - start;
+        for (int i = sections.length - 1; i >= 0; i--) {
+            Section section = sections[i];
+            Section[] sSections = BitSorterUtils.splitSection(section);
+            for (int j = sSections.length - 1; j >= 0; j--) {
+                Section sSection = sSections[j];
+                if (sSection.length > 1) {
+                    int twoPowerK = 1 << sSection.length;
+                    if (sSection.isSectionAtEnd()) {
+                        partitionStableLastBits(oArray, array, start, end, sSection.sortMask, twoPowerK, oAux, aux);
+                    } else {
+                        partitionStableGroupBits(oArray, array, start, end, sSection.sortMask, sSection.shiftRight, twoPowerK, oAux, aux);
+                    }
+                } else {
+                    partitionStable(oArray, array, start, end, sSection.sortMask, oAux, aux);
+                }
+            }
+        }
+    }
+
+    public static void radixSortOld(Object[] oArray, int[] array, int start, int end, int[] kList, int kStart, int kEnd, Object[] oAux, int[] aux) {
         for (int i = kEnd; i >= kStart; i--) {
             int kListI = kList[i];
             int maskI = 1 << kListI;
             int bits = 1;
             int imm = 0;
-            for (int j = 1; j <= MAX_BITS_RADIX_SORT; j++) {
+            for (int j = 1; j < MAX_BITS_RADIX_SORT; j++) {
                 if (i - j >= kStart) {
                     int kListIm1 = kList[i - j];
                     if (kListIm1 == kListI + j) {

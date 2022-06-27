@@ -97,17 +97,20 @@ public class BitSorterUtils {
         } else {
             List<Section> sections = new ArrayList<>();
             int sectionQuantity;
+            int sectionSize = BitSorterMTParams.MAX_BITS_RADIX_SORT;
+            int divisor = section.length / BitSorterMTParams.MAX_BITS_RADIX_SORT;
             if (section.length % BitSorterMTParams.MAX_BITS_RADIX_SORT == 0) {
-                sectionQuantity = section.length / BitSorterMTParams.MAX_BITS_RADIX_SORT;
+                sectionQuantity = divisor;
             } else {
-                sectionQuantity = (section.length / BitSorterMTParams.MAX_BITS_RADIX_SORT) + 1;
+                sectionQuantity = divisor + 1;
+                if (section.length % BitSorterMTParams.MAX_BITS_RADIX_SORT <= 2) {
+                    sectionSize = BitSorterMTParams.MAX_BITS_RADIX_SORT - 1;
             }
-            int sectionSize = section.length / sectionQuantity;
-            //int sectionSize = BitSorterMTParams.MAX_BITS_RADIX_SORT;
+            }
             int sizeAux = 0;
             for (int i = 0; i < sectionQuantity; i++) {
                 Section sectionAux = new Section();
-                sectionAux.length = (i < sectionQuantity - 1) ? sectionSize : section.length - (sectionSize * (sectionQuantity - 1));
+                sectionAux.length = (i == 0) ?  section.length - (sectionSize * (sectionQuantity - 1)) : sectionSize;
                 sectionAux.k = section.k - sizeAux;
                 sizeAux+=sectionAux.length;
                 sections.add(sectionAux);
