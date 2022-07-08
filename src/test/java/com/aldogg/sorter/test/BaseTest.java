@@ -14,15 +14,22 @@ import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class BaseTest {
+    boolean validateResult = true;
+
     public void testIntSort(int[] list, TestSortResults testSortResults, IntSorter[] sorters) {
         IntSorter base = new JavaSorterInt();
         testIntSort(list, testSortResults, sorters, base);
     }
 
     public void testIntSort(int[] list, TestSortResults testSortResults, IntSorter[] sorters, IntSorter baseSorter) {
-        int[] baseListSorted = Arrays.copyOf(list, list.length);
+        int[] baseListSorted = null;
+        if (validateResult) {
+            baseListSorted = Arrays.copyOf(list, list.length);
+        }
         long startBase = System.nanoTime();
-        baseSorter.sort(baseListSorted);
+        if (validateResult) {
+            baseSorter.sort(baseListSorted);
+        }
         long elapsedBase = System.nanoTime() - startBase;
         performSort(list, testSortResults, sorters, baseListSorted, elapsedBase, baseSorter.getClass());
     }
@@ -30,7 +37,7 @@ public class BaseTest {
     private void performSort(int[] list, TestSortResults testSortResults, IntSorter[] sorters, int[] baseListSorted, long elapsedBase, Class baseClass) {
         for (int i = 0; i < sorters.length; i++) {
             IntSorter sorter = sorters[i];
-            if (baseClass.isInstance(sorter)) {
+            if (validateResult && baseClass.isInstance(sorter)) {
                 testSortResults.set(i, elapsedBase);
             } else {
                 long start = System.nanoTime();
@@ -38,7 +45,9 @@ public class BaseTest {
                 sorter.sort(listAux);
                 long elapsed = System.nanoTime() - start;
                 try {
-                    assertArrayEquals(baseListSorted, listAux);
+                    if (validateResult) {
+                        assertArrayEquals(baseListSorted, listAux);
+                    }
                     testSortResults.set(i, elapsed);
                 } catch (Throwable ex) {
                     testSortResults.set(i, 0);

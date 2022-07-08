@@ -102,8 +102,8 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
      * BitSorterUtils.splitSection
      * Improved performance except by
      * 100000,"0:10000000","RadixBitSorterObjectInt",3->5
-     * 10000000,"0:10000000","RadixBitSorterObjectInt",653->893
-     * 1000000,"0:10000000","RadixBitSorterObjectInt",47->64
+     * 10000000,"0:10000000","RadixBitSorterObjectInt",653->873
+     * 1000000,"0:10000000","RadixBitSorterObjectInt",47->63
      */
     public static void radixSort(Object[] oArray, int[] array, int start, int end, int[] kList, int kStart, int kEnd, Object[] oAux, int[] aux) {
 
