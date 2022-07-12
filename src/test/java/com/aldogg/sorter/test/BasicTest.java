@@ -1,5 +1,6 @@
 package com.aldogg.sorter.test;
 
+import com.aldogg.sorter.MaskInfo;
 import com.aldogg.sorter.generators.Generator;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.intType.IntCountSort;
@@ -20,7 +21,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 
-import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.intType.st.RadixBitSorterInt.radixSort;
 
 public class BasicTest extends BaseTest{
@@ -78,9 +78,9 @@ public class BasicTest extends BaseTest{
         IntSorter[] sorters = new IntSorter[] {new IntSorter() {
             @Override
             public void sort(int[] array, int start, int end) {
-                int[] maskParts = getMaskBit(array, start, end);
-                int mask = maskParts[0] & maskParts[1];
-                int[] kList = getMaskAsArray(mask);
+                MaskInfo maskInfo = MaskInfo.getMaskBit(array, start, end);
+                int mask = maskInfo.getMask();
+                int[] kList = MaskInfo.getMaskAsArray(mask);
                 int length = end - start;
                 int[] aux = new int[length];
                 radixSort(array, start, end, kList, 0, kList.length - 1, aux);
@@ -97,9 +97,9 @@ public class BasicTest extends BaseTest{
         },  new IntSorter() {
             @Override
             public void sort(int[] array, int start, int end) {
-                int[] maskParts = getMaskBit(array, start, end);
-                int mask = maskParts[0] & maskParts[1];
-                int[] kList = getMaskAsArray(mask);
+                MaskInfo maskInfo = MaskInfo.getMaskBit(array, start, end);
+                int mask = maskInfo.getMask();
+                int[] kList = MaskInfo.getMaskAsArray(mask);
                 int[] aux = new int[end - start];
                 for (int i = kList.length - 1; i >= 0; i--) {
                     int sortMask = 1 << kList[i];
@@ -118,9 +118,9 @@ public class BasicTest extends BaseTest{
         }, new IntSorter() {
             @Override
             public void sort(int[] array, int start, int end) {
-                int[] maskParts = getMaskBit(array, 0, array.length);
-                int mask = maskParts[0] & maskParts[1];
-                int[] kList = getMaskAsArray(mask);
+                MaskInfo maskInfo = MaskInfo.getMaskBit(array, start, end);
+                int mask = maskInfo.getMask();
+                int[] kList = MaskInfo.getMaskAsArray(mask);
                 IntCountSort.countSort(array, start, end, kList, 0);
             }
 

@@ -1,11 +1,11 @@
 package com.aldogg.sorter.intType.st;
 
+import com.aldogg.sorter.MaskInfo;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
 
 import static com.aldogg.sorter.BitSorterParams.*;
-import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 
 public class QuickBitSorterInt extends IntBitMaskSorter {
@@ -36,9 +36,9 @@ public class QuickBitSorterInt extends IntBitMaskSorter {
         }
 
         if (recalculate && kIndex < 3) {
-            int[] maskParts = getMaskBit(array, start, end);
-            int mask = maskParts[0] & maskParts[1];
-            kList = getMaskAsArray(mask);
+            MaskInfo maskParts = MaskInfo.getMaskBit(array, start, end);
+            int mask = maskParts.getMask();
+            kList = MaskInfo.getMaskAsArray(mask);
             kIndex = 0;
         }
 

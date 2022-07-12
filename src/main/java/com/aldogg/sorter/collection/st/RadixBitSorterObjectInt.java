@@ -2,6 +2,7 @@ package com.aldogg.sorter.collection.st;
 
 import com.aldogg.sorter.AnalysisResult;
 import com.aldogg.sorter.BitSorterUtils;
+import com.aldogg.sorter.MaskInfo;
 import com.aldogg.sorter.Section;
 import com.aldogg.sorter.collection.IntComparator;
 import com.aldogg.sorter.collection.ObjectSorter;
@@ -53,9 +54,9 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        int[] maskParts = getMaskBit(array, start, end);
-        int mask = maskParts[0] & maskParts[1];
-        int[] kList = getMaskAsArray(mask);
+        MaskInfo maskInfo = MaskInfo.getMaskBit(array, start, end);
+        int mask = maskInfo.getMask();
+        int[] kList = MaskInfo.getMaskAsArray(mask);
         if (kList.length == 0) { //all numbers are equal
             return;
         }
@@ -64,7 +65,7 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
 
     public void sort(Object[] oArray, int[] array, int start, int end, int[] kList) {
         if (kList[0] == 31) { //there are negative numbers and positive numbers
-            int[] maskParts;
+            MaskInfo maskInfo;
             int mask;
             int sortMask = 1 << kList[0];
             int finalLeft = isStable()
@@ -78,17 +79,17 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
             if (finalLeft - start > 1) { //sort negative numbers
                 int[] aux = new int[finalLeft - start];
                 Object[] oAux = new Object[finalLeft - start];
-                maskParts = getMaskBit(array, start, finalLeft);
-                mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsArray(mask);
+                maskInfo = MaskInfo.getMaskBit(array, start, finalLeft);
+                mask = maskInfo.getMask();
+                kList = MaskInfo.getMaskAsArray(mask);
                 radixSort(oArray, array, start, finalLeft, kList, 0, kList.length - 1, oAux, aux);
             }
             if (end - finalLeft > 1) { //sort positive numbers
                 int[] aux = new int[end - finalLeft];
                 Object[] oAux = new Object[end - finalLeft];
-                maskParts = getMaskBit(array, finalLeft, end);
-                mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsArray(mask);
+                maskInfo = MaskInfo.getMaskBit(array, finalLeft, end);
+                mask = maskInfo.getMask();
+                kList = MaskInfo.getMaskAsArray(mask);
                 radixSort(oArray, array, finalLeft, end, kList, 0, kList.length - 1, oAux, aux);
             }
         } else {

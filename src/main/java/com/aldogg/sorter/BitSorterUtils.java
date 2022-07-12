@@ -4,47 +4,6 @@ import java.util.*;
 
 public class BitSorterUtils {
 
-    public static int[] getMaskBit(final int[] array, final int start, final int end) {
-        int mask = 0x00000000;
-        int inv_mask = 0x00000000;
-        for (int i = start; i < end; i++) {
-            int ei = array[i];
-            mask = mask | ei;
-            inv_mask = inv_mask | (~ei);
-        }
-        return new int[]{mask, inv_mask};
-    }
-
-    public static int[] getMaskAsArray(final int mask) {
-        List<Integer> list = new ArrayList<>();
-        for (int i = 31; i >= 0; i--) {
-            if (((mask >> i) & 1) == 1) {
-                list.add(i);
-            }
-        }
-        int[] res = new int[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            res[i] = list.get(i);
-        }
-        return res;
-    }
-
-    public static int getMaskLastBits(final int[] kList, final int kIndex) {
-        int mask = 0;
-        for (int i = kIndex; i < kList.length; i++) {
-            int k = kList[i];
-            mask = mask | 1 << k;
-        }
-        return mask;
-    }
-
-    public static int getMaskRangeBits(final int kIndexStart, final int kIndexEnd) {
-        int mask = 0;
-        for (int k = kIndexStart; k >= kIndexEnd; k--) {
-            mask = mask | 1 << k;
-        }
-        return mask;
-    }
 
     public static int getKeySN(final int element, final Section[] sections) {
         int result = 0;
@@ -83,7 +42,7 @@ public class BitSorterUtils {
             sectionsAsInts[i].k = entry.getKey();
             sectionsAsInts[i].length = entry.getValue();
             int aux = entry.getKey() - entry.getValue() + 1;
-            sectionsAsInts[i].sortMask = getMaskRangeBits(entry.getKey(), aux);
+            sectionsAsInts[i].sortMask = MaskInfo.getMaskRangeBits(entry.getKey(), aux);
             sectionsAsInts[i].shiftRight = aux;
             i++;
         }
@@ -118,7 +77,7 @@ public class BitSorterUtils {
             for (int i= sectionQuantity-1; i >=0; i--) {
                 Section sectionAux = sections.get(i);
                 sectionAux.shiftRight = (i == sectionQuantity - 1) ? section.shiftRight : sections.get(i+1).shiftRight + sections.get(i+1).length;
-                sectionAux.sortMask = getMaskRangeBits(sectionAux.k, sectionAux.k - sectionAux.length + 1);
+                sectionAux.sortMask = MaskInfo.getMaskRangeBits(sectionAux.k, sectionAux.k - sectionAux.length + 1);
             }
             return sections.toArray(new Section[]{});
         }

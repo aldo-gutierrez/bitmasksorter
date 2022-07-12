@@ -1,9 +1,8 @@
 package com.aldogg.sorter.intType.st;
 
+import com.aldogg.sorter.MaskInfo;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
-
-import static com.aldogg.sorter.BitSorterUtils.*;
 
 /**
  * Basic XXXSorter
@@ -19,18 +18,18 @@ public class QuickBitBaseSorterInt extends IntBitMaskSorter {
             int finalLeft = isUnsigned()
                     ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
                     : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
-            int[] maskParts;
+            MaskInfo maskInfo;
             int mask;
             if (finalLeft - start > 1) {
-                maskParts = getMaskBit(array, start, finalLeft);
-                mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsArray(mask);
+                maskInfo = MaskInfo.getMaskBit(array, start, finalLeft);
+                mask = maskInfo.getMask();
+                kList = MaskInfo.getMaskAsArray(mask);
                 sort(array, start, finalLeft, kList, 0);
             }
             if (end - finalLeft > 1) {
-                maskParts = getMaskBit(array, finalLeft, end);
-                mask = maskParts[0] & maskParts[1];
-                kList = getMaskAsArray(mask);
+                maskInfo = MaskInfo.getMaskBit(array, finalLeft, end);
+                mask = maskInfo.getMask();
+                kList = MaskInfo.getMaskAsArray(mask);
                 sort(array, finalLeft, end, kList, 0);
             }
         } else {

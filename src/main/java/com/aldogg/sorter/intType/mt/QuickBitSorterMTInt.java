@@ -1,19 +1,14 @@
 package com.aldogg.sorter.intType.mt;
 
 import com.aldogg.parallel.SorterRunner;
-import com.aldogg.sorter.AnalysisResult;
-import com.aldogg.sorter.BitSorterMTParams;
-import com.aldogg.sorter.BitSorterParams;
-import com.aldogg.sorter.SortingNetworks;
+import com.aldogg.sorter.MaskInfo;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntBitMaskSorterMT;
-import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 import com.aldogg.sorter.intType.st.QuickBitSorterInt;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.aldogg.sorter.BitSorterUtils.*;
+import static com.aldogg.sorter.MaskInfo.getMaskAsArray;
+import static com.aldogg.sorter.MaskInfo.getMaskBit;
 import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 
 public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
@@ -29,14 +24,14 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
             int size2 = end - finalLeft;
             SorterRunner.runTwoRunnable(
                     size1 > 1 ? () -> { //sort negative numbers
-                        int[] maskParts1 = getMaskBit(array, start, finalLeft);
-                        int mask1 = maskParts1[0] & maskParts1[1];
+                        MaskInfo maskInfo1 = getMaskBit(array, start, finalLeft);
+                        int mask1 = maskInfo1.getMask();
                         int[] kList1 = getMaskAsArray(mask1);
                         sortMT(array, start, finalLeft, kList1, 0, false);
                     } : null, size1,
                     size2 > 1 ? () -> { //sort positive numbers
-                        int[] maskParts2 = getMaskBit(array, finalLeft, end);
-                        int mask2 = maskParts2[0] & maskParts2[1];
+                        MaskInfo maskInfo2 = getMaskBit(array, finalLeft, end);
+                        int mask2 = maskInfo2.getMask();
                         int[] kList2 = getMaskAsArray(mask2);
                         sortMT(array, finalLeft, end, kList2, 0, false);
                     } : null, size2, params.getDataSizeForThreads(), params.getMaxThreads(), numThreads);
@@ -53,8 +48,8 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
         }
 
         if (recalculate && kIndex < 3) {
-            int[] maskParts = getMaskBit(array, start, end);
-            int mask = maskParts[0] & maskParts[1];
+            MaskInfo maskParts = getMaskBit(array, start, end);
+            int mask = maskParts.getMask();
             kList = getMaskAsArray(mask);
             kIndex = 0;
 

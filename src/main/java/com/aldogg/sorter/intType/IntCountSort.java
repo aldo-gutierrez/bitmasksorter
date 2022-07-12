@@ -1,5 +1,6 @@
 package com.aldogg.sorter.intType;
 
+import com.aldogg.sorter.MaskInfo;
 import com.aldogg.sorter.Section;
 
 import java.util.Arrays;
@@ -9,7 +10,7 @@ import static com.aldogg.sorter.BitSorterUtils.*;
 public class IntCountSort {
 
     public static void countSort(final int[] array, final int start, final int end, int[] kList,  int kIndex) {
-        int twoPowerK = 1 << kList.length - kIndex;
+        int twoPowerK = 1 << (kList.length - kIndex);
         kList = Arrays.copyOfRange(kList, kIndex, kList.length);
         Section[] sections = getMaskAsSections(kList, 0, kList.length-1 );
         kIndex = 0;
@@ -19,7 +20,7 @@ public class IntCountSort {
         } else {
             numberBuffer = new int[twoPowerK];
         }
-        int sortMask = getMaskLastBits(kList, kIndex);
+        int sortMask = MaskInfo.getMaskLastBits(kList, kIndex);
         countSort(array, start, end, sortMask, sections, count, numberBuffer);
     }
 

@@ -1,13 +1,9 @@
 package com.aldogg.sorter.intType.mt;
 
 import com.aldogg.parallel.SorterRunner;
-import com.aldogg.sorter.AnalysisResult;
-import com.aldogg.sorter.BitSorterMTParams;
-import com.aldogg.sorter.Section;
-import com.aldogg.sorter.SortingNetworks;
+import com.aldogg.sorter.*;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntBitMaskSorterMT;
-import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 import com.aldogg.sorter.intType.st.RadixBitSorterInt;
 
@@ -31,15 +27,15 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
             int size2 = end - finalLeft;
             SorterRunner.runTwoRunnable(
                     size1 > 1 ? () -> { //sort negative numbers
-                        int[] maskParts1 = getMaskBit(array, start, finalLeft);
-                        int mask1 = maskParts1[0] & maskParts1[1];
-                        int[] kList1 = getMaskAsArray(mask1);
+                        MaskInfo maskParts1 = MaskInfo.getMaskBit(array, start, finalLeft);
+                        int mask1 = maskParts1.getMask();
+                        int[] kList1 = MaskInfo.getMaskAsArray(mask1);
                         sort(array, start, finalLeft, kList1, 0, maxThreadsBits - 1);
                     } : null, size1,
                     size2 > 1 ? () -> { //sort positive numbers
-                        int[] maskParts2 = getMaskBit(array, finalLeft, end);
-                        int mask2 = maskParts2[0] & maskParts2[1];
-                        int[] kList2 = getMaskAsArray(mask2);
+                        MaskInfo maskParts2 = MaskInfo.getMaskBit(array, finalLeft, end);
+                        int mask2 = maskParts2.getMask();
+                        int[] kList2 = MaskInfo.getMaskAsArray(mask2);
                         sort(array, finalLeft, end, kList2, 0, maxThreadsBits - 1);
                     } : null, size2, params.getDataSizeForThreads(), 0, null);
 
@@ -77,7 +73,7 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
         int maxProcessNumber = 1 << threadBits;
         int remainingBits = kList.length - threadBits;
 
-        int[] kListAux = getMaskAsArray(sortMask);
+        int[] kListAux = MaskInfo.getMaskAsArray(sortMask);
         Section[] sections = getMaskAsSections(kListAux, 0, kListAux.length -1);
 
         int[] leftX = new int[maxProcessNumber];
