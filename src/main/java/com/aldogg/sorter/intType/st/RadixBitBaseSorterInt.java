@@ -25,24 +25,27 @@ public class RadixBitBaseSorterInt extends IntBitMaskSorter {
                 kList = MaskInfo.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
                     int sortMaskI = 1 << kList[i];
-                    IntSorterUtils.partitionStable(array, start, finalLeft, sortMaskI, aux);
+                    //IntSorterUtils.partitionStable(array, start, finalLeft, sortMaskI, aux, 0);
+                    IntSorterUtils.partitionNotStable(array, start, finalLeft, sortMaskI);
                 }
             }
             if (end - finalLeft > 1) { //sort positive numbers
-                int[] aux = new int[end - finalLeft];
+                //int[] aux = new int[end - finalLeft];
                 maskInfo = MaskInfo.getMaskBit(array, finalLeft, end);
                 mask = maskInfo.getMask();
                 kList = MaskInfo.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
                     int sortMaskI = 1 << kList[i];
-                    IntSorterUtils.partitionStable(array, finalLeft, end, sortMaskI, aux);
+                    //IntSorterUtils.partitionStable(array, finalLeft, end, sortMaskI, aux, 0);
+                    IntSorterUtils.partitionNotStable(array, finalLeft, end, sortMaskI);
                 }
             }
         } else {
-            int[] aux = new int[end - start];
+            //int[] aux = new int[end - start];
             for (int i = kList.length - 1; i >= 0; i--) {
                 int sortMask = 1 << kList[i];
-                IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
+                //IntSorterUtils.partitionStable(array, start, end, sortMask, aux, 0);
+                IntSorterUtils.partitionNotStable(array, start, end, sortMask);
             }
         }
     }

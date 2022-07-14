@@ -44,23 +44,17 @@ public class ArrayParallelRunner {
         }
 
         int numResults = maxThreads;
-        //R[] previousResults = results;
-        //R[] currentResults = results;
         while (numResults > 1) {
             int quotient = numResults / 2;
             int reminder = numResults % 2;
-;
-            //currentResults = (R[]) new Object[quotient];
+
             for (int i = 0; i < quotient; i++) {
-                //currentResults[i] = mapReducer.reduce(previousResults[i*2], previousResults[i*2+1]);
                 results[i] = mapReducer.reduce(results[i*2], results[i*2+1]);
             }
             if (reminder == 1) {
-                //currentResults[quotient-1] = mapReducer.reduce(currentResults[quotient-1], previousResults[quotient*2+2]);
                 results[quotient-1] = mapReducer.reduce(results[quotient-1], results[quotient*2+2]);
             }
             numResults = quotient;
-            //previousResults = currentResults;
         }
         return results[0];
     }

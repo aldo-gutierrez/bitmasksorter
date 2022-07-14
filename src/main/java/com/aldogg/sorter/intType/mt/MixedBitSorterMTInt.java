@@ -109,14 +109,14 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
         if (sections.length == 1) {
             Section section = sections[0];
             if (section.isSectionAtEnd()) {
-                IntSorterUtils.partitionStableLastBits(list, start, end, section, leftX, count, aux);
+                IntSorterUtils.partitionStableLastBits(list, start, aux, 0, n, section, leftX, count);
                 System.arraycopy(aux, 0, list, start, n);
             } else {
-                IntSorterUtils.partitionStableOneGroupBits(list, start, end, section, leftX, count, aux);
+                IntSorterUtils.partitionStableOneGroupBits(list, start, aux, 0, n, section, leftX, count);
                 System.arraycopy(aux, 0, list, start, n);
             }
         } else {
-            IntSorterUtils.partitionStableNGroupBits(list, start, end, sections, leftX, count, aux);
+            IntSorterUtils.partitionStableNGroupBits(list, start, aux, 0, n, sections, leftX, count);
             System.arraycopy(aux, 0, list, start, n);
         }
 
@@ -171,7 +171,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
             sortShortK(array, start, end, kList, 0);
         } else {
             int[] auxT = new int[n];
-            RadixBitSorterInt.radixSort(array, start, end, kList, 0, kList.length - 1, auxT);
+            RadixBitSorterInt.radixSort(array, start, end, kList, 0, kList.length - 1, auxT, 0);
         }
     }
 

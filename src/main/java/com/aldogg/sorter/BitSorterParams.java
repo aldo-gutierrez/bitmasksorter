@@ -26,8 +26,7 @@ public class BitSorterParams {
     }
 
     public static BitSorterParams getSTParams() {
-        BitSorterParams params = new BitSorterParams();
-        return params;
+        return new BitSorterParams();
     }
 
 

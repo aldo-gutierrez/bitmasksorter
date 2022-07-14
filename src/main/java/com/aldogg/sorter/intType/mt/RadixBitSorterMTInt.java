@@ -84,14 +84,14 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
         if (sections.length == 1) {
             Section section = sections[0];
             if (section.isSectionAtEnd()) {
-                IntSorterUtils.partitionStableLastBits(array, start, end, section, leftX, count, aux);
+                IntSorterUtils.partitionStableLastBits(array, start, aux, 0, n, section, leftX, count);
                 System.arraycopy(aux, 0, array, start, n);
             } else {
-                IntSorterUtils.partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
+                IntSorterUtils.partitionStableOneGroupBits(array, start, aux, 0, n, section, leftX, count);
                 System.arraycopy(aux, 0, array, start, n);
             }
         } else {
-            IntSorterUtils.partitionStableNGroupBits(array, start, end, sections, leftX, count, aux);
+            IntSorterUtils.partitionStableNGroupBits(array, start, aux, 0, n, sections, leftX, count);
             System.arraycopy(aux, 0, array, start, n);
         }
 
@@ -109,7 +109,7 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
                             sortShortK(array, start + endT - lengthT, start + endT, kList, threadBits);
                         } else {
                             int[] auxT = new int[lengthT];
-                            RadixBitSorterInt.radixSort(array, start + endT - lengthT, start + endT, kList, threadBits, kList.length - 1, auxT);
+                            RadixBitSorterInt.radixSort(array, start + endT - lengthT, start + endT, kList, threadBits, kList.length - 1, auxT, 0);
                         }
                     };
                     runInThreadList.add(r);

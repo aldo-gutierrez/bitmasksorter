@@ -9,7 +9,7 @@ public class QuickSorter implements IntSorter {
         quickSort(array, 0, end - 1);
     }
 
-    private void quickSort(int arr[], int begin, int end) {
+    private void quickSort(int[] arr, int begin, int end) {
         if (begin < end) {
             int partitionIndex = partition(arr, begin, end);
 
@@ -18,7 +18,7 @@ public class QuickSorter implements IntSorter {
         }
     }
 
-    private int partition(int arr[], int begin, int end) {
+    private int partition(int[] arr, int begin, int end) {
         int pivot = arr[end];
         int i = (begin - 1);
 

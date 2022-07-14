@@ -83,7 +83,7 @@ public class BasicTest extends BaseTest{
                 int[] kList = MaskInfo.getMaskAsArray(mask);
                 int length = end - start;
                 int[] aux = new int[length];
-                radixSort(array, start, end, kList, 0, kList.length - 1, aux);
+                radixSort(array, start, end, kList, 0, kList.length - 1, aux, 0);
             }
             @Override
             public String name() {
@@ -103,7 +103,8 @@ public class BasicTest extends BaseTest{
                 int[] aux = new int[end - start];
                 for (int i = kList.length - 1; i >= 0; i--) {
                     int sortMask = 1 << kList[i];
-                    IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
+                    int left = IntSorterUtils.partitionStable(array, start, end, sortMask, aux, 0);
+                    System.arraycopy(aux, 0, array, left, end - left);
                 }
             }
             @Override

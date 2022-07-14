@@ -4,43 +4,40 @@ import com.aldogg.sorter.BitSorterUtils;
 import com.aldogg.sorter.MaskInfo;
 import com.aldogg.sorter.Section;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
-import com.aldogg.sorter.intType.IntSorterUtils;
 
-import static com.aldogg.sorter.BitSorterParams.MAX_BITS_RADIX_SORT;
 import static com.aldogg.sorter.intType.IntSorterUtils.*;
 
 public class RadixBitSorterInt extends IntBitMaskSorter {
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {
+        int[] aux = new int[end - start];
         if (kList[0] == 31) { //there are negative numbers and positive numbers
             MaskInfo maskInfo;
             int mask;
             int sortMask = 1 << kList[0];
-            int finalLeft = isUnsigned()
-                    ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
-                    : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
+            int finalLeft;
+            finalLeft = isUnsigned()
+                    ? partitionNotStable(array, start, end, sortMask)
+                    : partitionReverseNotStable(array, start, end, sortMask);
             if (finalLeft - start > 1) { //sort negative numbers
-                int[] aux = new int[finalLeft - start];
                 maskInfo = MaskInfo.getMaskBit(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfo.getMaskAsArray(mask);
-                radixSort(array, start, finalLeft, kList, 0, kList.length - 1, aux);
+                radixSort(array, start, finalLeft, kList, 0, kList.length - 1, aux, start);
             }
             if (end - finalLeft > 1) { //sort positive numbers
-                int[] aux = new int[end - finalLeft];
                 maskInfo = MaskInfo.getMaskBit(array, finalLeft, end);
                 mask = maskInfo.getMask();
                 kList = MaskInfo.getMaskAsArray(mask);
-                radixSort(array, finalLeft, end, kList, 0, kList.length - 1, aux);
+                radixSort(array, finalLeft, end, kList, 0, kList.length - 1, aux, finalLeft);
             }
         } else {
-            int[] aux = new int[end - start];
-            radixSort(array, start, end, kList, 0, kList.length - 1, aux);
+            radixSort(array, start, end, kList, 0, kList.length - 1, aux, start);
         }
     }
 
-    public static void radixSort(int[] array, int start, int end, int[] kList, int kStart, int kEnd, int[] aux) {
+    public static void radixSort(int[] array, int start, int end, int[] kList, int kStart, int kEnd, int[] aux, int startAux) {
 
         Section[] sections = BitSorterUtils.getMaskAsSections(kList, kStart, kEnd);
         int n = end - start;
@@ -54,54 +51,15 @@ public class RadixBitSorterInt extends IntBitMaskSorter {
                     int[] leftX = new int[twoPowerK];
                     int[] count = new int[twoPowerK];
                     if (sSection.isSectionAtEnd()) {
-                        partitionStableLastBits(array, start, end, sSection, leftX, count, aux);
+                        partitionStableLastBits(array, start, aux, startAux, n, sSection, leftX, count);
                     } else {
-                        partitionStableOneGroupBits(array, start, end, sSection, leftX, count, aux);
+                        partitionStableOneGroupBits(array, start, aux, startAux, n, sSection, leftX, count);
                     }
-                    System.arraycopy(aux, 0, array, start, n);
+                    System.arraycopy(aux, startAux, array, start, n);
                 } else {
-                    partitionStable(array, start, end, sSection.sortMask, aux);
+                    partitionStable(array, start, end, sSection.sortMask, aux, startAux);
+                    //partitionNotStable(array, start, end, sSection.sortMask);
                 }
-            }
-        }
-    }
-
-    public static void radixSortOld(int[] array, int start, int end, int[] kList, int kStart, int kEnd, int[] aux) {
-        for (int i = kEnd; i >= kStart; i--) {
-            int kListI = kList[i];
-            int maskI = 1 << kListI;
-            int bits = 1;
-            int imm = 0;
-            for (int j = 1; j < MAX_BITS_RADIX_SORT; j++) {
-                if (i - j >= kStart) {
-                    int kListIm1 = kList[i - j];
-                    if (kListIm1 == kListI + j) {
-                        maskI = maskI | 1 << kListIm1;
-                        bits++;
-                        imm++;
-                    } else {
-                        break;
-                    }
-                }
-            }
-            i -= imm;
-            Section sSection = new Section();
-            sSection.sortMask = maskI;
-            sSection.length = bits;
-            if (bits == 1) {
-                partitionStable(array, start, end, sSection.sortMask, aux);
-            } else {
-                int twoPowerK = 1 << sSection.length;
-                int[] leftX = new int[twoPowerK];
-                int[] count = new int[twoPowerK];
-
-                if (kListI == 0) {
-                    partitionStableLastBits(array, start, end, sSection, leftX, count, aux);
-                } else {
-                    sSection.shiftRight = kListI;
-                    partitionStableOneGroupBits(array, start, end, sSection, leftX, count, aux);
-                }
-                System.arraycopy(aux, 0, array, start, end - start);
             }
         }
     }

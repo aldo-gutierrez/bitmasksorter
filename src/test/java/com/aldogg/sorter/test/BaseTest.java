@@ -14,7 +14,7 @@ import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class BaseTest {
-    boolean validateResult = false;
+    boolean validateResult = true;
 
     public void testIntSort(int[] list, TestSortResults testSortResults, IntSorter[] sorters) {
         IntSorter base = new JavaSorterInt();

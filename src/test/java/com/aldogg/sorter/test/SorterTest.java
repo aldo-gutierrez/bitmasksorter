@@ -94,6 +94,7 @@ public class SorterTest extends BaseTest{
 //        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/old/speed.csv"));
 
         IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+
         BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_st.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
@@ -201,7 +202,7 @@ public class SorterTest extends BaseTest{
         ObjectSorter[] sorters = new ObjectSorter[] {new JavaSorterObject(), new JavaParallelSorterObjectInt(), new RadixBitSorterObjectInt()};
         TestSortResults testSortResults;
 
-        IntComparator<Entity1> comparator = new IntComparator<Entity1>() {
+        IntComparator<Entity1> comparator = new IntComparator<>() {
             @Override
             public int intValue(Entity1 o) {
                 return o.getId();
