@@ -5,7 +5,7 @@ import com.aldogg.sorter.intType.IntSorter;
 // Radix Sort in Java Programming
 public class RadixSorter implements IntSorter {
     // Using counting sort to sort the elements in the basis of significant places
-    void countingSort(int array[], int size, int place) {
+    void countingSort(int[] array, int size, int place) {
         int[] output = new int[size + 1];
         int max = array[0];
         for (int i = 1; i < size; i++) {
@@ -36,7 +36,7 @@ public class RadixSorter implements IntSorter {
     }
 
     // Function to get the largest element from an array
-    int getMax(int array[], int n) {
+    int getMax(int[] array, int n) {
         int max = array[0];
         for (int i = 1; i < n; i++)
             if (array[i] > max)
@@ -45,7 +45,7 @@ public class RadixSorter implements IntSorter {
     }
 
     // Main function to implement radix sort
-    void radixSort(int array[], int size) {
+    void radixSort(int[] array, int size) {
         // Get maximum element
         int max = getMax(array, size);
 
