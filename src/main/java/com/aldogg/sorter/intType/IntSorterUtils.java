@@ -223,6 +223,50 @@ public class IntSorterUtils {
                 }
             }
         }
+
+        executeSorter(array, start, end, kList, kIndex, sorter);
+    }
+
+    /**
+     * Based on BasicTest.smallListAlgorithmSpeedTest
+     */
+    public static void sortShortK(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
+        int kDiff = kList.length - kIndex; //K
+        int n = end - start; //N
+        int twoPowerK = 1 << kDiff;
+        ShortSorter sorter;
+        if (twoPowerK <= 16) { //16
+            if (n >= twoPowerK*128) {
+                sorter = ShortSorter.CountSort;
+            } else if (n >=32 ){
+                sorter = ShortSorter.StableByte;
+            } else {
+                sorter = ShortSorter.StableBit;
+            }
+        } else  if (twoPowerK <= 512) { //512
+            if (n >= twoPowerK*16) {
+                sorter = ShortSorter.CountSort;
+            } else if (n >=32 ){
+                sorter = ShortSorter.StableByte;
+            } else {
+                sorter = ShortSorter.StableBit;
+            }
+        } else {
+            if (n >= twoPowerK*2) {
+                sorter = ShortSorter.CountSort;
+            } else if (n >=128 ){
+                sorter = ShortSorter.StableByte;
+            } else {
+                sorter = ShortSorter.StableBit;
+            }
+        }
+
+        executeSorter(array, start, end, kList, kIndex, sorter);
+    }
+
+
+    private static void executeSorter(int[] array, int start, int end, int[] kList, int kIndex, ShortSorter sorter) {
+        int n = end - start;
         if (sorter.equals(ShortSorter.CountSort)) {
             IntCountSort.countSort(array, start, end, kList, kIndex);
         } else if (sorter.equals(ShortSorter.StableByte)) {
@@ -236,54 +280,4 @@ public class IntSorterUtils {
             }
         }
     }
-
-    /**
-     * Based on BasicTest.smallListAlgorithmSpeedTest
-     */
-    public static void sortShortK(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
-        int kDiff = kList.length - kIndex; //K
-        int n = end - start; //N
-        int twoPowerK = 1 << kDiff;
-        if (twoPowerK <= 16) { //16
-            if (n >= twoPowerK*128) {
-                IntCountSort.countSort(array, start, end, kList, kIndex);
-            } else if (n >=32 ){
-                int[] aux = new int[n];
-                radixSort(array, start, end, kList, kIndex, kList.length - 1, aux);
-            } else {
-                int[] aux = new int[n];
-                for (int i = kList.length - 1; i >= kIndex; i--) {
-                    int sortMask = 1 << kList[i];
-                    IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
-                }
-            }
-        } else  if (twoPowerK <= 512) { //512
-            if (n >= twoPowerK*16) {
-                IntCountSort.countSort(array, start, end, kList, kIndex);
-            } else if (n >=32 ){
-                int[] aux = new int[n];
-                radixSort(array, start, end, kList, kIndex, kList.length - 1, aux);
-            } else {
-                int[] aux = new int[n];
-                for (int i = kList.length - 1; i >= kIndex; i--) {
-                    int sortMask = 1 << kList[i];
-                    IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
-                }
-            }
-        } else {
-            if (n >= twoPowerK*2) {
-                IntCountSort.countSort(array, start, end, kList, kIndex);
-            } else if (n >=128 ){
-                int[] aux = new int[n];
-                radixSort(array, start, end, kList, kIndex, kList.length - 1, aux);
-            } else {
-                int[] aux = new int[n];
-                for (int i = kList.length - 1; i >= kIndex; i--) {
-                    int sortMask = 1 << kList[i];
-                    IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
-                }
-            }
-        }
-    }
-
 }
