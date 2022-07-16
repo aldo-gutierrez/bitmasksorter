@@ -18,51 +18,50 @@ public class RadixBitSorterInt extends IntBitMaskSorter {
             int mask;
             int sortMask = 1 << kList[0];
             int finalLeft = isUnsigned()
-                    ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
-                    : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
-            if (finalLeft - start > 1) { //sort negative numbers
-                int[] aux = new int[finalLeft - start];
+                    ? partitionNotStable(array, start, end, sortMask)
+                    : partitionReverseNotStable(array, start, end, sortMask);
+            int n1 = finalLeft - start;
+            int n2 = end - finalLeft;
+            int[] aux = new int[Math.max(n1, n2)];
+            if (n1 > 1) { //sort negative numbers
                 maskInfo = MaskInfo.getMaskBit(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfo.getMaskAsArray(mask);
-                radixSort(array, start, finalLeft, kList, 0, kList.length - 1, aux);
+                radixSort(array, start, finalLeft, kList, 0, kList.length - 1, aux, 0);
             }
-            if (end - finalLeft > 1) { //sort positive numbers
-                int[] aux = new int[end - finalLeft];
+            if (n2 > 1) { //sort positive numbers
                 maskInfo = MaskInfo.getMaskBit(array, finalLeft, end);
                 mask = maskInfo.getMask();
                 kList = MaskInfo.getMaskAsArray(mask);
-                radixSort(array, finalLeft, end, kList, 0, kList.length - 1, aux);
+                radixSort(array, finalLeft, end, kList, 0, kList.length - 1, aux, 0);
             }
         } else {
             int[] aux = new int[end - start];
-            radixSort(array, start, end, kList, 0, kList.length - 1, aux);
+            radixSort(array, start, end, kList, 0, kList.length - 1, aux, 0);
         }
     }
-
-    public static void radixSort(int[] array, int start, int end, int[] kList, int kStart, int kEnd, int[] aux) {
-
+    public static void radixSort(int[] array, int start, int end, int[] kList, int kStart, int kEnd, int[] aux, int startAux) {
         Section[] sections = BitSorterUtils.getMaskAsSections(kList, kStart, kEnd);
         int n = end - start;
-        for (int i = sections.length - 1; i >= 0; i--) {
-            Section section = sections[i];
-            Section[] sSections = BitSorterUtils.splitSection(section);
-            for (int j = sSections.length - 1; j >= 0; j--) {
-                Section sSection = sSections[j];
-                if (sSection.length > 1) {
+        if (!(sections.length == 1 && sections[0].length == 1)) {
+            for (int i = sections.length - 1; i >= 0; i--) {
+                Section section = sections[i];
+                Section[] sSections = BitSorterUtils.splitSection(section);
+                for (int j = sSections.length - 1; j >= 0; j--) {
+                    Section sSection = sSections[j];
                     int twoPowerK = 1 << sSection.length;
                     int[] leftX = new int[twoPowerK];
                     int[] count = new int[twoPowerK];
                     if (sSection.isSectionAtEnd()) {
-                        partitionStableLastBits(array, start, end, sSection, leftX, count, aux);
+                        partitionStableLastBits(array, start, aux, startAux, n, sSection, leftX, count);
                     } else {
-                        partitionStableOneGroupBits(array, start, end, sSection, leftX, count, aux);
+                        partitionStableOneGroupBits(array, start, aux, startAux, n, sSection, leftX, count);
                     }
-                    System.arraycopy(aux, 0, array, start, n);
-                } else {
-                    partitionStable(array, start, end, sSection.sortMask, aux);
+                    System.arraycopy(aux, startAux, array, start, n);
                 }
             }
+        } else {
+            partitionStable(array, start, end, sections[0].sortMask, aux, startAux);
         }
     }
 

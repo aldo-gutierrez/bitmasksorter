@@ -25,7 +25,7 @@ public class RadixBitBaseSorterInt extends IntBitMaskSorter {
                 kList = MaskInfo.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
                     int sortMaskI = 1 << kList[i];
-                    IntSorterUtils.partitionStable(array, start, finalLeft, sortMaskI, aux);
+                    IntSorterUtils.partitionStable(array, start, finalLeft, sortMaskI, aux, 0);
                 }
             }
             if (end - finalLeft > 1) { //sort positive numbers
@@ -35,14 +35,14 @@ public class RadixBitBaseSorterInt extends IntBitMaskSorter {
                 kList = MaskInfo.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
                     int sortMaskI = 1 << kList[i];
-                    IntSorterUtils.partitionStable(array, finalLeft, end, sortMaskI, aux);
+                    IntSorterUtils.partitionStable(array, finalLeft, end, sortMaskI, aux, 0);
                 }
             }
         } else {
             int[] aux = new int[end - start];
             for (int i = kList.length - 1; i >= 0; i--) {
                 int sortMask = 1 << kList[i];
-                IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
+                IntSorterUtils.partitionStable(array, start, end, sortMask, aux, 0);
             }
         }
     }

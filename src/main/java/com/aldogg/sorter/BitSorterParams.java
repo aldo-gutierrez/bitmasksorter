@@ -6,6 +6,8 @@ public class BitSorterParams {
     public static final int VERY_SMALL_N_SIZE = 16;
 
     //11bits looks faster than 8 on AMD 4800H, 15 is slower
+
+    //Should be >=3
     public static final int MAX_BITS_RADIX_SORT = 11;
 
     private int countingSortBits = 16;

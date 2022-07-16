@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SorterTest extends BaseTest{
 
     public static final long seed = 1234567890;
-    public static final int ITERATIONS = 20;
+    public static final int ITERATIONS = 10;
     public static final int HEAT_ITERATIONS = 10;
 
     @BeforeEach
@@ -107,7 +107,7 @@ public class SorterTest extends BaseTest{
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = Generator.GeneratorFunctions.RANDOM_RANGE_INT;
-        testSpeedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
+//        testSpeedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
         System.out.println("----------------------");
 
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
