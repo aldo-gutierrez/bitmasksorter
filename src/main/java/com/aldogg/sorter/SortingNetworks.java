@@ -112,43 +112,45 @@ public class SortingNetworks {
                     {6, 7}, {8, 9}}
     };
 
-    public static Map<Integer, BiConsumer<int[], Integer>> signedSNFunctions = new HashMap<>();
-    public static Map<Integer, BiConsumer<int[], Integer>> unsignedSNFunctions = new HashMap<>();
+    public static BiConsumer<int[], Integer>[] signedSNFunctions = new BiConsumer[17];
+    public static BiConsumer<int[], Integer>[] unsignedSNFunctions = new BiConsumer[17];
 
     static {
-        signedSNFunctions.put(1, SortingNetworks::sort1);
-        signedSNFunctions.put(2, SortingNetworks::sortVSLS2);
-        signedSNFunctions.put(3, SortingNetworks::sortVSLS3);
-        signedSNFunctions.put(4, SortingNetworks::sortVSLS4);
-        signedSNFunctions.put(5, SortingNetworks::sortVSLS5);
-        signedSNFunctions.put(6, SortingNetworks::sortVSLS6);
-        signedSNFunctions.put(7, SortingNetworks::sortVSLS7);
-        signedSNFunctions.put(8, SortingNetworks::sortVSLS8);
-        signedSNFunctions.put(9, SortingNetworks::sortVSLS9);
-        signedSNFunctions.put(10, SortingNetworks::sortVSLS10);
-        signedSNFunctions.put(11, SortingNetworks::sortVSLS11);
-        signedSNFunctions.put(12, SortingNetworks::sortVSLS12);
-        signedSNFunctions.put(13, SortingNetworks::sortVSLS13);
-        signedSNFunctions.put(14, SortingNetworks::sortVSLS14);
-        signedSNFunctions.put(15, SortingNetworks::sortVSLS15);
-        signedSNFunctions.put(16, SortingNetworks::sortVSLS16);
+        signedSNFunctions[0] = null;
+        signedSNFunctions[1] = SortingNetworks::sort1;
+        signedSNFunctions[2] = SortingNetworks::sortVSLS2;
+        signedSNFunctions[3] = SortingNetworks::sortVSLS3;
+        signedSNFunctions[4] = SortingNetworks::sortVSLS4;
+        signedSNFunctions[5] = SortingNetworks::sortVSLS5;
+        signedSNFunctions[6] = SortingNetworks::sortVSLS6;
+        signedSNFunctions[7] = SortingNetworks::sortVSLS7;
+        signedSNFunctions[8] = SortingNetworks::sortVSLS8;
+        signedSNFunctions[9] = SortingNetworks::sortVSLS9;
+        signedSNFunctions[10] = SortingNetworks::sortVSLS10;
+        signedSNFunctions[11] = SortingNetworks::sortVSLS11;
+        signedSNFunctions[12] = SortingNetworks::sortVSLS12;
+        signedSNFunctions[13] = SortingNetworks::sortVSLS13;
+        signedSNFunctions[14] = SortingNetworks::sortVSLS14;
+        signedSNFunctions[15] = SortingNetworks::sortVSLS15;
+        signedSNFunctions[16] = SortingNetworks::sortVSLS16;
 
-        unsignedSNFunctions.put(1, SortingNetworks::sort1);
-        unsignedSNFunctions.put(2, SortingNetworks::sortVSLU2);
-        unsignedSNFunctions.put(3, SortingNetworks::sortVSLU3);
-        unsignedSNFunctions.put(4, SortingNetworks::sortVSLU4);
-        unsignedSNFunctions.put(5, SortingNetworks::sortVSLU5);
-        unsignedSNFunctions.put(6, SortingNetworks::sortVSLU6);
-        unsignedSNFunctions.put(7, SortingNetworks::sortVSLU7);
-        unsignedSNFunctions.put(8, SortingNetworks::sortVSLU8);
-        unsignedSNFunctions.put(9, SortingNetworks::sortVSLU9);
-        unsignedSNFunctions.put(10, SortingNetworks::sortVSLU10);
-        unsignedSNFunctions.put(11, SortingNetworks::sortVSLU11);
-        unsignedSNFunctions.put(12, SortingNetworks::sortVSLU12);
-        unsignedSNFunctions.put(13, SortingNetworks::sortVSLU13);
-        unsignedSNFunctions.put(14, SortingNetworks::sortVSLU14);
-        unsignedSNFunctions.put(15, SortingNetworks::sortVSLU15);
-        unsignedSNFunctions.put(16, SortingNetworks::sortVSLU16);
+        unsignedSNFunctions[0] = null;
+        unsignedSNFunctions[1] = SortingNetworks::sort1;
+        unsignedSNFunctions[2] = SortingNetworks::sortVSLU2;
+        unsignedSNFunctions[3] = SortingNetworks::sortVSLU3;
+        unsignedSNFunctions[4] = SortingNetworks::sortVSLU4;
+        unsignedSNFunctions[5] = SortingNetworks::sortVSLU5;
+        unsignedSNFunctions[6] = SortingNetworks::sortVSLU6;
+        unsignedSNFunctions[7] = SortingNetworks::sortVSLU7;
+        unsignedSNFunctions[8] = SortingNetworks::sortVSLU8;
+        unsignedSNFunctions[9] = SortingNetworks::sortVSLU9;
+        unsignedSNFunctions[10] = SortingNetworks::sortVSLU10;
+        unsignedSNFunctions[11] = SortingNetworks::sortVSLU11;
+        unsignedSNFunctions[12] = SortingNetworks::sortVSLU12;
+        unsignedSNFunctions[13] = SortingNetworks::sortVSLU13;
+        unsignedSNFunctions[14] = SortingNetworks::sortVSLU14;
+        unsignedSNFunctions[15] = SortingNetworks::sortVSLU15;
+        unsignedSNFunctions[16] = SortingNetworks::sortVSLU16;
         
     }
 

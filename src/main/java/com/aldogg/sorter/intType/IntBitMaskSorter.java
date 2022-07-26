@@ -15,7 +15,7 @@ public abstract class IntBitMaskSorter implements IntSorter{
 
     protected boolean unsigned = false;
 
-    protected Map<Integer, BiConsumer<int[], Integer>> snFunctions;
+    protected BiConsumer<int[], Integer>[] snFunctions;
 
     protected BitSorterParams params = BitSorterParams.getSTParams();
 
@@ -23,7 +23,7 @@ public abstract class IntBitMaskSorter implements IntSorter{
         this.params = params;
     }
 
-    public void setSNFunctions(Map<Integer, BiConsumer<int[], Integer>> snFunctions) {
+    public void setSNFunctions(BiConsumer<int[], Integer>[] snFunctions) {
         this.snFunctions =snFunctions;
     }
 

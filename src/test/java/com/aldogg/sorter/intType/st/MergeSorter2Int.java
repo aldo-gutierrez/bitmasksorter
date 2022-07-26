@@ -27,7 +27,7 @@ public class MergeSorter2Int implements IntSorter {
         }
         if (n <= VERY_SMALL_N_SIZE) {
             int length = end - start;
-            SortingNetworks.signedSNFunctions.get(length).accept(a, start);
+            SortingNetworks.signedSNFunctions[length].accept(a, start);
             return;
         }
 

@@ -28,21 +28,21 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
                     ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
                     : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
 
-            int size1 = finalLeft - start;
-            int size2 = end - finalLeft;
+            int n1 = finalLeft - start;
+            int n2 = end - finalLeft;
             SorterRunner.runTwoRunnable(
-                    size1 > 1 ? () -> { //sort negative numbers
+                    n1 > 1 ? () -> { //sort negative numbers
                         MaskInfo maskParts1 = MaskInfo.getMaskBit(array, start, finalLeft);
                         int mask1 = maskParts1.getMask();
                         int[] kList1 = MaskInfo.getMaskAsArray(mask1);
                         sort(array, start, finalLeft, kList1, 0, 1, maxLevel);
-                    } : null, size1,
-                    size2 > 1 ? () -> { //sort positive numbers
+                    } : null, n1,
+                    n2 > 1 ? () -> { //sort positive numbers
                         MaskInfo maskParts2 = MaskInfo.getMaskBit(array, finalLeft, end);
                         int mask2 = maskParts2.getMask();
                         int[] kList2 = MaskInfo.getMaskAsArray(mask2);
                         sort(array, finalLeft, end, kList2, 0, 1 , maxLevel);
-                    } : null, size2, params.getDataSizeForThreads(), params.getMaxThreads(), numThreads);
+                    } : null, n2, params.getDataSizeForThreads(), params.getMaxThreads(), numThreads);
         } else {
             sort(array, start, end, kList, 0, 0, maxLevel);
         }
@@ -51,7 +51,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
     public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, int level, int maxLevel) {
         final int n = end - start;
         if (n <= VERY_SMALL_N_SIZE) {
-            snFunctions.get(n).accept(array, start);
+            snFunctions[n].accept(array, start);
             return;
         }
         int kDiff = kList.length - kIndex;
@@ -68,15 +68,15 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
         } else {
             int sortMask = 1 << kList[kIndex];
             int finalLeft = IntSorterUtils.partitionNotStable(array, start, end, sortMask);
-            int size1 = finalLeft - start;
-            int size2 = end - finalLeft;
+            int n1 = finalLeft - start;
+            int n2 = end - finalLeft;
             SorterRunner.runTwoRunnable(
-                    size1 > 1 ? () -> {
+                    n1 > 1 ? () -> {
                         sort(array, start, finalLeft, kList, kIndex + 1, level +1, maxLevel);
-                    } : null, size1,
-                    size2 > 1 ? () -> {
+                    } : null, n1,
+                    n2 > 1 ? () -> {
                         sort(array, finalLeft, end, kList, kIndex + 1, level +1 , maxLevel);
-                    } : null, size2, params.getDataSizeForThreads(), params.getMaxThreads(), numThreads);
+                    } : null, n2, params.getDataSizeForThreads(), params.getMaxThreads(), numThreads);
         }
     }
 
@@ -166,7 +166,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
     private void smallListUtil(final int[] array, final int start, final int end, int[] kList) {
         int n = end - start;
         if (n <= VERY_SMALL_N_SIZE) {
-            snFunctions.get(n).accept(array, start);
+            snFunctions[n].accept(array, start);
         } else if (kList.length <= params.getShortKBits()) {
             sortShortK(array, start, end, kList, 0);
         } else {

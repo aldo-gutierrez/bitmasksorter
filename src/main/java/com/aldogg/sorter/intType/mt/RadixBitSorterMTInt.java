@@ -23,21 +23,21 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
             int finalLeft = isUnsigned()
                     ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
                     : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
-            int size1 = finalLeft - start;
-            int size2 = end - finalLeft;
+            int n1 = finalLeft - start;
+            int n2 = end - finalLeft;
             SorterRunner.runTwoRunnable(
-                    size1 > 1 ? () -> { //sort negative numbers
+                    n1 > 1 ? () -> { //sort negative numbers
                         MaskInfo maskParts1 = MaskInfo.getMaskBit(array, start, finalLeft);
                         int mask1 = maskParts1.getMask();
                         int[] kList1 = MaskInfo.getMaskAsArray(mask1);
                         sort(array, start, finalLeft, kList1, 0, maxThreadsBits - 1);
-                    } : null, size1,
-                    size2 > 1 ? () -> { //sort positive numbers
+                    } : null, n1,
+                    n2 > 1 ? () -> { //sort positive numbers
                         MaskInfo maskParts2 = MaskInfo.getMaskBit(array, finalLeft, end);
                         int mask2 = maskParts2.getMask();
                         int[] kList2 = MaskInfo.getMaskAsArray(mask2);
                         sort(array, finalLeft, end, kList2, 0, maxThreadsBits - 1);
-                    } : null, size2, params.getDataSizeForThreads(), 0, null);
+                    } : null, n2, params.getDataSizeForThreads(), 0, null);
 
         } else {
             sort(array, start, end, kList, 0, maxThreadsBits);

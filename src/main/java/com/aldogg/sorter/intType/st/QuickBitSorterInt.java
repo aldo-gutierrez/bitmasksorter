@@ -31,7 +31,7 @@ public class QuickBitSorterInt extends IntBitMaskSorter {
     public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
         final int n = end - start;
         if (n <= VERY_SMALL_N_SIZE) {
-            snFunctions.get(n).accept(array, start);
+            snFunctions[n].accept(array, start);
             return;
         }
 
@@ -75,7 +75,7 @@ public class QuickBitSorterInt extends IntBitMaskSorter {
     public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex) {
         final int n = end - start;
         if (n <= VERY_SMALL_N_SIZE) {
-            snFunctions.get(n).accept(array, start);
+            snFunctions[n].accept(array, start);
             return;
         }
 

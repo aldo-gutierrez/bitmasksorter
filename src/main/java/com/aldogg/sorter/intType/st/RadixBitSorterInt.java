@@ -20,15 +20,16 @@ public class RadixBitSorterInt extends IntBitMaskSorter {
             int finalLeft = isUnsigned()
                     ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
                     : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
-            if (finalLeft - start > 1) { //sort negative numbers
-                int[] aux = new int[finalLeft - start];
+            int n1 = finalLeft - start;
+            int n2 = end - finalLeft;
+            int[] aux = new int[Math.max(n1, n2)];
+            if (n1 > 1) { //sort negative numbers
                 maskInfo = MaskInfo.getMaskBit(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfo.getMaskAsArray(mask);
                 radixSort(array, start, finalLeft, kList, 0, kList.length - 1, aux);
             }
-            if (end - finalLeft > 1) { //sort positive numbers
-                int[] aux = new int[end - finalLeft];
+            if (n2 > 1) { //sort positive numbers
                 maskInfo = MaskInfo.getMaskBit(array, finalLeft, end);
                 mask = maskInfo.getMask();
                 kList = MaskInfo.getMaskAsArray(mask);
