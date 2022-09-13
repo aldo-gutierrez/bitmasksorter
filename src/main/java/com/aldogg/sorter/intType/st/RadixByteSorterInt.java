@@ -85,47 +85,90 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
         int n = end - start;
         int[] leftX = new int[256];
         Section section = new Section();
+        int ops = 0;
+        int[] arrayOrig = array;
+        int startOrig = start;
+        int startAux = 0;
+
         if (s0) {
             section.sortMask = 0xFF;
             int[] count = new int[256];
             leftX[0] = 0;
-            IntSorterUtils.partitionStableLastBits(array, start, end, section, leftX, count, aux);
-            System.arraycopy(aux, 0, array, start, n);
+            IntSorterUtils.partitionStableLastBits(array, start, section, leftX, count, aux, startAux, n);
+
+            //System.arraycopy(aux, 0, array, start, n);
+            //swap array with aux and start with startAux
+            int[] tempArray = array;
+            array = aux;
+            aux = tempArray;
+            int temp = start;
+            start = startAux;
+            startAux = temp;
+            ops++;
+
         }
         if (s8) {
             int[] count = new int[256];
             leftX[0] = 0;
             section.sortMask = 0xFF00;
             section.shiftRight = 8;
-            IntSorterUtils.partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
-            System.arraycopy(aux, 0, array, start, n);
+            IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, count, aux, startAux, n);
+
+            //System.arraycopy(aux, 0, array, start, n);
+            //swap array with aux and start with startAux
+            int[] tempArray = array;
+            array = aux;
+            aux = tempArray;
+            int temp = start;
+            start = startAux;
+            startAux = temp;
+            ops++;
+
         }
         if (s16) {
             int[] count = new int[256];
             leftX[0] = 0;
             section.sortMask = 0xFF0000;
             section.shiftRight = 16;
-            IntSorterUtils.partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
-            System.arraycopy(aux, 0, array, start, n);
+            IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, count, aux, startAux, n);
+
+            //System.arraycopy(aux, 0, array, start, n);
+            //swap array with aux and start with startAux
+            int[] tempArray = array;
+            array = aux;
+            aux = tempArray;
+            int temp = start;
+            start = startAux;
+            startAux = temp;
+            ops++;
+
         }
         if (s24) {
             int[] count = new int[256];
             leftX[0] = 0;
             section.sortMask = 0xFF000000;
             section.shiftRight = 24;
-            IntSorterUtils.partitionStableOneGroupBits(array, start, end, section, leftX, count, aux);
+            IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, count, aux, startAux, n);
             int lengthPositive = leftX[128];
             if (isUnsigned()) {
-                System.arraycopy(aux, 0, array, start, n);
+//                System.arraycopy(aux, 0, array, start, n);
             } else {
                 if (lengthPositive < n) {
                     int lengthNegative = n - lengthPositive;
-                    System.arraycopy(aux, lengthPositive, array, start, lengthNegative);
-                    System.arraycopy(aux, 0, array, start + lengthNegative, lengthPositive);
+//                    System.arraycopy(aux, lengthPositive, array, start, lengthNegative);
+//                    System.arraycopy(aux, 0, array, start + lengthNegative, lengthPositive);
+                    System.arraycopy(aux, startAux + lengthPositive, array, start, lengthNegative);
+                    System.arraycopy(aux, startAux, array, start + lengthNegative, lengthPositive);
                 } else {
-                    System.arraycopy(aux, 0, array, start, n);
+//                    System.arraycopy(aux, 0, array, start, n);
                 }
             }
+            array = aux;
+            start = startAux;
+            ops++;
+        }
+        if (ops % 2 == 1) {
+            System.arraycopy(array, start, arrayOrig, startOrig, n);
         }
     }
 }

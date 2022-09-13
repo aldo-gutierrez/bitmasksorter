@@ -201,7 +201,7 @@ public class SorterTest extends BaseTest{
         ObjectSorter[] sorters = new ObjectSorter[] {new JavaSorterObject(), new JavaParallelSorterObjectInt(), new RadixBitSorterObjectInt()};
         TestSortResults testSortResults;
 
-        IntComparator<Entity1> comparator = new IntComparator<>() {
+        IntComparator<Entity1> comparator = new IntComparator<Entity1>() {
             @Override
             public int intValue(Entity1 o) {
                 return o.getId();

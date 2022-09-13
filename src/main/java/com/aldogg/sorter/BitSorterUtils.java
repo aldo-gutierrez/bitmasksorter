@@ -64,7 +64,7 @@ public class BitSorterUtils {
                 sectionQuantity = divisor + 1;
                 if (section.length % BitSorterMTParams.MAX_BITS_RADIX_SORT <= 2) {
                     sectionSize = BitSorterMTParams.MAX_BITS_RADIX_SORT - 1;
-            }
+                }
             }
             int sizeAux = 0;
             for (int i = 0; i < sectionQuantity; i++) {
@@ -178,4 +178,11 @@ public class BitSorterUtils {
         return AnalysisResult.UNORDERED;
     }
 
+    public static int maxSection(List<Section>sSections) {
+        int max = 0;
+        for (Section section : sSections) {
+            max = Math.max(max, section.length);
+        }
+        return max;
+    }
 }

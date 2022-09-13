@@ -99,58 +99,88 @@ public class IntSorterUtils {
      *  CPU: O(N), 3*N + 2^K
      *  MEM: O(N), N + 2*2^K
      */
-    public static void partitionStableLastBits(final int[] array, final int start, final int end, final Section section, int[] leftX, int[] count, final int[] aux) {
+    public static void partitionStableLastBits(final int[] array, final int start, final Section section, int[] leftX, int[] count, final int[] aux, int startAux, int n) {
         int mask = section.sortMask;
+        int end = start + n;
         for (int i = start; i < end; i++) {
             count[array[i] & mask]++;
         }
-        for (int i = 1; i < leftX.length; i++) {
+        for (int i = 1; i < count.length; i++) {
             leftX[i] = leftX[i - 1] + count[i - 1];
         }
-        for (int i = start; i < end; i++) {
-            int element = array[i];
-            int elementShiftMasked = element & mask;
-            aux[leftX[elementShiftMasked]] = element;
-            leftX[elementShiftMasked]++;
+        if (startAux == 0) {
+            for (int i = start; i < end; i++) {
+                int element = array[i];
+                int elementShiftMasked = element & mask;
+                aux[leftX[elementShiftMasked]] = element;
+                leftX[elementShiftMasked]++;
+            }
+        } else {
+            for (int i = start; i < end; i++) {
+                int element = array[i];
+                int elementShiftMasked = element & mask;
+                aux[leftX[elementShiftMasked] + startAux] = element;
+                leftX[elementShiftMasked]++;
+            }
         }
     }
 
 
     /**
-         *  CPU: O(N), 3*N + 2^K
-         *  MEM: O(N), N + 2*2^K
-         */
-    public static void partitionStableOneGroupBits(final int[] array, final int start, final int end, final Section section, final int [] leftX, final int[] count, final int[] aux) {
+     * CPU: O(N), 3*N + 2^K
+     * MEM: O(N), N + 2*2^K
+     */
+    public static void partitionStableOneGroupBits(final int[] array, final int start, final Section section, final int[] leftX, final int[] count, final int[] aux, int startAux, int n) {
         int mask = section.sortMask;
         int shiftRight = section.shiftRight;
+        int end = start + n;
         for (int i = start; i < end; i++) {
-                count[(array[i] & mask) >>> shiftRight]++;
+            count[(array[i] & mask) >>> shiftRight]++;
         }
-        for (int i = 1; i < leftX.length; i++) {
+        for (int i = 1; i < count.length; i++) {
             leftX[i] = leftX[i - 1] + count[i - 1];
         }
-        for (int i = start; i < end; i++) {
-            int element = array[i];
-            int elementShiftMasked = (element & mask) >>> shiftRight;
-            aux[leftX[elementShiftMasked]] = element;
-            leftX[elementShiftMasked]++;
+        if (startAux == 0) {
+            for (int i = start; i < end; i++) {
+                int element = array[i];
+                int elementShiftMasked = (element & mask) >>> shiftRight;
+                aux[leftX[elementShiftMasked]] = element;
+                leftX[elementShiftMasked]++;
+            }
+        } else {
+            for (int i = start; i < end; i++) {
+                int element = array[i];
+                int elementShiftMasked = (element & mask) >>> shiftRight;
+                aux[leftX[elementShiftMasked] + startAux] = element;
+                leftX[elementShiftMasked]++;
+            }
         }
     }
 
-    public static void partitionStableNGroupBits(final int[] array, final int start, final int end, Section[] sections, final int [] leftX, final int[] count, final int[] aux) {
+    public static void partitionStableNGroupBits(final int[] array, final int start, Section[] sections, final int[] leftX, final int[] count, final int[] aux, int startAux, int n) {
+        int end = start + n;
         for (int i = start; i < end; i++) {
             int element = array[i];
             int elementMaskedShifted = getKeySN(element, sections);
             count[elementMaskedShifted]++;
         }
-        for (int i = 1; i < leftX.length; i++) {
+        for (int i = 1; i < count.length; i++) {
             leftX[i] = leftX[i - 1] + count[i - 1];
         }
-        for (int i = start; i < end; i++) {
-            int element = array[i];
-            int elementMaskedShifted = getKeySN(element, sections);
-            aux[leftX[elementMaskedShifted]] = element;
-            leftX[elementMaskedShifted]++;
+        if (startAux == 0) {
+            for (int i = start; i < end; i++) {
+                int element = array[i];
+                int elementMaskedShifted = getKeySN(element, sections);
+                aux[leftX[elementMaskedShifted]] = element;
+                leftX[elementMaskedShifted]++;
+            }
+        } else {
+            for (int i = start; i < end; i++) {
+                int element = array[i];
+                int elementMaskedShifted = getKeySN(element, sections);
+                aux[leftX[elementMaskedShifted] + startAux] = element;
+                leftX[elementMaskedShifted]++;
+            }
         }
     }
 

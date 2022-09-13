@@ -1,7 +1,6 @@
 package com.aldogg.sorter.intType;
 
 import com.aldogg.sorter.Sorter;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
 
@@ -13,7 +12,7 @@ public interface IntSorter extends Sorter {
     void sort(int[] array, int start, int end);
 
     default void sort(int[] array, int start, int end, int[] kList) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     default void sort(List<Integer> list) {

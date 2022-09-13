@@ -109,14 +109,15 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
         if (sections.length == 1) {
             Section section = sections[0];
             if (section.isSectionAtEnd()) {
-                IntSorterUtils.partitionStableLastBits(list, start, end, section, leftX, count, aux);
+                IntSorterUtils.partitionStableLastBits(list, start, section, leftX, count, aux, 0, n);
                 System.arraycopy(aux, 0, list, start, n);
             } else {
-                IntSorterUtils.partitionStableOneGroupBits(list, start, end, section, leftX, count, aux);
+                IntSorterUtils.partitionStableOneGroupBits(list, start, section, leftX, count, aux, 0, n);
                 System.arraycopy(aux, 0, list, start, n);
             }
         } else {
-            IntSorterUtils.partitionStableNGroupBits(list, start, end, sections, leftX, count, aux);
+            //TODO code never reaches this path in test, add more tests
+            IntSorterUtils.partitionStableNGroupBits(list, start, sections, leftX, count, aux, 0, n);
             System.arraycopy(aux, 0, list, start, n);
         }
 
