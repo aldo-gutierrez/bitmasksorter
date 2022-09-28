@@ -83,6 +83,21 @@ public class BitSorterUtils {
         }
     }
 
+    public static List<Section> getOrderedSections(int[] kList, int kStart, int kEnd) {
+        List<Section> finalSectionList = new ArrayList<>();
+        Section[] sections = BitSorterUtils.getMaskAsSections(kList, kStart, kEnd);
+
+        for (int i = sections.length - 1; i >= 0; i--) {
+            Section section = sections[i];
+            Section[] sSections = BitSorterUtils.splitSection(section);
+            for (int j = sSections.length - 1; j >= 0; j--) {
+                Section sSection = sSections[j];
+                finalSectionList.add(sSection);
+            }
+        }
+        return finalSectionList;
+    }
+
 
     public static int listIsOrderedSigned(final int[] array, final int start, final int end) {
         int i1 = array[start];

@@ -44,18 +44,7 @@ public class RadixBitSorterInt extends IntBitMaskSorter {
     }
 
     public static void radixSort(int[] array, int start, int end, int[] kList, int kStart, int kEnd, int[] aux) {
-        int n = end - start;
-        List<Section> finalSectionList = new ArrayList<>();
-        Section[] sections = BitSorterUtils.getMaskAsSections(kList, kStart, kEnd);
-
-        for (int i = sections.length - 1; i >= 0; i--) {
-            Section section = sections[i];
-            Section[] sSections = BitSorterUtils.splitSection(section);
-            for (int j = sSections.length - 1; j >= 0; j--) {
-                Section sSection = sSections[j];
-                finalSectionList.add(sSection);
-            }
-        }
+        List<Section> finalSectionList = BitSorterUtils.getOrderedSections(kList, kStart, kEnd);
 
         if (finalSectionList.size() == 1 && finalSectionList.get(0).length == 1) {
             partitionStable(array, start, end, finalSectionList.get(0).sortMask, aux);
@@ -63,7 +52,7 @@ public class RadixBitSorterInt extends IntBitMaskSorter {
         }
 
         int maxSectionLength = BitSorterUtils.maxSection(finalSectionList);
-
+        int n = end - start;
         int[] leftX = new int[1 << maxSectionLength];
         int startAux = 0;
         int ops = 0;
@@ -72,10 +61,10 @@ public class RadixBitSorterInt extends IntBitMaskSorter {
         for (Section section: finalSectionList) {
             leftX[0] = 0;
             int[] count = new int[1 << section.length];
-            if (section.isSectionAtEnd()) {
-                partitionStableLastBits(array, start, section, leftX, count, aux, startAux, n);
-            } else {
+            if (!section.isSectionAtEnd()) {
                 partitionStableOneGroupBits(array, start, section, leftX, count, aux, startAux, n);
+            } else {
+                partitionStableLastBits(array, start, section, leftX, count, aux, startAux, n);
             }
 
             //System.arraycopy(aux, 0, array, start, n);
