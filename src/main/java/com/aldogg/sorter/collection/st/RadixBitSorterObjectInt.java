@@ -109,15 +109,14 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
      */
     public static void radixSort(Object[] oArray, int[] array, int start, int end, int[] kList, int kStart, int kEnd, Object[] oAux, int[] aux) {
 
-//        int n = end - start;
+        int n = end - start;
         List<Section> finalSectionList = BitSorterUtils.getOrderedSections(kList, kStart, kEnd);
         for (Section sSection: finalSectionList) {
                 if (sSection.length > 1) {
-                    int twoPowerK = 1 << sSection.length;
                     if (sSection.isSectionAtEnd()) {
-                        partitionStableLastBits(oArray, array, start, end, sSection.sortMask, twoPowerK, oAux, aux);
+                        partitionStableLastBits(oArray, array, start, sSection, oAux, aux, n);
                     } else {
-                        partitionStableGroupBits(oArray, array, start, end, sSection.sortMask, sSection.shiftRight, twoPowerK, oAux, aux);
+                        partitionStableGroupBits(oArray, array, start, sSection, oAux, aux, n);
                     }
                 } else {
                     partitionStable(oArray, array, start, end, sSection.sortMask, oAux, aux);

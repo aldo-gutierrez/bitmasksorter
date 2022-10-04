@@ -1,5 +1,6 @@
 package com.aldogg.sorter.collection;
 
+import com.aldogg.sorter.Section;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
 public class ObjectSorterUtils {
@@ -142,8 +143,11 @@ public class ObjectSorterUtils {
      *  CPU: 3*N + 2^K
      *  MEM: N + 2*2^K
      */
-    public static void partitionStableLastBits(final Object[] oArray, final int[] array, final int start, final int end,
-                                               final int mask, final int twoPowerK, final Object[] oAux, final int[] aux) {
+    public static void partitionStableLastBits(final Object[] oArray, final int[] array, final int start, final Section section,
+                                               final Object[] oAux, final int[] aux, final int n) {
+        int mask = section.sortMask;
+        int end = start + n;
+        int twoPowerK = 1 << section.length;
         int[] leftX = new int[twoPowerK];
         int[] count = new int[twoPowerK];
         for (int i = start; i < end; i++) {
@@ -169,8 +173,12 @@ public class ObjectSorterUtils {
      *  CPU: 3*N + 2^K
      *  MEM: N + 2*2^K
      */
-    public static void partitionStableGroupBits(final Object[] oArray, final int[] array, final int start, final int end,
-                                                final int mask, final int shiftRight, final int twoPowerK, final Object[] oAux, final int[] aux) {
+    public static void partitionStableGroupBits(final Object[] oArray, final int[] array, final int start, final Section section,
+                                                final Object[] oAux, final int[] aux, int n) {
+        int mask = section.sortMask;
+        int end = start + n;
+        int twoPowerK = 1 << section.length;
+        int shiftRight = section.shiftRight;
         int[] leftX = new int[twoPowerK];
         int[] count = new int[twoPowerK];
         for (int i = start; i < end; i++) {
