@@ -163,8 +163,8 @@ public class ObjectSorterUtils {
             oAux[auxIndex] = oArray[i];
             leftX[elementShiftMasked]++;
         }
-        System.arraycopy(aux, startAux, array, start, end - start);
-        System.arraycopy(oAux, startAux, oArray, start, end - start);
+        System.arraycopy(aux, startAux, array, start, n);
+        System.arraycopy(oAux, startAux, oArray, start, n);
     }
 
     /**
@@ -192,8 +192,8 @@ public class ObjectSorterUtils {
             oAux[auxIndex] = oArray[i];
             leftX[elementShiftMasked]++;
         }
-        System.arraycopy(aux, startAux, array, start, end - start);
-        System.arraycopy(oAux, startAux, oArray, start, end - start);
+        System.arraycopy(aux, startAux, array, start, n);
+        System.arraycopy(oAux, startAux, oArray, start, n);
     }
 
     public static void reverse(final Object[] oArray, final int start, final int end) {

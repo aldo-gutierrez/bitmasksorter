@@ -113,10 +113,10 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
         int n = end - start;
         int[] leftX = new int[1 << maxSectionLength];
         int startAux = 0;
-        int ops = 0;
-        int[] arrayOrig = array;
-        Object[] oArrayOrig = oArray;
-        int startOrig = start;
+//        int ops = 0;
+//        int[] arrayOrig = array;
+//        Object[] oArrayOrig = oArray;
+//        int startOrig = start;
 
         for (Section section : finalSectionList) {
             leftX[0] = 0;
@@ -126,23 +126,23 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
                 partitionStableLastBits(oArray, array, start, section, leftX, oAux, aux, startAux, n);
             }
 
-            int[] tempArray = array;
-            array = aux;
-            aux = tempArray;
-
-            Object[] oTempArray = oArray;
-            oArray = oAux;
-            oAux = oTempArray;
-
-            int temp = start;
-            start = startAux;
-            startAux = temp;
-            ops++;
+//            int[] tempArray = array;
+//            array = aux;
+//            aux = tempArray;
+//
+//            Object[] oTempArray = oArray;
+//            oArray = oAux;
+//            oAux = oTempArray;
+//
+//            int temp = start;
+//            start = startAux;
+//            startAux = temp;
+//            ops++;
         }
-        if (ops % 2 == 1) {
-            System.arraycopy(array, start, arrayOrig, startOrig, n);
-            System.arraycopy(oArray, start, oArrayOrig, startOrig, n);
-        }
+//        if (ops % 2 == 1) {
+//            System.arraycopy(array, start, arrayOrig, startOrig, n);
+//            System.arraycopy(oArray, start, oArrayOrig, startOrig, n);
+//        }
 
     }
 
