@@ -93,31 +93,31 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
             sortMask1 = sortMask1 | sortMaskij;
             bits++;
         }
-        int twoPowerBits = 1 << bits;
-        partitionStableNonConsecutiveBitsAndCountSort(list, start, end, sortMask1, kList, kIndexCountSort, twoPowerBits, aux2);
+        partitionStableNonConsecutiveBitsAndCountSort(list, start, end, sortMask1, kList, kIndexCountSort, aux2);
     }
 
     //partitionStableLastBits
-    protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] list, final int start, final int end, int sortMask, int[] kList, int kIndex, int twoPowerK, final int[] aux) {
+    protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] list, final int start, final int end, int sortMask, int[] kList, int kIndex, final int[] aux) {
         int[] kListAux = MaskInfo.getMaskAsArray(sortMask);
-        Section[] sections = getMaskAsSections(kListAux, 0, kListAux.length -1);
-
+        int bits = kListAux.length;
+        int twoPowerK = 1 << bits;
+        SectionsInfo sectionsInfo = getMaskAsSections(kListAux, 0, kListAux.length - 1);
+        Section[] sections = sectionsInfo.sections;
         int[] leftX = new int[twoPowerK];
-        int[] count = new int[twoPowerK];
 
         int n = end - start;
         if (sections.length == 1) {
             Section section = sections[0];
             if (section.isSectionAtEnd()) {
-                IntSorterUtils.partitionStableLastBits(list, start, section, leftX, count, aux, 0, n);
+                IntSorterUtils.partitionStableLastBits(list, start, section, leftX, aux, 0, n);
                 System.arraycopy(aux, 0, list, start, n);
             } else {
-                IntSorterUtils.partitionStableOneGroupBits(list, start, section, leftX, count, aux, 0, n);
+                IntSorterUtils.partitionStableOneGroupBits(list, start, section, leftX, aux, 0, n);
                 System.arraycopy(aux, 0, list, start, n);
             }
         } else {
             //TODO code never reaches this path in test, add more tests
-            IntSorterUtils.partitionStableNGroupBits(list, start, sections, leftX, count, aux, 0, n);
+            IntSorterUtils.partitionStableNGroupBits(list, start, sectionsInfo, leftX, aux, 0, n);
             System.arraycopy(aux, 0, list, start, n);
         }
 
@@ -126,7 +126,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
             if (numThreads.get() < params.getMaxThreads() + 1) {
                 Runnable r1 = () -> {
                     for (int i = 0; i < twoPowerK / 2; i++) {
-                        int start1 = leftX[i] - count[i];
+                        int start1 = i > 0 ? leftX[i - 1] : 0;
                         int end1 = leftX[i];
                         if (end1 - start1 > 1) {
                             smallListUtil(aux, start1, end1, kListCountS);
@@ -137,7 +137,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
                 t1.start();
                 numThreads.addAndGet(1);
                 for (int i = twoPowerK / 2; i < twoPowerK; i++) {
-                    int start1 = leftX[i] - count[i];
+                    int start1 = i > 0 ? leftX[i - 1] : 0;
                     int end1 = leftX[i];
                     if (end1 - start1 > 1) {
                         smallListUtil(aux, start1, end1, kListCountS);
@@ -152,7 +152,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
                 }
             } else {
                 for (int i = 0; i < twoPowerK; i++) {
-                    int start1 = leftX[i] - count[i];
+                    int start1 = i > 0 ? leftX[i - 1] : 0;
                     int end1 = leftX[i];
                     if (end1 - start1 > 1) {
                         smallListUtil(aux, start1, end1, kListCountS);

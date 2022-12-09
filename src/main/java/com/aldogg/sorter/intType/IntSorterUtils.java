@@ -1,6 +1,7 @@
 package com.aldogg.sorter.intType;
 
 import com.aldogg.sorter.Section;
+import com.aldogg.sorter.SectionsInfo;
 
 import static com.aldogg.sorter.BitSorterUtils.getKeySN;
 import static com.aldogg.sorter.intType.st.RadixBitSorterInt.radixSort;
@@ -99,9 +100,10 @@ public class IntSorterUtils {
      *  CPU: O(N), 3*N + 2^K
      *  MEM: O(N), N + 2*2^K
      */
-    public static void partitionStableLastBits(final int[] array, final int start, final Section section, int[] leftX, int[] count, final int[] aux, int startAux, int n) {
-        int mask = section.sortMask;
-        int end = start + n;
+    public static void partitionStableLastBits(final int[] array, final int start, final Section section, int[] leftX, final int[] aux, int startAux, int n) {
+        final int mask = section.sortMask;
+        final int end = start + n;
+        final int[] count = new int[1 << section.length];
         for (int i = start; i < end; i++) {
             count[array[i] & mask]++;
         }
@@ -130,10 +132,11 @@ public class IntSorterUtils {
      * CPU: O(N), 3*N + 2^K
      * MEM: O(N), N + 2*2^K
      */
-    public static void partitionStableOneGroupBits(final int[] array, final int start, final Section section, final int[] leftX, final int[] count, final int[] aux, int startAux, int n) {
-        int mask = section.sortMask;
-        int shiftRight = section.shiftRight;
-        int end = start + n;
+    public static void partitionStableOneGroupBits(final int[] array, final int start, final Section section, final int[] leftX, final int[] aux, int startAux, int n) {
+        final int mask = section.sortMask;
+        final int shiftRight = section.shiftRight;
+        final int end = start + n;
+        final int[] count = new int[1 << section.length];
         for (int i = start; i < end; i++) {
             count[(array[i] & mask) >>> shiftRight]++;
         }
@@ -157,8 +160,10 @@ public class IntSorterUtils {
         }
     }
 
-    public static void partitionStableNGroupBits(final int[] array, final int start, Section[] sections, final int[] leftX, final int[] count, final int[] aux, int startAux, int n) {
-        int end = start + n;
+    public static void partitionStableNGroupBits(final int[] array, final int start, SectionsInfo sectionsInfo, final int[] leftX, final int[] aux, int startAux, int n) {
+        final Section[] sections = sectionsInfo.sections;
+        final int[] count = new int[1 << sectionsInfo.maxLength];
+        final int end = start + n;
         for (int i = start; i < end; i++) {
             int element = array[i];
             int elementMaskedShifted = getKeySN(element, sections);

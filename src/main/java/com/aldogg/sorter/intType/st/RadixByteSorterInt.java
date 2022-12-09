@@ -85,6 +85,7 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
         int n = end - start;
         int[] leftX = new int[256];
         Section section = new Section();
+        section.length = 8;
         int ops = 0;
         int[] arrayOrig = array;
         int startOrig = start;
@@ -92,9 +93,8 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
 
         if (s0) {
             section.sortMask = 0xFF;
-            int[] count = new int[256];
             leftX[0] = 0;
-            IntSorterUtils.partitionStableLastBits(array, start, section, leftX, count, aux, startAux, n);
+            IntSorterUtils.partitionStableLastBits(array, start, section, leftX, aux, startAux, n);
 
             //System.arraycopy(aux, 0, array, start, n);
             //swap array with aux and start with startAux
@@ -108,11 +108,10 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
 
         }
         if (s8) {
-            int[] count = new int[256];
             leftX[0] = 0;
             section.sortMask = 0xFF00;
             section.shiftRight = 8;
-            IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, count, aux, startAux, n);
+            IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux, startAux, n);
 
             //System.arraycopy(aux, 0, array, start, n);
             //swap array with aux and start with startAux
@@ -126,11 +125,10 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
 
         }
         if (s16) {
-            int[] count = new int[256];
             leftX[0] = 0;
             section.sortMask = 0xFF0000;
             section.shiftRight = 16;
-            IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, count, aux, startAux, n);
+            IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux, startAux, n);
 
             //System.arraycopy(aux, 0, array, start, n);
             //swap array with aux and start with startAux
@@ -144,11 +142,10 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
 
         }
         if (s24) {
-            int[] count = new int[256];
             leftX[0] = 0;
             section.sortMask = 0xFF000000;
             section.shiftRight = 24;
-            IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, count, aux, startAux, n);
+            IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux, startAux, n);
             int lengthPositive = leftX[128];
             if (isUnsigned()) {
 //                System.arraycopy(aux, 0, array, start, n);

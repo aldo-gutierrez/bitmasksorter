@@ -18,35 +18,41 @@ public class BitSorterUtils {
         return result;
     }
 
-    public static Section[] getMaskAsSections(final int[] kList, int kStart, int kEnd) {
-        LinkedHashMap<Integer, Integer> sections = new LinkedHashMap<>();
+    public static SectionsInfo getMaskAsSections(final int[] kList, int kStart, int kEnd) {
+        LinkedHashMap<Integer, Integer> sectionsMap = new LinkedHashMap<>();
         int currentSection = -1;
         for (int i = kStart; i <= kEnd; i++) {
             int k = kList[i];
             if (i == kStart) {
-                sections.put(k, 1);
+                sectionsMap.put(k, 1);
                 currentSection = k;
             } else {
                 if (kList[i - 1] - k == 1) {
-                    sections.put(currentSection, sections.get(currentSection) + 1);
+                    sectionsMap.put(currentSection, sectionsMap.get(currentSection) + 1);
                 } else {
-                    sections.put(k, 1);
+                    sectionsMap.put(k, 1);
                     currentSection = k;
                 }
             }
         }
-        Section[] sectionsAsInts = new Section[sections.size()];
+        SectionsInfo sections = new SectionsInfo();
+        sections.sections = new Section[sectionsMap.size()];
         int i = 0;
-        for (Map.Entry<Integer, Integer> entry : sections.entrySet()) {
-            sectionsAsInts[i] = new Section();
-            sectionsAsInts[i].k = entry.getKey();
-            sectionsAsInts[i].length = entry.getValue();
+        for (Map.Entry<Integer, Integer> entry : sectionsMap.entrySet()) {
+            Section section = new Section();
+            section.k = entry.getKey();
+            section.length = entry.getValue();
+            sections.totalLength += section.length;
+            if (section.length > sections.maxLength) {
+                sections.maxLength = section.length;
+            }
             int aux = entry.getKey() - entry.getValue() + 1;
-            sectionsAsInts[i].sortMask = MaskInfo.getMaskRangeBits(entry.getKey(), aux);
-            sectionsAsInts[i].shiftRight = aux;
+            section.sortMask = MaskInfo.getMaskRangeBits(entry.getKey(), aux);
+            section.shiftRight = aux;
+            sections.sections[i] = section;
             i++;
         }
-        return sectionsAsInts;
+        return sections;
     }
 
 
@@ -83,19 +89,25 @@ public class BitSorterUtils {
         }
     }
 
-    public static List<Section> getOrderedSections(int[] kList, int kStart, int kEnd) {
+    public static SectionsInfo getOrderedSections(int[] kList, int kStart, int kEnd) {
+        SectionsInfo sectionsInfo = new SectionsInfo();
         List<Section> finalSectionList = new ArrayList<>();
-        Section[] sections = BitSorterUtils.getMaskAsSections(kList, kStart, kEnd);
-
+        SectionsInfo sectionsInfos = BitSorterUtils.getMaskAsSections(kList, kStart, kEnd);
+        Section[] sections = sectionsInfos.sections;
         for (int i = sections.length - 1; i >= 0; i--) {
             Section section = sections[i];
             Section[] sSections = BitSorterUtils.splitSection(section);
             for (int j = sSections.length - 1; j >= 0; j--) {
                 Section sSection = sSections[j];
                 finalSectionList.add(sSection);
+                sectionsInfo.totalLength += sSection.length;
+                if (sSection.length > sectionsInfo.maxLength) {
+                    sectionsInfo.maxLength = sSection.length;
+                }
             }
         }
-        return finalSectionList;
+        sectionsInfo.sections = finalSectionList.toArray(new Section[0]);
+        return sectionsInfo;
     }
 
 
@@ -193,11 +205,4 @@ public class BitSorterUtils {
         return AnalysisResult.UNORDERED;
     }
 
-    public static int maxSection(List<Section>sSections) {
-        int max = 0;
-        for (Section section : sSections) {
-            max = Math.max(max, section.length);
-        }
-        return max;
-    }
 }

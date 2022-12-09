@@ -3,11 +3,9 @@ package com.aldogg.sorter.intType.st;
 import com.aldogg.sorter.BitSorterUtils;
 import com.aldogg.sorter.MaskInfo;
 import com.aldogg.sorter.Section;
+import com.aldogg.sorter.SectionsInfo;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.aldogg.sorter.intType.IntSorterUtils.*;
 
@@ -44,14 +42,15 @@ public class RadixBitSorterInt extends IntBitMaskSorter {
     }
 
     public static void radixSort(int[] array, int start, int end, int[] kList, int kStart, int kEnd, int[] aux) {
-        List<Section> finalSectionList = BitSorterUtils.getOrderedSections(kList, kStart, kEnd);
+        SectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(kList, kStart, kEnd);
+        Section[] finalSectionList = sectionsInfo.sections;
 
-        if (finalSectionList.size() == 1 && finalSectionList.get(0).length == 1) {
-            partitionStable(array, start, end, finalSectionList.get(0).sortMask, aux);
+        if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
+            partitionStable(array, start, end, finalSectionList[0].sortMask, aux);
             return;
         }
 
-        int maxSectionLength = BitSorterUtils.maxSection(finalSectionList);
+        int maxSectionLength = sectionsInfo.maxLength;
         int n = end - start;
         int[] leftX = new int[1 << maxSectionLength];
         int startAux = 0;
@@ -60,11 +59,10 @@ public class RadixBitSorterInt extends IntBitMaskSorter {
         int startOrig = start;
         for (Section section: finalSectionList) {
             leftX[0] = 0;
-            int[] count = new int[1 << section.length];
             if (!section.isSectionAtEnd()) {
-                partitionStableOneGroupBits(array, start, section, leftX, count, aux, startAux, n);
+                partitionStableOneGroupBits(array, start, section, leftX, aux, startAux, n);
             } else {
-                partitionStableLastBits(array, start, section, leftX, count, aux, startAux, n);
+                partitionStableLastBits(array, start, section, leftX, aux, startAux, n);
             }
 
             //System.arraycopy(aux, 0, array, start, n);

@@ -74,25 +74,25 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
         int remainingBits = kList.length - threadBits;
 
         int[] kListAux = MaskInfo.getMaskAsArray(sortMask);
-        Section[] sections = getMaskAsSections(kListAux, 0, kListAux.length -1);
+        SectionsInfo sectionsInfo = getMaskAsSections(kListAux, 0, kListAux.length - 1);
+        Section[] sections = sectionsInfo.sections;
 
         int[] leftX = new int[maxProcessNumber];
-        int[] count = new int[maxProcessNumber];
 
 
         int n = end - start;
         if (sections.length == 1) {
             Section section = sections[0];
             if (section.isSectionAtEnd()) {
-                IntSorterUtils.partitionStableLastBits(array, start, section, leftX, count, aux, 0, n);
+                IntSorterUtils.partitionStableLastBits(array, start, section, leftX, aux, 0, n);
                 System.arraycopy(aux, 0, array, start, n);
             } else {
-                IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, count, aux,0, n);
+                IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux,0, n);
                 System.arraycopy(aux, 0, array, start, n);
             }
         } else {
             //TODO code never reaches this path in test, add more tests
-            IntSorterUtils.partitionStableNGroupBits(array, start, sections, leftX, count, aux, 0, n);
+            IntSorterUtils.partitionStableNGroupBits(array, start, sectionsInfo, leftX, aux, 0, n);
             System.arraycopy(aux, 0, array, start, n);
         }
 
@@ -102,7 +102,7 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
             List<Thread> threadList = new ArrayList<>();
             for (int i = 0; i < maxProcessNumber; i++) {
                 int finalI = i;
-                int lengthT = count[finalI];
+                int lengthT = leftX[finalI] - (finalI == 0 ? 0 : leftX[finalI - 1]);
                 if (lengthT > 1) {
                     Runnable r = () -> {
                         int endT = leftX[finalI];

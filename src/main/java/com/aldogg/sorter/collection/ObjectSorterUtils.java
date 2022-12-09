@@ -143,62 +143,57 @@ public class ObjectSorterUtils {
      *  CPU: 3*N + 2^K
      *  MEM: N + 2*2^K
      */
-    public static void partitionStableLastBits(final Object[] oArray, final int[] array, final int start, final Section section,
-                                               final Object[] oAux, final int[] aux, final int n) {
+    public static void partitionStableLastBits(final Object[] oArray, final int[] array, final int start, final Section section, int [] leftX,
+                                               final Object[] oAux, final int[] aux, int startAux, final int n) {
         int mask = section.sortMask;
         int end = start + n;
-        int twoPowerK = 1 << section.length;
-        int[] leftX = new int[twoPowerK];
-        int[] count = new int[twoPowerK];
+        int[] count = new int[1 << section.length];
         for (int i = start; i < end; i++) {
-            int elementShiftMasked = array[i] & mask;
-            count[elementShiftMasked]++;
+            count[array[i] & mask]++;
         }
-        for (int i = 1; i < twoPowerK; i++) {
-            leftX[i] = leftX[i - 1] + count[i - 1];
+        for (int i = 1; i < count.length; i++) {
+            int im1 = i - 1;
+            leftX[i] = leftX[im1] + count[im1];
         }
         for (int i = start; i < end; i++) {
             int element = array[i];
-            Object oElement = oArray[i];
             int elementShiftMasked = element & mask;
-            aux[start + leftX[elementShiftMasked]] = element;
-            oAux[start + leftX[elementShiftMasked]] = oElement;
+            int auxIndex = leftX[elementShiftMasked] + startAux;
+            aux[auxIndex] = element;
+            oAux[auxIndex] = oArray[i];
             leftX[elementShiftMasked]++;
         }
-        System.arraycopy(aux, start, array, start, end - start);
-        System.arraycopy(oAux, start, oArray, start, end - start);
+        System.arraycopy(aux, startAux, array, start, end - start);
+        System.arraycopy(oAux, startAux, oArray, start, end - start);
     }
 
     /**
      *  CPU: 3*N + 2^K
      *  MEM: N + 2*2^K
      */
-    public static void partitionStableGroupBits(final Object[] oArray, final int[] array, final int start, final Section section,
-                                                final Object[] oAux, final int[] aux, int n) {
+    public static void partitionStableGroupBits(final Object[] oArray, final int[] array, final int start, final Section section, int[] leftX,
+                                                final Object[] oAux, final int[] aux, int startAux, int n) {
         int mask = section.sortMask;
-        int end = start + n;
-        int twoPowerK = 1 << section.length;
         int shiftRight = section.shiftRight;
-        int[] leftX = new int[twoPowerK];
-        int[] count = new int[twoPowerK];
+        int end = start + n;
+        int[] count = new int[1 << section.length];
+        for (int i = start; i < end; i++) {
+            count[(array[i] & mask) >>> shiftRight]++;
+        }
+        for (int i = 1; i < count.length; i++) {
+            int im1 = i - 1;
+            leftX[i] = leftX[im1] + count[im1];
+        }
         for (int i = start; i < end; i++) {
             int element = array[i];
             int elementShiftMasked = (element & mask) >>> shiftRight;
-            count[elementShiftMasked]++;
-        }
-        for (int i = 1; i < twoPowerK; i++) {
-            leftX[i] = leftX[i - 1] + count[i - 1];
-        }
-        for (int i = start; i < end; i++) {
-            int element = array[i];
-            Object oElement = oArray[i];
-            int elementShiftMasked = (element & mask) >>> shiftRight;
-            aux[start + leftX[elementShiftMasked]] = element;
-            oAux[start + leftX[elementShiftMasked]] = oElement;
+            int auxIndex = leftX[elementShiftMasked] + startAux;
+            aux[auxIndex] = element;
+            oAux[auxIndex] = oArray[i];
             leftX[elementShiftMasked]++;
         }
-        System.arraycopy(aux, start, array, start, end - start);
-        System.arraycopy(oAux, start, oArray, start, end - start);
+        System.arraycopy(aux, startAux, array, start, end - start);
+        System.arraycopy(oAux, startAux, oArray, start, end - start);
     }
 
     public static void reverse(final Object[] oArray, final int start, final int end) {

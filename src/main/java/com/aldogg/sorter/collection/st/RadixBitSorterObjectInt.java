@@ -1,17 +1,11 @@
 package com.aldogg.sorter.collection.st;
 
-import com.aldogg.sorter.AnalysisResult;
-import com.aldogg.sorter.BitSorterUtils;
-import com.aldogg.sorter.MaskInfo;
-import com.aldogg.sorter.Section;
+import com.aldogg.sorter.*;
 import com.aldogg.sorter.collection.IntComparator;
 import com.aldogg.sorter.collection.ObjectSorter;
 import com.aldogg.sorter.collection.ObjectSorterUtils;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
-import java.util.List;
-
-import static com.aldogg.sorter.BitSorterParams.MAX_BITS_RADIX_SORT;
 import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.collection.ObjectSorterUtils.*;
 
@@ -108,20 +102,48 @@ public class RadixBitSorterObjectInt implements ObjectSorter {
      * 1000000,"0:10000000","RadixBitSorterObjectInt",47->63
      */
     public static void radixSort(Object[] oArray, int[] array, int start, int end, int[] kList, int kStart, int kEnd, Object[] oAux, int[] aux) {
+        SectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(kList, kStart, kEnd);
+        Section[] finalSectionList = sectionsInfo.sections;
 
-        int n = end - start;
-        List<Section> finalSectionList = BitSorterUtils.getOrderedSections(kList, kStart, kEnd);
-        for (Section sSection: finalSectionList) {
-                if (sSection.length > 1) {
-                    if (sSection.isSectionAtEnd()) {
-                        partitionStableLastBits(oArray, array, start, sSection, oAux, aux, n);
-                    } else {
-                        partitionStableGroupBits(oArray, array, start, sSection, oAux, aux, n);
-                    }
-                } else {
-                    partitionStable(oArray, array, start, end, sSection.sortMask, oAux, aux);
-                }
+        if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
+            partitionStable(oArray, array, start, end, finalSectionList[0].sortMask, oAux, aux);
+            return;
         }
+        int maxSectionLength = sectionsInfo.maxLength;
+        int n = end - start;
+        int[] leftX = new int[1 << maxSectionLength];
+        int startAux = 0;
+        int ops = 0;
+        int[] arrayOrig = array;
+        Object[] oArrayOrig = oArray;
+        int startOrig = start;
+
+        for (Section section : finalSectionList) {
+            leftX[0] = 0;
+            if (!section.isSectionAtEnd()) {
+                partitionStableGroupBits(oArray, array, start, section, leftX, oAux, aux, startAux, n);
+            } else {
+                partitionStableLastBits(oArray, array, start, section, leftX, oAux, aux, startAux, n);
+            }
+
+            int[] tempArray = array;
+            array = aux;
+            aux = tempArray;
+
+            Object[] oTempArray = oArray;
+            oArray = oAux;
+            oAux = oTempArray;
+
+            int temp = start;
+            start = startAux;
+            startAux = temp;
+            ops++;
+        }
+        if (ops % 2 == 1) {
+            System.arraycopy(array, start, arrayOrig, startOrig, n);
+            System.arraycopy(oArray, start, oArrayOrig, startOrig, n);
+        }
+
     }
 
 }

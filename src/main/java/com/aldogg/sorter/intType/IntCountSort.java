@@ -2,6 +2,7 @@ package com.aldogg.sorter.intType;
 
 import com.aldogg.sorter.MaskInfo;
 import com.aldogg.sorter.Section;
+import com.aldogg.sorter.SectionsInfo;
 
 import java.util.Arrays;
 
@@ -12,7 +13,8 @@ public class IntCountSort {
     public static void countSort(final int[] array, final int start, final int end, int[] kList,  int kIndex) {
         int twoPowerK = 1 << (kList.length - kIndex);
         kList = Arrays.copyOfRange(kList, kIndex, kList.length);
-        Section[] sections = getMaskAsSections(kList, 0, kList.length-1 );
+        SectionsInfo sectionsInfo = getMaskAsSections(kList, 0, kList.length-1 );
+        Section[] sections = sectionsInfo.sections;
         kIndex = 0;
         int[] count = new int[twoPowerK];
         int[] numberBuffer = null;
