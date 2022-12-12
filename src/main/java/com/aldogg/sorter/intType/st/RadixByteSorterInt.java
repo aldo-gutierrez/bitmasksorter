@@ -94,7 +94,7 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
         if (s0) {
             section.sortMask = 0xFF;
             leftX[0] = 0;
-            IntSorterUtils.partitionStableLastBits(array, start, section, leftX, aux, startAux, n);
+            IntSorterUtils.partitionStableLastBits(array, start, section, leftX, aux, n);
 
             //System.arraycopy(aux, 0, array, start, n);
             //swap array with aux and start with startAux
@@ -111,7 +111,11 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
             leftX[0] = 0;
             section.sortMask = 0xFF00;
             section.shiftRight = 8;
-            IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux, startAux, n);
+            if (startAux == 0) {
+                IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux, n);
+            } else {
+                IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux, startAux, n);
+            }
 
             //System.arraycopy(aux, 0, array, start, n);
             //swap array with aux and start with startAux
@@ -128,7 +132,11 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
             leftX[0] = 0;
             section.sortMask = 0xFF0000;
             section.shiftRight = 16;
-            IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux, startAux, n);
+            if (startAux == 0) {
+                IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux, n);
+            } else {
+                IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux, startAux, n);
+            }
 
             //System.arraycopy(aux, 0, array, start, n);
             //swap array with aux and start with startAux
@@ -145,7 +153,11 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
             leftX[0] = 0;
             section.sortMask = 0xFF000000;
             section.shiftRight = 24;
-            IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux, startAux, n);
+            if (startAux == 0) {
+                IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux, n);
+            } else {
+                IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux, startAux, n);
+            }
             int lengthPositive = leftX[128];
             if (isUnsigned()) {
 //                System.arraycopy(aux, 0, array, start, n);

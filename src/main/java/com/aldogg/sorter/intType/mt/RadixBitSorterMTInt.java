@@ -84,15 +84,15 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
         if (sections.length == 1) {
             Section section = sections[0];
             if (section.isSectionAtEnd()) {
-                IntSorterUtils.partitionStableLastBits(array, start, section, leftX, aux, 0, n);
+                IntSorterUtils.partitionStableLastBits(array, start, section, leftX, aux, n);
                 System.arraycopy(aux, 0, array, start, n);
             } else {
-                IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux,0, n);
+                IntSorterUtils.partitionStableOneGroupBits(array, start, section, leftX, aux, n);
                 System.arraycopy(aux, 0, array, start, n);
             }
         } else {
             //TODO code never reaches this path in test, add more tests
-            IntSorterUtils.partitionStableNGroupBits(array, start, sectionsInfo, leftX, aux, 0, n);
+            IntSorterUtils.partitionStableNGroupBits(array, start, sectionsInfo, leftX, aux, n);
             System.arraycopy(aux, 0, array, start, n);
         }
 

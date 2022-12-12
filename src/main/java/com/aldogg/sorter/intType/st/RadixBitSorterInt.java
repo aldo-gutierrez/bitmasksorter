@@ -60,9 +60,17 @@ public class RadixBitSorterInt extends IntBitMaskSorter {
         for (Section section: finalSectionList) {
             leftX[0] = 0;
             if (!section.isSectionAtEnd()) {
-                partitionStableOneGroupBits(array, start, section, leftX, aux, startAux, n);
+                if (startAux == 0) {
+                    partitionStableOneGroupBits(array, start, section, leftX, aux, n);
+                } else {
+                    partitionStableOneGroupBits(array, start, section, leftX, aux, startAux, n);
+                }
             } else {
-                partitionStableLastBits(array, start, section, leftX, aux, startAux, n);
+                if (startAux == 0) {
+                    partitionStableLastBits(array, start, section, leftX, aux, n);
+                } else {
+                    partitionStableLastBits(array, start, section, leftX, aux, startAux, n);
+                }
             }
 
             //System.arraycopy(aux, 0, array, start, n);

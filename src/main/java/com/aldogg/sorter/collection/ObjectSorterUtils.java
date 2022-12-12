@@ -151,9 +151,10 @@ public class ObjectSorterUtils {
         for (int i = start; i < end; i++) {
             count[array[i] & mask]++;
         }
-        for (int i = 1; i < count.length; i++) {
-            int im1 = i - 1;
-            leftX[i] = leftX[im1] + count[im1];
+        int il1 = 0;
+        int cLength = count.length;
+        for (int i = 1; i < cLength; i++, il1++) {
+            leftX[i] = leftX[il1] + count[il1];
         }
         for (int i = start; i < end; i++) {
             int element = array[i];
@@ -180,9 +181,10 @@ public class ObjectSorterUtils {
         for (int i = start; i < end; i++) {
             count[(array[i] & mask) >>> shiftRight]++;
         }
-        for (int i = 1; i < count.length; i++) {
-            int im1 = i - 1;
-            leftX[i] = leftX[im1] + count[im1];
+        int il1 = 0;
+        int cLength = count.length;
+        for (int i = 1; i < cLength; i++, il1++) {
+            leftX[i] = leftX[il1] + count[il1];
         }
         for (int i = start; i < end; i++) {
             int element = array[i];
