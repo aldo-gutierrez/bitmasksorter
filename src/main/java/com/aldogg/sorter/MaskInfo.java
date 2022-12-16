@@ -34,12 +34,12 @@ public class MaskInfo {
     public static MaskInfo getMaskBitParallel(final int[] array, final int start, final int end, final int maxThreads, final AtomicInteger numThreads) {
         MaskInfo maskInfo = ArrayParallelRunner.runInParallel(array, start, end, maxThreads, numThreads, new ArrayRunnable<MaskInfo>() {
             @Override
-            public MaskInfo map(int[] list, int start, int end) {
+            public MaskInfo map(final int[] list, final int start, final int end) {
                 return getMaskBit(list, start, end);
             }
 
             @Override
-            public MaskInfo reduce(MaskInfo m1, MaskInfo m2) {
+            public MaskInfo reduce(final MaskInfo m1, final MaskInfo m2) {
                 MaskInfo res = new MaskInfo();
                 res.p_mask = m1.p_mask | m2.p_mask;
                 res.i_mask = m1.i_mask | m2.i_mask;

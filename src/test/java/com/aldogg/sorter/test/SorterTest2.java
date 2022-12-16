@@ -49,11 +49,12 @@ public class SorterTest2 extends SorterTest {
 
     @Test
     public void speedTestPositiveIntSTBase2() throws IOException {
-//        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
-//        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/old/speed.csv"));
-
         IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+
         BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_st_base2.csv"));
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
+
+        BufferedWriter writer2 = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_st_base2_better.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
         TestSortResults testSortResults;
@@ -75,7 +76,6 @@ public class SorterTest2 extends SorterTest {
         }
 
         for (Integer limitH : limitHigh) {
-            //params.limitHigh = limitH-1;
             params.limitHigh = limitH -1 ;
 
             for (Integer size : limitHigh) {
