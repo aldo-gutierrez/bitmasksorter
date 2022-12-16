@@ -35,7 +35,7 @@ public class SorterTest extends BaseTest{
     public static final int ITERATIONS = 20;
     public static final int HEAT_ITERATIONS = 10;
 
-    public static final String branch = "main";
+    public static final String branch = "copy_opt";
 
     @BeforeEach
     public void beforeEach() {
