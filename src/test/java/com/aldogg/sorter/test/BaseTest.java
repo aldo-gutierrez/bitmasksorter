@@ -9,12 +9,14 @@ import com.aldogg.sorter.intType.st.JavaSorterInt;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class BaseTest {
-    boolean validateResult = false;
+    boolean validateResult = true;
 
     public void testIntSort(int[] list, TestSortResults testSortResults, IntSorter[] sorters) {
         IntSorter base = new JavaSorterInt();
@@ -93,6 +95,27 @@ public class BaseTest {
             Sorter sorter = sorters[i];
             System.out.printf("%21s %,13d ", sorter.name(), testSortResults.getAVG(i));
         }
+        Map winners = getWinners(testSortResults, sorters);
+        String sorterWinner = (String) winners.get("sorterWinner");
+        long sorterWinnerTime = (Long) winners.get("sorterWinnerTime");
+        String sorter2ndWinner = (String) winners.get("sorter2ndWinner");
+        long sorter2ndWinnerTime = (Long) winners.get("sorter2ndWinnerTime");
+        System.out.printf("%21s %,13d ", sorterWinner, sorterWinnerTime);
+        System.out.printf("%21s %,13d ", sorter2ndWinner, sorter2ndWinnerTime);
+        System.out.println();
+    }
+
+    protected void printBetter(GeneratorParams params, TestSortResults testSortResults, Sorter[] sorters, Writer writer) throws IOException {
+        Map winners = getWinners(testSortResults, sorters);
+        String sorterWinner = (String) winners.get("sorterWinner");
+        long sorterWinnerTime = (Long) winners.get("sorterWinnerTime");
+        String sorter2ndWinner = (String) winners.get("sorter2ndWinner");
+        long sorter2ndWinnerTime = (Long) winners.get("sorter2ndWinnerTime");
+        String [] a = new String [] {"a", "b"};
+        writer.write(sorterWinner);
+    }
+
+    protected Map<String, Object> getWinners(TestSortResults testSortResults, Sorter[] sorters) {
         String sorterWinner = "";
         long sorterWinnerTime = 0;
         String sorter2ndWinner = "";
@@ -125,9 +148,12 @@ public class BaseTest {
                 }
             }
         }
-        System.out.printf("%21s %,13d ", sorterWinner, sorterWinnerTime);
-        System.out.printf("%21s %,13d ", sorter2ndWinner, sorter2ndWinnerTime);
-        System.out.println();
+        Map result = new HashMap();
+        result.put("sorterWinner",sorterWinner);
+        result.put("sorterWinnerTime",sorterWinnerTime);
+        result.put("sorter2ndWinner",sorter2ndWinner);
+        result.put("sorter2ndWinnerTime",sorter2ndWinnerTime);
+        return result;
     }
 
 }
