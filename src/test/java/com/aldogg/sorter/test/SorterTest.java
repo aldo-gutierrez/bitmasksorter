@@ -193,7 +193,7 @@ public class SorterTest extends BaseTest{
 
     @Test
     public void speedTestObjectPositiveIntKey() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results\\old\\speed_object_"+branch+".csv"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results\\speed_objectPositiveInt_"+branch+".csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
 
@@ -366,7 +366,7 @@ public class SorterTest extends BaseTest{
 
     @Test
     public void speedTestUnsigned() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("speed_unsigned_"+branch+".csv"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_unsignedInt_"+branch+".csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
         IntSorter[] sorters = new IntSorter[]{new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
