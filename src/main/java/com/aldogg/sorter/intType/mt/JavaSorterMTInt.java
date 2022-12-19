@@ -4,7 +4,7 @@ import com.aldogg.sorter.intType.IntSorter;
 
 import java.util.Arrays;
 
-public class JavaParallelSorterInt implements IntSorter {
+public class JavaSorterMTInt implements IntSorter {
 
     @Override
     public void sort(int[] array, int start, int end) {

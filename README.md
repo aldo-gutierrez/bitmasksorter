@@ -188,36 +188,39 @@ See the performance analysis at the end of this section:
 
 Comparison for sorting 10 Million int elements with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 11.0.13
 
-| Algorithm             | AVG CPU time [ms] |
-|-----------------------|------------------:|
-| JavaIntSorter         |               832 |
-| QuickBitSorterInt     |               358 |
-| RadixBitSorterInt     |               112 |
-| RadixByteSorterInt    |               155 |
-| JavaParallelSorterInt |                93 |
-| QuickBitSorterMTInt   |               104 |
-| MixedBitSorterMTInt   |                97 |
-| RadixBitSorterMTInt   |                84 |
+| Algorithm           | AVG CPU time [ms] |
+|---------------------|------------------:|
+| JavaSorterInt       |               729 |
+| QuickBitSorterInt   |               298 |
+| RadixBitSorterInt   |               108 |
+| RadixByteSorterInt  |               110 |
+| JavaSorterMTInt     |                85 |
+| QuickBitSorterMTInt |               103 |
+| MixedBitSorterMTInt |                97 |
+| RadixBitSorterMTInt |                65 |
 
+![Graph2](test-results/ST_Int_AMD4800H_10M_randomRange_0_10M.png?raw=true "Graph2")
 
-![Graph2](test-results/old/plot-S10000000-Range0-10000000-random.png?raw=true "Graph2")
+![Graph2](test-results/MT_Int_AMD4800H_10M_randomRange_0_10M.png?raw=true "Graph2")
 
 ### Example 2:
 
 Comparison for sorting 10 Million int elements with range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 11.0.13
 
-| Algorithm             | AVG CPU time  [ms] |
-|-----------------------|-------------------:|
-| JavaSorterInt         |                605 |
-| QuickBitSorterInt     |                 53 |
-| RadixBitSorterInt     |                103 |
-| RadixByteSorterInt    |                151 |
-| JavaParallelSorterInt |                 92 |
-| QuickBitSorterMTInt   |                 51 |
-| MixedBitSorterMTInt   |                 51 |
-| RadixBitSorterMTInt   |                 60 |
+| Algorithm           | AVG CPU time  [ms] |
+|---------------------|-------------------:|
+| JavaSorterInt       |                541 |
+| QuickBitSorterInt   |                 54 |
+| RadixBitSorterInt   |                 85 |
+| RadixByteSorterInt  |                111 |
+| JavaSorterMTInt     |                 81 |
+| QuickBitSorterMTInt |                 54 |
+| MixedBitSorterMTInt |                 48 |
+| RadixBitSorterMTInt |                 54 |
 
-![Graph2](test-results/old/plot-S10000000-Range0-100000-random.png?raw=true "Graph2")
+![Graph2](test-results/ST_Int_AMD4800H_10M_randomRange_0_100000.png?raw=true "Graph2")
+
+![Graph2](test-results/MT_Int_AMD4800H_10M_randomRange_0_100000.png?raw=true "Graph2")
 
 ### Example 3:
 
@@ -225,38 +228,18 @@ Comparison for sorting 40 Million int elements with range from 0 to 1000000000 i
 
 | Algorithm             | AVG CPU time  [ms] |
 |-----------------------|-------------------:|
-| JavaSorterInt         |               3623 |
-| QuickBitSorterInt     |               2849 |
-| RadixBitSorterInt     |                701 |
-| RadixByteSorterInt    |                703 |
-| JavaParallelSorterInt |                406 |
-| QuickBitSorterMTInt   |                578 |
-| MixedBitSorterMTInt   |                571 |
-| RadixBitSorterMTInt   |                372 |
+| JavaSorterInt         |               3174 |
+| QuickBitSorterInt     |               2593 |
+| RadixBitSorterInt     |                474 |
+| RadixByteSorterInt    |                505 |
+| JavaParallelSorterInt |                365 |
+| QuickBitSorterMTInt   |                589 |
+| MixedBitSorterMTInt   |                449 |
+| RadixBitSorterMTInt   |                289 |
 
-![Graph2](test-results/old/plot-S40000000-Range0-1000000000-random.png?raw=true "Graph2")
+![Graph2](test-results/ST_ObjectInt_AMD4800H_10M_randomRange_0_10M.png?raw=true "Graph2")
 
-### Table of 1st and 2nd algorithm by speed AMD Ryzen 7 4800H processor, Java 11.0.13, pluged in
-
-| N / range  | 10                                    | 1,000                                   | 100,000                               | 10,000,000                             | 1,000,000,000                            |
-|------------|---------------------------------------|-----------------------------------------|---------------------------------------|----------------------------------------|-------------------------------------------|
-| 10,000     | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt   | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt  | RadixBitSorterInt RadixBitSorterMTInt     |
-| 100,000    | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterInt QuickBitSorterInt   | RadixBitSorterInt RadixByteSorterInt   | RadixBitSorterInt RadixByteSorterInt      |
-| 1,000,000  | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt QuickBitSorterMTInt | QuickBitSorterInt QuickBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt | RadixBitSorterMTInt JavaParallelSorterInt |
-| 10,000,000 | QuickBitSorterMTInt MixedBitSorterMTInt | QuickBitSorterInt QuickBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt  | RadixBitSorterMTInt JavaParallelSorterInt |
-| 40,000,000 | MixedBitSorterMTInt RadixBitSorterMTInt | QuickBitSorterInt RadixBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt |
-
-### Table of 1st and 2nd algorithm by speed AMD Ryzen 7 4800H processor, Java 11.0.13, with battery
-
-
-| N / range  | 10                                    | 1,000                                   | 100,000                               | 10,000,000                                | 1,000,000,000                            |
-|------------|---------------------------------------|-----------------------------------------|---------------------------------------|-------------------------------------------|-------------------------------------------|
-| 10,000     | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterMTInt RadixBitSorterInt   | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterInt RadixByteSorterInt     | RadixBitSorterInt RadixBitSorterMTInt     |
-| 100,000    | RadixBitSorterMTInt QuickBitSorterInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterInt QuickBitSorterInt   | RadixBitSorterInt RadixByteSorterInt      | RadixBitSorterInt RadixByteSorterInt      |
-| 1,000,000  | MixedBitSorterMTInt QuickBitSorterMTInt | QuickBitSorterInt RadixBitSorterMTInt | QuickBitSorterInt QuickBitSorterMTInt | RadixBitSorterInt RadixBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt |
-| 10,000,000 | MixedBitSorterMTInt QuickBitSorterMTInt | QuickBitSorterMTInt MixedBitSorterMTInt | QuickBitSorterMTInt QuickBitSorterInt | RadixBitSorterMTInt RadixBitSorterInt | RadixBitSorterMTInt JavaParallelSorterInt |
-| 40,000,000 | QuickBitSorterMTInt QuickBitSorterInt | QuickBitSorterMTInt RadixBitSorterMTInt | MixedBitSorterMTInt QuickBitSorterMTInt | RadixBitSorterMTInt MixedBitSorterMTInt | RadixBitSorterMTInt JavaParallelSorterInt |
-
+![Graph2](test-results/MT_Int_AMD4800H_40M_randomRange_0_1000M.png?raw=true "Graph2")
 
 Object Sort using the Interface IntComparator
 
@@ -287,30 +270,32 @@ Object Sort using the Interface IntComparator
 
 Comparison for sorting 10 Million objects with int key  with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 11.0.13
 
-| Algorithm                   | AVG CPU time [ms] |
-|-----------------------------|------------------:|
-| JavaSorterObject            |              6750 |
-| JavaParallelSorterObjectInt |               946 |
-| RadixBitSorterObjectInt     |               801 |
+| Algorithm               | AVG CPU time [ms] |
+|-------------------------|------------------:|
+| JavaSorterObjectInt     |              5584 |
+| JavaSorterMTObjectInt   |               717 |
+| RadixBitSorterObjectInt |               813 |
 
-![Graph2](test-results/old/plot-S10000000-Range0-10000000-random-object.png?raw=true "Graph2")
+![Graph2](test-results/ST_ObjectInt_AMD4800H_10M_randomRange_0_10M.png?raw=true "Graph2")
 
 ###Example 5:
 
 Comparison for sorting 10 Million elements with int key range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 11.0.13
 
-| Algorithm                   | AVG CPU time  [ms] |
-|-----------------------------|-------------------:|
-| JavaSorterObject            |               5008 |
-| JavaParallelSorterObjectInt |                876 |
-| RadixBitSorterObjectInt     |                742 |
+| Algorithm               | AVG CPU time  [ms] |
+|-------------------------|-------------------:|
+| JavaSorterObjectInt     |               4450 |
+| JavaSorterMTObjectInt   |                826 |
+| RadixBitSorterObjectInt |                644 |
 
-![Graph2](test-results/old/plot-S10000000-Range0-100000-random-object.png?raw=true "Graph2")
+![Graph2](test-results/ST_ObjectInt_AMD4800H_10M_randomRange_0_100000.png?raw=true "Graph2")
 
 
-##Analysis of Speed and Performance:
+##History of improvements on performance on this project 
 
-TODO: need to separate single threaded vs multithreaded benchmarks and analyze
+![Graph2](test-results/ST_Int_AMD4800H_40M_randomRange_0_1000M_HISTORY.png?raw=true "Graph2")
+
+![Graph2](test-results/MT_Int_AMD4800H_40M_randomRange_0_1000M_HISTORY.png?raw=true "Graph2")
 
 # O(N) Complexity
 
@@ -340,7 +325,7 @@ RadixByteSorterInt with calculateBitMaskOptimization=false looks similar in perf
 ## TODO
 - Add More Object sorters in addition to RadixBitSorter
 - Add Long, Short, Byte sorters (Long is the priority)
-- More Detailed evaluation on complexity
+- Evaluation on complexity
 - More Testing
 - Compare with [Wolf Sort] (https://github.com/scandum/wolfsort) 
 - Merge partition with bitmask extraction or isSorted with partition and bitmask and compare speed
@@ -348,7 +333,6 @@ RadixByteSorterInt with calculateBitMaskOptimization=false looks similar in perf
 - Find the number N where Parallelization  of bitmask is faster than serial
 - Find the number N where Parallelization  of isOrdered is faster than serial
 - Find the number N where Parallelization  of partition is faster than serial
-- Tests with repeatable random seeds
 - Have comparisons and documentation of speed in powers of two instead of powers of ten
 
 ## Algorithms Testing

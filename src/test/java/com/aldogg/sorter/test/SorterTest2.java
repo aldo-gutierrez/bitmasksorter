@@ -3,7 +3,7 @@ package com.aldogg.sorter.test;
 import com.aldogg.sorter.generators.Generator;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.intType.IntSorter;
-import com.aldogg.sorter.intType.mt.JavaParallelSorterInt;
+import com.aldogg.sorter.intType.mt.JavaSorterMTInt;
 import com.aldogg.sorter.intType.mt.MixedBitSorterMTInt;
 import com.aldogg.sorter.intType.mt.QuickBitSorterMTInt;
 import com.aldogg.sorter.intType.mt.RadixBitSorterMTInt;
@@ -93,7 +93,7 @@ public class SorterTest2 extends SorterTest {
     @Test
     public void speedTestPositiveIntMTBase2() throws IOException {
 
-        IntSorter[] sorters = new IntSorter[] {new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_mt_base2.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 

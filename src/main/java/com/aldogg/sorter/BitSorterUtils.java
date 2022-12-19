@@ -9,16 +9,13 @@ public class BitSorterUtils {
         int result = 0;
         for (int i = 0; i < sections.length; i++) {
             Section section = sections[i];
-            int length = section.length;
-            int sortMask = section.sortMask;
-            int shiftRight = section.shiftRight;
-            int bits = (element & sortMask) >> shiftRight;
-            result = result << length | bits;
+            int bits = (element & section.sortMask) >> section.shiftRight;
+            result = result << section.length | bits;
         }
         return result;
     }
 
-    public static SectionsInfo getMaskAsSections(final int[] kList, int kStart, int kEnd) {
+    public static SectionsInfo getMaskAsSections(final int[] kList, final int kStart, final int kEnd) {
         LinkedHashMap<Integer, Integer> sectionsMap = new LinkedHashMap<>();
         int currentSection = -1;
         for (int i = kStart; i <= kEnd; i++) {

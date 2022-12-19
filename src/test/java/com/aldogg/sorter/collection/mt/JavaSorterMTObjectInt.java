@@ -1,15 +1,16 @@
-package com.aldogg.sorter.collection.st;
+package com.aldogg.sorter.collection.mt;
 
 import com.aldogg.sorter.collection.IntComparator;
 import com.aldogg.sorter.collection.ObjectSorter;
 
 import java.util.Arrays;
 
-public class JavaSorterObject implements ObjectSorter {
+public class JavaSorterMTObjectInt implements ObjectSorter {
+
     @Override
     public void sort(Object[] array, int start, int end, IntComparator comparator) {
-        Arrays.sort(array, start, end, comparator);
+        Arrays.parallelSort(array, start, end, comparator);
     }
 
-}
 
+}

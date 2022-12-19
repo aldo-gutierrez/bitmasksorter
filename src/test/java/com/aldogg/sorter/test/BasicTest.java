@@ -6,7 +6,7 @@ import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.intType.IntCountSort;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
-import com.aldogg.sorter.intType.mt.JavaParallelSorterInt;
+import com.aldogg.sorter.intType.mt.JavaSorterMTInt;
 import com.aldogg.sorter.intType.mt.MixedBitSorterMTInt;
 import com.aldogg.sorter.intType.mt.QuickBitSorterMTInt;
 import com.aldogg.sorter.intType.mt.RadixBitSorterMTInt;
@@ -48,7 +48,7 @@ public class BasicTest extends BaseTest{
 
     @Test
     public void testNegativeNumbers() {
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         TestSortResults testSorter = new TestSortResults(sorters.length);
         testIntSort(new int[] {}, testSorter, sorters);
         testIntSort(new int[] {1}, testSorter, sorters);

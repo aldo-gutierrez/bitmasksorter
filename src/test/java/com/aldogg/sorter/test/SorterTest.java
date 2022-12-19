@@ -1,13 +1,13 @@
 package com.aldogg.sorter.test;
 
 import com.aldogg.sorter.collection.*;
-import com.aldogg.sorter.collection.mt.JavaParallelSorterObjectInt;
-import com.aldogg.sorter.collection.st.JavaSorterObject;
+import com.aldogg.sorter.collection.mt.JavaSorterMTObjectInt;
+import com.aldogg.sorter.collection.st.JavaSorterObjectInt;
 import com.aldogg.sorter.collection.st.RadixBitSorterObjectInt;
 import com.aldogg.sorter.generators.Generator;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.intType.IntSorter;
-import com.aldogg.sorter.intType.mt.JavaParallelSorterInt;
+import com.aldogg.sorter.intType.mt.JavaSorterMTInt;
 import com.aldogg.sorter.intType.mt.MixedBitSorterMTInt;
 import com.aldogg.sorter.intType.mt.QuickBitSorterMTInt;
 import com.aldogg.sorter.intType.mt.RadixBitSorterMTInt;
@@ -35,7 +35,7 @@ public class SorterTest extends BaseTest{
     public static final int ITERATIONS = 20;
     public static final int HEAT_ITERATIONS = 10;
 
-    public static final String branch = "copy_opt_2";
+    public static final String branch = "main";
 
     @BeforeEach
     public void beforeEach() {
@@ -109,6 +109,7 @@ public class SorterTest extends BaseTest{
         testSpeedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
         System.out.println("----------------------");
 
+        params.random = new Random(seed);
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
@@ -142,7 +143,7 @@ public class SorterTest extends BaseTest{
 
     @Test
     public void speedTestPositiveIntMT() throws IOException {
-        IntSorter[] sorters = new IntSorter[] {new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_mt_"+branch+".csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
@@ -159,6 +160,7 @@ public class SorterTest extends BaseTest{
         testSpeedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
         System.out.println("----------------------");
 
+        params.random = new Random(seed);
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
@@ -197,7 +199,7 @@ public class SorterTest extends BaseTest{
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
 
-        ObjectSorter[] sorters = new ObjectSorter[] {new JavaSorterObject(), new JavaParallelSorterObjectInt(), new RadixBitSorterObjectInt()};
+        ObjectSorter[] sorters = new ObjectSorter[] {new JavaSorterObjectInt(), new JavaSorterMTObjectInt(), new RadixBitSorterObjectInt()};
         TestSortResults testSortResults;
 
         IntComparator<Entity1> comparator = new IntComparator<Entity1>() {
@@ -224,6 +226,7 @@ public class SorterTest extends BaseTest{
         testSpeedObject(HEAT_ITERATIONS, params, testSortResults, sorters, comparator, null);
         System.out.println("----------------------");
 
+        params.random = new Random(seed);
         int[] limitHigh = new int[] {10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
@@ -275,6 +278,7 @@ public class SorterTest extends BaseTest{
 
         testSpeedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
 
+        params.random = new Random(seed);
         int[] limitHigh = new int[]{10, 1000, 100000, 10000000, 1000000000};
 
         System.out.println("----------------------");
@@ -311,7 +315,7 @@ public class SorterTest extends BaseTest{
 
     @Test
     public void speedTestSignedIntMt() throws IOException {
-        IntSorter[] sorters = new IntSorter[]{new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        IntSorter[] sorters = new IntSorter[]{new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
         BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_signedInt_mt_"+branch+".csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
@@ -329,6 +333,7 @@ public class SorterTest extends BaseTest{
 
         testSpeedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
 
+        params.random = new Random(seed);
         int[] limitHigh = new int[]{10, 1000, 100000, 10000000, 1000000000};
 
         System.out.println("----------------------");
@@ -387,6 +392,7 @@ public class SorterTest extends BaseTest{
         testSortResults = new TestSortResults(sorters.length);
         testSpeedUnsignedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
 
+        params.random = new Random(seed);
         System.out.println("----------------------");
         {
             testSortResults = new TestSortResults(sorters.length);
@@ -417,7 +423,7 @@ public class SorterTest extends BaseTest{
 
     @Test
     public void speedTestIncDec() throws IOException {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaParallelSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         BufferedWriter writer = new BufferedWriter(new FileWriter("speed_sorted_"+branch+".csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
@@ -432,6 +438,7 @@ public class SorterTest extends BaseTest{
 
         testSpeedIncDec(HEAT_ITERATIONS, params, testSortResults, sorters, writer);
 
+        params.random = new Random(seed);
         System.out.println("----------------------");
         {
             testSortResults = new TestSortResults(sorters.length);
