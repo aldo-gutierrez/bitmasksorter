@@ -236,7 +236,7 @@ Comparison for sorting 40 Million int elements with range from 0 to 1000000000 i
 | MixedBitSorterMTInt   |                449 |
 | RadixBitSorterMTInt   |                289 |
 
-![Graph2](test-results/ST_ObjectInt_AMD4800H_10M_randomRange_0_10M.png?raw=true "Graph2")
+![Graph2](test-results/ST_Int_AMD4800H_10M_randomRange_0_10M.png?raw=true "Graph2")
 
 ![Graph2](test-results/MT_Int_AMD4800H_40M_randomRange_0_1000M.png?raw=true "Graph2")
 
