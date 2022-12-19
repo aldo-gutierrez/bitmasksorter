@@ -13,7 +13,7 @@ To see other language implementations see:
 
 [Python Version] (https://github.com/aldo-gutierrez/bitmasksorterPython)
 
-I use a bitmask as a way to get statistical information about the numbers to be sorted.
+A bitmask is used as a way to get statistical information about the numbers to be sorted.
 
 For example suppose the list contains numbers from 0 to 127 then the bitmask is 1111111.
 
@@ -45,12 +45,10 @@ only the bits that change are part of the mask, in this case only 3 bits
 | Plausible Average/Median: |     64 | 0000000001000000 |
 | Bits Used (K):            |      3 | 0000000001010001 |
 
-For this case I can do a Count Sort with a Count array of size 8, for values: 000 to 111.
+For this case I can do a Count Sort with a Count array of size 8, for values: 000 to 111 because only 3 bits change in all the numbers.
 
-First for each number we need to extract the bits that are part of the mask put the bits together, do the count
-sort and reverse the procedure, to reverse the procedure I can OR it with the Constant Mask or have an auxiliary original number array.
 
-BitMask Algorithm:
+Algorithm to obtain the BitMask:
 ```
     public static int[] getMaskBit(int[] array, int start, int end) {
         int mask = 0x00000000;
@@ -66,39 +64,40 @@ BitMask Algorithm:
     int mask = maskParts[0] & maskParts[1];
 ```
 
-So in cases of hybrid algorithms this mask adds another dimension to the selection of the best algorithms. 
-For example TimSort uses merge sort for big lists and insertion sort for small lists, so it depends  the size of the array (N)
-I suppose that other hybrid algorithms use or could use the range to know if a Count Sort could be performed instead.
+TimSort uses merge sort for big lists and insertion sort for small lists, so it depends on the size of the array (N)
+TimSort is a hybrid algorithm. We can use the bitmask to create a hybrid algorithm with two variables N, and K
+where K is the number of bits in the bitmask and 2^K is the range, and if the range is low a modified Count Sort could be easily performed
 
-K is the number of bits in the bitmask. I am proposing to use N and (2 ^ K) as a way to decide what algorithm or optimization to use in a hybrid sorting algorithm.
-(2 ^ K) could be better than the simple range. I think it could be faster as the bitmask calculation doesn't have an IF instruction in the for loop
-So  we could have two dimensions N and 2^K to decide which algorithm to use, there could be a better algorithm for each combination.
+The hybrid algorithms proposeduse N and (2 ^ K) as a way to decide what algorithm or optimization to use in a hybrid sorting algorithm.
+(2 ^ K) could be better than the simple range. It could be faster as the bitmask calculation doesn't have IF instruction or other instructions in the for lopp that are bad for the cache
 
 Off course there are bad cases, so for example if a list contains only the values 1111111110000000(65408) and 0000000111111111(511). In this case the range is (64897)
 , but if we use the bit mask 1111111001111111 then the k range (2^k) is also (65151). 
 If we partition by the first bit in QuickBitSorter then half the numbers will go correctly to the first partition and half to the other partition,
 and then in the next level of recursion after the partition all numbers will go to one partition, this is the case were a bitmask recalculation is needed.
 The bitmask recalculation will produce 0000000000000000 that means everything is the same value and already sorted
-RadixBitSorter doesn't consider this Bad case but QuickBitSorter does.
+RadixBitSorter/RadixByteSorter doesn't consider this Bad case but QuickBitSorter does.
 
 ## QuickBitSorter
 Is similar to QuickSort but for choosing the pivot I use the bit mask. To be precise the plausible Average/Median according to the bit mask. 
-Having the bit mask helps when doing a Count Sort or Radix Sort for the last bits too.
+Having the bit mask helps when doing a Count/Radix Sort for the last bits too.
 
 This is different to other QuickSort algorithms that normally use the last element as pivot or choose the average of three
 pivots.
 
 This is similar to Binary MSD radix sort, but I think that the final bits count sort is different. And also Binary MSD radix sort uses all bits.
-I need to do more reading and comparisons to understand the differences
+More comparisons is need to understand the differences in performance and implementation.
 
 For example if list contains all the numbers from 0 to 127  the bit mask is 1111111 and the first partition is done using the plausible average/median
 that is zeroing all bits but the first in the bit mask:  1000000 (64). 
 
 This could be a good or bad pivot depending on the distribution of the numbers. The bitmask doesn't provide information of the distribution
 
-This algorithm when not using the Count Sort for the last X bits is slower than TimSort but faster than a Naive Stack Overflow QuickSort.
-The reason I think is that in the worst case there could be 32 levels of recursion and Count Sort could reduce that to (32 - Number Bits for CountSort)
-For example when using 16 bits for quicksort the max level of recursion in the worst case scenario is 32-16=16
+This algorithm is slower than TimSort but faster than a Naive Stack Overflow QuickSort. However if we do a Count Sort 
+for the last bits is faster than TimSort.
+With the default parameters QuickSort uses a CountSort if the number of bits remaining is <=16. So for example if we sort
+an int number that can have 32 bits  the max level of recursion in the worst case scenario is 32-16=16
+
 
 Optimizations:
 - The partition is only done by the bits in the bit mask as described above
@@ -135,17 +134,17 @@ Is similar to the traditional Radix Sorter but instead of using a number in base
 Radix Bit Sorter also uses an adhoc Count Sort. It doesn't need to sort by all bits  just by the bits that are in the bit mask.
 
 RadixBitSorter is a lot faster than to the typical stackoverflow, baeldung, hackerearth implementations.
-The reason is that sometimes they use base 10 implementations with modulo operation, or they use bytes but not the binary form with binary operations.
+The reason is those implementations use base 10 implementations with modulo operation, or they use complete bytes
 
 After hearing about Ska Sort using the ideas described in the forums I created the class RadixByteSorter which uses bytes instead of bits.
 The main difference between RadixByteSorterInt and RadixBitSorter is that RadixByteSorter works on bytes and RadixBitSorter works on bits.
 
 RadixByteSorterInt when working an all bytes should have the same performance than SkaSort. See the C++ Implementation for more details on SkaSort
-RadixBitSorter is faster than RadixByteSorter and SkaSort when less than 31 bits are in the bitmask otherwise SkaSort and RadixByteSorter are faster
+RadixBitSorter is faster than RadixByteSorter and SkaSort when less than 31 bits are in the bitmask otherwise SkaSort and RadixByteSorter should be faster 
 
 Radix Bit Sorter Optimizations:
 - It does not need to sort by all the bits just the ones in the bitmask
-- It sorts by 11 bits at a time as maximum and 1 as minimum (Instead of 8 as SkaSort and RadixByteSorterInt do)
+- It sorts by 11 bits at a time as maximum and 4 as minimum (Instead of 8 as SkaSort and RadixByteSorterInt do)
 
 Radix Byte Sorter Optimizations:
 - An option to detect which bytes do not use has been added to the algorithm (calculateBitMaskOptimization) and enable by default.
@@ -186,7 +185,7 @@ See the performance analysis at the end of this section:
 
 ### Example 1: 
 
-Comparison for sorting 10 Million int elements with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 11.0.13
+Comparison for sorting 10 Million int elements with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 1.8.0_341
 
 | Algorithm           | AVG CPU time [ms] |
 |---------------------|------------------:|
@@ -205,7 +204,7 @@ Comparison for sorting 10 Million int elements with range from 0 to 10 Million i
 
 ### Example 2:
 
-Comparison for sorting 10 Million int elements with range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 11.0.13
+Comparison for sorting 10 Million int elements with range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 1.8.0_341
 
 | Algorithm           | AVG CPU time  [ms] |
 |---------------------|-------------------:|
@@ -224,7 +223,7 @@ Comparison for sorting 10 Million int elements with range from 0 to 100000 in an
 
 ### Example 3:
 
-Comparison for sorting 40 Million int elements with range from 0 to 1000000000 in an AMD Ryzen 7 4800H processor, Java 11.0.13
+Comparison for sorting 40 Million int elements with range from 0 to 1000000000 in an AMD Ryzen 7 4800H processor, Java 1.8.0_341
 
 | Algorithm             | AVG CPU time  [ms] |
 |-----------------------|-------------------:|
@@ -268,7 +267,7 @@ Object Sort using the Interface IntComparator
 
 ###Example 4: 
 
-Comparison for sorting 10 Million objects with int key  with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 11.0.13
+Comparison for sorting 10 Million objects with int key  with range from 0 to 10 Million in an AMD Ryzen 7 4800H processor, Java 1.8.0_341
 
 | Algorithm               | AVG CPU time [ms] |
 |-------------------------|------------------:|
@@ -280,7 +279,7 @@ Comparison for sorting 10 Million objects with int key  with range from 0 to 10 
 
 ###Example 5:
 
-Comparison for sorting 10 Million elements with int key range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 11.0.13
+Comparison for sorting 10 Million elements with int key range from 0 to 100000 in an AMD Ryzen 7 4800H processor, Java 1.8.0_341
 
 | Algorithm               | AVG CPU time  [ms] |
 |-------------------------|-------------------:|
@@ -323,17 +322,17 @@ In summary RadixBitSorterInt is faster than SkaSort when the numbers range is be
 RadixByteSorterInt with calculateBitMaskOptimization=false looks similar in performance than SkaSort
 
 ## TODO
-- Add More Object sorters in addition to RadixBitSorter
+- Add More Object sorters in addition to RadixBitSorterObjectInt
 - Add Long, Short, Byte sorters (Long is the priority)
 - Evaluation on complexity
 - More Testing
 - Compare with [Wolf Sort] (https://github.com/scandum/wolfsort) 
-- Merge partition with bitmask extraction or isSorted with partition and bitmask and compare speed
 - Test different algorithms for stable partition with less memory and compare speed
 - Find the number N where Parallelization  of bitmask is faster than serial
 - Find the number N where Parallelization  of isOrdered is faster than serial
 - Find the number N where Parallelization  of partition is faster than serial
 - Have comparisons and documentation of speed in powers of two instead of powers of ten
+- Optimize for almost sorted list or for list that have few sorted parts as JavaSorter
 
 ## Algorithms Testing
 |Algorithm|Positive random numbers|Negative random numbers| Unsigned numbers | Sorted         | Reverse sorted     |
