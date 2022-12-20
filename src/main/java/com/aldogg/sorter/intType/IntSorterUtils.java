@@ -94,6 +94,23 @@ public class IntSorterUtils {
         return left;
     }
 
+    public static int partitionStable(final int[] array, final int start, final int end, final int mask, final int[] aux, final int startAux) {
+        int left = start;
+        int right = startAux;
+        for (int i = start; i < end; i++) {
+            int element = array[i];
+            if ((element & mask) == 0) {
+                array[left] = element;
+                left++;
+            } else {
+                aux[right] = element;
+                right++;
+            }
+        }
+        System.arraycopy(aux, startAux, array, left, right - startAux);
+        return left;
+    }
+
 
     public static void partitionStableLastBits(final int[] array, final int start, final Section section, int[] leftX, final int[] aux, int startAux, int n) {
         final int mask = section.sortMask;
@@ -225,10 +242,14 @@ public class IntSorterUtils {
 
     public static void reverse(final int[] array, final int start, final int end) {
         int length = end - start;
-        int end2 = start + length / 2;
-        for (int i = start; i < end2; i++) {
-            swap(array, i, end - i - 1);
+        int ld2 = length / 2;
+//        int end2 = start + ld2;
+        for (int i = 0; i < ld2; i++) {
+            swap(array, start + i, (end - 1) - i);
         }
+//        for (int i = start; i < end2; i++) {
+//            swap(array, i, end - i - 1);
+//        }
     }
 
 
@@ -340,7 +361,7 @@ public class IntSorterUtils {
             IntCountSort.countSort(array, start, end, kList, kIndex);
         } else if (sorter.equals(ShortSorter.StableByte)) {
             int[] aux = new int[n];
-            radixSort(array, start, end, kList, kIndex, kList.length - 1, aux);
+            radixSort(array, start, end, kList, kIndex, kList.length - 1, aux, 0);
         } else {
             int[] aux = new int[n];
             for (int i = kList.length - 1; i >= kIndex; i--) {

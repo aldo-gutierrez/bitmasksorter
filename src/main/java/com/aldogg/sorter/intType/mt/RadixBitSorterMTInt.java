@@ -110,7 +110,7 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
                             sortShortK(array, start + endT - lengthT, start + endT, kList, threadBits);
                         } else {
                             int[] auxT = new int[lengthT];
-                            RadixBitSorterInt.radixSort(array, start + endT - lengthT, start + endT, kList, threadBits, kList.length - 1, auxT);
+                            RadixBitSorterInt.radixSort(array, start + endT - lengthT, start + endT, kList, threadBits, kList.length - 1, auxT, 0);
                         }
                     };
                     runInThreadList.add(r);

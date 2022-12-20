@@ -17,45 +17,47 @@ public class MergeSorter2Int implements IntSorter {
     public void sort(int[] array, int start, int end) {
         int n = end - start;
         int[] aux = new int[n];
-        mergeSort(array, aux, start, end);
+        mergeSort(array, start, end, aux, 0);
     }
 
-    public static void mergeSort(int[] a, int[] aux, int start, int end) {
+    public static void mergeSort(int[] array, int start, int end, int[] aux, int startAux) {
         int n = end - start;
         if (n < 2) {
             return;
         }
         if (n <= VERY_SMALL_N_SIZE) {
-            int length = end - start;
-            SortingNetworks.signedSNFunctions[length].accept(a, start);
+            SortingNetworks.signedSNFunctions[n].accept(array, start);
             return;
         }
 
         int mid = n / 2;
         int midIndex = start + mid;
-        mergeSort(a, aux, start, midIndex);
-        mergeSort(a, aux, midIndex, end);
+        mergeSort(array, start, midIndex, aux, startAux);
+        mergeSort(array, midIndex, end, aux, startAux);
 
-        merge(a, aux, start, end, midIndex);
+        merge(array, start, end, midIndex, aux, startAux);
     }
 
 
-    public static void merge(int[] a, int[] aux, int start, int end, int midIndex) {
-        int i = start, j = midIndex, k = start;
+    public static void merge(int[] array, int start, int end, int midIndex, int[] aux, int startAux) {
+        int i = start, j = midIndex, k = startAux;
         while (i < midIndex && j < end) {
-            if (a[i] <= a[j]) {
-                aux[k++] = a[i++];
+            if (array[i] <= array[j]) {
+                aux[k++] = array[i++];
             } else {
-                aux[k++] = a[j++];
+                aux[k++] = array[j++];
             }
         }
         while (i < midIndex) {
-            aux[k++] = a[i++];
+            aux[k++] = array[i++];
         }
         while (j < end) {
-            aux[k++] = a[j++];
+            aux[k++] = array[j++];
         }
-        System.arraycopy(aux, start, a, start, end - start);
+        if (end - start < 0) {
+            System.out.println("ASDFASDF");
+        }
+        System.arraycopy(aux, startAux, array, start, end - start);
     }
 
 }

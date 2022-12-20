@@ -23,37 +23,38 @@ public class RadixBitSorterInt extends IntBitMaskSorter {
             int n1 = finalLeft - start;
             int n2 = end - finalLeft;
             int[] aux = new int[Math.max(n1, n2)];
+            int startAux = 0;
             if (n1 > 1) { //sort negative numbers
                 maskInfo = MaskInfo.getMaskBit(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfo.getMaskAsArray(mask);
-                radixSort(array, start, finalLeft, kList, 0, kList.length - 1, aux);
+                radixSort(array, start, finalLeft, kList, 0, kList.length - 1, aux, startAux);
             }
             if (n2 > 1) { //sort positive numbers
                 maskInfo = MaskInfo.getMaskBit(array, finalLeft, end);
                 mask = maskInfo.getMask();
                 kList = MaskInfo.getMaskAsArray(mask);
-                radixSort(array, finalLeft, end, kList, 0, kList.length - 1, aux);
+                radixSort(array, finalLeft, end, kList, 0, kList.length - 1, aux, startAux);
             }
         } else {
             int[] aux = new int[end - start];
-            radixSort(array, start, end, kList, 0, kList.length - 1, aux);
+            int startAux = 0;
+            radixSort(array, start, end, kList, 0, kList.length - 1, aux, startAux);
         }
     }
 
-    public static void radixSort(int[] array, int start, int end, int[] kList, int kStart, int kEnd, int[] aux) {
+    public static void radixSort(int[] array, int start, int end, int[] kList, int kStart, int kEnd, int[] aux, int startAux) {
         SectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(kList, kStart, kEnd);
         Section[] finalSectionList = sectionsInfo.sections;
 
         if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
-            partitionStable(array, start, end, finalSectionList[0].sortMask, aux);
+            partitionStable(array, start, end, finalSectionList[0].sortMask, aux, startAux);
             return;
         }
 
         int maxSectionLength = sectionsInfo.maxLength;
         int n = end - start;
         int[] leftX = new int[1 << maxSectionLength];
-        int startAux = 0;
         int ops = 0;
         int[] arrayOrig = array;
         int startOrig = start;

@@ -172,7 +172,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
             sortShortK(array, start, end, kList, 0);
         } else {
             int[] auxT = new int[n];
-            RadixBitSorterInt.radixSort(array, start, end, kList, 0, kList.length - 1, auxT);
+            RadixBitSorterInt.radixSort(array, start, end, kList, 0, kList.length - 1, auxT, 0);
         }
     }
 

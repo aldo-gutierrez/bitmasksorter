@@ -7,14 +7,8 @@ import com.aldogg.sorter.collection.st.RadixBitSorterObjectInt;
 import com.aldogg.sorter.generators.Generator;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.intType.IntSorter;
-import com.aldogg.sorter.intType.mt.JavaSorterMTInt;
-import com.aldogg.sorter.intType.mt.MixedBitSorterMTInt;
-import com.aldogg.sorter.intType.mt.QuickBitSorterMTInt;
-import com.aldogg.sorter.intType.mt.RadixBitSorterMTInt;
-import com.aldogg.sorter.intType.st.JavaSorterInt;
-import com.aldogg.sorter.intType.st.QuickBitSorterInt;
-import com.aldogg.sorter.intType.st.RadixBitSorterInt;
-import com.aldogg.sorter.intType.st.RadixByteSorterInt;
+import com.aldogg.sorter.intType.mt.*;
+import com.aldogg.sorter.intType.st.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -92,7 +86,7 @@ public class SorterTest extends BaseTest{
 
     @Test
     public void speedTestPositiveIntST() throws IOException {
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new MergeSorter2Int()};
         BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_st_"+branch+".csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
@@ -143,7 +137,7 @@ public class SorterTest extends BaseTest{
 
     @Test
     public void speedTestPositiveIntMT() throws IOException {
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        IntSorter[] sorters = new IntSorter[] {new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt(),new RadixBitMergeSorterMTInt()};
         BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_mt_"+branch+".csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 

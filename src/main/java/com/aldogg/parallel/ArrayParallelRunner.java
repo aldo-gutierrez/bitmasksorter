@@ -47,12 +47,32 @@ public class ArrayParallelRunner {
         while (numResults > 1) {
             int quotient = numResults / 2;
             int reminder = numResults % 2;
+            threads = new Thread[quotient];
 
             for (int i = 0; i < quotient; i++) {
-                results[i] = mapReducer.reduce(results[i*2], results[i*2+1]);
+                int finalI = i;
+                Runnable runnable = () -> {
+                    numThreads.addAndGet(1);
+                    results[finalI] = mapReducer.reduce(results[finalI *2], results[finalI *2+1]);
+                    numThreads.addAndGet(-1);
+                };
+                threads[i] = new Thread(runnable);
+                threads[i].start();
             }
             if (reminder == 1) {
+                numThreads.addAndGet(1);
                 results[quotient-1] = mapReducer.reduce(results[quotient-1], results[quotient*2+2]);
+                numThreads.addAndGet(-1);
+            }
+            for (int i = 0; i < quotient; i++) {
+                try {
+                    threads[i].join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            for (int i= quotient; i < results.length; i++) {
+                results[i] = null;
             }
             numResults = quotient;
         }
