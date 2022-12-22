@@ -225,9 +225,10 @@ public class IntSorterUtils {
 
     public static void reverse(final int[] array, final int start, final int end) {
         int length = end - start;
-        int end2 = start + length / 2;
-        for (int i = start; i < end2; i++) {
-            swap(array, i, end - i - 1);
+        int ld2 = length / 2;
+        int endL1 = end - 1;
+        for (int i = 0; i < ld2; i++) {
+            swap(array, start + i, endL1 - i);
         }
     }
 
