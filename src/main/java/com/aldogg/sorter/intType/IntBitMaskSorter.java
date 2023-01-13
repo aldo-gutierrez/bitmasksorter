@@ -2,14 +2,14 @@ package com.aldogg.sorter.intType;
 
 import com.aldogg.sorter.AnalysisResult;
 import com.aldogg.sorter.BitSorterParams;
-import com.aldogg.sorter.MaskInfo;
+import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.SortingNetworks;
 
-import java.util.Map;
 import java.util.function.BiConsumer;
 
-import static com.aldogg.sorter.BitSorterUtils.*;
-import static com.aldogg.sorter.MaskInfo.getMaskAsArray;
+import static com.aldogg.sorter.MaskInfoInt.getMaskAsArray;
+import static com.aldogg.sorter.intType.IntSorterUtils.listIsOrderedSigned;
+import static com.aldogg.sorter.intType.IntSorterUtils.listIsOrderedUnSigned;
 
 public abstract class IntBitMaskSorter implements IntSorter{
 
@@ -48,7 +48,7 @@ public abstract class IntBitMaskSorter implements IntSorter{
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        MaskInfo maskInfo = MaskInfo.getMaskBit(array, start, end);
+        MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, end);
         int mask = maskInfo.getMask();
         int[] kList = getMaskAsArray(mask);
         if (kList.length == 0) {

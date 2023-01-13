@@ -32,15 +32,15 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
             int n2 = end - finalLeft;
             SorterRunner.runTwoRunnable(
                     n1 > 1 ? () -> { //sort negative numbers
-                        MaskInfo maskParts1 = MaskInfo.getMaskBit(array, start, finalLeft);
+                        MaskInfoInt maskParts1 = MaskInfoInt.getMaskBit(array, start, finalLeft);
                         int mask1 = maskParts1.getMask();
-                        int[] kList1 = MaskInfo.getMaskAsArray(mask1);
+                        int[] kList1 = MaskInfoInt.getMaskAsArray(mask1);
                         sort(array, start, finalLeft, kList1, 0, 1, maxLevel);
                     } : null, n1,
                     n2 > 1 ? () -> { //sort positive numbers
-                        MaskInfo maskParts2 = MaskInfo.getMaskBit(array, finalLeft, end);
+                        MaskInfoInt maskParts2 = MaskInfoInt.getMaskBit(array, finalLeft, end);
                         int mask2 = maskParts2.getMask();
-                        int[] kList2 = MaskInfo.getMaskAsArray(mask2);
+                        int[] kList2 = MaskInfoInt.getMaskAsArray(mask2);
                         sort(array, finalLeft, end, kList2, 0, 1 , maxLevel);
                     } : null, n2, params.getDataSizeForThreads(), params.getMaxThreads(), numThreads);
         } else {
@@ -98,16 +98,16 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
 
     //partitionStableLastBits
     protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] list, final int start, final int end, int sortMask, int[] kList, int kIndex, final int[] aux) {
-        int[] kListAux = MaskInfo.getMaskAsArray(sortMask);
+        int[] kListAux = MaskInfoInt.getMaskAsArray(sortMask);
         int bits = kListAux.length;
         int twoPowerK = 1 << bits;
-        SectionsInfo sectionsInfo = getMaskAsSections(kListAux, 0, kListAux.length - 1);
-        Section[] sections = sectionsInfo.sections;
+        IntSectionsInfo sectionsInfo = getMaskAsSections(kListAux, 0, kListAux.length - 1);
+        IntSection[] sections = sectionsInfo.sections;
         int[] leftX = new int[twoPowerK];
 
         int n = end - start;
         if (sections.length == 1) {
-            Section section = sections[0];
+            IntSection section = sections[0];
             if (section.isSectionAtEnd()) {
                 IntSorterUtils.partitionStableLastBits(list, start, section, leftX, aux, n);
                 System.arraycopy(aux, 0, list, start, n);

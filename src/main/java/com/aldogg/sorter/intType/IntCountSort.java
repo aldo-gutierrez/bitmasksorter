@@ -1,8 +1,8 @@
 package com.aldogg.sorter.intType;
 
-import com.aldogg.sorter.MaskInfo;
-import com.aldogg.sorter.Section;
-import com.aldogg.sorter.SectionsInfo;
+import com.aldogg.sorter.MaskInfoInt;
+import com.aldogg.sorter.IntSection;
+import com.aldogg.sorter.IntSectionsInfo;
 
 import java.util.Arrays;
 
@@ -13,8 +13,8 @@ public class IntCountSort {
     public static void countSort(final int[] array, final int start, final int end, int[] kList,  int kIndex) {
         int twoPowerK = 1 << (kList.length - kIndex);
         kList = Arrays.copyOfRange(kList, kIndex, kList.length);
-        SectionsInfo sectionsInfo = getMaskAsSections(kList, 0, kList.length-1 );
-        Section[] sections = sectionsInfo.sections;
+        IntSectionsInfo sectionsInfo = getMaskAsSections(kList, 0, kList.length-1 );
+        IntSection[] sections = sectionsInfo.sections;
         kIndex = 0;
         int[] count = new int[twoPowerK];
         int[] numberBuffer = null;
@@ -22,7 +22,7 @@ public class IntCountSort {
         } else {
             numberBuffer = new int[twoPowerK];
         }
-        int sortMask = MaskInfo.getMaskLastBits(kList, kIndex);
+        int sortMask = MaskInfoInt.getMaskLastBits(kList, kIndex);
         countSort(array, start, end, sortMask, sections, count, numberBuffer);
     }
 
@@ -30,7 +30,7 @@ public class IntCountSort {
      * CPU: N + MAX(2^K, N)
      * MEM: 2 * (2^K)
      */
-    public static void countSort(final int[] array, final int start, final int end, int mask, Section[] sections, int[] count, int[] number) {
+    public static void countSort(final int[] array, final int start, final int end, int mask, IntSection[] sections, int[] count, int[] number) {
         if (sections.length == 1 && sections[0].isSectionAtEnd()) {
             int elementSample = array[start];
             elementSample = elementSample & ~mask;
@@ -73,7 +73,7 @@ public class IntCountSort {
             }
         } else {
             if (sections.length == 1) {
-                Section section = sections[0];
+                IntSection section = sections[0];
                 if (section.isSectionAtEnd()) {
                     //TODO check if this code is executed or not
                     for (int i = start; i < end; i++) {

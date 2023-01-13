@@ -1,6 +1,6 @@
 package com.aldogg.sorter.test;
 
-import com.aldogg.sorter.generators.Generator;
+import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.intType.mt.JavaSorterMTInt;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class SorterTest2 extends SorterTest {
+public class SorterTest2 extends IntSorterTest {
     @Test
     public void testFunctionsSingleThread() throws IOException {
 //        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new MergeSorterInt(), new MergeSorter2Int()};
@@ -35,12 +35,12 @@ public class SorterTest2 extends SorterTest {
         BufferedWriter writer = new BufferedWriter(new FileWriter("speed2.csv"));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
-        Generator.GeneratorFunctions[] values = Generator.GeneratorFunctions.values();
+        GeneratorFunctions[] values = GeneratorFunctions.values();
         //Generator.GeneratorFunctions[] values = {Generator.GeneratorFunctions.ALL_EQUAL_INT};
-        for (Generator.GeneratorFunctions a : values) {
+        for (GeneratorFunctions a : values) {
             params.function =a;
             TestSortResults testSortResults = new TestSortResults(sorters.length);
-            testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
+            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
 
         }
         //testSpeedInt(10, params, testSortResults, sorters, null);
@@ -66,8 +66,8 @@ public class SorterTest2 extends SorterTest {
         params.size=80000;
         params.limitLow = 0;
         params.limitHigh = 80000;
-        params.function = Generator.GeneratorFunctions.RANDOM_RANGE_INT;
-        testSpeedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
+        params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
+        testSpeed(sorters, HEAT_ITERATIONS, params, testSortResults, null);
         System.out.println("----------------------");
 
         List<Integer> limitHigh = new ArrayList();
@@ -81,7 +81,7 @@ public class SorterTest2 extends SorterTest {
             for (Integer size : limitHigh) {
                 testSortResults = new TestSortResults(sorters.length);
                 params.size = size;
-                testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
+                testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
             }
 
             System.out.println("----------------------");
@@ -106,8 +106,8 @@ public class SorterTest2 extends SorterTest {
         params.size=80000;
         params.limitLow = 0;
         params.limitHigh = 80000;
-        params.function = Generator.GeneratorFunctions.RANDOM_RANGE_INT;
-        testSpeedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
+        params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
+        testSpeed(sorters, HEAT_ITERATIONS, params, testSortResults, null);
         System.out.println("----------------------");
 
         List<Integer> limitHigh = new ArrayList();
@@ -122,7 +122,7 @@ public class SorterTest2 extends SorterTest {
             for (Integer size : limitHigh) {
                 testSortResults = new TestSortResults(sorters.length);
                 params.size = size;
-                testSpeedInt(ITERATIONS, params, testSortResults, sorters, writer);
+                testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
             }
 
             System.out.println("----------------------");

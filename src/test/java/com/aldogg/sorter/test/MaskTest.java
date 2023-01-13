@@ -1,6 +1,6 @@
 package com.aldogg.sorter.test;
 
-import com.aldogg.sorter.Section;
+import com.aldogg.sorter.IntSection;
 import org.junit.jupiter.api.Test;
 
 import static com.aldogg.sorter.BitSorterUtils.getKeySN;
@@ -11,7 +11,7 @@ public class MaskTest {
     @Test
     public void maskTest() {
         int[] kList = new int[] {4,2,1,0};
-        Section[] parts = getMaskAsSections(kList, 0, kList.length -1).sections;
+        IntSection[] parts = getMaskAsSections(kList, 0, kList.length -1).sections;
         int key = getKeySN(20, parts);
         assertEquals(key, 12);
     }

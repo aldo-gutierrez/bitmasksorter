@@ -1,14 +1,14 @@
 package com.aldogg.sorter.intType.mt;
 
 import com.aldogg.parallel.SorterRunner;
-import com.aldogg.sorter.MaskInfo;
+import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntBitMaskSorterMT;
 import com.aldogg.sorter.intType.IntSorterUtils;
 import com.aldogg.sorter.intType.st.QuickBitSorterInt;
 
-import static com.aldogg.sorter.MaskInfo.getMaskAsArray;
-import static com.aldogg.sorter.MaskInfo.getMaskBit;
+import static com.aldogg.sorter.MaskInfoInt.getMaskAsArray;
+import static com.aldogg.sorter.MaskInfoInt.getMaskBit;
 import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 
 public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
@@ -24,13 +24,13 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
             int n2 = end - finalLeft;
             SorterRunner.runTwoRunnable(
                     n1 > 1 ? () -> { //sort negative numbers
-                        MaskInfo maskInfo1 = getMaskBit(array, start, finalLeft);
+                        MaskInfoInt maskInfo1 = getMaskBit(array, start, finalLeft);
                         int mask1 = maskInfo1.getMask();
                         int[] kList1 = getMaskAsArray(mask1);
                         sortMT(array, start, finalLeft, kList1, 0, false);
                     } : null, n1,
                     n2 > 1 ? () -> { //sort positive numbers
-                        MaskInfo maskInfo2 = getMaskBit(array, finalLeft, end);
+                        MaskInfoInt maskInfo2 = getMaskBit(array, finalLeft, end);
                         int mask2 = maskInfo2.getMask();
                         int[] kList2 = getMaskAsArray(mask2);
                         sortMT(array, finalLeft, end, kList2, 0, false);
@@ -48,7 +48,7 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
         }
 
         if (recalculate && kIndex < 3) {
-            MaskInfo maskParts = getMaskBit(array, start, end);
+            MaskInfoInt maskParts = getMaskBit(array, start, end);
             int mask = maskParts.getMask();
             kList = getMaskAsArray(mask);
             kIndex = 0;

@@ -1,6 +1,6 @@
 package com.aldogg.sorter.intType.st;
 
-import com.aldogg.sorter.MaskInfo;
+import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
@@ -36,9 +36,9 @@ public class QuickBitSorterInt extends IntBitMaskSorter {
         }
 
         if (recalculate && kIndex < 3) {
-            MaskInfo maskParts = MaskInfo.getMaskBit(array, start, end);
+            MaskInfoInt maskParts = MaskInfoInt.getMaskBit(array, start, end);
             int mask = maskParts.getMask();
-            kList = MaskInfo.getMaskAsArray(mask);
+            kList = MaskInfoInt.getMaskAsArray(mask);
             kIndex = 0;
         }
 

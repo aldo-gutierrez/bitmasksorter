@@ -27,15 +27,15 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
             int n2 = end - finalLeft;
             SorterRunner.runTwoRunnable(
                     n1 > 1 ? () -> { //sort negative numbers
-                        MaskInfo maskParts1 = MaskInfo.getMaskBit(array, start, finalLeft);
+                        MaskInfoInt maskParts1 = MaskInfoInt.getMaskBit(array, start, finalLeft);
                         int mask1 = maskParts1.getMask();
-                        int[] kList1 = MaskInfo.getMaskAsArray(mask1);
+                        int[] kList1 = MaskInfoInt.getMaskAsArray(mask1);
                         sort(array, start, finalLeft, kList1, 0, maxThreadsBits - 1);
                     } : null, n1,
                     n2 > 1 ? () -> { //sort positive numbers
-                        MaskInfo maskParts2 = MaskInfo.getMaskBit(array, finalLeft, end);
+                        MaskInfoInt maskParts2 = MaskInfoInt.getMaskBit(array, finalLeft, end);
                         int mask2 = maskParts2.getMask();
-                        int[] kList2 = MaskInfo.getMaskAsArray(mask2);
+                        int[] kList2 = MaskInfoInt.getMaskAsArray(mask2);
                         sort(array, finalLeft, end, kList2, 0, maxThreadsBits - 1);
                     } : null, n2, params.getDataSizeForThreads(), 0, null);
 
@@ -73,16 +73,16 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
         int maxProcessNumber = 1 << threadBits;
         int remainingBits = kList.length - threadBits;
 
-        int[] kListAux = MaskInfo.getMaskAsArray(sortMask);
-        SectionsInfo sectionsInfo = getMaskAsSections(kListAux, 0, kListAux.length - 1);
-        Section[] sections = sectionsInfo.sections;
+        int[] kListAux = MaskInfoInt.getMaskAsArray(sortMask);
+        IntSectionsInfo sectionsInfo = getMaskAsSections(kListAux, 0, kListAux.length - 1);
+        IntSection[] sections = sectionsInfo.sections;
 
         int[] leftX = new int[maxProcessNumber];
 
 
         int n = end - start;
         if (sections.length == 1) {
-            Section section = sections[0];
+            IntSection section = sections[0];
             if (section.isSectionAtEnd()) {
                 IntSorterUtils.partitionStableLastBits(array, start, section, leftX, aux, n);
                 System.arraycopy(aux, 0, array, start, n);

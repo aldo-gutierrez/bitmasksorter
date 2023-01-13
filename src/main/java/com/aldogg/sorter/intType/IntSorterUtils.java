@@ -1,7 +1,8 @@
 package com.aldogg.sorter.intType;
 
-import com.aldogg.sorter.Section;
-import com.aldogg.sorter.SectionsInfo;
+import com.aldogg.sorter.AnalysisResult;
+import com.aldogg.sorter.IntSection;
+import com.aldogg.sorter.IntSectionsInfo;
 
 import static com.aldogg.sorter.BitSorterUtils.getKeySN;
 import static com.aldogg.sorter.intType.st.RadixBitSorterInt.radixSort;
@@ -95,7 +96,7 @@ public class IntSorterUtils {
     }
 
 
-    public static void partitionStableLastBits(final int[] array, final int start, final Section section, int[] leftX, final int[] aux, int startAux, int n) {
+    public static void partitionStableLastBits(final int[] array, final int start, final IntSection section, int[] leftX, final int[] aux, int startAux, int n) {
         final int mask = section.sortMask;
         final int end = start + n;
         final int[] count = new int[1 << section.length];
@@ -115,7 +116,7 @@ public class IntSorterUtils {
         }
     }
 
-    public static void partitionStableLastBits(final int[] array, final int start, final Section section, int[] leftX, final int[] aux, int n) {
+    public static void partitionStableLastBits(final int[] array, final int start, final IntSection section, int[] leftX, final int[] aux, int n) {
         final int mask = section.sortMask;
         final int end = start + n;
         final int[] count = new int[1 << section.length];
@@ -136,7 +137,7 @@ public class IntSorterUtils {
     }
 
 
-    public static void partitionStableOneGroupBits(final int[] array, final int start, final Section section, final int[] leftX, final int[] aux, int startAux, int n) {
+    public static void partitionStableOneGroupBits(final int[] array, final int start, final IntSection section, final int[] leftX, final int[] aux, int startAux, int n) {
         final int mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
@@ -157,7 +158,7 @@ public class IntSorterUtils {
         }
     }
 
-    public static void partitionStableOneGroupBits(final int[] array, final int start, final Section section, final int[] leftX, final int[] aux, int n) {
+    public static void partitionStableOneGroupBits(final int[] array, final int start, final IntSection section, final int[] leftX, final int[] aux, int n) {
         final int mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
@@ -178,8 +179,8 @@ public class IntSorterUtils {
         }
     }
 
-    public static void partitionStableNGroupBits(final int[] array, final int start, SectionsInfo sectionsInfo, final int[] leftX, final int[] aux, int startAux, int n) {
-        final Section[] sections = sectionsInfo.sections;
+    public static void partitionStableNGroupBits(final int[] array, final int start, IntSectionsInfo sectionsInfo, final int[] leftX, final int[] aux, int startAux, int n) {
+        final IntSection[] sections = sectionsInfo.sections;
         final int[] count = new int[1 << sectionsInfo.maxLength];
         final int end = start + n;
         for (int i = start; i < end; i++) {
@@ -200,8 +201,8 @@ public class IntSorterUtils {
         }
     }
 
-    public static void partitionStableNGroupBits(final int[] array, final int start, SectionsInfo sectionsInfo, final int[] leftX, final int[] aux, int n) {
-        final Section[] sections = sectionsInfo.sections;
+    public static void partitionStableNGroupBits(final int[] array, final int start, IntSectionsInfo sectionsInfo, final int[] leftX, final int[] aux, int n) {
+        final IntSection[] sections = sectionsInfo.sections;
         final int[] count = new int[1 << sectionsInfo.maxLength];
         final int end = start + n;
         for (int i = start; i < end; i++) {
@@ -231,6 +232,101 @@ public class IntSorterUtils {
             swap(array, start + i, endL1 - i);
         }
     }
+
+    public static int listIsOrderedSigned(final int[] array, final int start, final int end) {
+        int i1 = array[start];
+        int i = start + 1;
+        while (i < end) {
+            int i2 = array[i];
+            if (i2 != i1) {
+                break;
+            }
+            i1 = i2;
+            i++;
+        }
+        if (i == end) {
+            return AnalysisResult.ALL_EQUAL;
+        }
+
+        //ascending
+        i1 = array[i];
+        if (array[i-1] < i1) {
+            i++;
+            for (; i < end; i++)  {
+                int i2 = array[i];
+                if (i1 > i2) {
+                    break;
+                }
+                i1 = i2;
+            }
+            if (i == end) {
+                return AnalysisResult.ASCENDING;
+            }
+        }
+        //descending
+        else {
+            i++;
+            for (; i < end; i++)  {
+                int i2 = array[i];
+                if (i1 < i2) {
+                    break;
+                }
+                i1 = i2;
+            }
+            if (i == end) {
+                return AnalysisResult.DESCENDING;
+            }
+        }
+        return AnalysisResult.UNORDERED;
+    }
+
+    public static int listIsOrderedUnSigned(int[] array, int start, int end) {
+        int i1 = array[start];
+        int i = start + 1;
+        while (i < end) {
+            int i2 = array[i];
+            if (i2 != i1) {
+                break;
+            }
+            i1 = i2;
+            i++;
+        }
+        if (i == end) {
+            return AnalysisResult.ALL_EQUAL;
+        }
+
+        //ascending
+        i1 = array[i];
+        if (array[i-1] < i1) {
+            i++;
+            for (; i < end; i++)  {
+                int i2 = array[i];
+                if (i1 + 0x80000000 > i2 + 0x80000000) {
+                    break;
+                }
+                i1 = i2;
+            }
+            if (i == end) {
+                return AnalysisResult.ASCENDING;
+            }
+        }
+        //descending
+        else {
+            i++;
+            for (; i < end; i++)  {
+                int i2 = array[i];
+                if (i1 + 0x80000000 < i2 + 0x80000000) {
+                    break;
+                }
+                i1 = i2;
+            }
+            if (i == end) {
+                return AnalysisResult.DESCENDING;
+            }
+        }
+        return AnalysisResult.UNORDERED;
+    }
+
 
 
     enum ShortSorter {StableByte, StableBit, CountSort}
@@ -346,7 +442,7 @@ public class IntSorterUtils {
             int[] aux = new int[n];
             for (int i = kList.length - 1; i >= kIndex; i--) {
                 int sortMask = 1 << kList[i];
-                IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
+                partitionStable(array, start, end, sortMask, aux);
             }
         }
     }

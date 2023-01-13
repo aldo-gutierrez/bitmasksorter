@@ -2,13 +2,15 @@ package com.aldogg.sorter.intType;
 
 import com.aldogg.sorter.AnalysisResult;
 import com.aldogg.sorter.BitSorterMTParams;
-import com.aldogg.sorter.MaskInfo;
+import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.SortingNetworks;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
-import static com.aldogg.sorter.MaskInfo.getMaskAsArray;
+import static com.aldogg.sorter.MaskInfoInt.getMaskAsArray;
+import static com.aldogg.sorter.intType.IntSorterUtils.listIsOrderedSigned;
+import static com.aldogg.sorter.intType.IntSorterUtils.listIsOrderedUnSigned;
 
 public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
     public static final int NUM_THREADS_INITIAL = 1;
@@ -38,12 +40,12 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        MaskInfo maskInfo;
+        MaskInfoInt maskInfo;
         if (n >= 8388608) {
             numThreads.set(0);
-            maskInfo = MaskInfo.getMaskBitParallel(array, start, end, params.getMaxThreads(), numThreads);
+            maskInfo = MaskInfoInt.getMaskBitParallel(array, start, end, params.getMaxThreads(), numThreads);
         } else {
-            maskInfo = MaskInfo.getMaskBit(array, start, end);
+            maskInfo = MaskInfoInt.getMaskBit(array, start, end);
         }
         int mask = maskInfo.getMask();
         int[] kList = getMaskAsArray(mask);

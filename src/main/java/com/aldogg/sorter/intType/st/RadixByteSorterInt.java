@@ -1,12 +1,13 @@
 package com.aldogg.sorter.intType.st;
 
 import com.aldogg.sorter.AnalysisResult;
-import com.aldogg.sorter.MaskInfo;
-import com.aldogg.sorter.Section;
+import com.aldogg.sorter.MaskInfoInt;
+import com.aldogg.sorter.IntSection;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntSorterUtils;
 
-import static com.aldogg.sorter.BitSorterUtils.*;
+import static com.aldogg.sorter.intType.IntSorterUtils.listIsOrderedSigned;
+import static com.aldogg.sorter.intType.IntSorterUtils.listIsOrderedUnSigned;
 
 public class RadixByteSorterInt extends IntBitMaskSorter {
 
@@ -31,9 +32,9 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
         int[] kList = null;
 
         if (calculateBitMaskOptimization) {
-            MaskInfo maskInfo = MaskInfo.getMaskBit(array, start, end);
+            MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, end);
             int mask = maskInfo.getMask();
-            kList = MaskInfo.getMaskAsArray(mask);
+            kList = MaskInfoInt.getMaskAsArray(mask);
             if (kList.length == 0) {
                 return;
             }
@@ -48,7 +49,7 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
             if (kList.length == 0) {
                 return;
             }
-            MaskInfo maskParts;
+            MaskInfoInt maskParts;
             if (kList[0] == 31 && !isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
                 int sortMask = 1 << kList[0];
                 int finalLeft = isUnsigned()
@@ -58,18 +59,18 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
                 int n2 = end - finalLeft;
                 int[] aux = new int[Math.max(n1, n2)];
                 if (n1 > 1) { //sort negative numbers
-                    maskParts = MaskInfo.getMaskBit(array, start, finalLeft);
+                    maskParts = MaskInfoInt.getMaskBit(array, start, finalLeft);
                     mask = maskParts.getMask();
                     sortBytes(array, start, finalLeft, aux, mask);
                 }
                 if (n2 > 1) { //sort positive numbers
-                    maskParts = MaskInfo.getMaskBit(array, finalLeft, end);
+                    maskParts = MaskInfoInt.getMaskBit(array, finalLeft, end);
                     mask = maskParts.getMask();
                     sortBytes(array, finalLeft, end, aux, mask);
                 }
                 return;
             } else {
-                mask = MaskInfo.getMaskLastBits(kList, 0);
+                mask = MaskInfoInt.getMaskLastBits(kList, 0);
             }
         }
         int n = end - start;
@@ -84,7 +85,7 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
         boolean s24 = (mask & 0xFF000000) != 0;
         int n = end - start;
         int[] leftX = new int[256];
-        Section section = new Section();
+        IntSection section = new IntSection();
         section.length = 8;
         int ops = 0;
         int[] arrayOrig = array;
