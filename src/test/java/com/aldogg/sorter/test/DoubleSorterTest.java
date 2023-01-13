@@ -8,10 +8,6 @@ import com.aldogg.sorter.doubleType.st.*;
 import com.aldogg.sorter.generators.DoubleGenerator;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
-import com.aldogg.sorter.generators.IntGenerator;
-import com.aldogg.sorter.intType.collection.EntityInt1;
-import com.aldogg.sorter.intType.collection.IntComparator;
-import com.aldogg.sorter.intType.collection.ObjectIntSorter;
 import com.aldogg.sorter.intType.st.JavaSorterInt;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +16,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Random;
 import java.util.function.Function;
 

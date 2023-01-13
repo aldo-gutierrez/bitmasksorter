@@ -25,8 +25,8 @@ public class BaseTest {
     boolean validateResult = true;
 
     public static final long seed = 1234567890;
-    public static final int ITERATIONS = 2;
-    public static final int HEAT_ITERATIONS = 1;
+    public static final int ITERATIONS = 20;
+    public static final int HEAT_ITERATIONS = 10;
 
     public static final String branch = "main";
 
