@@ -21,7 +21,7 @@ public class FloatSorterTest extends BasicTest {
     @Test
     public void speedTestPositiveFloatST() throws IOException {
         FloatSorter[] sorters = new FloatSorter[]{new JavaSorterFloat(), new RadixBitBaseSorterFloat(), new RadixBitSorterFloat()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveFloat_st_" + branch + ".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results/speed_positiveFloat_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestSortResults testSortResults;
@@ -72,7 +72,7 @@ public class FloatSorterTest extends BasicTest {
     @Test
     public void speedTestSignedFloatST() throws IOException {
         FloatSorter[] sorters = new FloatSorter[]{new JavaSorterFloat(), new RadixBitBaseSorterFloat(), new RadixBitSorterFloat()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_signedFloat_st_" + branch + ".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results/speed_signedFloat_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestSortResults testSortResults;
@@ -124,7 +124,7 @@ public class FloatSorterTest extends BasicTest {
     @Test
     public void speedTestRealFloatST() throws IOException {
         FloatSorter[] sorters = new FloatSorter[]{new JavaSorterFloat(), new RadixBitBaseSorterFloat(), new RadixBitSorterFloat()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_realFloat_st_" + branch + ".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results/speed_realFloat_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestSortResults testSortResults;

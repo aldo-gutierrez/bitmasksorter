@@ -22,7 +22,7 @@ public class LongSorterTest extends BasicTest {
     @Test
     public void speedTestPositiveLongST() throws IOException {
         LongSorter[] sorters = new LongSorter[]{new JavaSorterLong(), new RadixBitBaseSorterLong(), new RadixBitSorterLong()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveLong_st_" + branch + ".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results/speed_positiveLong_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestSortResults testSortResults;
@@ -73,7 +73,7 @@ public class LongSorterTest extends BasicTest {
     @Test
     public void speedTestSignedLongST() throws IOException {
         LongSorter[] sorters = new LongSorter[]{new JavaSorterLong(), new RadixBitBaseSorterLong(), new RadixBitSorterLong()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_signedLong_st_" + branch + ".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results/speed_signedLong_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestSortResults testSortResults;

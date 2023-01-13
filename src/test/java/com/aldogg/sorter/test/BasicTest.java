@@ -16,9 +16,7 @@ import com.aldogg.sorter.intType.st.RadixBitSorterInt;
 import com.aldogg.sorter.intType.st.RadixByteSorterInt;
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Random;
 
 import static com.aldogg.sorter.intType.st.RadixBitSorterInt.radixSort;
@@ -72,7 +70,7 @@ public class BasicTest extends BaseTest {
 
     @Test
     public void smallListAlgorithmSpeedTest() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("small.csv", UTF_8));
+        BufferedWriter writer = getWriter("small.csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
 

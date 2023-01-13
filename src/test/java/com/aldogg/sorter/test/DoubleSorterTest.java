@@ -28,7 +28,7 @@ public class DoubleSorterTest extends BasicTest {
     @Test
     public void speedTestPositiveDoubleST() throws IOException {
         DoubleSorter[] sorters = new DoubleSorter[]{new JavaSorterDouble(), new RadixBitBaseSorterDouble(), new RadixBitSorterDouble()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveDouble_st_" + branch + ".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results/speed_positiveDouble_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestSortResults testSortResults;
@@ -79,7 +79,7 @@ public class DoubleSorterTest extends BasicTest {
     @Test
     public void speedTestSignedDoubleST() throws IOException {
         DoubleSorter[] sorters = new DoubleSorter[]{new JavaSorterDouble(), new RadixBitSorterDouble(), new RadixBitBaseSorterDouble()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_signedDouble_st_" + branch + ".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results/speed_signedDouble_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestSortResults testSortResults;
@@ -131,7 +131,7 @@ public class DoubleSorterTest extends BasicTest {
     @Test
     public void speedTestRealDoubleST() throws IOException {
         DoubleSorter[] sorters = new DoubleSorter[]{new JavaSorterDouble(), new RadixBitSorterDouble(), new RadixBitBaseSorterDouble()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_realDouble_st_" + branch + ".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results/speed_realDouble_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestSortResults testSortResults;
@@ -182,7 +182,7 @@ public class DoubleSorterTest extends BasicTest {
 
     @Test
     public void speedTestObjectPositiveIntKey() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results\\speed_objectPositiveDouble_" + branch + ".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results\\speed_objectPositiveDouble_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
 

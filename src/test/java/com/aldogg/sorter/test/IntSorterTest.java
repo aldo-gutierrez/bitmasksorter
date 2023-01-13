@@ -35,7 +35,7 @@ public class IntSorterTest extends BaseTest {
     @Test
     public void speedTestPositiveIntST() throws IOException {
         IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_st_"+branch+".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results/speed_positiveInt_st_"+branch+".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
         TestSortResults testSortResults;
@@ -87,7 +87,7 @@ public class IntSorterTest extends BaseTest {
     public void speedTestSignedIntSt() throws IOException {
         IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_signedInt_st_"+branch+".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results/speed_signedInt_st_"+branch+".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestSortResults testSortResults;
@@ -143,7 +143,7 @@ public class IntSorterTest extends BaseTest {
     @Test
     public void speedTestPositiveIntMT() throws IOException {
         IntSorter[] sorters = new IntSorter[] {new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_mt_"+branch+".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results/speed_positiveInt_mt_"+branch+".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
         TestSortResults testSortResults;
@@ -194,7 +194,7 @@ public class IntSorterTest extends BaseTest {
 
     @Test
     public void speedTestObjectPositiveIntKey() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results\\speed_objectPositiveInt_"+branch+".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results\\speed_objectPositiveInt_"+branch+".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
 
@@ -262,7 +262,7 @@ public class IntSorterTest extends BaseTest {
     public void speedTestSignedIntMt() throws IOException {
         IntSorter[] sorters = new IntSorter[]{new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_signedInt_mt_"+branch+".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results/speed_signedInt_mt_"+branch+".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestSortResults testSortResults;
@@ -316,7 +316,7 @@ public class IntSorterTest extends BaseTest {
 
     @Test
     public void speedTestUnsigned() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_unsignedInt_"+branch+".csv", UTF_8));
+        BufferedWriter writer = getWriter("test-results/speed_unsignedInt_"+branch+".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
         IntSorter[] sorters = new IntSorter[]{new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
@@ -369,7 +369,7 @@ public class IntSorterTest extends BaseTest {
     @Test
     public void speedTestIncDec() throws IOException {
         IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("speed_sorted_"+branch+".csv", UTF_8));
+        BufferedWriter writer = getWriter("speed_sorted_"+branch+".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
 

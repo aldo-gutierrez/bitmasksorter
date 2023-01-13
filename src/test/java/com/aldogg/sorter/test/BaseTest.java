@@ -12,13 +12,13 @@ import com.aldogg.sorter.longType.LongSorter;
 import com.aldogg.sorter.longType.st.JavaSorterLong;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class BaseTest {
@@ -33,6 +33,14 @@ public class BaseTest {
     @BeforeEach
     public void beforeEach() {
         System.out.println("Java: " + System.getProperty("java.version"));
+    }
+
+    protected BufferedWriter getWriter(String filename) {
+        try {
+            return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), UTF_8));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void testSort(int[] list, IntSorter[] sorters, TestSortResults testSortResults) {
