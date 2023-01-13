@@ -22,43 +22,44 @@ import java.io.IOException;
 import java.util.Random;
 
 import static com.aldogg.sorter.intType.st.RadixBitSorterInt.radixSort;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class BasicTest extends BaseTest {
     @Test
     public void basicTests() {
-        IntSorter[] sorters = new IntSorter[] {new MixedBitSorterMTInt(), new QuickBitSorterInt(), new QuickBitSorterMTInt(), new RadixBitSorterInt(), new RadixBitSorterMTInt(), new RadixByteSorterInt()};
+        IntSorter[] sorters = new IntSorter[]{new MixedBitSorterMTInt(), new QuickBitSorterInt(), new QuickBitSorterMTInt(), new RadixBitSorterInt(), new RadixBitSorterMTInt(), new RadixByteSorterInt()};
         TestSortResults sorterTests = new TestSortResults(sorters.length);
-        testSort(new int[] {}, sorters, sorterTests);
-        testSort(new int[] {1}, sorters, sorterTests);
-        testSort(new int[] {2, 1}, sorters, sorterTests);
-        testSort(new int[] {1, 2}, sorters, sorterTests);
-        testSort(new int[] {1, 1}, sorters, sorterTests);
-        testSort(new int[] {53,11,13}, sorters, sorterTests);
-        testSort(new int[] {70,11,13,53}, sorters, sorterTests);
-        testSort(new int[] {54,46,95,96,59,58,29,18,6,12,56,76,55,16,85,88,87,54,21,90,27,79,29,23,41,74}, sorters, sorterTests);
-        testSort(new int[] {
-                70,11,13,53,54,46,95,96,59,58,29,18,6,12,56,76,55,16,85,88,
-                87,54,21,90,27,79,29,23,41,74,55,8,87,87,17,73,9,47,21,22,
-                77,53,67,24,11,24,47,38,26,42,14,91,36,19,12,35,79,91,71,81,
-                70,51,94,43,33,7,47,32,6,66,76,81,89,18,10,83,19,67,87,86,45,
-                31,70,13,16,40,31,55,81,75,71,16,31,27,17,5,36,29,63,60}, sorters, sorterTests);
+        testSort(new int[]{}, sorters, sorterTests);
+        testSort(new int[]{1}, sorters, sorterTests);
+        testSort(new int[]{2, 1}, sorters, sorterTests);
+        testSort(new int[]{1, 2}, sorters, sorterTests);
+        testSort(new int[]{1, 1}, sorters, sorterTests);
+        testSort(new int[]{53, 11, 13}, sorters, sorterTests);
+        testSort(new int[]{70, 11, 13, 53}, sorters, sorterTests);
+        testSort(new int[]{54, 46, 95, 96, 59, 58, 29, 18, 6, 12, 56, 76, 55, 16, 85, 88, 87, 54, 21, 90, 27, 79, 29, 23, 41, 74}, sorters, sorterTests);
+        testSort(new int[]{
+                70, 11, 13, 53, 54, 46, 95, 96, 59, 58, 29, 18, 6, 12, 56, 76, 55, 16, 85, 88,
+                87, 54, 21, 90, 27, 79, 29, 23, 41, 74, 55, 8, 87, 87, 17, 73, 9, 47, 21, 22,
+                77, 53, 67, 24, 11, 24, 47, 38, 26, 42, 14, 91, 36, 19, 12, 35, 79, 91, 71, 81,
+                70, 51, 94, 43, 33, 7, 47, 32, 6, 66, 76, 81, 89, 18, 10, 83, 19, 67, 87, 86, 45,
+                31, 70, 13, 16, 40, 31, 55, 81, 75, 71, 16, 31, 27, 17, 5, 36, 29, 63, 60}, sorters, sorterTests);
         //test bit mask 110110000 and 111110000
-        testSort(new int[] {432,496,432,496,432,496,432,496,432,496,432,496,432,496,432,496,432,496,432,432,496,496,496,496,496,432}, sorters, sorterTests);
+        testSort(new int[]{432, 496, 432, 496, 432, 496, 432, 496, 432, 496, 432, 496, 432, 496, 432, 496, 432, 496, 432, 432, 496, 496, 496, 496, 496, 432}, sorters, sorterTests);
     }
 
     @Test
     public void testNegativeNumbers() {
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         TestSortResults testSorter = new TestSortResults(sorters.length);
-        testSort(new int[] {}, sorters, testSorter);
-        testSort(new int[] {1}, sorters, testSorter);
-        testSort(new int[] {2, 1}, sorters, testSorter);
-        testSort(new int[] {1, 2}, sorters, testSorter);
-        testSort(new int[] {1, 1}, sorters, testSorter);
-        testSort(new int[] {53,11,13}, sorters, testSorter);
-        testSort(new int[] {70,11,13,53}, sorters, testSorter);
-        testSort(new int[] {-70,-11,-13,-53}, sorters, testSorter);
-        testSort(new int[] {-54,-46,-95,-96,-59,-58,-29,18,6,12,56,76,55,16,85,88,87,54,21,90,27,79,29,23,41,74}, sorters, testSorter);
+        testSort(new int[]{}, sorters, testSorter);
+        testSort(new int[]{1}, sorters, testSorter);
+        testSort(new int[]{2, 1}, sorters, testSorter);
+        testSort(new int[]{1, 2}, sorters, testSorter);
+        testSort(new int[]{1, 1}, sorters, testSorter);
+        testSort(new int[]{53, 11, 13}, sorters, testSorter);
+        testSort(new int[]{70, 11, 13, 53}, sorters, testSorter);
+        testSort(new int[]{-70, -11, -13, -53}, sorters, testSorter);
+        testSort(new int[]{-54, -46, -95, -96, -59, -58, -29, 18, 6, 12, 56, 76, 55, 16, 85, 88, 87, 54, 21, 90, 27, 79, 29, 23, 41, 74}, sorters, testSorter);
 
     }
 
@@ -71,11 +72,11 @@ public class BasicTest extends BaseTest {
 
     @Test
     public void smallListAlgorithmSpeedTest() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("small.csv"));
-        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
+        BufferedWriter writer = new BufferedWriter(new FileWriter("small.csv", UTF_8));
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
 
-        IntSorter[] sorters = new IntSorter[] {new IntSorter() {
+        IntSorter[] sorters = new IntSorter[]{new IntSorter() {
             @Override
             public void sort(int[] array, int start, int end) {
                 MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, end);
@@ -85,6 +86,7 @@ public class BasicTest extends BaseTest {
                 int[] aux = new int[length];
                 radixSort(array, start, end, kList, 0, kList.length - 1, aux);
             }
+
             @Override
             public String name() {
                 return "StableByte";
@@ -94,7 +96,7 @@ public class BasicTest extends BaseTest {
             public void setUnsigned(boolean unsigned) {
 
             }
-        },  new IntSorter() {
+        }, new IntSorter() {
             @Override
             public void sort(int[] array, int start, int end) {
                 MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, end);
@@ -106,6 +108,7 @@ public class BasicTest extends BaseTest {
                     IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
                 }
             }
+
             @Override
             public String name() {
                 return "StableBit";
@@ -136,7 +139,7 @@ public class BasicTest extends BaseTest {
         }};
         TestSortResults testSortResults;
 
-        int iterations = 200;
+        int iterations = HEAT_ITERATIONS;
         int[] limitHigh = new int[]{1, 3, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535};
         testSortResults = new TestSortResults(sorters.length);
         GeneratorParams params = new GeneratorParams();
@@ -155,7 +158,7 @@ public class BasicTest extends BaseTest {
         testSpeed(sorters, iterations, params, testSortResults, null);
 
 
-        iterations = 4000;
+        iterations = ITERATIONS;
         System.out.println("----------------------");
 
         for (int limitH : limitHigh) {
@@ -218,7 +221,6 @@ public class BasicTest extends BaseTest {
         System.out.println();
         writer.close();
     }
-
 
 
 }

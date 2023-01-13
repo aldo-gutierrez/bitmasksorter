@@ -20,10 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class SorterTest2 extends IntSorterTest {
     @Test
     public void testFunctionsSingleThread() throws IOException {
-//        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new MergeSorterInt(), new MergeSorter2Int()};
         IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
 
         GeneratorParams params = new GeneratorParams();
@@ -32,7 +33,7 @@ public class SorterTest2 extends IntSorterTest {
         params.limitLow = 0;
         params.limitHigh = params.size;
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("speed2.csv"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("speed2.csv", UTF_8));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
         GeneratorFunctions[] values = GeneratorFunctions.values();
@@ -51,10 +52,7 @@ public class SorterTest2 extends IntSorterTest {
     public void speedTestPositiveIntSTBase2() throws IOException {
         IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_st_base2.csv"));
-        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
-
-        BufferedWriter writer2 = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_st_base2_better.csv"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_st_base2.csv", UTF_8));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
         TestSortResults testSortResults;
@@ -94,7 +92,7 @@ public class SorterTest2 extends IntSorterTest {
     public void speedTestPositiveIntMTBase2() throws IOException {
 
         IntSorter[] sorters = new IntSorter[] {new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_mt_base2.csv"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveInt_mt_base2.csv", UTF_8));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
         TestSortResults testSortResults;

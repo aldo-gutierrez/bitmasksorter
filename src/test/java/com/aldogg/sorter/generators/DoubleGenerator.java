@@ -22,18 +22,10 @@ public class DoubleGenerator {
     static double[] random_int_range(GeneratorParams params) {
         int size = params.size;
         double[] v = new double[size];
-        if (params.limitHigh > Integer.MAX_VALUE) {
-            int range = (int) (params.limitHigh - (long) params.limitLow);
-            for (int i = 0; i < size; ++i) {
-                long randomLong = params.random.nextInt(range) + (long) params.limitLow;
-                v[i] = ((Long) randomLong).intValue();
-            }
-        } else {
-            int range = (int) (params.limitHigh - params.limitLow);
-            for (int i = 0; i < size; ++i) {
-                int randomInt = params.random.nextInt(range) + params.limitLow;
-                v[i] = randomInt;
-            }
+        long range = params.limitHigh - params.limitLow;
+        for (int i = 0; i < size; ++i) {
+            double randomNumber = params.random.nextDouble() * range + params.limitLow;
+            v[i] = randomNumber;
         }
         return v;
     }

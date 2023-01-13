@@ -13,13 +13,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class FloatSorterTest extends BasicTest {
 
 
     @Test
     public void speedTestPositiveFloatST() throws IOException {
         FloatSorter[] sorters = new FloatSorter[]{new JavaSorterFloat(), new RadixBitBaseSorterFloat(), new RadixBitSorterFloat()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveFloat_st_" + branch + ".csv"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_positiveFloat_st_" + branch + ".csv", UTF_8));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestSortResults testSortResults;
@@ -70,7 +72,7 @@ public class FloatSorterTest extends BasicTest {
     @Test
     public void speedTestSignedFloatST() throws IOException {
         FloatSorter[] sorters = new FloatSorter[]{new JavaSorterFloat(), new RadixBitBaseSorterFloat(), new RadixBitSorterFloat()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_signedFloat_st_" + branch + ".csv"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_signedFloat_st_" + branch + ".csv", UTF_8));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestSortResults testSortResults;
@@ -122,7 +124,7 @@ public class FloatSorterTest extends BasicTest {
     @Test
     public void speedTestRealFloatST() throws IOException {
         FloatSorter[] sorters = new FloatSorter[]{new JavaSorterFloat(), new RadixBitBaseSorterFloat(), new RadixBitSorterFloat()};
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_realFloat_st_" + branch + ".csv"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("test-results/speed_realFloat_st_" + branch + ".csv", UTF_8));
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestSortResults testSortResults;

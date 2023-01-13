@@ -1,31 +1,25 @@
-package com.aldogg.sorter.intType.collection;
+package com.aldogg.sorter.floatType.collection;
 
 import com.aldogg.sorter.IntSection;
 import com.aldogg.sorter.ObjectSorterUtils;
-import com.aldogg.sorter.intType.IntSorterUtils;
+import com.aldogg.sorter.floatType.FloatSorterUtils;
 
-public class ObjectIntSorterUtils {
+public class ObjectFloatSorterUtils {
 
-    /**
-     *   partition with 0 memory in-place
-     *   CPU: N
-     *   MEM: 1
-     *   not stable?
-     */
-    public static int partitionNotStable(final Object[] oArray, final int[] array, final  int start, final int end, final int mask) {
+    public static int partitionNotStable(final Object[] oArray, final float[] array, final int start, final int end, final int mask) {
         int left = start;
         int right = end - 1;
 
         while (left <= right) {
-            int element = array[left];
+            int element = Float.floatToRawIntBits(array[left]);
             if ((element & mask) == 0) {
                 left++;
             } else {
                 while (left <= right) {
-                    element = array[right];
+                    element = Float.floatToRawIntBits(array[right]);
                     if ((element & mask) == 0) {
-                        IntSorterUtils.swap(array, left, right);
-                        ObjectSorterUtils.swap(oArray, left,right);
+                        FloatSorterUtils.swap(array, left, right);
+                        ObjectSorterUtils.swap(oArray, left, right);
                         left++;
                         right--;
                         break;
@@ -38,26 +32,20 @@ public class ObjectIntSorterUtils {
         return left;
     }
 
-    /**
-     *   partition with 0 memory in-place reverse order
-     *   CPU: N
-     *   MEM: 1
-     *   not stable?
-     */
-    public static int partitionReverseNotStable(final Object[] oArray, final int[] array, final int start, final int end, final int mask) {
+    public static int partitionReverseNotStable(final Object[] oArray, final float[] array, final int start, final int end, final int mask) {
         int left = start;
         int right = end - 1;
 
         while (left <= right) {
-            int element = array[left];
+            int element = Float.floatToRawIntBits(array[left]);
             if ((element & mask) == 0) {
                 while (left <= right) {
-                    element = array[right];
+                    element = Float.floatToRawIntBits(array[right]);
                     if (((element & mask) == 0)) {
                         right--;
                     } else {
-                        IntSorterUtils.swap(array, left, right);
-                        ObjectSorterUtils.swap(oArray, left,right);
+                        FloatSorterUtils.swap(array, left, right);
+                        ObjectSorterUtils.swap(oArray, left, right);
                         left++;
                         right--;
                         break;
@@ -70,25 +58,21 @@ public class ObjectIntSorterUtils {
         return left;
     }
 
-    public static int partitionStable(final Object[] oArray, final int[] array, final int start, final int end, final int mask) {
-        int[] aux = new int[end - start];
+    public static int partitionStable(final Object[] oArray, final float[] array, final int start, final int end, final int mask) {
+        float[] aux = new float[end - start];
         Object[] oAux = new Object[end - start];
         return partitionStable(oArray, array, start, end, mask, oAux, aux);
     }
 
-    /**
-     *  stable partition with aux memory, only copies right to aux for better performance
-     *  CPU: 2*N*K (K=1 for 1 bit) //review
-     *  MEM: N //review
-     */
-    public static int partitionStable(final Object[] oArray, final int[] array, final int start, final int end, final int mask,
-                                      final Object[] oAux, final int[] aux) {
+    public static int partitionStable(final Object[] oArray, final float[] array, final int start, final int end, final int mask,
+                                      final Object[] oAux, final float[] aux) {
         int left = start;
         int right = start;
         for (int i = start; i < end; i++) {
-            int element = array[i];
+            float element = array[i];
+            int elementFM = Float.floatToRawIntBits(array[i]);
             Object oElement = oArray[i];
-            if ((element & mask) == 0) {
+            if ((elementFM & mask) == 0) {
                 array[left] = element;
                 oArray[left] = oElement;
                 left++;
@@ -100,25 +84,26 @@ public class ObjectIntSorterUtils {
         }
         int lengthRight = right - start;
         System.arraycopy(aux, start, array, left, lengthRight);
-        System.arraycopy(oAux, start, oArray, left, lengthRight) ;
+        System.arraycopy(oAux, start, oArray, left, lengthRight);
         return left;
     }
 
-    public static int partitionReverseStable(final Object[] oArray, final int[] array, final int start, final int end, final int mask) {
-        int[] aux = new int[end - start];
+    public static int partitionReverseStable(final Object[] oArray, final float[] array, final int start, final int end, final int mask) {
+        float[] aux = new float[end - start];
         Object[] oAux = new Object[end - start];
         return partitionReverseStable(oArray, array, start, end, mask, oAux, aux);
     }
 
 
-    public static int partitionReverseStable(final Object[] oArray, final int[] array, final int start, final int end,
-                                             final int mask, final Object[] oAux, final int[] aux) {
+    public static int partitionReverseStable(final Object[] oArray, final float[] array, final int start, final int end,
+                                             final int mask, final Object[] oAux, final float[] aux) {
         int left = start;
         int right = start;
         for (int i = start; i < end; i++) {
-            int element = array[i];
+            float element = array[i];
+            int elementFM = Float.floatToRawIntBits(array[i]);
             Object oElement = oArray[i];
-            if (!((element & mask) == 0)) {
+            if (!((elementFM & mask) == 0)) {
                 array[left] = element;
                 oArray[left] = oElement;
                 left++;
@@ -130,21 +115,17 @@ public class ObjectIntSorterUtils {
         }
         int lengthRight = right - start;
         System.arraycopy(aux, start, array, left, lengthRight);
-        System.arraycopy(oAux, start, oArray, left, lengthRight) ;
+        System.arraycopy(oAux, start, oArray, left, lengthRight);
         return left;
     }
 
-    /**
-     *  CPU: 3*N + 2^K
-     *  MEM: N + 2*2^K
-     */
-    public static void partitionStableLastBits(final Object[] oArray, final int[] array, final int start, final IntSection section, int [] leftX,
-                                               final Object[] oAux, final int[] aux, int startAux, final int n) {
+    public static void partitionStableLastBits(final Object[] oArray, final float[] array, final int start, final IntSection section, int[] leftX,
+                                               final Object[] oAux, final float[] aux, int startAux, final int n) {
         int mask = section.sortMask;
         int end = start + n;
         int[] count = new int[1 << section.length];
         for (int i = start; i < end; i++) {
-            count[array[i] & mask]++;
+            count[(int) (Float.floatToRawIntBits(array[i]) & mask)]++;
         }
         int il1 = 0;
         int cLength = count.length;
@@ -152,8 +133,9 @@ public class ObjectIntSorterUtils {
             leftX[i] = leftX[il1] + count[il1];
         }
         for (int i = start; i < end; i++) {
-            int element = array[i];
-            int elementShiftMasked = element & mask;
+            float element = array[i];
+            int elementM = Float.floatToRawIntBits(element);
+            int elementShiftMasked = elementM & mask;
             int auxIndex = leftX[elementShiftMasked] + startAux;
             aux[auxIndex] = element;
             oAux[auxIndex] = oArray[i];
@@ -163,18 +145,14 @@ public class ObjectIntSorterUtils {
         System.arraycopy(oAux, startAux, oArray, start, n);
     }
 
-    /**
-     *  CPU: 3*N + 2^K
-     *  MEM: N + 2*2^K
-     */
-    public static void partitionStableGroupBits(final Object[] oArray, final int[] array, final int start, final IntSection section, int[] leftX,
-                                                final Object[] oAux, final int[] aux, int startAux, int n) {
+    public static void partitionStableGroupBits(final Object[] oArray, final float[] array, final int start, final IntSection section, int[] leftX,
+                                                final Object[] oAux, final float[] aux, int startAux, int n) {
         int mask = section.sortMask;
         int shiftRight = section.shiftRight;
         int end = start + n;
         int[] count = new int[1 << section.length];
         for (int i = start; i < end; i++) {
-            count[(array[i] & mask) >>> shiftRight]++;
+            count[(int) ((Float.floatToRawIntBits(array[i]) & mask) >>> shiftRight)]++;
         }
         int il1 = 0;
         int cLength = count.length;
@@ -182,8 +160,9 @@ public class ObjectIntSorterUtils {
             leftX[i] = leftX[il1] + count[il1];
         }
         for (int i = start; i < end; i++) {
-            int element = array[i];
-            int elementShiftMasked = (element & mask) >>> shiftRight;
+            float element = array[i];
+            int elementM = Float.floatToRawIntBits(element);
+            int elementShiftMasked = (elementM & mask) >>> shiftRight;
             int auxIndex = leftX[elementShiftMasked] + startAux;
             aux[auxIndex] = element;
             oAux[auxIndex] = oArray[i];

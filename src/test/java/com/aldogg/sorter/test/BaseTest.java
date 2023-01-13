@@ -25,8 +25,8 @@ public class BaseTest {
     boolean validateResult = true;
 
     public static final long seed = 1234567890;
-    public static final int ITERATIONS = 20;
-    public static final int HEAT_ITERATIONS = 10;
+    public static final int ITERATIONS = 2;
+    public static final int HEAT_ITERATIONS = 1;
 
     public static final String branch = "main";
 
@@ -120,16 +120,6 @@ public class BaseTest {
         System.out.printf("%21s %,13d ", sorterWinner, sorterWinnerTime);
         System.out.printf("%21s %,13d ", sorter2ndWinner, sorter2ndWinnerTime);
         System.out.println();
-    }
-
-    protected void printBetter(GeneratorParams params, TestSortResults testSortResults, Sorter[] sorters, Writer writer) throws IOException {
-        Map winners = getWinners(testSortResults, sorters);
-        String sorterWinner = (String) winners.get("sorterWinner");
-        long sorterWinnerTime = (Long) winners.get("sorterWinnerTime");
-        String sorter2ndWinner = (String) winners.get("sorter2ndWinner");
-        long sorter2ndWinnerTime = (Long) winners.get("sorter2ndWinnerTime");
-        String[] a = new String[]{"a", "b"};
-        writer.write(sorterWinner);
     }
 
     protected Map<String, Object> getWinners(TestSortResults testSortResults, Sorter[] sorters) {

@@ -1,15 +1,15 @@
-package com.aldogg.sorter.intType.collection.st;
+package com.aldogg.sorter.longType.collection.st;
 
 import com.aldogg.sorter.*;
-import com.aldogg.sorter.intType.collection.IntComparator;
-import com.aldogg.sorter.intType.collection.ObjectIntSorter;
-import com.aldogg.sorter.intType.IntSorterUtils;
+import com.aldogg.sorter.longType.LongSorterUtils;
+import com.aldogg.sorter.longType.collection.LongComparator;
+import com.aldogg.sorter.longType.collection.ObjectLongSorter;
 
-import static com.aldogg.sorter.intType.collection.ObjectIntSorterUtils.*;
-import static com.aldogg.sorter.intType.IntSorterUtils.listIsOrderedSigned;
-import static com.aldogg.sorter.intType.IntSorterUtils.listIsOrderedUnSigned;
+import static com.aldogg.sorter.longType.LongSorterUtils.listIsOrderedSigned;
+import static com.aldogg.sorter.longType.LongSorterUtils.listIsOrderedUnSigned;
+import static com.aldogg.sorter.longType.collection.ObjectLongSorterUtils.*;
 
-public class RadixBitSorterObjectInt implements ObjectIntSorter {
+public class RadixBitSorterObjectLong implements ObjectLongSorter {
 
     boolean unsigned = false;
     boolean stable = false;
@@ -34,36 +34,36 @@ public class RadixBitSorterObjectInt implements ObjectIntSorter {
     }
 
     @Override
-    public void sort(Object[] oArray, int start, int end, IntComparator comparator) {
+    public void sort(Object[] oArray, int start, int end, LongComparator comparator) {
         int n = end - start;
         if (n < 2) {
             return;
         }
-        int[] array = new int[n];
+        long[] array = new long[n];
         for (int i = 0; i < array.length; i++) {
             array[i] = comparator.value(oArray[i]);
         }
         int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
         if (ordered == AnalysisResult.DESCENDING) {
-            IntSorterUtils.reverse(array, start, end);
+            LongSorterUtils.reverse(array, start, end);
             ObjectSorterUtils.reverse(oArray, start, end);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, end);
-        int mask = maskInfo.getMask();
-        int[] kList = MaskInfoInt.getMaskAsArray(mask);
+        MaskInfoLong maskInfo = MaskInfoLong.getMaskBit(array, start, end);
+        long mask = maskInfo.getMask();
+        int[] kList = MaskInfoLong.getMaskAsArray(mask);
         if (kList.length == 0) { //all numbers are equal
             return;
         }
         sort(oArray, array, start, end, kList);
     }
 
-    public void sort(Object[] oArray, int[] array, int start, int end, int[] kList) {
+    public void sort(Object[] oArray, long[] array, int start, int end, int[] kList) {
         if (kList[0] == 31) { //there are negative numbers and positive numbers
-            MaskInfoInt maskInfo;
-            int mask;
-            int sortMask = 1 << kList[0];
+            MaskInfoLong maskInfo;
+            long mask;
+            long sortMask = 1 << kList[0];
             int finalLeft = isStable()
                     ? (isUnsigned()
                     ? partitionStable(oArray, array, start, end, sortMask)
@@ -73,37 +73,30 @@ public class RadixBitSorterObjectInt implements ObjectIntSorter {
                     : partitionReverseNotStable(oArray, array, start, end, sortMask));
             int n1 = finalLeft - start;
             int n2 = end - finalLeft;
-            int[] aux = new int[Math.max(n1, n2)];
+            long[] aux = new long[Math.max(n1, n2)];
             Object[] oAux = new Object[Math.max(n1, n2)];
             if (n1 > 1) { //sort negative numbers
-                maskInfo = MaskInfoInt.getMaskBit(array, start, finalLeft);
+                maskInfo = MaskInfoLong.getMaskBit(array, start, finalLeft);
                 mask = maskInfo.getMask();
-                kList = MaskInfoInt.getMaskAsArray(mask);
+                kList = MaskInfoLong.getMaskAsArray(mask);
                 radixSort(oArray, array, start, finalLeft, kList, 0, kList.length - 1, oAux, aux);
             }
             if (n2 > 1) { //sort positive numbers
-                maskInfo = MaskInfoInt.getMaskBit(array, finalLeft, end);
+                maskInfo = MaskInfoLong.getMaskBit(array, finalLeft, end);
                 mask = maskInfo.getMask();
-                kList = MaskInfoInt.getMaskAsArray(mask);
+                kList = MaskInfoLong.getMaskAsArray(mask);
                 radixSort(oArray, array, finalLeft, end, kList, 0, kList.length - 1, oAux, aux);
             }
         } else {
-            int[] aux = new int[end - start];
+            long[] aux = new long[end - start];
             Object[] oAux = new Object[end - start];
             radixSort(oArray, array, start, end, kList, 0, kList.length - 1, oAux, aux);
         }
     }
 
-    /**
-     * BitSorterUtils.splitSection
-     * Improved performance except by
-     * 100000,"0:10000000","RadixBitSorterObjectInt",3->5
-     * 10000000,"0:10000000","RadixBitSorterObjectInt",653->873
-     * 1000000,"0:10000000","RadixBitSorterObjectInt",47->63
-     */
-    public static void radixSort(Object[] oArray, int[] array, int start, int end, int[] kList, int kStart, int kEnd, Object[] oAux, int[] aux) {
-        IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(kList, kStart, kEnd);
-        IntSection[] finalSectionList = sectionsInfo.sections;
+    public static void radixSort(Object[] oArray, long[] array, int start, int end, int[] kList, int kStart, int kEnd, Object[] oAux, long[] aux) {
+        LongSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSectionsLong(kList, kStart, kEnd);
+        LongSection[] finalSectionList = sectionsInfo.sections;
 
         if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
             partitionStable(oArray, array, start, end, finalSectionList[0].sortMask, oAux, aux);
@@ -113,12 +106,8 @@ public class RadixBitSorterObjectInt implements ObjectIntSorter {
         int n = end - start;
         int[] leftX = new int[1 << maxSectionLength];
         int startAux = 0;
-//        int ops = 0;
-//        int[] arrayOrig = array;
-//        Object[] oArrayOrig = oArray;
-//        int startOrig = start;
 
-        for (IntSection section : finalSectionList) {
+        for (LongSection section : finalSectionList) {
             leftX[0] = 0;
             if (!section.isSectionAtEnd()) {
                 partitionStableGroupBits(oArray, array, start, section, leftX, oAux, aux, startAux, n);
@@ -126,24 +115,7 @@ public class RadixBitSorterObjectInt implements ObjectIntSorter {
                 partitionStableLastBits(oArray, array, start, section, leftX, oAux, aux, startAux, n);
             }
 
-//            int[] tempArray = array;
-//            array = aux;
-//            aux = tempArray;
-//
-//            Object[] oTempArray = oArray;
-//            oArray = oAux;
-//            oAux = oTempArray;
-//
-//            int temp = start;
-//            start = startAux;
-//            startAux = temp;
-//            ops++;
         }
-//        if (ops % 2 == 1) {
-//            System.arraycopy(array, start, arrayOrig, startOrig, n);
-//            System.arraycopy(oArray, start, oArrayOrig, startOrig, n);
-//        }
 
     }
-
 }

@@ -1,6 +1,6 @@
 package com.aldogg.sorter.intType.collection;
 
-public class Entity1 {
+public class EntityInt1 {
     int id;
     String name;
 
@@ -20,7 +20,7 @@ public class Entity1 {
         this.name = name;
     }
 
-    public Entity1(int id, String name) {
+    public EntityInt1(int id, String name) {
         this.id = id;
         this.name = name;
     }
