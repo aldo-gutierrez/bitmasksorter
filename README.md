@@ -68,8 +68,8 @@ TimSort uses merge sort for big lists and insertion sort for small lists, so it 
 TimSort is a hybrid algorithm. We can use the bitmask to create a hybrid algorithm with two variables N, and K
 where K is the number of bits in the bitmask and 2^K is the range, and if the range is low a modified Count Sort could be easily performed
 
-The hybrid algorithms proposeduse N and (2 ^ K) as a way to decide what algorithm or optimization to use in a hybrid sorting algorithm.
-(2 ^ K) could be better than the simple range. It could be faster as the bitmask calculation doesn't have IF instruction or other instructions in the for lopp that are bad for the cache
+The hybrid algorithms proposed use N and (2 ^ K) as a way to decide what algorithm or optimization to use in a hybrid sorting algorithm.
+(2 ^ K) could be better than the simple range. It could be faster as the bitmask calculation doesn't have IF instruction or other instructions in the for loop that are bad for the cache
 
 Off course there are bad cases, so for example if a list contains only the values 1111111110000000(65408) and 0000000111111111(511). In this case the range is (64897)
 , but if we use the bit mask 1111111001111111 then the k range (2^k) is also (65151). 
@@ -93,7 +93,7 @@ that is zeroing all bits but the first in the bit mask:  1000000 (64).
 
 This could be a good or bad pivot depending on the distribution of the numbers. The bitmask doesn't provide information of the distribution
 
-This algorithm is slower than TimSort but faster than a Naive Stack Overflow QuickSort. However if we do a Count Sort 
+This algorithm is slower than TimSort but faster than a Naive Stack Overflow QuickSort. However, if we do a Count Sort 
 for the last bits is faster than TimSort.
 With the default parameters QuickSort uses a CountSort if the number of bits remaining is <=16. So for example if we sort
 an int number that can have 32 bits  the max level of recursion in the worst case scenario is 32-16=16
@@ -139,7 +139,7 @@ The reason is those implementations use base 10 implementations with modulo oper
 After hearing about Ska Sort using the ideas described in the forums I created the class RadixByteSorter which uses bytes instead of bits.
 The main difference between RadixByteSorterInt and RadixBitSorter is that RadixByteSorter works on bytes and RadixBitSorter works on bits.
 
-RadixByteSorterInt when working an all bytes should have the same performance than SkaSort. See the C++ Implementation for more details on SkaSort
+RadixByteSorterInt when working an all bytes should have the same performance as SkaSort. See the C++ Implementation for more details on SkaSort
 RadixBitSorter is faster than RadixByteSorter and SkaSort when less than 31 bits are in the bitmask otherwise SkaSort and RadixByteSorter should be faster 
 
 Radix Bit Sorter Optimizations:
@@ -322,17 +322,15 @@ In summary RadixBitSorterInt is faster than SkaSort when the numbers range is be
 RadixByteSorterInt with calculateBitMaskOptimization=false looks similar in performance than SkaSort
 
 ## TODO
-- Add More Object sorters in addition to RadixBitSorterObjectInt
-- Add Long, Short, Byte sorters (Long is the priority)
 - Evaluation on complexity
-- More Testing
+- More Testing, have 100 code coverage
 - Compare with [Wolf Sort] (https://github.com/scandum/wolfsort) 
-- Test different algorithms for stable partition with less memory and compare speed
-- Find the number N where Parallelization  of bitmask is faster than serial
-- Find the number N where Parallelization  of isOrdered is faster than serial
-- Find the number N where Parallelization  of partition is faster than serial
+- Find the best values for constants for single and multi-thread and for different machines
 - Have comparisons and documentation of speed in powers of two instead of powers of ten
 - Optimize for almost sorted list or for list that have few sorted parts as JavaSorter
+
+## TODO MOVE OUT OF THIS PROJECT
+- Test different algorithms for stable partition with less memory and compare speed
 
 ## Algorithms Testing
 |Algorithm|Positive random numbers|Negative random numbers| Unsigned numbers | Sorted         | Reverse sorted     |
