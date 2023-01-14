@@ -14,13 +14,10 @@ import com.aldogg.sorter.intType.st.RadixByteSorterInt;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SorterTest2 extends IntSorterTest {
     @Test
@@ -57,7 +54,7 @@ public class SorterTest2 extends IntSorterTest {
 
         TestSortResults testSortResults;
 
-        //heatup
+        //heat up
         testSortResults = new TestSortResults(sorters.length);
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(seed);
@@ -97,7 +94,7 @@ public class SorterTest2 extends IntSorterTest {
 
         TestSortResults testSortResults;
 
-        //heatup
+        //heat up
         testSortResults = new TestSortResults(sorters.length);
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(seed);

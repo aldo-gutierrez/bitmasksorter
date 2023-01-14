@@ -1,7 +1,5 @@
 package com.aldogg.sorter;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.BiConsumer;
 
 //http://users.telenet.be/bertdobbelaere/SorterHunter/sorting_networks.html
@@ -112,8 +110,8 @@ public class SortingNetworks {
                     {6, 7}, {8, 9}}
     };
 
-    public static BiConsumer<int[], Integer>[] signedSNFunctions = new BiConsumer[17];
-    public static BiConsumer<int[], Integer>[] unsignedSNFunctions = new BiConsumer[17];
+    public static final BiConsumer<int[], Integer>[] signedSNFunctions = new BiConsumer[17];
+    public static final BiConsumer<int[], Integer>[] unsignedSNFunctions = new BiConsumer[17];
 
     static {
         signedSNFunctions[0] = null;

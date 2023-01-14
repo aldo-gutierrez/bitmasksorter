@@ -41,10 +41,10 @@ public class MaskInfoInt {
 
 
     public static MaskInfoInt getMaskBitParallel(final int[] array, final int start, final int end, final int maxThreads, final AtomicInteger numThreads) {
-        MaskInfoInt maskInfo = ArrayParallelRunner.runInParallel(array, start, end, maxThreads, numThreads, new ArrayRunnableInt<MaskInfoInt>() {
+        return ArrayParallelRunner.runInParallel(array, start, end, maxThreads, numThreads, new ArrayRunnableInt<MaskInfoInt>() {
             @Override
-            public MaskInfoInt map(final int[] list, final int start, final int end) {
-                return getMaskBit(list, start, end);
+            public MaskInfoInt map(final int[] list, final int start1, final int end1) {
+                return getMaskBit(list, start1, end1);
             }
 
             @Override
@@ -55,7 +55,6 @@ public class MaskInfoInt {
                 return res;
             }
         });
-        return maskInfo;
     }
 
     public static int[] getMaskAsArray(final int mask) {

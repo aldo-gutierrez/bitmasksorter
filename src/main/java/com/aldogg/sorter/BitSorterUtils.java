@@ -40,9 +40,9 @@ public class BitSorterUtils {
             section.k = entry.getKey();
             section.length = entry.getValue();
             sections.totalLength += section.length;
-            if (section.length > sections.maxLength) {
-                sections.maxLength = section.length;
-            }
+//            if (section.length > sections.maxLength) {
+//                sections.maxLength = section.length;
+//            }
             int aux = entry.getKey() - entry.getValue() + 1;
             section.sortMask = MaskInfoInt.getMaskRangeBits(entry.getKey(), aux);
             section.shiftRight = aux;
@@ -77,9 +77,9 @@ public class BitSorterUtils {
             section.k = entry.getKey();
             section.length = entry.getValue();
             sections.totalLength += section.length;
-            if (section.length > sections.maxLength) {
-                sections.maxLength = section.length;
-            }
+//            if (section.length > sections.maxLength) {
+//                sections.maxLength = section.length;
+//            }
             int aux = entry.getKey() - entry.getValue() + 1;
             section.sortMask = MaskInfoLong.getMaskRangeBits(entry.getKey(), aux);
             section.shiftRight = aux;
@@ -168,9 +168,9 @@ public class BitSorterUtils {
                 IntSection sSection = sSections[j];
                 finalSectionList.add(sSection);
                 sectionsInfo.totalLength += sSection.length;
-                if (sSection.length > sectionsInfo.maxLength) {
-                    sectionsInfo.maxLength = sSection.length;
-                }
+//                if (sSection.length > sectionsInfo.maxLength) {
+//                    sectionsInfo.maxLength = sSection.length;
+//                }
             }
         }
         sectionsInfo.sections = finalSectionList.toArray(new IntSection[0]);
@@ -189,9 +189,9 @@ public class BitSorterUtils {
                 LongSection sSection = sSections[j];
                 finalSectionList.add(sSection);
                 sectionsInfo.totalLength += sSection.length;
-                if (sSection.length > sectionsInfo.maxLength) {
-                    sectionsInfo.maxLength = sSection.length;
-                }
+//                if (sSection.length > sectionsInfo.maxLength) {
+//                    sectionsInfo.maxLength = sSection.length;
+//                }
             }
         }
         sectionsInfo.sections = finalSectionList.toArray(new LongSection[0]);

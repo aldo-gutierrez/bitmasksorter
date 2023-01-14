@@ -79,50 +79,48 @@ public class FloatSorterUtils {
         return left;
     }
 
-    public static void partitionStableLastBits(final float[] array, final int start, final IntSection section, int[] leftX, final float[] aux, int startAux, int n) {
+    public static void partitionStableLastBits(final float[] array, final int start, final IntSection section, final float[] aux, int startAux, int n) {
         final int mask = section.sortMask;
         final int end = start + n;
         final int[] count = new int[1 << section.length];
         for (int i = start; i < end; i++) {
             count[Float.floatToRawIntBits(array[i]) & mask]++;
         }
-        int il1 = 0;
         int cLength = count.length;
-        for (int i = 1; i < cLength; i++, il1++) {
-            leftX[i] = leftX[il1] + count[il1];
+        for (int i = 0, sum = 0; i < cLength; i++) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
         }
         for (int i = start; i < end; i++) {
             float element = array[i];
             int elementM = Float.floatToRawIntBits(element);
-            int elementShiftMasked = elementM & mask;
-            aux[leftX[elementShiftMasked] + startAux] = element;
-            leftX[elementShiftMasked]++;
+            aux[count[elementM & mask]++ + startAux] = element;
         }
     }
 
-    public static void partitionStableLastBits(final float[] array, final int start, final IntSection section, int[] leftX, final float[] aux, int n) {
+    public static void partitionStableLastBits(final float[] array, final int start, final IntSection section, final float[] aux, int n) {
         final int mask = section.sortMask;
         final int end = start + n;
         final int[] count = new int[1 << section.length];
         for (int i = start; i < end; i++) {
             count[Float.floatToRawIntBits(array[i]) & mask]++;
         }
-        int il1 = 0;
         int cLength = count.length;
-        for (int i = 1; i < cLength; i++, il1++) {
-            leftX[i] = leftX[il1] + count[il1];
+        for (int i = 0, sum = 0; i < cLength; i++) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
         }
         for (int i = start; i < end; i++) {
             float element = array[i];
             int elementM = Float.floatToRawIntBits(element);
-            int elementShiftMasked = elementM & mask;
-            aux[leftX[elementShiftMasked]] = element;
-            leftX[elementShiftMasked]++;
+            aux[count[elementM & mask]++] = element;
         }
     }
 
 
-    public static void partitionStableOneGroupBits(final float[] array, final int start, final IntSection section, final int[] leftX, final float[] aux, int startAux, int n) {
+    public static void partitionStableOneGroupBits(final float[] array, final int start, final IntSection section, final float[] aux, int startAux, int n) {
         final int mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
@@ -130,21 +128,20 @@ public class FloatSorterUtils {
         for (int i = start; i < end; i++) {
             count[(Float.floatToRawIntBits(array[i]) & mask) >>> shiftRight]++;
         }
-        int il1 = 0;
         int cLength = count.length;
-        for (int i = 1; i < cLength; i++, il1++) {
-            leftX[i] = leftX[il1] + count[il1];
+        for (int i = 0, sum = 0; i < cLength; i++) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
         }
         for (int i = start; i < end; i++) {
             float element = array[i];
             int elementM = Float.floatToRawIntBits(element);
-            int elementShiftMasked = (elementM & mask) >>> shiftRight;
-            aux[leftX[elementShiftMasked] + startAux] = element;
-            leftX[elementShiftMasked]++;
+            aux[count[(elementM & mask) >>> shiftRight]++ + startAux] = element;
         }
     }
 
-    public static void partitionStableOneGroupBits(final float[] array, final int start, final IntSection section, final int[] leftX, final float[] aux, int n) {
+    public static void partitionStableOneGroupBits(final float[] array, final int start, final IntSection section, final float[] aux, int n) {
         final int mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
@@ -152,17 +149,16 @@ public class FloatSorterUtils {
         for (int i = start; i < end; i++) {
             count[(Float.floatToRawIntBits(array[i]) & mask) >>> shiftRight]++;
         }
-        int il1 = 0;
         int cLength = count.length;
-        for (int i = 1; i < cLength; i++, il1++) {
-            leftX[i] = leftX[il1] + count[il1];
+        for (int i = 0, sum = 0; i < cLength; i++) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
         }
         for (int i = start; i < end; i++) {
             float element = array[i];
             int elementM = Float.floatToRawIntBits(element);
-            int elementShiftMasked = (elementM & mask) >>> shiftRight;
-            aux[leftX[elementShiftMasked]] = element;
-            leftX[elementShiftMasked]++;
+            aux[count[(elementM & mask) >>> shiftRight]++] = element;
         }
     }
 

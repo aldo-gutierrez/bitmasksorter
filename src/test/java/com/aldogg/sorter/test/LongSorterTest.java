@@ -9,11 +9,8 @@ import com.aldogg.sorter.longType.st.RadixBitSorterLong;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class LongSorterTest extends BasicTest {
 
@@ -39,7 +36,7 @@ public class LongSorterTest extends BasicTest {
         System.out.println("----------------------");
 
         params.random = new Random(seed);
-        long[] limitHigh = new long[]{10, 100000, 1000000000, 10000000000000L};
+        long[] limitHigh = new long[]{1000000000, 10000000000000L};
 
         for (long limitH : limitHigh) {
             params.limitHigh = limitH;

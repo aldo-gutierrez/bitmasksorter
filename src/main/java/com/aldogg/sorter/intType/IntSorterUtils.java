@@ -6,6 +6,7 @@ import com.aldogg.sorter.IntSectionsInfo;
 
 import static com.aldogg.sorter.BitSorterUtils.getKeySN;
 import static com.aldogg.sorter.intType.st.RadixBitSorterInt.radixSort;
+import static java.lang.Integer.MIN_VALUE;
 
 public class IntSorterUtils {
 
@@ -96,48 +97,47 @@ public class IntSorterUtils {
     }
 
 
-    public static void partitionStableLastBits(final int[] array, final int start, final IntSection section, int[] leftX, final int[] aux, int startAux, int n) {
+    public static void partitionStableLastBits(final int[] array, final int start, final IntSection section, final int[] aux, final int startAux, final int n) {
         final int mask = section.sortMask;
         final int end = start + n;
         final int[] count = new int[1 << section.length];
         for (int i = start; i < end; i++) {
             count[array[i] & mask]++;
         }
-        int il1 = 0;
         int cLength = count.length;
-        for (int i = 1; i < cLength; i++, il1++) {
-            leftX[i] = leftX[il1] + count[il1];
+        for (int i = 0, sum = 0; i < cLength; i++) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
         }
         for (int i = start; i < end; i++) {
             int element = array[i];
-            int elementShiftMasked = element & mask;
-            aux[leftX[elementShiftMasked] + startAux] = element;
-            leftX[elementShiftMasked]++;
+            aux[count[element & mask]++ + startAux] = element;
         }
     }
 
-    public static void partitionStableLastBits(final int[] array, final int start, final IntSection section, int[] leftX, final int[] aux, int n) {
+    public static int[] partitionStableLastBits(final int[] array, final int start, final IntSection section, final int[] aux, final int n) {
         final int mask = section.sortMask;
         final int end = start + n;
         final int[] count = new int[1 << section.length];
         for (int i = start; i < end; i++) {
             count[array[i] & mask]++;
         }
-        int il1 = 0;
         int cLength = count.length;
-        for (int i = 1; i < cLength; i++, il1++) {
-            leftX[i] = leftX[il1] + count[il1];
+        for (int i = 0, sum = 0; i < cLength; i++) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
         }
         for (int i = start; i < end; i++) {
             int element = array[i];
-            int elementShiftMasked = element & mask;
-            aux[leftX[elementShiftMasked]] = element;
-            leftX[elementShiftMasked]++;
+            aux[count[element & mask]++] = element;
         }
+        return count;
     }
 
 
-    public static void partitionStableOneGroupBits(final int[] array, final int start, final IntSection section, final int[] leftX, final int[] aux, int startAux, int n) {
+    public static int[] partitionStableOneGroupBits(final int[] array, final int start, final IntSection section, final int[] aux, int startAux, int n) {
         final int mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
@@ -145,20 +145,20 @@ public class IntSorterUtils {
         for (int i = start; i < end; i++) {
             count[(array[i] & mask) >>> shiftRight]++;
         }
-        int il1 = 0;
         int cLength = count.length;
-        for (int i = 1; i < cLength; i++, il1++) {
-            leftX[i] = leftX[il1] + count[il1];
+        for (int i = 0, sum = 0; i < cLength; i++) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
         }
         for (int i = start; i < end; i++) {
             int element = array[i];
-            int elementShiftMasked = (element & mask) >>> shiftRight;
-            aux[leftX[elementShiftMasked] + startAux] = element;
-            leftX[elementShiftMasked]++;
+            aux[count[(element & mask) >>> shiftRight]++ + startAux] = element;
         }
+        return count;
     }
 
-    public static void partitionStableOneGroupBits(final int[] array, final int start, final IntSection section, final int[] leftX, final int[] aux, int n) {
+    public static int[] partitionStableOneGroupBits(final int[] array, final int start, final IntSection section, final int[] aux, int n) {
         final int mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
@@ -166,61 +166,58 @@ public class IntSorterUtils {
         for (int i = start; i < end; i++) {
             count[(array[i] & mask) >>> shiftRight]++;
         }
-        int il1 = 0;
         int cLength = count.length;
-        for (int i = 1; i < cLength; i++, il1++) {
-            leftX[i] = leftX[il1] + count[il1];
+        for (int i = 0, sum = 0; i < cLength; i++) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
         }
         for (int i = start; i < end; i++) {
             int element = array[i];
-            int elementShiftMasked = (element & mask) >>> shiftRight;
-            aux[leftX[elementShiftMasked]] = element;
-            leftX[elementShiftMasked]++;
+            aux[count[(element & mask) >>> shiftRight]++] = element;
         }
+        return count;
     }
 
-    public static void partitionStableNGroupBits(final int[] array, final int start, IntSectionsInfo sectionsInfo, final int[] leftX, final int[] aux, int startAux, int n) {
+    public static void partitionStableNGroupBits(final int[] array, final int start, IntSectionsInfo sectionsInfo, final int[] aux, int startAux, int n) {
         final IntSection[] sections = sectionsInfo.sections;
-        final int[] count = new int[1 << sectionsInfo.maxLength];
+        final int[] count = new int[1 << sectionsInfo.totalLength];
         final int end = start + n;
         for (int i = start; i < end; i++) {
             int element = array[i];
-            int elementMaskedShifted = getKeySN(element, sections);
-            count[elementMaskedShifted]++;
+            count[getKeySN(element, sections)]++;
         }
-        int il1 = 0;
         int cLength = count.length;
-        for (int i = 1; i < cLength; i++, il1++) {
-            leftX[i] = leftX[il1] + count[il1];
+        for (int i = 0, sum = 0; i < cLength; i++) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
         }
         for (int i = start; i < end; i++) {
             int element = array[i];
-            int elementMaskedShifted = getKeySN(element, sections);
-            aux[leftX[elementMaskedShifted] + startAux] = element;
-            leftX[elementMaskedShifted]++;
+            aux[count[getKeySN(element, sections)]++ + startAux] = element;
         }
     }
 
-    public static void partitionStableNGroupBits(final int[] array, final int start, IntSectionsInfo sectionsInfo, final int[] leftX, final int[] aux, int n) {
-        final IntSection[] sections = sectionsInfo.sections;
-        final int[] count = new int[1 << sectionsInfo.maxLength];
-        final int end = start + n;
+    public static int[] partitionStableNGroupBits(final int[] array, final int start, IntSectionsInfo sectionsInfo, final int[] aux, int n) {
+        IntSection[] sections = sectionsInfo.sections;
+        int[] count = new int[1 << sectionsInfo.totalLength];
+        int end = start + n;
         for (int i = start; i < end; i++) {
             int element = array[i];
-            int elementMaskedShifted = getKeySN(element, sections);
-            count[elementMaskedShifted]++;
+            count[getKeySN(element, sections)]++;
         }
-        int il1 = 0;
         int cLength = count.length;
-        for (int i = 1; i < cLength; i++, il1++) {
-            leftX[i] = leftX[il1] + count[il1];
+        for (int i = 0, sum = 0; i < cLength; i++) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
         }
         for (int i = start; i < end; i++) {
             int element = array[i];
-            int elementMaskedShifted = getKeySN(element, sections);
-            aux[leftX[elementMaskedShifted]] = element;
-            leftX[elementMaskedShifted]++;
+            aux[count[getKeySN(element, sections)]++] = element;
         }
+        return count;
     }
 
 
@@ -301,7 +298,7 @@ public class IntSorterUtils {
             i++;
             for (; i < end; i++)  {
                 int i2 = array[i];
-                if (i1 + 0x80000000 > i2 + 0x80000000) {
+                if (i1 + MIN_VALUE > i2 + MIN_VALUE) {
                     break;
                 }
                 i1 = i2;
@@ -315,7 +312,7 @@ public class IntSorterUtils {
             i++;
             for (; i < end; i++)  {
                 int i2 = array[i];
-                if (i1 + 0x80000000 < i2 + 0x80000000) {
+                if (i1 + MIN_VALUE < i2 + MIN_VALUE) {
                     break;
                 }
                 i1 = i2;

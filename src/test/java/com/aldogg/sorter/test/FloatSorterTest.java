@@ -9,11 +9,8 @@ import com.aldogg.sorter.generators.GeneratorParams;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class FloatSorterTest extends BasicTest {
 

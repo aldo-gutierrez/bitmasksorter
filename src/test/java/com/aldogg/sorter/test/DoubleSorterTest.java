@@ -12,14 +12,12 @@ import com.aldogg.sorter.intType.st.JavaSorterInt;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.function.Function;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DoubleSorterTest extends BasicTest {
@@ -33,7 +31,7 @@ public class DoubleSorterTest extends BasicTest {
 
         TestSortResults testSortResults;
 
-        //heatup
+        //heat up
         testSortResults = new TestSortResults(sorters.length);
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(seed);
@@ -84,7 +82,7 @@ public class DoubleSorterTest extends BasicTest {
 
         TestSortResults testSortResults;
 
-        //heatup
+        //heat up
         testSortResults = new TestSortResults(sorters.length);
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(seed);
@@ -136,7 +134,7 @@ public class DoubleSorterTest extends BasicTest {
 
         TestSortResults testSortResults;
 
-        //heatup
+        //heat up
         testSortResults = new TestSortResults(sorters.length);
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(seed);
@@ -208,7 +206,7 @@ public class DoubleSorterTest extends BasicTest {
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
 
-        //heatup
+        //heat up
         testSortResults = new TestSortResults(sorters.length);
         testSpeedObject(sorters, comparator, HEAT_ITERATIONS, params, testSortResults, null);
         System.out.println("----------------------");

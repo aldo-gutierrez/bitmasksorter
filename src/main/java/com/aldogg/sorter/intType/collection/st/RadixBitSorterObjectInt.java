@@ -109,9 +109,7 @@ public class RadixBitSorterObjectInt implements ObjectIntSorter {
             partitionStable(oArray, array, start, end, finalSectionList[0].sortMask, oAux, aux);
             return;
         }
-        int maxSectionLength = sectionsInfo.maxLength;
         int n = end - start;
-        int[] leftX = new int[1 << maxSectionLength];
         int startAux = 0;
 //        int ops = 0;
 //        int[] arrayOrig = array;
@@ -119,11 +117,10 @@ public class RadixBitSorterObjectInt implements ObjectIntSorter {
 //        int startOrig = start;
 
         for (IntSection section : finalSectionList) {
-            leftX[0] = 0;
             if (!section.isSectionAtEnd()) {
-                partitionStableGroupBits(oArray, array, start, section, leftX, oAux, aux, startAux, n);
+                partitionStableGroupBits(oArray, array, start, section, oAux, aux, startAux, n);
             } else {
-                partitionStableLastBits(oArray, array, start, section, leftX, oAux, aux, startAux, n);
+                partitionStableLastBits(oArray, array, start, section, oAux, aux, startAux, n);
             }
 
 //            int[] tempArray = array;

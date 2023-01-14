@@ -13,7 +13,7 @@ import static com.aldogg.sorter.intType.experimental.IntSorterUtils2.partitionSt
 
 public class BugTest {
     @Test
-    public void testPartitionStable() throws IOException {
+    public void testPartitionStable() {
         int[] ori2 = new int[]{2, 0, 0, 0, 1, 1, 1};
         int[] target = new int[]{2, 0, 0, 0, 1, 1, 1};
         partitionStableOneThirdMemory(ori2, 1, 7, 1);

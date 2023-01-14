@@ -51,26 +51,23 @@ public class RadixBitSorterDouble extends DoubleBitMaskSorter {
             return;
         }
 
-        int maxSectionLength = sectionsInfo.maxLength;
         int n = end - start;
-        int[] leftX = new int[1 << maxSectionLength];
         int startAux = 0;
         int ops = 0;
         double[] arrayOrig = array;
         int startOrig = start;
         for (LongSection section : finalSectionList) {
-            leftX[0] = 0;
             if (!section.isSectionAtEnd()) {
                 if (startAux == 0) {
-                    partitionStableOneGroupBits(array, start, section, leftX, aux, n);
+                    partitionStableOneGroupBits(array, start, section, aux, n);
                 } else {
-                    partitionStableOneGroupBits(array, start, section, leftX, aux, startAux, n);
+                    partitionStableOneGroupBits(array, start, section, aux, startAux, n);
                 }
             } else {
                 if (startAux == 0) {
-                    partitionStableLastBits(array, start, section, leftX, aux, n);
+                    partitionStableLastBits(array, start, section, aux, n);
                 } else {
-                    partitionStableLastBits(array, start, section, leftX, aux, startAux, n);
+                    partitionStableLastBits(array, start, section, aux, startAux, n);
                 }
             }
 

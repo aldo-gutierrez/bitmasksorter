@@ -17,7 +17,7 @@ public class PartitionTest {
     }
 
     @Test
-    public void testPartitionStable() throws IOException {
+    public void testPartitionStable() {
         List<PartitionMethod> partitionMethods = new ArrayList<>();
         partitionMethods.add(IntSorterUtils3::partitionStableRecursive);
         partitionMethods.add(IntSorterUtils2::partitionStableOneThirdMemory);

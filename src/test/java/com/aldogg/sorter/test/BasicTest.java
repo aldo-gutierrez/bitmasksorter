@@ -20,7 +20,6 @@ import java.io.*;
 import java.util.Random;
 
 import static com.aldogg.sorter.intType.st.RadixBitSorterInt.radixSort;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class BasicTest extends BaseTest {
     @Test

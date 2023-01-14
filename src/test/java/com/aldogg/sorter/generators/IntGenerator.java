@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
- * https://github.com/Morwenn/vergesort/blob/master/bench/bench.cpp
+ * <a href="https://github.com/Morwenn/vergesort/blob/master/bench/bench.cpp">...</a>
  */
 public class IntGenerator {
     private static final ConcurrentHashMap<String, Function<GeneratorParams, int[]>> functions = new ConcurrentHashMap<>();

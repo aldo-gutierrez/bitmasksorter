@@ -117,7 +117,7 @@ public class ObjectLongSorterUtils {
         return left;
     }
 
-    public static void partitionStableLastBits(final Object[] oArray, final long[] array, final int start, final LongSection section, int[] leftX,
+    public static void partitionStableLastBits(final Object[] oArray, final long[] array, final int start, final LongSection section,
                                                final Object[] oAux, final long[] aux, int startAux, final int n) {
         long mask = section.sortMask;
         int end = start + n;
@@ -125,24 +125,25 @@ public class ObjectLongSorterUtils {
         for (int i = start; i < end; i++) {
             count[(int) (array[i] & mask)]++;
         }
-        int il1 = 0;
         int cLength = count.length;
-        for (int i = 1; i < cLength; i++, il1++) {
-            leftX[i] = leftX[il1] + count[il1];
+        for (int i = 0, sum = 0; i < cLength; i++) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
         }
         for (int i = start; i < end; i++) {
             long element = array[i];
             int elementShiftMasked = (int) (element & mask);
-            int auxIndex = leftX[elementShiftMasked] + startAux;
+            int auxIndex = count[elementShiftMasked] + startAux;
             aux[auxIndex] = element;
             oAux[auxIndex] = oArray[i];
-            leftX[elementShiftMasked]++;
+            count[elementShiftMasked]++;
         }
         System.arraycopy(aux, startAux, array, start, n);
         System.arraycopy(oAux, startAux, oArray, start, n);
     }
 
-    public static void partitionStableGroupBits(final Object[] oArray, final long[] array, final int start, final LongSection section, int[] leftX,
+    public static void partitionStableGroupBits(final Object[] oArray, final long[] array, final int start, final LongSection section,
                                                 final Object[] oAux, final long[] aux, int startAux, int n) {
         long mask = section.sortMask;
         int shiftRight = section.shiftRight;
@@ -151,18 +152,19 @@ public class ObjectLongSorterUtils {
         for (int i = start; i < end; i++) {
             count[(int) ((array[i] & mask) >>> shiftRight)]++;
         }
-        int il1 = 0;
         int cLength = count.length;
-        for (int i = 1; i < cLength; i++, il1++) {
-            leftX[i] = leftX[il1] + count[il1];
+        for (int i = 0, sum = 0; i < cLength; i++) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
         }
         for (int i = start; i < end; i++) {
             long element = array[i];
             int elementShiftMasked = (int) ((element & mask) >>> shiftRight);
-            int auxIndex = leftX[elementShiftMasked] + startAux;
+            int auxIndex = count[elementShiftMasked] + startAux;
             aux[auxIndex] = element;
             oAux[auxIndex] = oArray[i];
-            leftX[elementShiftMasked]++;
+            count[elementShiftMasked]++;
         }
         System.arraycopy(aux, startAux, array, start, n);
         System.arraycopy(oAux, startAux, oArray, start, n);

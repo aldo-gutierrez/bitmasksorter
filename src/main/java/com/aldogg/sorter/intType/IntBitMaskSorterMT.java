@@ -7,7 +7,6 @@ import com.aldogg.sorter.SortingNetworks;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.MaskInfoInt.getMaskAsArray;
 import static com.aldogg.sorter.intType.IntSorterUtils.listIsOrderedSigned;
 import static com.aldogg.sorter.intType.IntSorterUtils.listIsOrderedUnSigned;
