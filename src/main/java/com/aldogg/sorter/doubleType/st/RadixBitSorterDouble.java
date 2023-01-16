@@ -7,12 +7,13 @@ import com.aldogg.sorter.MaskInfoLong;
 import com.aldogg.sorter.doubleType.DoubleBitMaskSorter;
 
 import static com.aldogg.sorter.doubleType.DoubleSorterUtils.*;
+import static com.aldogg.sorter.longType.LongSorter.LONG_SIGN_BIT_POS;
 
 public class RadixBitSorterDouble extends DoubleBitMaskSorter {
 
     @Override
     public void sort(double[] array, int start, int end, int[] kList) {
-        if (kList[0] == 63) { //there are negative numbers and positive numbers
+        if (kList[0] == LONG_SIGN_BIT_POS) { //there are negative numbers and positive numbers
             MaskInfoLong maskInfo;
             long mask;
             long sortMask = 1L << kList[0];

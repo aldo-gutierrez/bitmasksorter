@@ -1,5 +1,7 @@
 package com.aldogg.sorter.test;
 
+import com.aldogg.sorter.byteType.ByteSorter;
+import com.aldogg.sorter.byteType.st.JavaSorterByte;
 import com.aldogg.sorter.doubleType.DoubleSorter;
 import com.aldogg.sorter.doubleType.st.JavaSorterDouble;
 import com.aldogg.sorter.floatType.FloatSorter;
@@ -22,7 +24,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class BaseTest {
-    boolean validateResult = true;
+    final boolean validateResult = true;
 
     public static final long seed = 1234567890;
     public static final int ITERATIONS = 20;
@@ -102,10 +104,10 @@ public class BaseTest {
             int[] list = function.apply(params);
             testSort(list, sorters, testSortResults);
         }
-        printTestSpeed(params, testSortResults, sorters, writer);
+        printTestSpeed(sorters, params, testSortResults, writer);
     }
 
-    protected void printTestSpeed(GeneratorParams params, TestSortResults testSortResults, Sorter[] sorters, Writer writer) throws IOException {
+    protected void printTestSpeed(Sorter[] sorters, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
         int size = params.size;
         int limitLow = params.limitLow;
         long limitHigh = params.limitHigh;
@@ -230,7 +232,7 @@ public class BaseTest {
             long[] list = function.apply(params);
             testSort(list, sorters, testSortResults);
         }
-        printTestSpeed(params, testSortResults, sorters, writer);
+        printTestSpeed(sorters, params, testSortResults, writer);
     }
 
 
@@ -293,7 +295,7 @@ public class BaseTest {
             float[] list = function.apply(params);
             testSort(list, sorters, testSortResults);
         }
-        printTestSpeed(params, testSortResults, sorters, writer);
+        printTestSpeed(sorters, params, testSortResults, writer);
     }
 
     public void testSort(double[] list, DoubleSorter[] sorters, TestSortResults testSortResults) {
@@ -355,7 +357,74 @@ public class BaseTest {
             double[] list = function.apply(params);
             testSort(list, sorters, testSortResults);
         }
-        printTestSpeed(params, testSortResults, sorters, writer);
+        printTestSpeed(sorters, params, testSortResults, writer);
+    }
+
+    ////
+    public void testSort(byte[] list, ByteSorter[] sorters, TestSortResults testSortResults) {
+        ByteSorter base = new JavaSorterByte();
+        testSort(list, sorters, testSortResults, base);
+    }
+
+    public void testSort(byte[] list, ByteSorter[] sorters, TestSortResults testSortResults, ByteSorter baseSorter) {
+        byte[] baseListSorted = null;
+        if (validateResult) {
+            baseListSorted = Arrays.copyOf(list, list.length);
+        }
+        long startBase = System.nanoTime();
+        if (validateResult) {
+            baseSorter.sort(baseListSorted);
+        }
+        long elapsedBase = System.nanoTime() - startBase;
+        performSort(list, sorters, testSortResults, baseListSorted, elapsedBase, baseSorter.getClass());
+    }
+
+    private void performSort(byte[] list, ByteSorter[] sorters, TestSortResults testSortResults, byte[] baseListSorted, long elapsedBase, Class baseClass) {
+        for (int i = 0; i < sorters.length; i++) {
+            ByteSorter sorter = sorters[i];
+            if (validateResult && baseClass.isInstance(sorter)) {
+                testSortResults.set(i, elapsedBase);
+            } else {
+                long start = System.nanoTime();
+                byte[] listAux = Arrays.copyOf(list, list.length);
+                sorter.sort(listAux);
+                long elapsed = System.nanoTime() - start;
+                try {
+                    if (validateResult) {
+                        assertArrayEquals(baseListSorted, listAux);
+                    }
+                    testSortResults.set(i, elapsed);
+                } catch (Throwable ex) {
+                    testSortResults.set(i, 0);
+                    if (list.length <= 10000) {
+                        System.err.println("Sorter " + sorter.name());
+                        String orig = Arrays.toString(list);
+                        System.err.println("List orig: " + orig);
+                        String failed = Arrays.toString(listAux);
+                        System.err.println("List fail: " + failed);
+                        String ok = Arrays.toString(baseListSorted);
+                        System.err.println("List ok: " + ok);
+                    } else {
+                        System.err.println("Sorter " + sorter.name());
+                        System.err.println("List order is not OK ");
+                    }
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void testSpeed(ByteSorter[] sorters, int iterations, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
+        Function<GeneratorParams, int[]> function = IntGenerator.getGFunction(params.function);
+        for (int iter = 0; iter < iterations; iter++) {
+            int[] listInts = function.apply(params);
+            byte[] list = new byte[listInts.length];
+            for (int i=0; i<listInts.length; i++) {
+               list[i] = (byte) listInts[i];
+            }
+            testSort(list, sorters, testSortResults);
+        }
+        printTestSpeed(sorters, params, testSortResults, writer);
     }
 
 }

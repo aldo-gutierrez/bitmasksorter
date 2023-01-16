@@ -7,6 +7,7 @@ import com.aldogg.sorter.floatType.collection.ObjectFloatSorter;
 
 import static com.aldogg.sorter.floatType.FloatSorterUtils.listIsOrderedSigned;
 import static com.aldogg.sorter.floatType.collection.ObjectFloatSorterUtils.*;
+import static com.aldogg.sorter.intType.IntSorter.SIGN_BIT_POS;
 
 public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
 
@@ -49,7 +50,7 @@ public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
     }
 
     public void sort(Object[] oArray, float[] array, int start, int end, int[] kList) {
-        if (kList[0] == 31) { //there are negative numbers and positive numbers
+        if (kList[0] == SIGN_BIT_POS) { //there are negative numbers and positive numbers
             MaskInfoInt maskInfo;
             int mask;
             int sortMask = 1 << kList[0];

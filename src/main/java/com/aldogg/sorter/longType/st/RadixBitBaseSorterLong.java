@@ -12,7 +12,7 @@ public class RadixBitBaseSorterLong extends LongBitMaskSorter {
         if (kList.length == 0) {
             return;
         }
-        if (kList[0] == 63) { //there are negative numbers and positive numbers
+        if (kList[0] == LONG_SIGN_BIT_POS) { //there are negative numbers and positive numbers
             MaskInfoLong maskInfo;
             long mask;
             long sortMask = 1L << kList[0];

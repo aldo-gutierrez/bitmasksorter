@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.aldogg.sorter.longType.LongSorter.LONG_SIGN_BIT_POS;
+
 public class MaskInfoLong {
     long p_mask;
     long  i_mask;
@@ -60,7 +62,7 @@ public class MaskInfoLong {
 
     public static int[] getMaskAsArray(final long mask) {
         List<Integer> list = new ArrayList<>();
-        for (int i = 63; i >= 0; i--) {
+        for (int i = LONG_SIGN_BIT_POS; i >= 0; i--) {
             if (((mask >> i) & 1) == 1) {
                 list.add(i);
             }
@@ -70,6 +72,15 @@ public class MaskInfoLong {
             res[i] = list.get(i);
         }
         return res;
+    }
+
+    public static long getMaskLastBits(final int[] kList, final int kIndex) {
+        long mask = 0;
+        for (int i = kIndex; i < kList.length; i++) {
+            int k = kList[i];
+            mask = mask | 1L << k;
+        }
+        return mask;
     }
 
     public static long getMaskRangeBits(final int kIndexStart, final int kIndexEnd) {

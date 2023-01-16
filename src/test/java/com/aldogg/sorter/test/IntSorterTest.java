@@ -327,36 +327,36 @@ public class IntSorterTest extends BaseTest {
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(seed);
         params.size = 80000;
-        params.limitLow = Integer.MAX_VALUE - 1000;
-        params.limitHigh = ((long) Integer.MAX_VALUE) + 2000L;
+        params.limitLow = -1000;
+        params.limitHigh = 1000L;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
 
         //heatup
         testSortResults = new TestSortResults(sorters.length);
-        testSpeedUnsignedInt(HEAT_ITERATIONS, params, testSortResults, sorters, null);
+        testSpeedUnsigned(sorters, HEAT_ITERATIONS, params, testSortResults, null);
 
         params.random = new Random(seed);
         System.out.println("----------------------");
         {
             testSortResults = new TestSortResults(sorters.length);
             params.size = 10000;
-            testSpeedUnsignedInt(ITERATIONS, params, testSortResults, sorters, writer);
+            testSpeedUnsigned(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 100000;
-            testSpeedUnsignedInt(ITERATIONS, params, testSortResults, sorters, writer);
+            testSpeedUnsigned(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 1000000;
-            testSpeedUnsignedInt(ITERATIONS, params, testSortResults, sorters, writer);
+            testSpeedUnsigned(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 10000000;
-            testSpeedUnsignedInt(ITERATIONS, params, testSortResults, sorters, writer);
+            testSpeedUnsigned(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 40000000;
-            testSpeedUnsignedInt(ITERATIONS, params, testSortResults, sorters, writer);
+            testSpeedUnsigned(sorters, ITERATIONS, params, testSortResults, writer);
 
             System.out.println("----------------------");
         }
@@ -379,30 +379,30 @@ public class IntSorterTest extends BaseTest {
         params.random = new Random(seed);
         params.size = 10000;
 
-        testSpeedIncDec(HEAT_ITERATIONS, params, testSortResults, sorters, writer);
+        testSpeedIncDec(sorters, HEAT_ITERATIONS, params, testSortResults, writer);
 
         params.random = new Random(seed);
         System.out.println("----------------------");
         {
             testSortResults = new TestSortResults(sorters.length);
             params.size = 10000;
-            testSpeedIncDec(ITERATIONS, params, testSortResults, sorters, writer);
+            testSpeedIncDec(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 100000;
-            testSpeedIncDec(ITERATIONS, params, testSortResults, sorters, writer);
+            testSpeedIncDec(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 1000000;
-            testSpeedIncDec(ITERATIONS, params, testSortResults, sorters, writer);
+            testSpeedIncDec(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 10000000;
-            testSpeedIncDec(ITERATIONS, params, testSortResults, sorters, writer);
+            testSpeedIncDec(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 40000000;
-            testSpeedIncDec(ITERATIONS, params, testSortResults, sorters, writer);
+            testSpeedIncDec(sorters, ITERATIONS, params, testSortResults, writer);
 
             System.out.println("----------------------");
         }
@@ -411,7 +411,7 @@ public class IntSorterTest extends BaseTest {
     }
 
 
-    public void testSpeedIncDec(int iterations, GeneratorParams params, TestSortResults testSortResults, IntSorter[] sorters, Writer writer) throws IOException {
+    public void testSpeedIncDec(IntSorter[] sorters, int iterations, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
         Random random = new Random(seed);
         for (int iter = 0; iter < iterations; iter++) {
             int type = random.nextInt(3);
@@ -421,11 +421,11 @@ public class IntSorterTest extends BaseTest {
             int[] list = gFunction.apply(params);
             testSort(list, sorters, testSortResults);
         }
-        printTestSpeed(params, testSortResults, sorters, writer);
+        printTestSpeed(sorters, params, testSortResults, writer);
     }
 
 
-    private void testSpeedUnsignedInt(int iterations, GeneratorParams params, TestSortResults testSortResults, IntSorter[] sorters, Writer writer) throws IOException {
+    private void testSpeedUnsigned(IntSorter[] sorters, int iterations, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
         IntSorter base = new RadixByteSorterInt();
         base.setUnsigned(true);
         Function<GeneratorParams, int[]> function = IntGenerator.getGFunction(params.function);
@@ -433,7 +433,7 @@ public class IntSorterTest extends BaseTest {
             int[] list = function.apply(params);
             testSort(list, sorters, testSortResults, base);
         }
-        printTestSpeed(params, testSortResults, sorters, writer);
+        printTestSpeed(sorters, params, testSortResults, writer);
     }
 
     private void testSpeedObject(ObjectIntSorter[] sorters, IntComparator comparator, int iterations, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
@@ -447,7 +447,7 @@ public class IntSorterTest extends BaseTest {
             }
             testObjectSort(sorters, comparator, list, testSortResults);
         }
-        printTestSpeed(params, testSortResults, sorters, writer);
+        printTestSpeed(sorters, params, testSortResults, writer);
     }
 
     private void testObjectSort(ObjectIntSorter[] sorters, IntComparator comparator, Object[] list, TestSortResults testSortResults) {

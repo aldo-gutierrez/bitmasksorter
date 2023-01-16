@@ -13,7 +13,7 @@ public class RadixBitBaseSorterInt extends IntBitMaskSorter {
         if (kList.length == 0) {
             return;
         }
-        if (kList[0] == 31) { //there are negative numbers and positive numbers
+        if (kList[0] == SIGN_BIT_POS) { //there are negative numbers and positive numbers
             MaskInfoInt maskInfo;
             int mask;
             int sortMask = 1 << kList[0];

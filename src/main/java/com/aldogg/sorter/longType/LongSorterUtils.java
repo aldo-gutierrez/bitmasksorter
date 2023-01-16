@@ -119,7 +119,7 @@ public class LongSorterUtils {
     }
 
 
-    public static void partitionStableOneGroupBits(final long[] array, final int start, final LongSection section, final long[] aux, int startAux, int n) {
+    public static int[] partitionStableOneGroupBits(final long[] array, final int start, final LongSection section, final long[] aux, int startAux, int n) {
         final long mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
@@ -137,9 +137,10 @@ public class LongSorterUtils {
             long element = array[i];
             aux[count[(int) ((element & mask) >>> shiftRight)]++ + startAux] = element;
         }
+        return count;
     }
 
-    public static void partitionStableOneGroupBits(final long[] array, final int start, final LongSection section, final long[] aux, int n) {
+    public static int[] partitionStableOneGroupBits(final long[] array, final int start, final LongSection section, final long[] aux, int n) {
         final long mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
@@ -157,6 +158,7 @@ public class LongSorterUtils {
             long element = array[i];
             aux[count[(int) ((element & mask) >>> shiftRight)]++] = element;
         }
+        return count;
     }
 
     public static void reverse(final long[] array, final int start, final int end) {

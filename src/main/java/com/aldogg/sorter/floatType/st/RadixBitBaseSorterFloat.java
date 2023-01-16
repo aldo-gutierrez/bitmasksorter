@@ -5,6 +5,7 @@ import com.aldogg.sorter.MaskInfoLong;
 import com.aldogg.sorter.floatType.FloatBitMaskSorter;
 
 import static com.aldogg.sorter.floatType.FloatSorterUtils.*;
+import static com.aldogg.sorter.intType.IntSorter.SIGN_BIT_POS;
 
 public class RadixBitBaseSorterFloat extends FloatBitMaskSorter {
 
@@ -13,7 +14,7 @@ public class RadixBitBaseSorterFloat extends FloatBitMaskSorter {
         if (kList.length == 0) {
             return;
         }
-        if (kList[0] == 31) { //there are negative numbers and positive numbers
+        if (kList[0] == SIGN_BIT_POS) { //there are negative numbers and positive numbers
             MaskInfoInt maskInfo;
             int mask;
             int sortMask = 1 << kList[0];

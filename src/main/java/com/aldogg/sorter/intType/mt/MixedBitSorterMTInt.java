@@ -22,7 +22,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {
         int maxLevel = params.getMaxThreadsBits() - 1;
-        if (kList[0] == 31) { //there are negative numbers and positive numbers
+        if (kList[0] == SIGN_BIT_POS) { //there are negative numbers and positive numbers
             int sortMask = 1 << kList[0];
             int finalLeft = isUnsigned()
                     ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)

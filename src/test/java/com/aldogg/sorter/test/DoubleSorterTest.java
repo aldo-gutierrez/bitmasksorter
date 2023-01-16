@@ -253,7 +253,7 @@ public class DoubleSorterTest extends BasicTest {
             }
             testObjectSort(sorters, comparator, list, testSortResults);
         }
-        printTestSpeed(params, testSortResults, sorters, writer);
+        printTestSpeed(sorters, params, testSortResults, writer);
     }
 
     private void testObjectSort(ObjectDoubleSorter[] sorters, DoubleComparator comparator, Object[] list, TestSortResults testSortResults) {

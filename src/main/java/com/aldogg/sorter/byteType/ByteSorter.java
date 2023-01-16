@@ -1,28 +1,27 @@
-package com.aldogg.sorter.longType;
+package com.aldogg.sorter.byteType;
 
 import com.aldogg.sorter.Sorter;
 
 import java.util.List;
 
-public interface LongSorter extends Sorter {
-
-    default void sort(long[] array) {
+public interface ByteSorter extends Sorter {
+    default void sort(byte[] array) {
         sort(array, 0, array.length);
     }
 
-    void sort(long[] array, int start, int end);
+    void sort(byte[] array, int start, int end);
 
-    default void sort(long[] array, int start, int end, int[] kList) {
+    default void sort(byte[] array, int start, int end, int[] kList) {
         throw new UnsupportedOperationException();
     }
 
-    default void sort(List<Long> list) {
+    default void sort(List<Byte> list) {
         sort(list, 0, list.size());
     }
 
-    default void sort(List<Long> list, int start, int end) {
+    default void sort(List<Byte> list, int start, int end) {
         int n = end - start;
-        long[] a = new long[n];
+        byte[] a = new byte[n];
         int j = 0;
         for (int i = start; i < end; i++, j++) {
             a[j] = list.get(i);
@@ -34,5 +33,5 @@ public interface LongSorter extends Sorter {
         }
     }
 
-    int LONG_SIGN_BIT_POS = 63;
+
 }

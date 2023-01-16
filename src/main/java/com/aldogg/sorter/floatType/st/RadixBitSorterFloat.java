@@ -7,13 +7,14 @@ import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.floatType.FloatBitMaskSorter;
 
 import static com.aldogg.sorter.floatType.FloatSorterUtils.*;
+import static com.aldogg.sorter.intType.IntSorter.SIGN_BIT_POS;
 
 
 public class RadixBitSorterFloat extends FloatBitMaskSorter {
 
     @Override
     public void sort(float[] array, int start, int end, int[] kList) {
-        if (kList[0] == 31) { //there are negative numbers and positive numbers
+        if (kList[0] == SIGN_BIT_POS) { //there are negative numbers and positive numbers
             MaskInfoInt maskInfo;
             int mask;
             int sortMask = 1 << kList[0];

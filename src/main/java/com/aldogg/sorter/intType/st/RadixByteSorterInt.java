@@ -50,7 +50,7 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
                 return;
             }
             MaskInfoInt maskParts;
-            if (kList[0] == 31 && !isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
+            if (kList[0] == SIGN_BIT_POS && !isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
                 int sortMask = 1 << kList[0];
                 int finalLeft = isUnsigned()
                         ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)

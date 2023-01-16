@@ -7,6 +7,7 @@ import com.aldogg.sorter.doubleType.collection.ObjectDoubleSorter;
 
 import static com.aldogg.sorter.doubleType.DoubleSorterUtils.listIsOrderedSigned;
 import static com.aldogg.sorter.doubleType.collection.ObjectDoubleSorterUtils.*;
+import static com.aldogg.sorter.intType.IntSorter.SIGN_BIT_POS;
 
 public class RadixBitSorterObjectDouble implements ObjectDoubleSorter {
 
@@ -49,7 +50,7 @@ public class RadixBitSorterObjectDouble implements ObjectDoubleSorter {
     }
 
     public void sort(Object[] oArray, double[] array, int start, int end, int[] kList) {
-        if (kList[0] == 31) { //there are negative numbers and positive numbers
+        if (kList[0] == SIGN_BIT_POS) { //there are negative numbers and positive numbers
             MaskInfoLong maskInfo;
             long mask;
             long sortMask = 1 << kList[0];
