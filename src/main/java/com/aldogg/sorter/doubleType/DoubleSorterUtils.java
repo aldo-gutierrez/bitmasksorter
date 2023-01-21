@@ -63,7 +63,7 @@ public class DoubleSorterUtils {
     public static int partitionStable(final double[] array, final int start, final int end, final long mask, final double[] aux) {
         int left = start;
         int right = 0;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             double element = array[i];
             long elementFM = Double.doubleToRawLongBits(array[i]);
             if ((elementFM & mask) == 0) {
@@ -81,17 +81,17 @@ public class DoubleSorterUtils {
     public static void partitionStableLastBits(final double[] array, final int start, final LongSection section, final double[] aux, int startAux, int n) {
         final long mask = section.sortMask;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[(int) ((Double.doubleToRawLongBits(array[i]) & mask))]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             double element = array[i];
             long elementM = Double.doubleToRawLongBits(element);
             aux[count[(int) (elementM & mask)]++ + startAux] = element;
@@ -101,17 +101,17 @@ public class DoubleSorterUtils {
     public static void partitionStableLastBits(final double[] array, final int start, final LongSection section, final double[] aux, int n) {
         final long mask = section.sortMask;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[(int) (Double.doubleToRawLongBits(array[i]) & mask)]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             double element = array[i];
             long elementM = Double.doubleToRawLongBits(element);
             aux[count[(int) (elementM & mask)]++] = element;
@@ -123,17 +123,17 @@ public class DoubleSorterUtils {
         final long mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[(int) ((Double.doubleToRawLongBits(array[i]) & mask) >>> shiftRight)]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             double element = array[i];
             long elementM = Double.doubleToRawLongBits(element);
             aux[count[(int) ((elementM & mask) >>> shiftRight)]++ + startAux] = element;
@@ -144,17 +144,17 @@ public class DoubleSorterUtils {
         final long mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[(int) ((Double.doubleToRawLongBits(array[i]) & mask) >>> shiftRight)]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             double element = array[i];
             long elementM = Double.doubleToRawLongBits(element);
             aux[count[(int) ((elementM & mask) >>> shiftRight)]++] = element;
@@ -166,7 +166,7 @@ public class DoubleSorterUtils {
         int length = end - start;
         int ld2 = length / 2;
         int endL1 = end - 1;
-        for (int i = 0; i < ld2; i++) {
+        for (int i = 0; i < ld2; ++i) {
             swap(array, start + i, endL1 - i);
         }
     }
@@ -180,8 +180,7 @@ public class DoubleSorterUtils {
             if (i2 != i1) {
                 break;
             }
-            i1 = i2;
-            i++;
+            ++i;
         }
         if (i == end) {
             return AnalysisResult.ALL_EQUAL;
@@ -190,8 +189,8 @@ public class DoubleSorterUtils {
         //ascending
         i1 = array[i];
         if (array[i - 1] < i1) {
-            i++;
-            for (; i < end; i++) {
+            ++i;
+            for (; i < end; ++i) {
                 double i2 = array[i];
                 if (i1 > i2) {
                     break;
@@ -204,8 +203,8 @@ public class DoubleSorterUtils {
         }
         //descending
         else {
-            i++;
-            for (; i < end; i++) {
+            ++i;
+            for (; i < end; ++i) {
                 double i2 = array[i];
                 if (i1 < i2) {
                     break;

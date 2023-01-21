@@ -13,7 +13,7 @@ public class LongSorterUtils {
         array[right] = auxS;
     }
 
-    public static int partitionNotStable(final long[] array, final  int start, final int end, final long mask) {
+    public static int partitionNotStable(final long[] array, final int start, final int end, final long mask) {
         int left = start;
         int right = end - 1;
         while (left <= right) {
@@ -66,7 +66,7 @@ public class LongSorterUtils {
     public static int partitionStable(final long[] array, final int start, final int end, final long mask, final long[] aux) {
         int left = start;
         int right = 0;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             long element = array[i];
             if ((element & mask) == 0) {
                 array[left] = element;
@@ -83,17 +83,17 @@ public class LongSorterUtils {
     public static void partitionStableLastBits(final long[] array, final int start, final LongSection section, final long[] aux, int startAux, int n) {
         final long mask = section.sortMask;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[(int) (array[i] & mask)]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             long element = array[i];
             aux[count[(int) (element & mask)]++ + startAux] = element;
         }
@@ -102,17 +102,17 @@ public class LongSorterUtils {
     public static void partitionStableLastBits(final long[] array, final int start, final LongSection section, final long[] aux, int n) {
         final long mask = section.sortMask;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[(int) (array[i] & mask)]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             long element = array[i];
             aux[count[(int) (element & mask)]++] = element;
         }
@@ -123,17 +123,17 @@ public class LongSorterUtils {
         final long mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[(int) ((array[i] & mask) >>> shiftRight)]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             long element = array[i];
             aux[count[(int) ((element & mask) >>> shiftRight)]++ + startAux] = element;
         }
@@ -144,17 +144,17 @@ public class LongSorterUtils {
         final long mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[(int) ((array[i] & mask) >>> shiftRight)]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             long element = array[i];
             aux[count[(int) ((element & mask) >>> shiftRight)]++] = element;
         }
@@ -165,7 +165,7 @@ public class LongSorterUtils {
         int length = end - start;
         int ld2 = length / 2;
         int endL1 = end - 1;
-        for (int i = 0; i < ld2; i++) {
+        for (int i = 0; i < ld2; ++i) {
             swap(array, start + i, endL1 - i);
         }
     }
@@ -178,8 +178,7 @@ public class LongSorterUtils {
             if (i2 != i1) {
                 break;
             }
-            i1 = i2;
-            i++;
+            ++i;
         }
         if (i == end) {
             return AnalysisResult.ALL_EQUAL;
@@ -188,8 +187,8 @@ public class LongSorterUtils {
         //ascending
         i1 = array[i];
         if (array[i - 1] < i1) {
-            i++;
-            for (; i < end; i++) {
+            ++i;
+            for (; i < end; ++i) {
                 long i2 = array[i];
                 if (i1 > i2) {
                     break;
@@ -202,8 +201,8 @@ public class LongSorterUtils {
         }
         //descending
         else {
-            i++;
-            for (; i < end; i++) {
+            ++i;
+            for (; i < end; ++i) {
                 long i2 = array[i];
                 if (i1 < i2) {
                     break;
@@ -225,8 +224,7 @@ public class LongSorterUtils {
             if (i2 != i1) {
                 break;
             }
-            i1 = i2;
-            i++;
+            ++i;
         }
         if (i == end) {
             return AnalysisResult.ALL_EQUAL;
@@ -235,8 +233,8 @@ public class LongSorterUtils {
         //ascending
         i1 = array[i];
         if (array[i - 1] < i1) {
-            i++;
-            for (; i < end; i++) {
+            ++i;
+            for (; i < end; ++i) {
                 long i2 = array[i];
                 if (i1 + MIN_VALUE > i2 + MIN_VALUE) {
                     break;
@@ -249,8 +247,8 @@ public class LongSorterUtils {
         }
         //descending
         else {
-            i++;
-            for (; i < end; i++) {
+            ++i;
+            for (; i < end; ++i) {
                 long i2 = array[i];
                 if (i1 + MIN_VALUE < i2 + MIN_VALUE) {
                     break;

@@ -17,10 +17,10 @@ public class IntSorterUtils {
     }
 
     /**
-     *   CPU: O(N)
-     *   MEM: O(1)
+     * CPU: O(N)
+     * MEM: O(1)
      */
-    public static int partitionNotStable(final int[] array, final  int start, final int end, final int mask) {
+    public static int partitionNotStable(final int[] array, final int start, final int end, final int mask) {
         int left = start;
         int right = end - 1;
 
@@ -46,8 +46,8 @@ public class IntSorterUtils {
     }
 
     /**
-     *   CPU: O(N)
-     *   MEM: O(1)
+     * CPU: O(N)
+     * MEM: O(1)
      */
     public static int partitionReverseNotStable(final int[] array, final int start, final int end, final int mask) {
         int left = start;
@@ -76,13 +76,13 @@ public class IntSorterUtils {
 
 
     /**
-     *  CPU: O(N), N + (0.R)*N
-     *  MEM: O(N), N
+     * CPU: O(N), N + (0.R)*N
+     * MEM: O(N), N
      */
     public static int partitionStable(final int[] array, final int start, final int end, final int mask, final int[] aux) {
         int left = start;
         int right = 0;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             int element = array[i];
             if ((element & mask) == 0) {
                 array[left] = element;
@@ -100,17 +100,17 @@ public class IntSorterUtils {
     public static void partitionStableLastBits(final int[] array, final int start, final IntSection section, final int[] aux, final int startAux, final int n) {
         final int mask = section.sortMask;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[array[i] & mask]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             int element = array[i];
             aux[count[element & mask]++ + startAux] = element;
         }
@@ -119,17 +119,17 @@ public class IntSorterUtils {
     public static int[] partitionStableLastBits(final int[] array, final int start, final IntSection section, final int[] aux, final int n) {
         final int mask = section.sortMask;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[array[i] & mask]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             int element = array[i];
             aux[count[element & mask]++] = element;
         }
@@ -141,17 +141,17 @@ public class IntSorterUtils {
         final int mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[(array[i] & mask) >>> shiftRight]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             int element = array[i];
             aux[count[(element & mask) >>> shiftRight]++ + startAux] = element;
         }
@@ -162,58 +162,38 @@ public class IntSorterUtils {
         final int mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[(array[i] & mask) >>> shiftRight]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             int element = array[i];
             aux[count[(element & mask) >>> shiftRight]++] = element;
         }
         return count;
     }
 
-    public static void partitionStableNGroupBits(final int[] array, final int start, IntSectionsInfo sectionsInfo, final int[] aux, int startAux, int n) {
-        final IntSection[] sections = sectionsInfo.sections;
-        final int[] count = new int[1 << sectionsInfo.totalLength];
-        final int end = start + n;
-        for (int i = start; i < end; i++) {
-            int element = array[i];
-            count[getKeySN(element, sections)]++;
-        }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
-            int countI = count[i];
-            count[i] = sum;
-            sum += countI;
-        }
-        for (int i = start; i < end; i++) {
-            int element = array[i];
-            aux[count[getKeySN(element, sections)]++ + startAux] = element;
-        }
-    }
-
     public static int[] partitionStableNGroupBits(final int[] array, final int start, IntSectionsInfo sectionsInfo, final int[] aux, int n) {
-        IntSection[] sections = sectionsInfo.sections;
-        int[] count = new int[1 << sectionsInfo.totalLength];
-        int end = start + n;
-        for (int i = start; i < end; i++) {
+        final IntSection[] sections = sectionsInfo.sections;
+        final int end = start + n;
+        final int countLength = 1 << sectionsInfo.totalLength;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             int element = array[i];
             count[getKeySN(element, sections)]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             int element = array[i];
             aux[count[getKeySN(element, sections)]++] = element;
         }
@@ -225,7 +205,7 @@ public class IntSorterUtils {
         int length = end - start;
         int ld2 = length / 2;
         int endL1 = end - 1;
-        for (int i = 0; i < ld2; i++) {
+        for (int i = 0; i < ld2; ++i) {
             swap(array, start + i, endL1 - i);
         }
     }
@@ -238,8 +218,7 @@ public class IntSorterUtils {
             if (i2 != i1) {
                 break;
             }
-            i1 = i2;
-            i++;
+            ++i;
         }
         if (i == end) {
             return AnalysisResult.ALL_EQUAL;
@@ -247,9 +226,9 @@ public class IntSorterUtils {
 
         //ascending
         i1 = array[i];
-        if (array[i-1] < i1) {
-            i++;
-            for (; i < end; i++)  {
+        if (array[i - 1] < i1) {
+            ++i;
+            for (; i < end; ++i) {
                 int i2 = array[i];
                 if (i1 > i2) {
                     break;
@@ -262,8 +241,8 @@ public class IntSorterUtils {
         }
         //descending
         else {
-            i++;
-            for (; i < end; i++)  {
+            ++i;
+            for (; i < end; ++i) {
                 int i2 = array[i];
                 if (i1 < i2) {
                     break;
@@ -285,8 +264,7 @@ public class IntSorterUtils {
             if (i2 != i1) {
                 break;
             }
-            i1 = i2;
-            i++;
+            ++i;
         }
         if (i == end) {
             return AnalysisResult.ALL_EQUAL;
@@ -294,9 +272,9 @@ public class IntSorterUtils {
 
         //ascending
         i1 = array[i];
-        if (array[i-1] < i1) {
-            i++;
-            for (; i < end; i++)  {
+        if (array[i - 1] < i1) {
+            ++i;
+            for (; i < end; ++i) {
                 int i2 = array[i];
                 if (i1 + MIN_VALUE > i2 + MIN_VALUE) {
                     break;
@@ -309,8 +287,8 @@ public class IntSorterUtils {
         }
         //descending
         else {
-            i++;
-            for (; i < end; i++)  {
+            ++i;
+            for (; i < end; ++i) {
                 int i2 = array[i];
                 if (i1 + MIN_VALUE < i2 + MIN_VALUE) {
                     break;
@@ -323,7 +301,6 @@ public class IntSorterUtils {
         }
         return AnalysisResult.UNORDERED;
     }
-
 
 
     enum ShortSorter {StableByte, StableBit, CountSort}
@@ -399,25 +376,25 @@ public class IntSorterUtils {
         int twoPowerK = 1 << kDiff;
         ShortSorter sorter;
         if (twoPowerK <= 16) { //16
-            if (n >= twoPowerK*128) {
+            if (n >= twoPowerK * 128) {
                 sorter = ShortSorter.CountSort;
-            } else if (n >=32 ){
+            } else if (n >= 32) {
                 sorter = ShortSorter.StableByte;
             } else {
                 sorter = ShortSorter.StableBit;
             }
-        } else  if (twoPowerK <= 512) { //512
-            if (n >= twoPowerK*16) {
+        } else if (twoPowerK <= 512) { //512
+            if (n >= twoPowerK * 16) {
                 sorter = ShortSorter.CountSort;
-            } else if (n >=32 ){
+            } else if (n >= 32) {
                 sorter = ShortSorter.StableByte;
             } else {
                 sorter = ShortSorter.StableBit;
             }
         } else {
-            if (n >= twoPowerK*2) {
+            if (n >= twoPowerK * 2) {
                 sorter = ShortSorter.CountSort;
-            } else if (n >=128 ){
+            } else if (n >= 128) {
                 sorter = ShortSorter.StableByte;
             } else {
                 sorter = ShortSorter.StableBit;

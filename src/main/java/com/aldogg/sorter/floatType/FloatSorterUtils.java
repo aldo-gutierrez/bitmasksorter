@@ -64,7 +64,7 @@ public class FloatSorterUtils {
     public static int partitionStable(final float[] array, final int start, final int end, final int mask, final float[] aux) {
         int left = start;
         int right = 0;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             float element = array[i];
             int elementFM = Float.floatToRawIntBits(array[i]);
             if ((elementFM & mask) == 0) {
@@ -82,17 +82,17 @@ public class FloatSorterUtils {
     public static void partitionStableLastBits(final float[] array, final int start, final IntSection section, final float[] aux, int startAux, int n) {
         final int mask = section.sortMask;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[Float.floatToRawIntBits(array[i]) & mask]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             float element = array[i];
             int elementM = Float.floatToRawIntBits(element);
             aux[count[elementM & mask]++ + startAux] = element;
@@ -102,17 +102,17 @@ public class FloatSorterUtils {
     public static void partitionStableLastBits(final float[] array, final int start, final IntSection section, final float[] aux, int n) {
         final int mask = section.sortMask;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[Float.floatToRawIntBits(array[i]) & mask]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             float element = array[i];
             int elementM = Float.floatToRawIntBits(element);
             aux[count[elementM & mask]++] = element;
@@ -124,17 +124,17 @@ public class FloatSorterUtils {
         final int mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[(Float.floatToRawIntBits(array[i]) & mask) >>> shiftRight]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             float element = array[i];
             int elementM = Float.floatToRawIntBits(element);
             aux[count[(elementM & mask) >>> shiftRight]++ + startAux] = element;
@@ -145,17 +145,17 @@ public class FloatSorterUtils {
         final int mask = section.sortMask;
         final int shiftRight = section.shiftRight;
         final int end = start + n;
-        final int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        final int countLength = 1 << section.length;
+        final int[] count = new int[countLength];
+        for (int i = start; i < end; ++i) {
             count[(Float.floatToRawIntBits(array[i]) & mask) >>> shiftRight]++;
         }
-        int cLength = count.length;
-        for (int i = 0, sum = 0; i < cLength; i++) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < end; ++i) {
             float element = array[i];
             int elementM = Float.floatToRawIntBits(element);
             aux[count[(elementM & mask) >>> shiftRight]++] = element;
@@ -167,7 +167,7 @@ public class FloatSorterUtils {
         int length = end - start;
         int ld2 = length / 2;
         int endL1 = end - 1;
-        for (int i = 0; i < ld2; i++) {
+        for (int i = 0; i < ld2; ++i) {
             swap(array, start + i, endL1 - i);
         }
     }
@@ -181,8 +181,7 @@ public class FloatSorterUtils {
             if (i2 != i1) {
                 break;
             }
-            i1 = i2;
-            i++;
+            ++i;
         }
         if (i == end) {
             return AnalysisResult.ALL_EQUAL;
@@ -191,8 +190,8 @@ public class FloatSorterUtils {
         //ascending
         i1 = array[i];
         if (array[i - 1] < i1) {
-            i++;
-            for (; i < end; i++) {
+            ++i;
+            for (; i < end; ++i) {
                 float i2 = array[i];
                 if (i1 > i2) {
                     break;
@@ -205,8 +204,8 @@ public class FloatSorterUtils {
         }
         //descending
         else {
-            i++;
-            for (; i < end; i++) {
+            ++i;
+            for (; i < end; ++i) {
                 float i2 = array[i];
                 if (i1 < i2) {
                     break;
