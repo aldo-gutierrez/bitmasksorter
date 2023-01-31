@@ -75,8 +75,8 @@ public class LongGenerator {
     static long[] descending_int(GeneratorParams params) {
         int size = params.size;
         long[] v = new long[size];
-        for (int i = size - 1; i >= 0; --i) {
-            v[i] = i;
+        for (int i = size - 1, count = 0; i >= 0; --i) {
+            v[i] = count++;
         }
         return v;
     }
