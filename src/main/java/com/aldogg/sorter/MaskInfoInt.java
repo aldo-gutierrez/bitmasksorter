@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MaskInfoInt {
-    int p_mask;
-    int i_mask;
+    public int p_mask;
+    public int i_mask;
 
     public static MaskInfoInt getMaskBit(final int[] array, final int start, final int end) {
         int p_mask = 0x00000000;
