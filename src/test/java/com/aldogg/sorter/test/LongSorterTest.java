@@ -197,7 +197,7 @@ public class LongSorterTest extends BasicTest {
     public void speedTestUnsigned() throws IOException {
         BufferedWriter writer = getWriter("test-results/speed_unsignedLong_"+branch+".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
-        LongSorter[] sorters = new LongSorter[]{new RadixBitBaseSorterLong(), new RadixBitSorterLong(), new RadixByteSorterLong()};
+        LongSorter[] sorters = new LongSorter[]{new RadixByteSorterLong(), new RadixBitBaseSorterLong(), new RadixBitSorterLong()};
 
         for (Sorter sorter : sorters) {
             sorter.setUnsigned(true);
@@ -214,46 +214,35 @@ public class LongSorterTest extends BasicTest {
 
         //heatup
         testSortResults = new TestSortResults(sorters.length);
-        testSpeedUnsignedInt(sorters, HEAT_ITERATIONS, params, testSortResults, null);
+        testSpeed(sorters, HEAT_ITERATIONS, params, testSortResults, null);
 
         params.random = new Random(seed);
         System.out.println("----------------------");
         {
             testSortResults = new TestSortResults(sorters.length);
             params.size = 10000;
-            testSpeedUnsignedInt(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 100000;
-            testSpeedUnsignedInt(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 1000000;
-            testSpeedUnsignedInt(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 10000000;
-            testSpeedUnsignedInt(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 40000000;
-            testSpeedUnsignedInt(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
 
             System.out.println("----------------------");
         }
         System.out.println();
         writer.close();
-    }
-
-    private void testSpeedUnsignedInt(LongSorter[] sorters, int iterations, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
-        LongSorter base = new RadixByteSorterLong();
-        base.setUnsigned(true);
-        Function<GeneratorParams, long[]> function = LongGenerator.getGFunction(params.function);
-        for (int iter = 0; iter < iterations; iter++) {
-            long[] list = function.apply(params);
-            testSort(list, sorters, testSortResults, base);
-        }
-        printTestSpeed(sorters, params, testSortResults, writer);
     }
 
     private void testSpeedObject(ObjectLongSorter[] sorters, LongComparator comparator, int iterations, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {

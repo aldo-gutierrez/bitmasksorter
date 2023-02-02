@@ -1,15 +1,11 @@
 package com.aldogg.sorter.test;
 
 import com.aldogg.sorter.doubleType.DoubleSorter;
-import com.aldogg.sorter.doubleType.st.JavaSorterDouble;
 import com.aldogg.sorter.floatType.FloatSorter;
-import com.aldogg.sorter.floatType.st.JavaSorterFloat;
 import com.aldogg.sorter.generators.*;
 import com.aldogg.sorter.intType.IntSorter;
 import com.aldogg.sorter.Sorter;
-import com.aldogg.sorter.intType.st.JavaSorterInt;
 import com.aldogg.sorter.longType.LongSorter;
-import com.aldogg.sorter.longType.st.JavaSorterLong;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.*;
@@ -44,54 +40,37 @@ public class BaseTest {
     }
 
     public void testSort(int[] list, IntSorter[] sorters, TestSortResults testSortResults) {
-        IntSorter base = new JavaSorterInt();
-        testSort(list, sorters, testSortResults, base);
-    }
-
-    public void testSort(int[] list, IntSorter[] sorters, TestSortResults testSortResults, IntSorter baseSorter) {
         int[] baseListSorted = null;
-        if (validateResult) {
-            baseListSorted = Arrays.copyOf(list, list.length);
-        }
-        long startBase = System.nanoTime();
-        if (validateResult) {
-            baseSorter.sort(baseListSorted);
-        }
-        long elapsedBase = System.nanoTime() - startBase;
-        performSort(list, sorters, testSortResults, baseListSorted, elapsedBase, baseSorter.getClass());
-    }
-
-    private void performSort(int[] list, IntSorter[] sorters, TestSortResults testSortResults, int[] baseListSorted, long elapsedBase, Class baseClass) {
         for (int i = 0; i < sorters.length; i++) {
             IntSorter sorter = sorters[i];
-            if (validateResult && baseClass.isInstance(sorter)) {
-                testSortResults.set(i, elapsedBase);
-            } else {
-                int[] listAux = Arrays.copyOf(list, list.length);
+            int[] listAux = Arrays.copyOf(list, list.length);
+            try {
                 long start = System.nanoTime();
                 sorter.sort(listAux);
                 long elapsed = System.nanoTime() - start;
-                try {
+                if (i == 0) {
+                    baseListSorted = listAux;
+                } else {
                     if (validateResult) {
                         assertArrayEquals(baseListSorted, listAux);
                     }
-                    testSortResults.set(i, elapsed);
-                } catch (Throwable ex) {
-                    testSortResults.set(i, 0);
-                    if (list.length <= 10000) {
-                        System.err.println("Sorter " + sorter.name());
-                        String orig = Arrays.toString(list);
-                        System.err.println("List orig: " + orig);
-                        String failed = Arrays.toString(listAux);
-                        System.err.println("List fail: " + failed);
-                        String ok = Arrays.toString(baseListSorted);
-                        System.err.println("List ok: " + ok);
-                    } else {
-                        System.err.println("Sorter " + sorter.name());
-                        System.err.println("List order is not OK ");
-                    }
-                    ex.printStackTrace();
                 }
+                testSortResults.set(i, elapsed);
+            } catch (Throwable ex) {
+                testSortResults.set(i, 0);
+                if (list.length <= 10000) {
+                    System.err.println("Sorter " + sorter.name());
+                    String orig = Arrays.toString(list);
+                    System.err.println("List orig: " + orig);
+                    String failed = Arrays.toString(listAux);
+                    System.err.println("List fail: " + failed);
+                    String ok = Arrays.toString(baseListSorted);
+                    System.err.println("List ok: " + ok);
+                } else {
+                    System.err.println("Sorter " + sorter.name());
+                    System.err.println("List order is not OK ");
+                }
+                ex.printStackTrace();
             }
         }
     }
@@ -172,54 +151,37 @@ public class BaseTest {
     }
 
     public void testSort(long[] list, LongSorter[] sorters, TestSortResults testSortResults) {
-        LongSorter base = new JavaSorterLong();
-        testSort(list, sorters, testSortResults, base);
-    }
-
-    public void testSort(long[] list, LongSorter[] sorters, TestSortResults testSortResults, LongSorter baseSorter) {
         long[] baseListSorted = null;
-        if (validateResult) {
-            baseListSorted = Arrays.copyOf(list, list.length);
-        }
-        long startBase = System.nanoTime();
-        if (validateResult) {
-            baseSorter.sort(baseListSorted);
-        }
-        long elapsedBase = System.nanoTime() - startBase;
-        performSort(list, sorters, testSortResults, baseListSorted, elapsedBase, baseSorter.getClass());
-    }
-
-    private void performSort(long[] list, LongSorter[] sorters, TestSortResults testSortResults, long[] baseListSorted, long elapsedBase, Class baseClass) {
         for (int i = 0; i < sorters.length; i++) {
             LongSorter sorter = sorters[i];
-            if (validateResult && baseClass.isInstance(sorter)) {
-                testSortResults.set(i, elapsedBase);
-            } else {
+            long[] listAux = Arrays.copyOf(list, list.length);
+            try {
                 long start = System.nanoTime();
-                long[] listAux = Arrays.copyOf(list, list.length);
                 sorter.sort(listAux);
                 long elapsed = System.nanoTime() - start;
-                try {
+                if (i == 0) {
+                    baseListSorted = listAux;
+                } else {
                     if (validateResult) {
                         assertArrayEquals(baseListSorted, listAux);
                     }
-                    testSortResults.set(i, elapsed);
-                } catch (Throwable ex) {
-                    testSortResults.set(i, 0);
-                    if (list.length <= 10000) {
-                        System.err.println("Sorter " + sorter.name());
-                        String orig = Arrays.toString(list);
-                        System.err.println("List orig: " + orig);
-                        String failed = Arrays.toString(listAux);
-                        System.err.println("List fail: " + failed);
-                        String ok = Arrays.toString(baseListSorted);
-                        System.err.println("List ok: " + ok);
-                    } else {
-                        System.err.println("Sorter " + sorter.name());
-                        System.err.println("List order is not OK ");
-                    }
-                    ex.printStackTrace();
                 }
+                testSortResults.set(i, elapsed);
+            } catch (Throwable ex) {
+                testSortResults.set(i, 0);
+                if (list.length <= 10000) {
+                    System.err.println("Sorter " + sorter.name());
+                    String orig = Arrays.toString(list);
+                    System.err.println("List orig: " + orig);
+                    String failed = Arrays.toString(listAux);
+                    System.err.println("List fail: " + failed);
+                    String ok = Arrays.toString(baseListSorted);
+                    System.err.println("List ok: " + ok);
+                } else {
+                    System.err.println("Sorter " + sorter.name());
+                    System.err.println("List order is not OK ");
+                }
+                ex.printStackTrace();
             }
         }
     }
@@ -233,56 +195,38 @@ public class BaseTest {
         printTestSpeed(sorters, params, testSortResults, writer);
     }
 
-
     public void testSort(float[] list, FloatSorter[] sorters, TestSortResults testSortResults) {
-        FloatSorter base = new JavaSorterFloat();
-        testSort(list, sorters, testSortResults, base);
-    }
-
-    public void testSort(float[] list, FloatSorter[] sorters, TestSortResults testSortResults, FloatSorter baseSorter) {
         float[] baseListSorted = null;
-        if (validateResult) {
-            baseListSorted = Arrays.copyOf(list, list.length);
-        }
-        long startBase = System.nanoTime();
-        if (validateResult) {
-            baseSorter.sort(baseListSorted);
-        }
-        long elapsedBase = System.nanoTime() - startBase;
-        performSort(list, sorters, testSortResults, baseListSorted, elapsedBase, baseSorter.getClass());
-    }
-
-    private void performSort(float[] list, FloatSorter[] sorters, TestSortResults testSortResults, float[] baseListSorted, long elapsedBase, Class baseClass) {
         for (int i = 0; i < sorters.length; i++) {
             FloatSorter sorter = sorters[i];
-            if (validateResult && baseClass.isInstance(sorter)) {
-                testSortResults.set(i, elapsedBase);
-            } else {
+            float[] listAux = Arrays.copyOf(list, list.length);
+            try {
                 long start = System.nanoTime();
-                float[] listAux = Arrays.copyOf(list, list.length);
                 sorter.sort(listAux);
                 long elapsed = System.nanoTime() - start;
-                try {
+                if (i == 0) {
+                    baseListSorted = listAux;
+                } else {
                     if (validateResult) {
                         assertArrayEquals(baseListSorted, listAux);
                     }
-                    testSortResults.set(i, elapsed);
-                } catch (Throwable ex) {
-                    testSortResults.set(i, 0);
-                    if (list.length <= 10000) {
-                        System.err.println("Sorter " + sorter.name());
-                        String orig = Arrays.toString(list);
-                        System.err.println("List orig: " + orig);
-                        String failed = Arrays.toString(listAux);
-                        System.err.println("List fail: " + failed);
-                        String ok = Arrays.toString(baseListSorted);
-                        System.err.println("List ok: " + ok);
-                    } else {
-                        System.err.println("Sorter " + sorter.name());
-                        System.err.println("List order is not OK ");
-                    }
-                    ex.printStackTrace();
                 }
+                testSortResults.set(i, elapsed);
+            } catch (Throwable ex) {
+                testSortResults.set(i, 0);
+                if (list.length <= 10000) {
+                    System.err.println("Sorter " + sorter.name());
+                    String orig = Arrays.toString(list);
+                    System.err.println("List orig: " + orig);
+                    String failed = Arrays.toString(listAux);
+                    System.err.println("List fail: " + failed);
+                    String ok = Arrays.toString(baseListSorted);
+                    System.err.println("List ok: " + ok);
+                } else {
+                    System.err.println("Sorter " + sorter.name());
+                    System.err.println("List order is not OK ");
+                }
+                ex.printStackTrace();
             }
         }
     }
@@ -297,57 +241,41 @@ public class BaseTest {
     }
 
     public void testSort(double[] list, DoubleSorter[] sorters, TestSortResults testSortResults) {
-        DoubleSorter base = new JavaSorterDouble();
-        testSort(list, sorters, testSortResults, base);
-    }
-
-    public void testSort(double[] list, DoubleSorter[] sorters, TestSortResults testSortResults, DoubleSorter baseSorter) {
         double[] baseListSorted = null;
-        if (validateResult) {
-            baseListSorted = Arrays.copyOf(list, list.length);
-        }
-        long startBase = System.nanoTime();
-        if (validateResult) {
-            baseSorter.sort(baseListSorted);
-        }
-        long elapsedBase = System.nanoTime() - startBase;
-        performSort(list, sorters, testSortResults, baseListSorted, elapsedBase, baseSorter.getClass());
-    }
-
-    private void performSort(double[] list, DoubleSorter[] sorters, TestSortResults testSortResults, double[] baseListSorted, long elapsedBase, Class baseClass) {
         for (int i = 0; i < sorters.length; i++) {
             DoubleSorter sorter = sorters[i];
-            if (validateResult && baseClass.isInstance(sorter)) {
-                testSortResults.set(i, elapsedBase);
-            } else {
+            double[] listAux = Arrays.copyOf(list, list.length);
+            try {
                 long start = System.nanoTime();
-                double[] listAux = Arrays.copyOf(list, list.length);
                 sorter.sort(listAux);
                 long elapsed = System.nanoTime() - start;
-                try {
+                if (i == 0) {
+                    baseListSorted = listAux;
+                } else {
                     if (validateResult) {
                         assertArrayEquals(baseListSorted, listAux);
                     }
-                    testSortResults.set(i, elapsed);
-                } catch (Throwable ex) {
-                    testSortResults.set(i, 0);
-                    if (list.length <= 10000) {
-                        System.err.println("Sorter " + sorter.name());
-                        String orig = Arrays.toString(list);
-                        System.err.println("List orig: " + orig);
-                        String failed = Arrays.toString(listAux);
-                        System.err.println("List fail: " + failed);
-                        String ok = Arrays.toString(baseListSorted);
-                        System.err.println("List ok: " + ok);
-                    } else {
-                        System.err.println("Sorter " + sorter.name());
-                        System.err.println("List order is not OK ");
-                    }
-                    ex.printStackTrace();
                 }
+                testSortResults.set(i, elapsed);
+            } catch (Throwable ex) {
+                testSortResults.set(i, 0);
+                if (list.length <= 10000) {
+                    System.err.println("Sorter " + sorter.name());
+                    String orig = Arrays.toString(list);
+                    System.err.println("List orig: " + orig);
+                    String failed = Arrays.toString(listAux);
+                    System.err.println("List fail: " + failed);
+                    String ok = Arrays.toString(baseListSorted);
+                    System.err.println("List ok: " + ok);
+                } else {
+                    System.err.println("Sorter " + sorter.name());
+                    System.err.println("List order is not OK ");
+                }
+                ex.printStackTrace();
             }
         }
     }
+
 
     public void testSpeed(DoubleSorter[] sorters, int iterations, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
         Function<GeneratorParams, double[]> function = DoubleGenerator.getGFunction(params.function);

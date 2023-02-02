@@ -316,7 +316,7 @@ public class IntSorterTest extends BaseTest {
     public void speedTestUnsigned() throws IOException {
         BufferedWriter writer = getWriter("test-results/speed_unsignedInt_"+branch+".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
-        IntSorter[] sorters = new IntSorter[]{new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        IntSorter[] sorters = new IntSorter[]{new RadixByteSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
         for (IntSorter sorter : sorters) {
             sorter.setUnsigned(true);
@@ -333,30 +333,30 @@ public class IntSorterTest extends BaseTest {
 
         //heatup
         testSortResults = new TestSortResults(sorters.length);
-        testSpeedUnsigned(sorters, HEAT_ITERATIONS, params, testSortResults, null);
+        testSpeed(sorters, HEAT_ITERATIONS, params, testSortResults, null);
 
         params.random = new Random(seed);
         System.out.println("----------------------");
         {
             testSortResults = new TestSortResults(sorters.length);
             params.size = 10000;
-            testSpeedUnsigned(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 100000;
-            testSpeedUnsigned(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 1000000;
-            testSpeedUnsigned(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 10000000;
-            testSpeedUnsigned(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
 
             testSortResults = new TestSortResults(sorters.length);
             params.size = 40000000;
-            testSpeedUnsigned(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
 
             System.out.println("----------------------");
         }
@@ -425,17 +425,6 @@ public class IntSorterTest extends BaseTest {
     }
 
 
-    private void testSpeedUnsigned(IntSorter[] sorters, int iterations, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
-        IntSorter base = new RadixByteSorterInt();
-        base.setUnsigned(true);
-        Function<GeneratorParams, int[]> function = IntGenerator.getGFunction(params.function);
-        for (int iter = 0; iter < iterations; iter++) {
-            int[] list = function.apply(params);
-            testSort(list, sorters, testSortResults, base);
-        }
-        printTestSpeed(sorters, params, testSortResults, writer);
-    }
-
     private void testSpeedObject(ObjectIntSorter[] sorters, IntComparator comparator, int iterations, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
         Function<GeneratorParams, int[]> function = IntGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
@@ -445,53 +434,48 @@ public class IntSorterTest extends BaseTest {
                 int randomInt = listInt[i];
                 list[i] = new EntityInt1(randomInt, randomInt+"");
             }
-            testObjectSort(sorters, comparator, list, testSortResults);
+            testObjectSort(list, comparator, sorters, testSortResults);
         }
         printTestSpeed(sorters, params, testSortResults, writer);
     }
 
-    private void testObjectSort(ObjectIntSorter[] sorters, IntComparator comparator, Object[] list, TestSortResults testSortResults) {
-        Object[] listAux2 = Arrays.copyOf(list, list.length);
-        long startReference = System.nanoTime();
-        Arrays.sort(listAux2, comparator);
-        long elapsedReference = System.nanoTime() - startReference;
-
+    public void testObjectSort(Object[] list, IntComparator comparator, ObjectIntSorter[] sorters, TestSortResults testSortResults) {
+        Object[] baseListSorted = null;
         for (int i = 0; i < sorters.length; i++) {
             ObjectIntSorter sorter = sorters[i];
-            if (sorter instanceof JavaSorterInt) {
-                testSortResults.set(i, elapsedReference);
-            } else {
+            Object[] listAux = Arrays.copyOf(list, list.length);
+            try {
                 long start = System.nanoTime();
-                Object[] listAux = Arrays.copyOf(list, list.length);
                 sorter.sort(listAux, comparator);
                 long elapsed = System.nanoTime() - start;
-                try {
-                    for (int j=0; j<listAux.length; j++) {
-                        assertEquals(comparator.value(listAux[j]), comparator.value(listAux2[j]));
+                if (i == 0) {
+                    baseListSorted = listAux;
+                } else {
+                    if (validateResult) {
+                        for (int j=0; j<listAux.length; j++) {
+                            assertEquals(comparator.value(baseListSorted[j]), comparator.value(listAux[j]));
+                        }
                     }
-                    //for stable sort
-                    //assertArrayEquals(listAux2, listAux);
-                    testSortResults.set(i, elapsed);
-                } catch (Throwable ex) {
-                    testSortResults.set(i, 0);
-                    if (list.length <= 10000) {
-                        System.err.println("Sorter "+ sorter.name());
-                        String orig = Arrays.toString(list);
-                        System.err.println("List orig: " + orig);
-                        String failed = Arrays.toString(listAux);
-                        System.err.println("List fail: " + failed);
-                        String ok = Arrays.toString(listAux2);
-                        System.err.println("List ok: " + ok);
-                    } else {
-                        System.err.println("Sorter "+ sorter.name());
-                        System.err.println("List order is not OK ");
-                    }
-                    ex.printStackTrace();
                 }
+                testSortResults.set(i, elapsed);
+            } catch (Throwable ex) {
+                testSortResults.set(i, 0);
+                if (list.length <= 10000) {
+                    System.err.println("Sorter " + sorter.name());
+                    String orig = Arrays.toString(list);
+                    System.err.println("List orig: " + orig);
+                    String failed = Arrays.toString(listAux);
+                    System.err.println("List fail: " + failed);
+                    String ok = Arrays.toString(baseListSorted);
+                    System.err.println("List ok: " + ok);
+                } else {
+                    System.err.println("Sorter " + sorter.name());
+                    System.err.println("List order is not OK ");
+                }
+                ex.printStackTrace();
             }
         }
     }
-
 
 }
 
