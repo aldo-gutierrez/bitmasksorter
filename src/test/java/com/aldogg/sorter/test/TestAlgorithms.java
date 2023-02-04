@@ -1,7 +1,6 @@
 package com.aldogg.sorter.test;
 
 import com.aldogg.sorter.Named;
-import com.aldogg.sorter.Sorter;
 import com.aldogg.sorter.generators.GeneratorParams;
 
 import java.io.IOException;
@@ -12,30 +11,30 @@ public class TestAlgorithms<T extends Named> {
 
     private final T[] algorithms;
     private final HashMap<String, Long> totalElapsed;
-    private final HashMap<String, Long> count;
+    private final HashMap<String, Long> totalExecutions;
 
     public TestAlgorithms(T[] algorithms) {
         this.algorithms = algorithms;
         this.totalElapsed = new HashMap<>();
-        this.count = new HashMap<>();
+        this.totalExecutions = new HashMap<>();
         for (T sorter : algorithms) {
             totalElapsed.put(sorter.getName(), 0L);
-            count.put(sorter.getName(), 0L);
+            totalExecutions.put(sorter.getName(), 0L);
         }
     }
 
-    public T[] getAlgorithms2() {
+    public T[] getAlgorithms() {
         return algorithms;
     }
 
 
     public void set(String name, long elapsedTime) {
         totalElapsed.put(name, totalElapsed.get(name) + elapsedTime);
-        count.put(name, count.get(name) + 1);
+        totalExecutions.put(name, totalExecutions.get(name) + 1);
     }
 
     public long getAVG(String name) {
-        return totalElapsed.get(name) / count.get(name);
+        return totalElapsed.get(name) / totalExecutions.get(name);
     }
 
     public List<Object[]> getWinners() {
@@ -43,7 +42,7 @@ public class TestAlgorithms<T extends Named> {
         long sorterWinnerTime = 0;
         String sorter2ndWinner = "";
         long sorter2ndWinnerTime = 0;
-        Named[] sorters = getAlgorithms2();
+        Named[] sorters = getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
             Named sorter = sorters[i];
             String name = sorter.getName();
@@ -84,15 +83,13 @@ public class TestAlgorithms<T extends Named> {
         int limitLow = params.limitLow;
         long limitHigh = params.limitHigh;
         Named[] sorters = algorithms;
-        for (int i = 0; i < sorters.length; i++) {
-            Named sorter = sorters[i];
+        for (Named sorter : sorters) {
             if (writer != null)
                 writer.write(size + ",\"" + limitLow + ":" + limitHigh + "\",\"" + sorter.getName() + "\"," + getAVG(sorter.getName()) / 1000000 + "\n");
             if (writer != null) writer.flush();
         }
         System.out.printf("%,13d %18s %25s", size, limitLow + ":" + limitHigh, params.function.toString());
-        for (int i = 0; i < sorters.length; i++) {
-            Named sorter = sorters[i];
+        for (Named sorter : sorters) {
             System.out.printf("%21s %,13d ", sorter.getName(), getAVG(sorter.getName()));
         }
         List<Object[]> winners = getWinners();

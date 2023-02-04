@@ -37,8 +37,9 @@ public class BaseTest {
         }
     }
 
-    public void testSort(int[] list, IntSorter[] sorters, TestAlgorithms testAlgorithms) {
+    public void testSort(int[] list, TestAlgorithms<IntSorter> testAlgorithms) {
         int[] baseListSorted = null;
+        IntSorter[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
             IntSorter sorter = sorters[i];
             int[] listAux = Arrays.copyOf(list, list.length);
@@ -73,18 +74,19 @@ public class BaseTest {
         }
     }
 
-    public void testSpeed(IntSorter[] sorters, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
+    public void testSpeedInt(int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
         Function<GeneratorParams, int[]> function = IntGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             int[] list = function.apply(params);
-            testSort(list, sorters, testAlgorithms);
+            testSort(list, testAlgorithms);
         }
         testAlgorithms.printTestSpeed(params, writer);
     }
 
 
-    public void testSort(long[] list, LongSorter[] sorters, TestAlgorithms testAlgorithms) {
+    public void testSort(long[] list,  TestAlgorithms<LongSorter> testAlgorithms) {
         long[] baseListSorted = null;
+        LongSorter[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
             LongSorter sorter = sorters[i];
             long[] listAux = Arrays.copyOf(list, list.length);
@@ -119,17 +121,18 @@ public class BaseTest {
         }
     }
 
-    public void testSpeed(LongSorter[] sorters, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
+    public void testSpeedLong(int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
         Function<GeneratorParams, long[]> function = LongGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             long[] list = function.apply(params);
-            testSort(list, sorters, testAlgorithms);
+            testSort(list, testAlgorithms);
         }
         testAlgorithms.printTestSpeed(params, writer);
     }
 
-    public void testSort(float[] list, FloatSorter[] sorters, TestAlgorithms testAlgorithms) {
+    public void testSort(float[] list, TestAlgorithms<FloatSorter> testAlgorithms) {
         float[] baseListSorted = null;
+        FloatSorter[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
             FloatSorter sorter = sorters[i];
             float[] listAux = Arrays.copyOf(list, list.length);
@@ -164,17 +167,18 @@ public class BaseTest {
         }
     }
 
-    public void testSpeed(FloatSorter[] sorters, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
+    public void testSpeedFloat(int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
         Function<GeneratorParams, float[]> function = FloatGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             float[] list = function.apply(params);
-            testSort(list, sorters, testAlgorithms);
+            testSort(list, testAlgorithms);
         }
         testAlgorithms.printTestSpeed(params, writer);
     }
 
-    public void testSort(double[] list, DoubleSorter[] sorters, TestAlgorithms testAlgorithms) {
+    public void testSort(double[] list, TestAlgorithms<DoubleSorter> testAlgorithms) {
         double[] baseListSorted = null;
+        DoubleSorter[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
             DoubleSorter sorter = sorters[i];
             double[] listAux = Arrays.copyOf(list, list.length);
@@ -210,11 +214,11 @@ public class BaseTest {
     }
 
 
-    public void testSpeed(DoubleSorter[] sorters, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
+    public void testSpeedDouble(int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
         Function<GeneratorParams, double[]> function = DoubleGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             double[] list = function.apply(params);
-            testSort(list, sorters, testAlgorithms);
+            testSort(list, testAlgorithms);
         }
         testAlgorithms.printTestSpeed(params, writer);
     }

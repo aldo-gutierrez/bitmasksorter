@@ -42,7 +42,7 @@ public class LongSorterTest extends BasicTest {
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
-        testSpeed(sorters, HEAT_ITERATIONS, params, testAlgorithms, null);
+        testSpeedLong(HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         params.random = new Random(seed);
@@ -53,23 +53,23 @@ public class LongSorterTest extends BasicTest {
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 100000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 1000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 40000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             System.out.println("----------------------");
         }
@@ -93,7 +93,7 @@ public class LongSorterTest extends BasicTest {
         params.limitLow = -80000;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
-        testSpeed(sorters, HEAT_ITERATIONS, params, testAlgorithms, null);
+        testSpeedLong(HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         params.random = new Random(seed);
@@ -105,23 +105,23 @@ public class LongSorterTest extends BasicTest {
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 100000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 1000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 40000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             System.out.println("----------------------");
         }
@@ -159,7 +159,7 @@ public class LongSorterTest extends BasicTest {
 
         //heat up
         testAlgorithms = new TestAlgorithms(sorters);
-        testSpeedObject(sorters, comparator, HEAT_ITERATIONS, params, testAlgorithms, null);
+        testSpeedObject(comparator, HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         params.random = new Random(seed);
@@ -169,19 +169,19 @@ public class LongSorterTest extends BasicTest {
             testAlgorithms = new TestAlgorithms(sorters);
             params.limitHigh = limitH;
             params.size = 10000;
-            testSpeedObject(sorters, comparator, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedObject(comparator, ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 100000;
-            testSpeedObject(sorters, comparator, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedObject(comparator, ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 1000000;
-            testSpeedObject(sorters, comparator, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedObject(comparator, ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
-            testSpeedObject(sorters, comparator, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedObject(comparator, ITERATIONS, params, testAlgorithms, writer);
 
 //            testSortResults = new TestSortResults(Arrays.asList(sorters));
 //            params.size = 40000000;
@@ -214,30 +214,30 @@ public class LongSorterTest extends BasicTest {
 
         //heatup
         testAlgorithms = new TestAlgorithms(sorters);
-        testSpeed(sorters, HEAT_ITERATIONS, params, testAlgorithms, null);
+        testSpeedLong(HEAT_ITERATIONS, params, testAlgorithms, null);
 
         params.random = new Random(seed);
         System.out.println("----------------------");
         {
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 100000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 1000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 40000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedLong(ITERATIONS, params, testAlgorithms, writer);
 
             System.out.println("----------------------");
         }
@@ -245,7 +245,7 @@ public class LongSorterTest extends BasicTest {
         writer.close();
     }
 
-    private void testSpeedObject(ObjectLongSorter[] sorters, LongComparator comparator, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
+    private void testSpeedObject(LongComparator comparator, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
         Function<GeneratorParams, long[]> function = LongGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             long[] listInt = function.apply(params);
@@ -254,47 +254,47 @@ public class LongSorterTest extends BasicTest {
                 long randomNumber = listInt[i];
                 list[i] = new EntityLong1(randomNumber, randomNumber + "");
             }
-            testObjectSort(sorters, comparator, list, testAlgorithms);
+            testObjectLongSort(list, comparator, testAlgorithms);
         }
         testAlgorithms.printTestSpeed(params, writer);
     }
 
-    private void testObjectSort(ObjectLongSorter[] sorters, LongComparator comparator, Object[] list, TestAlgorithms testAlgorithms) {
-        Object[] listAux2 = Arrays.copyOf(list, list.length);
-        long startReference = System.nanoTime();
-        Arrays.sort(listAux2, comparator);
-        long elapsedReference = System.nanoTime() - startReference;
-
+    private void testObjectLongSort(Object[] list, LongComparator comparator, TestAlgorithms<ObjectLongSorter> testAlgorithms) {
+        Object[] baseListSorted = null;
+        ObjectLongSorter[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
             ObjectLongSorter sorter = sorters[i];
-            if (sorter instanceof JavaSorterObjectLong) {
-                testAlgorithms.set(sorter.getName(), elapsedReference);
-            } else {
+            Object[] listAux = Arrays.copyOf(list, list.length);
+            try {
                 long start = System.nanoTime();
-                Object[] listAux = Arrays.copyOf(list, list.length);
                 sorter.sort(listAux, comparator);
                 long elapsed = System.nanoTime() - start;
-                try {
-                    for (int j = 0; j < listAux.length; j++) {
-                        assertEquals(comparator.value(listAux[j]), comparator.value(listAux2[j]));
+                if (i == 0) {
+                    baseListSorted = listAux;
+                } else {
+                    if (validateResult) {
+                        for (int j=0; j<listAux.length; j++) {
+                            assertEquals(comparator.value(baseListSorted[j]), comparator.value(listAux[j]));
+                        }
+//                        assertArrayEquals(baseListSorted, listAux);
                     }
-                    testAlgorithms.set(sorter.getName(), elapsed);
-                } catch (Throwable ex) {
-                    testAlgorithms.set(sorter.getName(), 0);
-                    if (list.length <= 10000) {
-                        System.err.println("Sorter " + sorter.getName());
-                        String orig = Arrays.toString(list);
-                        System.err.println("List orig: " + orig);
-                        String failed = Arrays.toString(listAux);
-                        System.err.println("List fail: " + failed);
-                        String ok = Arrays.toString(listAux2);
-                        System.err.println("List ok: " + ok);
-                    } else {
-                        System.err.println("Sorter " + sorter.getName());
-                        System.err.println("List order is not OK ");
-                    }
-                    ex.printStackTrace();
                 }
+                testAlgorithms.set(sorter.getName(), elapsed);
+            } catch (Throwable ex) {
+                testAlgorithms.set(sorter.getName(), 0);
+                if (list.length <= 10000) {
+                    System.err.println("Sorter " + sorter.getName());
+                    String orig = Arrays.toString(list);
+                    System.err.println("List orig: " + orig);
+                    String failed = Arrays.toString(listAux);
+                    System.err.println("List fail: " + failed);
+                    String ok = Arrays.toString(baseListSorted);
+                    System.err.println("List ok: " + ok);
+                } else {
+                    System.err.println("Sorter " + sorter.getName());
+                    System.err.println("List order is not OK ");
+                }
+                ex.printStackTrace();
             }
         }
     }

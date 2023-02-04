@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Random;
 
 public class FloatSorterTest extends BasicTest {
@@ -32,7 +31,7 @@ public class FloatSorterTest extends BasicTest {
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
-        testSpeed(sorters, HEAT_ITERATIONS, params, testAlgorithms, null);
+        testSpeedFloat(HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         params.random = new Random(seed);
@@ -43,23 +42,23 @@ public class FloatSorterTest extends BasicTest {
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 100000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 1000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 40000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             System.out.println("----------------------");
         }
@@ -83,7 +82,7 @@ public class FloatSorterTest extends BasicTest {
         params.limitLow = -80000;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
-        testSpeed(sorters, HEAT_ITERATIONS, params, testAlgorithms, null);
+        testSpeedFloat(HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         params.random = new Random(seed);
@@ -95,23 +94,23 @@ public class FloatSorterTest extends BasicTest {
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 100000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 1000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 40000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             System.out.println("----------------------");
         }
@@ -135,7 +134,7 @@ public class FloatSorterTest extends BasicTest {
         params.limitLow = -80000;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_REAL_RANGE;
-        testSpeed(sorters, HEAT_ITERATIONS, params, testAlgorithms, null);
+        testSpeedFloat(HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         params.random = new Random(seed);
@@ -147,23 +146,23 @@ public class FloatSorterTest extends BasicTest {
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 100000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 1000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 40000000;
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedFloat(ITERATIONS, params, testAlgorithms, writer);
 
             System.out.println("----------------------");
         }

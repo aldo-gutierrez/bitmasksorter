@@ -38,7 +38,7 @@ public class SorterTest2 extends IntSorterTest {
         for (GeneratorFunctions a : values) {
             params.function =a;
             TestAlgorithms testAlgorithms = new TestAlgorithms(sorters);
-            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedInt(ITERATIONS, params, testAlgorithms, writer);
 
         }
         //testSpeedInt(10, params, testSortResults, sorters, null);
@@ -62,7 +62,7 @@ public class SorterTest2 extends IntSorterTest {
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
-        testSpeed(sorters, HEAT_ITERATIONS, params, testAlgorithms, null);
+        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         List<Integer> limitHigh = new ArrayList();
@@ -76,7 +76,7 @@ public class SorterTest2 extends IntSorterTest {
             for (Integer size : limitHigh) {
                 testAlgorithms = new TestAlgorithms(sorters);
                 params.size = size;
-                testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+                testSpeedInt(ITERATIONS, params, testAlgorithms, writer);
             }
 
             System.out.println("----------------------");
@@ -102,7 +102,7 @@ public class SorterTest2 extends IntSorterTest {
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
-        testSpeed(sorters, HEAT_ITERATIONS, params, testAlgorithms, null);
+        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         List<Integer> limitHigh = new ArrayList();
@@ -117,7 +117,7 @@ public class SorterTest2 extends IntSorterTest {
             for (Integer size : limitHigh) {
                 testAlgorithms = new TestAlgorithms(sorters);
                 params.size = size;
-                testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
+                testSpeedInt(ITERATIONS, params, testAlgorithms, writer);
             }
 
             System.out.println("----------------------");
