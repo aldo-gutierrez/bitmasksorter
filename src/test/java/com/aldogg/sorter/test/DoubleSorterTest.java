@@ -29,17 +29,17 @@ public class DoubleSorterTest extends BasicTest {
         BufferedWriter writer = getWriter("test-results/speed_positiveDouble_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
-        TestSortResults testSortResults;
+        TestAlgorithms testAlgorithms;
 
         //heat up
-        testSortResults = new TestSortResults(sorters.length);
+        testAlgorithms = new TestAlgorithms(sorters);
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(seed);
         params.size = 80000;
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
-        testSpeed(sorters, HEAT_ITERATIONS, params, testSortResults, null);
+        testSpeed(sorters, HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         params.random = new Random(seed);
@@ -48,25 +48,25 @@ public class DoubleSorterTest extends BasicTest {
         for (long limitH : limitHigh) {
             params.limitHigh = limitH;
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 100000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 1000000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 40000000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
             System.out.println("----------------------");
         }
@@ -80,17 +80,17 @@ public class DoubleSorterTest extends BasicTest {
         BufferedWriter writer = getWriter("test-results/speed_signedDouble_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
-        TestSortResults testSortResults;
+        TestAlgorithms testAlgorithms;
 
         //heat up
-        testSortResults = new TestSortResults(sorters.length);
+        testAlgorithms = new TestAlgorithms(sorters);
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(seed);
         params.size = 80000;
         params.limitLow = -80000;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
-        testSpeed(sorters, HEAT_ITERATIONS, params, testSortResults, null);
+        testSpeed(sorters, HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         params.random = new Random(seed);
@@ -100,25 +100,25 @@ public class DoubleSorterTest extends BasicTest {
             params.limitLow = (int) -limitH;
             params.limitHigh = limitH;
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 100000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 1000000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 40000000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
             System.out.println("----------------------");
         }
@@ -132,17 +132,17 @@ public class DoubleSorterTest extends BasicTest {
         BufferedWriter writer = getWriter("test-results/speed_realDouble_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
-        TestSortResults testSortResults;
+        TestAlgorithms testAlgorithms;
 
         //heat up
-        testSortResults = new TestSortResults(sorters.length);
+        testAlgorithms = new TestAlgorithms(sorters);
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(seed);
         params.size = 80000;
         params.limitLow = -80000;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_REAL_RANGE;
-        testSpeed(sorters, HEAT_ITERATIONS, params, testSortResults, null);
+        testSpeed(sorters, HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         params.random = new Random(seed);
@@ -152,25 +152,25 @@ public class DoubleSorterTest extends BasicTest {
             params.limitLow = (int) -limitH;
             params.limitHigh = limitH;
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 100000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 1000000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 40000000;
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
             System.out.println("----------------------");
         }
@@ -185,7 +185,7 @@ public class DoubleSorterTest extends BasicTest {
 
 
         ObjectDoubleSorter[] sorters = new ObjectDoubleSorter[]{new JavaSorterObjectDouble(), new RadixBitSorterObjectDouble()};
-        TestSortResults testSortResults;
+        TestAlgorithms testAlgorithms;
 
         DoubleComparator<EntityDouble1> comparator = new DoubleComparator<EntityDouble1>() {
             @Override
@@ -207,32 +207,32 @@ public class DoubleSorterTest extends BasicTest {
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
 
         //heat up
-        testSortResults = new TestSortResults(sorters.length);
-        testSpeedObject(sorters, comparator, HEAT_ITERATIONS, params, testSortResults, null);
+        testAlgorithms = new TestAlgorithms(sorters);
+        testSpeedObject(sorters, comparator, HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         params.random = new Random(seed);
         int[] limitHigh = new int[]{10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.limitHigh = limitH;
             params.size = 10000;
-            testSpeedObject(sorters, comparator, ITERATIONS, params, testSortResults, writer);
+            testSpeedObject(sorters, comparator, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 100000;
-            testSpeedObject(sorters, comparator, ITERATIONS, params, testSortResults, writer);
+            testSpeedObject(sorters, comparator, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 1000000;
-            testSpeedObject(sorters, comparator, ITERATIONS, params, testSortResults, writer);
+            testSpeedObject(sorters, comparator, ITERATIONS, params, testAlgorithms, writer);
 
-            testSortResults = new TestSortResults(sorters.length);
+            testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
-            testSpeedObject(sorters, comparator, ITERATIONS, params, testSortResults, writer);
+            testSpeedObject(sorters, comparator, ITERATIONS, params, testAlgorithms, writer);
 
-//            testSortResults = new TestSortResults(sorters.length);
+//            testSortResults = new TestSortResults(Arrays.asList(sorters));
 //            params.size = 40000000;
 //            testSpeedObject(sorters, comparator,ITERATIONS, params, testSortResults, writer);
 
@@ -242,7 +242,7 @@ public class DoubleSorterTest extends BasicTest {
         writer.close();
     }
 
-    private void testSpeedObject(ObjectDoubleSorter[] sorters, DoubleComparator comparator, int iterations, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
+    private void testSpeedObject(ObjectDoubleSorter[] sorters, DoubleComparator comparator, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
         Function<GeneratorParams, double[]> function = DoubleGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             double[] listInt = function.apply(params);
@@ -251,12 +251,12 @@ public class DoubleSorterTest extends BasicTest {
                 double randomNumber = listInt[i];
                 list[i] = new EntityDouble1(randomNumber, randomNumber + "");
             }
-            testObjectSort(sorters, comparator, list, testSortResults);
+            testObjectSort(sorters, comparator, list, testAlgorithms);
         }
-        printTestSpeed(sorters, params, testSortResults, writer);
+        testAlgorithms.printTestSpeed(params, writer);
     }
 
-    private void testObjectSort(ObjectDoubleSorter[] sorters, DoubleComparator comparator, Object[] list, TestSortResults testSortResults) {
+    private void testObjectSort(ObjectDoubleSorter[] sorters, DoubleComparator comparator, Object[] list, TestAlgorithms testAlgorithms) {
         Object[] listAux2 = Arrays.copyOf(list, list.length);
         long startReference = System.nanoTime();
         Arrays.sort(listAux2, comparator);
@@ -265,7 +265,7 @@ public class DoubleSorterTest extends BasicTest {
         for (int i = 0; i < sorters.length; i++) {
             ObjectDoubleSorter sorter = sorters[i];
             if (sorter instanceof JavaSorterInt) {
-                testSortResults.set(i, elapsedReference);
+                testAlgorithms.set(sorter.getName(), elapsedReference);
             } else {
                 long start = System.nanoTime();
                 Object[] listAux = Arrays.copyOf(list, list.length);
@@ -277,11 +277,11 @@ public class DoubleSorterTest extends BasicTest {
                     }
                     //for stable sort
                     //assertArrayEquals(listAux2, listAux);
-                    testSortResults.set(i, elapsed);
+                    testAlgorithms.set(sorter.getName(), elapsed);
                 } catch (Throwable ex) {
-                    testSortResults.set(i, 0);
+                    testAlgorithms.set(sorter.getName(), 0);
                     if (list.length <= 10000) {
-                        System.err.println("Sorter " + sorter.name());
+                        System.err.println("Sorter " + sorter.getName());
                         String orig = Arrays.toString(list);
                         System.err.println("List orig: " + orig);
                         String failed = Arrays.toString(listAux);
@@ -289,7 +289,7 @@ public class DoubleSorterTest extends BasicTest {
                         String ok = Arrays.toString(listAux2);
                         System.err.println("List ok: " + ok);
                     } else {
-                        System.err.println("Sorter " + sorter.name());
+                        System.err.println("Sorter " + sorter.getName());
                         System.err.println("List order is not OK ");
                     }
                     ex.printStackTrace();

@@ -37,8 +37,8 @@ public class SorterTest2 extends IntSorterTest {
         //Generator.GeneratorFunctions[] values = {Generator.GeneratorFunctions.ALL_EQUAL_INT};
         for (GeneratorFunctions a : values) {
             params.function =a;
-            TestSortResults testSortResults = new TestSortResults(sorters.length);
-            testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+            TestAlgorithms testAlgorithms = new TestAlgorithms(sorters);
+            testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
 
         }
         //testSpeedInt(10, params, testSortResults, sorters, null);
@@ -52,17 +52,17 @@ public class SorterTest2 extends IntSorterTest {
         BufferedWriter writer = getWriter("test-results/speed_positiveInt_st_base2.csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
-        TestSortResults testSortResults;
+        TestAlgorithms testAlgorithms;
 
         //heat up
-        testSortResults = new TestSortResults(sorters.length);
+        testAlgorithms = new TestAlgorithms(sorters);
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(seed);
         params.size=80000;
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
-        testSpeed(sorters, HEAT_ITERATIONS, params, testSortResults, null);
+        testSpeed(sorters, HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         List<Integer> limitHigh = new ArrayList();
@@ -74,9 +74,9 @@ public class SorterTest2 extends IntSorterTest {
             params.limitHigh = limitH -1 ;
 
             for (Integer size : limitHigh) {
-                testSortResults = new TestSortResults(sorters.length);
+                testAlgorithms = new TestAlgorithms(sorters);
                 params.size = size;
-                testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+                testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
             }
 
             System.out.println("----------------------");
@@ -92,17 +92,17 @@ public class SorterTest2 extends IntSorterTest {
         BufferedWriter writer = getWriter("test-results/speed_positiveInt_mt_base2.csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
 
-        TestSortResults testSortResults;
+        TestAlgorithms testAlgorithms;
 
         //heat up
-        testSortResults = new TestSortResults(sorters.length);
+        testAlgorithms = new TestAlgorithms(sorters);
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(seed);
         params.size=80000;
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
-        testSpeed(sorters, HEAT_ITERATIONS, params, testSortResults, null);
+        testSpeed(sorters, HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         List<Integer> limitHigh = new ArrayList();
@@ -115,9 +115,9 @@ public class SorterTest2 extends IntSorterTest {
             params.limitHigh = limitH -1 ;
 
             for (Integer size : limitHigh) {
-                testSortResults = new TestSortResults(sorters.length);
+                testAlgorithms = new TestAlgorithms(sorters);
                 params.size = size;
-                testSpeed(sorters, ITERATIONS, params, testSortResults, writer);
+                testSpeed(sorters, ITERATIONS, params, testAlgorithms, writer);
             }
 
             System.out.println("----------------------");

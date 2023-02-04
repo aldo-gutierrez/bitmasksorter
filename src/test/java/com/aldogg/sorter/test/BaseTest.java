@@ -1,17 +1,15 @@
 package com.aldogg.sorter.test;
 
+
 import com.aldogg.sorter.doubleType.DoubleSorter;
 import com.aldogg.sorter.floatType.FloatSorter;
 import com.aldogg.sorter.generators.*;
 import com.aldogg.sorter.intType.IntSorter;
-import com.aldogg.sorter.Sorter;
 import com.aldogg.sorter.longType.LongSorter;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -39,7 +37,7 @@ public class BaseTest {
         }
     }
 
-    public void testSort(int[] list, IntSorter[] sorters, TestSortResults testSortResults) {
+    public void testSort(int[] list, IntSorter[] sorters, TestAlgorithms testAlgorithms) {
         int[] baseListSorted = null;
         for (int i = 0; i < sorters.length; i++) {
             IntSorter sorter = sorters[i];
@@ -55,11 +53,11 @@ public class BaseTest {
                         assertArrayEquals(baseListSorted, listAux);
                     }
                 }
-                testSortResults.set(i, elapsed);
+                testAlgorithms.set(sorter.getName(), elapsed);
             } catch (Throwable ex) {
-                testSortResults.set(i, 0);
+                testAlgorithms.set(sorter.getName(), 0);
                 if (list.length <= 10000) {
-                    System.err.println("Sorter " + sorter.name());
+                    System.err.println("Sorter " + sorter.getName());
                     String orig = Arrays.toString(list);
                     System.err.println("List orig: " + orig);
                     String failed = Arrays.toString(listAux);
@@ -67,7 +65,7 @@ public class BaseTest {
                     String ok = Arrays.toString(baseListSorted);
                     System.err.println("List ok: " + ok);
                 } else {
-                    System.err.println("Sorter " + sorter.name());
+                    System.err.println("Sorter " + sorter.getName());
                     System.err.println("List order is not OK ");
                 }
                 ex.printStackTrace();
@@ -75,82 +73,17 @@ public class BaseTest {
         }
     }
 
-    public void testSpeed(IntSorter[] sorters, int iterations, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
+    public void testSpeed(IntSorter[] sorters, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
         Function<GeneratorParams, int[]> function = IntGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             int[] list = function.apply(params);
-            testSort(list, sorters, testSortResults);
+            testSort(list, sorters, testAlgorithms);
         }
-        printTestSpeed(sorters, params, testSortResults, writer);
+        testAlgorithms.printTestSpeed(params, writer);
     }
 
-    protected void printTestSpeed(Sorter[] sorters, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
-        int size = params.size;
-        int limitLow = params.limitLow;
-        long limitHigh = params.limitHigh;
-        for (int i = 0; i < sorters.length; i++) {
-            Sorter sorter = sorters[i];
-            if (writer != null)
-                writer.write(size + ",\"" + limitLow + ":" + limitHigh + "\",\"" + sorter.name() + "\"," + testSortResults.getAVG(i) / 1000000 + "\n");
-            if (writer != null) writer.flush();
-        }
-        System.out.printf("%,13d %18s %25s", size, limitLow + ":" + limitHigh, params.function.toString());
-        for (int i = 0; i < sorters.length; i++) {
-            Sorter sorter = sorters[i];
-            System.out.printf("%21s %,13d ", sorter.name(), testSortResults.getAVG(i));
-        }
-        Map winners = getWinners(testSortResults, sorters);
-        String sorterWinner = (String) winners.get("sorterWinner");
-        long sorterWinnerTime = (Long) winners.get("sorterWinnerTime");
-        String sorter2ndWinner = (String) winners.get("sorter2ndWinner");
-        long sorter2ndWinnerTime = (Long) winners.get("sorter2ndWinnerTime");
-        System.out.printf("%21s %,13d ", sorterWinner, sorterWinnerTime);
-        System.out.printf("%21s %,13d ", sorter2ndWinner, sorter2ndWinnerTime);
-        System.out.println();
-    }
 
-    protected Map<String, Object> getWinners(TestSortResults testSortResults, Sorter[] sorters) {
-        String sorterWinner = "";
-        long sorterWinnerTime = 0;
-        String sorter2ndWinner = "";
-        long sorter2ndWinnerTime = 0;
-        for (int i = 0; i < sorters.length; i++) {
-            Sorter sorter = sorters[i];
-            if (i == 0) {
-                sorterWinner = sorter.name();
-                sorterWinnerTime = testSortResults.getAVG(i);
-            }
-            if (i == 1) {
-                if (testSortResults.getAVG(i) < sorterWinnerTime) {
-                    sorter2ndWinner = sorterWinner;
-                    sorter2ndWinnerTime = sorterWinnerTime;
-                    sorterWinner = sorter.name();
-                    sorterWinnerTime = testSortResults.getAVG(i);
-                } else {
-                    sorter2ndWinner = sorter.name();
-                    sorter2ndWinnerTime = testSortResults.getAVG(i);
-                }
-            } else {
-                if (testSortResults.getAVG(i) < sorterWinnerTime) {
-                    sorter2ndWinner = sorterWinner;
-                    sorter2ndWinnerTime = sorterWinnerTime;
-                    sorterWinner = sorter.name();
-                    sorterWinnerTime = testSortResults.getAVG(i);
-                } else if (testSortResults.getAVG(i) < sorter2ndWinnerTime) {
-                    sorter2ndWinner = sorter.name();
-                    sorter2ndWinnerTime = testSortResults.getAVG(i);
-                }
-            }
-        }
-        Map result = new HashMap();
-        result.put("sorterWinner", sorterWinner);
-        result.put("sorterWinnerTime", sorterWinnerTime);
-        result.put("sorter2ndWinner", sorter2ndWinner);
-        result.put("sorter2ndWinnerTime", sorter2ndWinnerTime);
-        return result;
-    }
-
-    public void testSort(long[] list, LongSorter[] sorters, TestSortResults testSortResults) {
+    public void testSort(long[] list, LongSorter[] sorters, TestAlgorithms testAlgorithms) {
         long[] baseListSorted = null;
         for (int i = 0; i < sorters.length; i++) {
             LongSorter sorter = sorters[i];
@@ -166,11 +99,11 @@ public class BaseTest {
                         assertArrayEquals(baseListSorted, listAux);
                     }
                 }
-                testSortResults.set(i, elapsed);
+                testAlgorithms.set(sorter.getName(), elapsed);
             } catch (Throwable ex) {
-                testSortResults.set(i, 0);
+                testAlgorithms.set(sorter.getName(), 0);
                 if (list.length <= 10000) {
-                    System.err.println("Sorter " + sorter.name());
+                    System.err.println("Sorter " + sorter.getName());
                     String orig = Arrays.toString(list);
                     System.err.println("List orig: " + orig);
                     String failed = Arrays.toString(listAux);
@@ -178,7 +111,7 @@ public class BaseTest {
                     String ok = Arrays.toString(baseListSorted);
                     System.err.println("List ok: " + ok);
                 } else {
-                    System.err.println("Sorter " + sorter.name());
+                    System.err.println("Sorter " + sorter.getName());
                     System.err.println("List order is not OK ");
                 }
                 ex.printStackTrace();
@@ -186,16 +119,16 @@ public class BaseTest {
         }
     }
 
-    public void testSpeed(LongSorter[] sorters, int iterations, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
+    public void testSpeed(LongSorter[] sorters, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
         Function<GeneratorParams, long[]> function = LongGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             long[] list = function.apply(params);
-            testSort(list, sorters, testSortResults);
+            testSort(list, sorters, testAlgorithms);
         }
-        printTestSpeed(sorters, params, testSortResults, writer);
+        testAlgorithms.printTestSpeed(params, writer);
     }
 
-    public void testSort(float[] list, FloatSorter[] sorters, TestSortResults testSortResults) {
+    public void testSort(float[] list, FloatSorter[] sorters, TestAlgorithms testAlgorithms) {
         float[] baseListSorted = null;
         for (int i = 0; i < sorters.length; i++) {
             FloatSorter sorter = sorters[i];
@@ -211,11 +144,11 @@ public class BaseTest {
                         assertArrayEquals(baseListSorted, listAux);
                     }
                 }
-                testSortResults.set(i, elapsed);
+                testAlgorithms.set(sorter.getName(), elapsed);
             } catch (Throwable ex) {
-                testSortResults.set(i, 0);
+                testAlgorithms.set(sorter.getName(), 0);
                 if (list.length <= 10000) {
-                    System.err.println("Sorter " + sorter.name());
+                    System.err.println("Sorter " + sorter.getName());
                     String orig = Arrays.toString(list);
                     System.err.println("List orig: " + orig);
                     String failed = Arrays.toString(listAux);
@@ -223,7 +156,7 @@ public class BaseTest {
                     String ok = Arrays.toString(baseListSorted);
                     System.err.println("List ok: " + ok);
                 } else {
-                    System.err.println("Sorter " + sorter.name());
+                    System.err.println("Sorter " + sorter.getName());
                     System.err.println("List order is not OK ");
                 }
                 ex.printStackTrace();
@@ -231,16 +164,16 @@ public class BaseTest {
         }
     }
 
-    public void testSpeed(FloatSorter[] sorters, int iterations, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
+    public void testSpeed(FloatSorter[] sorters, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
         Function<GeneratorParams, float[]> function = FloatGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             float[] list = function.apply(params);
-            testSort(list, sorters, testSortResults);
+            testSort(list, sorters, testAlgorithms);
         }
-        printTestSpeed(sorters, params, testSortResults, writer);
+        testAlgorithms.printTestSpeed(params, writer);
     }
 
-    public void testSort(double[] list, DoubleSorter[] sorters, TestSortResults testSortResults) {
+    public void testSort(double[] list, DoubleSorter[] sorters, TestAlgorithms testAlgorithms) {
         double[] baseListSorted = null;
         for (int i = 0; i < sorters.length; i++) {
             DoubleSorter sorter = sorters[i];
@@ -256,11 +189,11 @@ public class BaseTest {
                         assertArrayEquals(baseListSorted, listAux);
                     }
                 }
-                testSortResults.set(i, elapsed);
+                testAlgorithms.set(sorter.getName(), elapsed);
             } catch (Throwable ex) {
-                testSortResults.set(i, 0);
+                testAlgorithms.set(sorter.getName(), 0);
                 if (list.length <= 10000) {
-                    System.err.println("Sorter " + sorter.name());
+                    System.err.println("Sorter " + sorter.getName());
                     String orig = Arrays.toString(list);
                     System.err.println("List orig: " + orig);
                     String failed = Arrays.toString(listAux);
@@ -268,7 +201,7 @@ public class BaseTest {
                     String ok = Arrays.toString(baseListSorted);
                     System.err.println("List ok: " + ok);
                 } else {
-                    System.err.println("Sorter " + sorter.name());
+                    System.err.println("Sorter " + sorter.getName());
                     System.err.println("List order is not OK ");
                 }
                 ex.printStackTrace();
@@ -277,13 +210,13 @@ public class BaseTest {
     }
 
 
-    public void testSpeed(DoubleSorter[] sorters, int iterations, GeneratorParams params, TestSortResults testSortResults, Writer writer) throws IOException {
+    public void testSpeed(DoubleSorter[] sorters, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
         Function<GeneratorParams, double[]> function = DoubleGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             double[] list = function.apply(params);
-            testSort(list, sorters, testSortResults);
+            testSort(list, sorters, testAlgorithms);
         }
-        printTestSpeed(sorters, params, testSortResults, writer);
+        testAlgorithms.printTestSpeed(params, writer);
     }
 
 }

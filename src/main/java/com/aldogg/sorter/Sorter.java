@@ -1,10 +1,6 @@
 package com.aldogg.sorter;
 
-public interface Sorter {
-    default String name() {
-        return this.getClass().getSimpleName();
-    }
-
+public interface Sorter extends Named {
     default boolean isUnsigned() {
         return false;
     }

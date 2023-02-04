@@ -149,25 +149,10 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
         if (s24) {
             section.sortMask = 0xFF000000;
             section.shiftRight = 24;
-            int[] leftX;
             if (startAux == 0) {
-                leftX = IntSorterUtils.partitionStableOneGroupBits(array, start, section, aux, n);
+                IntSorterUtils.partitionStableOneGroupBits(array, start, section, aux, n);
             } else {
-                leftX = IntSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
-            }
-            int lengthPositive = leftX[128];
-            if (isUnsigned()) {
-//                System.arraycopy(aux, 0, array, start, n);
-            } else {
-                if (lengthPositive < n) {
-                    int lengthNegative = n - lengthPositive;
-//                    System.arraycopy(aux, lengthPositive, array, start, lengthNegative);
-//                    System.arraycopy(aux, 0, array, start + lengthNegative, lengthPositive);
-                    System.arraycopy(aux, startAux + lengthPositive, array, start, lengthNegative);
-                    System.arraycopy(aux, startAux, array, start + lengthNegative, lengthPositive);
-                } else {
-//                    System.arraycopy(aux, 0, array, start, n);
-                }
+                IntSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
             }
             array = aux;
             start = startAux;

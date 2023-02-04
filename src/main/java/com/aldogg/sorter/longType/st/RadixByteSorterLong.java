@@ -129,19 +129,10 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
         if ((mask & sortMask) != 0) {
             section.sortMask = sortMask;
             section.shiftRight = shiftRights[7];
-            int[] leftX;
             if (startAux == 0) {
-                leftX = LongSorterUtils.partitionStableOneGroupBits(array, start, section, aux, n);
+                LongSorterUtils.partitionStableOneGroupBits(array, start, section, aux, n);
             } else {
-                leftX = LongSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
-            }
-            if (!isUnsigned()) {
-                int lengthPositive = leftX[128];
-                if (lengthPositive < n) {
-                    int lengthNegative = n - lengthPositive;
-                    System.arraycopy(aux, startAux + lengthPositive, array, start, lengthNegative);
-                    System.arraycopy(aux, startAux, array, start + lengthNegative, lengthPositive);
-                }
+                LongSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
             }
             array = aux;
             start = startAux;
