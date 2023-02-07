@@ -5,6 +5,7 @@ import com.aldogg.sorter.IntSection;
 import com.aldogg.sorter.IntSectionsInfo;
 
 import static com.aldogg.sorter.BitSorterUtils.getKeySN;
+import static com.aldogg.sorter.intType.IntSorterUtils.ShortSorter.*;
 import static com.aldogg.sorter.intType.st.RadixBitSorterInt.radixSort;
 import static java.lang.Integer.MIN_VALUE;
 
@@ -303,101 +304,83 @@ public class IntSorterUtils {
     }
 
 
-    enum ShortSorter {StableByte, StableBit, CountSort}
+    public enum ShortSorter {StableByte, StableBit, CountSort}
 
     /**
      * Based on BasicTest.smallListAlgorithmSpeedTest
      */
-    public static void sortShortKNew(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
-        int k = kList.length - kIndex; //K
-        int n = end - start; //N
-        ShortSorter sorter;
-        if (k >= 16) {
-            sorter = ShortSorter.StableByte;
-        } else if (k <= 1) {
-            sorter = ShortSorter.StableBit;
-        } else { //k2 - k15
-            if (n >= 32768) {
-                sorter = ShortSorter.CountSort;
-            } else {
-                if (k >= 14) {
-                    sorter = ShortSorter.StableByte;
-                } else {
-                    if (n >= 8192) {
-                        sorter = ShortSorter.CountSort;
-                    } else {
-                        if (k >= 12) {
-                            sorter = ShortSorter.StableByte;
-                        } else {
-                            if (n >= 512) {
-                                sorter = ShortSorter.CountSort;
-                            } else {
-                                if (k <= 2) {
-                                    if (n >= 64) {
-                                        sorter = ShortSorter.CountSort;
-                                    } else {
-                                        sorter = ShortSorter.StableBit;
-                                    }
-                                } else if (k >= 10) {
-                                    if (n >= 64) {
-                                        sorter = ShortSorter.CountSort;
-                                    } else {
-                                        sorter = ShortSorter.StableBit;
-                                    }
-                                } else if (k <= 6) {
-                                    if (n >= 128) {
-                                        sorter = ShortSorter.CountSort;
-                                    } else {
-                                        sorter = ShortSorter.StableByte;
-                                    }
-                                } else {
-                                    if (n >= 32) {
-                                        sorter = ShortSorter.StableByte;
-                                    } else {
-                                        sorter = ShortSorter.CountSort;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    static ShortSorter[][] shortSorters = new ShortSorter[][]
+            {
+                    {StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableByte, CountSort, CountSort, StableBit,},
+                    {StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, CountSort, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, CountSort, CountSort, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte,},
 
+            };
+
+
+    public static int binlog( int bits ) // returns 0 for bits=0
+    {
+        int log = 0;
+        if( ( bits & 0xffff0000 ) != 0 ) { bits >>>= 16; log = 16; }
+        if( bits >= 256 ) { bits >>>= 8; log += 8; }
+        if( bits >= 16  ) { bits >>>= 4; log += 4; }
+        if( bits >= 4   ) { bits >>>= 2; log += 2; }
+        return log + ( bits >>> 1 );
+    }
+
+    public static void sortShortK(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
+        int km1 = (kList.length - kIndex) - 1; //K
+        int log2Nm1 = binlog(end - start) - 1; //Log2(N)
+        ShortSorter sorter;
+        if (log2Nm1 > 15) {
+            sorter = CountSort;
+        } else {
+            sorter = shortSorters[km1][log2Nm1];
+        }
         executeSorter(array, start, end, kList, kIndex, sorter);
     }
 
-    /**
-     * Based on BasicTest.smallListAlgorithmSpeedTest
-     */
-    public static void sortShortK(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
+    public static void sortShortKOld(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
         int kDiff = kList.length - kIndex; //K
         int n = end - start; //N
         int twoPowerK = 1 << kDiff;
         ShortSorter sorter;
         if (twoPowerK <= 16) { //16
             if (n >= twoPowerK * 128) {
-                sorter = ShortSorter.CountSort;
+                sorter = CountSort;
             } else if (n >= 32) {
-                sorter = ShortSorter.StableByte;
+                sorter = StableByte;
             } else {
-                sorter = ShortSorter.StableBit;
+                sorter = StableBit;
             }
         } else if (twoPowerK <= 512) { //512
             if (n >= twoPowerK * 16) {
-                sorter = ShortSorter.CountSort;
+                sorter = CountSort;
             } else if (n >= 32) {
-                sorter = ShortSorter.StableByte;
+                sorter = StableByte;
             } else {
-                sorter = ShortSorter.StableBit;
+                sorter = StableBit;
             }
         } else {
             if (n >= twoPowerK * 2) {
-                sorter = ShortSorter.CountSort;
+                sorter = CountSort;
             } else if (n >= 128) {
-                sorter = ShortSorter.StableByte;
+                sorter = StableByte;
             } else {
-                sorter = ShortSorter.StableBit;
+                sorter = StableBit;
             }
         }
 
@@ -407,9 +390,9 @@ public class IntSorterUtils {
 
     private static void executeSorter(int[] array, int start, int end, int[] kList, int kIndex, ShortSorter sorter) {
         int n = end - start;
-        if (sorter.equals(ShortSorter.CountSort)) {
+        if (sorter.equals(CountSort)) {
             IntCountSort.countSort(array, start, end, kList, kIndex);
-        } else if (sorter.equals(ShortSorter.StableByte)) {
+        } else if (sorter.equals(StableByte)) {
             int[] aux = new int[n];
             radixSort(array, start, end, kList, kIndex, kList.length - 1, aux);
         } else {

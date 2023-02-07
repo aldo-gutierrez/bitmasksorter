@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 import java.util.Random;
 
+import static com.aldogg.sorter.intType.IntSorterUtils.ShortSorter.*;
 import static com.aldogg.sorter.intType.st.RadixBitSorterInt.radixSort;
 
 public class BasicTest extends BaseTest {
@@ -71,7 +72,7 @@ public class BasicTest extends BaseTest {
     public void smallListAlgorithmSpeedTest() throws IOException {
         BufferedWriter writer = getWriter("small.csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
-
+        BufferedWriter writer2 = getWriter("smallJava.txt");
 
         IntSorter[] sorters = new IntSorter[]{new IntSorter() {
             @Override
@@ -86,13 +87,9 @@ public class BasicTest extends BaseTest {
 
             @Override
             public String getName() {
-                return "StableByte";
+                return StableByte.name();
             }
 
-            @Override
-            public void setUnsigned(boolean unsigned) {
-
-            }
         }, new IntSorter() {
             @Override
             public void sort(int[] array, int start, int end) {
@@ -108,13 +105,9 @@ public class BasicTest extends BaseTest {
 
             @Override
             public String getName() {
-                return "StableBit";
+                return StableBit.name();
             }
 
-            @Override
-            public void setUnsigned(boolean unsigned) {
-
-            }
         }, new IntSorter() {
             @Override
             public void sort(int[] array, int start, int end) {
@@ -126,97 +119,54 @@ public class BasicTest extends BaseTest {
 
             @Override
             public String getName() {
-                return "CountSort";
+                return CountSort.name();
             }
 
-            @Override
-            public void setUnsigned(boolean unsigned) {
-
-            }
         }};
-        TestAlgorithms testAlgorithms;
+//        }, new JavaSorterInt()};
+        TestAlgorithms<IntSorter> testAlgorithms;
 
-        int iterations = HEAT_ITERATIONS;
-        int[] limitHigh = new int[]{1, 3, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535};
-        testAlgorithms = new TestAlgorithms(sorters);
+        int[] twoPowersHeat = {16, 256, 4096, 65536};
+        int[] twoPowers = {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536};
+
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(123456789);
         params.size = 16;
         params.limitLow = 0;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
 
-        params.limitHigh = 256;
-        testSpeedInt(iterations, params, testAlgorithms, null);
+        int iterations = HEAT_ITERATIONS*2;
+        for (int limitH : twoPowersHeat) {
+            params.limitHigh = limitH - 1;
+            for (int size : twoPowersHeat) {
+                testAlgorithms = new TestAlgorithms<>(sorters);
+                params.size = size;
+                testSpeedInt(iterations, params, testAlgorithms);
+                testAlgorithms.printTestSpeed(params, null);
+            }
+        }
 
-        params.limitHigh = 15;
-        testSpeedInt(iterations, params, testAlgorithms, null);
-
-        params.limitHigh = 4096;
-        testSpeedInt(iterations, params, testAlgorithms, null);
-
-
-        iterations = ITERATIONS;
         System.out.println("----------------------");
 
-        for (int limitH : limitHigh) {
-            params.limitHigh = limitH;
-
-            testAlgorithms = new TestAlgorithms(sorters);
-            params.size = 16;
-            testSpeedInt(iterations, params, testAlgorithms, writer);
-
-            testAlgorithms = new TestAlgorithms(sorters);
-            params.size = 32;
-            testSpeedInt(iterations, params, testAlgorithms, writer);
-
-            testAlgorithms = new TestAlgorithms(sorters);
-            params.size = 64;
-            testSpeedInt(iterations, params, testAlgorithms, writer);
-
-            testAlgorithms = new TestAlgorithms(sorters);
-            params.size = 128;
-            testSpeedInt(iterations, params, testAlgorithms, writer);
-
-            testAlgorithms = new TestAlgorithms(sorters);
-            params.size = 256;
-            testSpeedInt(iterations, params, testAlgorithms, writer);
-
-            testAlgorithms = new TestAlgorithms(sorters);
-            params.size = 512;
-            testSpeedInt(iterations, params, testAlgorithms, writer);
-
-            testAlgorithms = new TestAlgorithms(sorters);
-            params.size = 1024;
-            testSpeedInt(iterations, params, testAlgorithms, writer);
-
-            testAlgorithms = new TestAlgorithms(sorters);
-            params.size = 2048;
-            testSpeedInt(iterations, params, testAlgorithms, writer);
-
-            testAlgorithms = new TestAlgorithms(sorters);
-            params.size = 4096;
-            testSpeedInt(iterations, params, testAlgorithms, writer);
-
-            testAlgorithms = new TestAlgorithms(sorters);
-            params.size = 8192;
-            testSpeedInt(iterations, params, testAlgorithms, writer);
-
-            testAlgorithms = new TestAlgorithms(sorters);
-            params.size = 16384;
-            testSpeedInt(iterations, params, testAlgorithms, writer);
-
-            testAlgorithms = new TestAlgorithms(sorters);
-            params.size = 32768;
-            testSpeedInt(iterations, params, testAlgorithms, writer);
-
-            testAlgorithms = new TestAlgorithms(sorters);
-            params.size = 65536;
-            testSpeedInt(iterations, params, testAlgorithms, writer);
-
-            System.out.println("----------------------");
+        iterations = ITERATIONS*2;
+        writer2.write("{\n");
+        for (int limitH : twoPowers) {
+            params.limitHigh = limitH - 1;
+            writer2.write("{");
+            for (int size : twoPowers) {
+                testAlgorithms = new TestAlgorithms<>(sorters);
+                params.size = size;
+                testSpeedInt(iterations, params, testAlgorithms);
+                testAlgorithms.printTestSpeed(params, writer);
+                writer2.write(testAlgorithms.getWinners().get(0)[0] + ", ");
+            }
+            writer2.write("}, \n");
         }
+        writer2.write("\n}");
         System.out.println();
+        System.out.println("----------------------");
         writer.close();
+        writer2.close();
     }
 
 

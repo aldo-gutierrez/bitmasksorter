@@ -74,13 +74,12 @@ public class BaseTest {
         }
     }
 
-    public void testSpeedInt(int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
+    public void testSpeedInt(int iterations, GeneratorParams params, TestAlgorithms testAlgorithms) {
         Function<GeneratorParams, int[]> function = IntGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             int[] list = function.apply(params);
             testSort(list, testAlgorithms);
         }
-        testAlgorithms.printTestSpeed(params, writer);
     }
 
 
