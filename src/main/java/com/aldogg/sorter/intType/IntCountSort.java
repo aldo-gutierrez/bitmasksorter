@@ -18,8 +18,7 @@ public class IntCountSort {
         kIndex = 0;
         int[] count = new int[twoPowerK];
         int[] numberBuffer = null;
-        if (sections.length == 1 && sections[0].isSectionAtEnd()) {
-        } else {
+        if (sections.length != 1 || !sections[0].isSectionAtEnd()) {
             numberBuffer = new int[twoPowerK];
         }
         int sortMask = MaskInfoInt.getMaskLastBits(kList, kIndex);

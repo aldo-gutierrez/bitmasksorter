@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.*;
 import java.util.function.Function;
 
@@ -29,7 +28,7 @@ public class IntSorterTest extends BaseTest {
 
     @Test
     public void speedTestPositiveIntST() throws IOException {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new AGSelectorSorterInt()};
+        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
         BufferedWriter writer = getWriter("test-results/speed_positiveInt_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
@@ -66,7 +65,7 @@ public class IntSorterTest extends BaseTest {
 
     @Test
     public void speedTestSignedIntSt() throws IOException {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new AGSelectorSorterInt()};
+        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
 
         BufferedWriter writer = getWriter("test-results/speed_signedInt_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
