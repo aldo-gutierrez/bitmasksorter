@@ -3,6 +3,8 @@ package com.aldogg.sorter.intType.st;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntSorter;
 
+import static com.aldogg.sorter.BitSorterUtils.binlog;
+
 
 /*
 Algorithm Selector Sorter
@@ -10,116 +12,61 @@ It chooses the best algorithm to use depending on N and K
 SorterTest2.speedTestPositiveIntSTBase2 generates this logic
  */
 public class AGSelectorSorterInt extends IntBitMaskSorter {
-    IntSorter intSorter;
+    static Class[][] sorterClasses = new Class[][]{
+            {RadixByteSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixByteSorterInt.class, QuickBitSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixByteSorterInt.class, QuickBitSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, QuickBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class,},
+            {RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, QuickBitSorterInt.class,},
+            {RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class,},
+            {RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class,},
+            {RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class,},
+            {RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class,},
+            {RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class,},
+            {RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class,},
+            {RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class,},
+            {RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class,},
+            {RadixBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, QuickBitSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class, RadixByteSorterInt.class,},
+
+    };
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {
         int n = end - start;
         int k = kList.length;
+        int km1 = k - 1; //K
+        int log2Nm1 = binlog(n) - 1; //Log2(N)
         if (n < 2) {
             return;
         }
-        if (n <= 32) {
-            if (unsigned) {
-                intSorter = new RadixBitSorterInt();
-                intSorter.setUnsigned(unsigned);
-                intSorter.sort(array, start, end, kList);
-            } else {
-                intSorter = new JavaSorterInt();
-                intSorter.sort(array, start, end, kList);
-            }
+        if (log2Nm1 > 27) {
+            log2Nm1 = 27;
         }
-
-        if (k >= 19) { //2^19 = 524288 values
-            if (n >= 268435456) {
-                intSorter = new RadixByteSorterInt();
-                intSorter.setUnsigned(unsigned);
-                intSorter.sort(array, start, end, kList);
-            } else {
-                if (n <= 1024) {
-                    intSorter = new RadixByteSorterInt();
-                    intSorter.setUnsigned(unsigned);
-                    intSorter.sort(array, start, end, kList);
-                } else {
-                    intSorter = new RadixBitSorterInt();
-                    intSorter.setUnsigned(unsigned);
-                    intSorter.sort(array, start, end, kList);
-                }
-            }
-        } else { // 2^18
-            if (k == 1) {
-                if (unsigned) {
-                    intSorter = new RadixBitSorterInt();
-                    intSorter.setUnsigned(unsigned);
-                    intSorter.sort(array, start, end, kList);
-                } else {
-                    intSorter = new JavaSorterInt();
-                    intSorter.sort(array, start, end, kList);
-                }
-            } else {
-                if (n >= 4194304) {
-                    //QuickBitSorter/
-                    intSorter = new QuickBitSorterInt();
-                    intSorter.setUnsigned(unsigned);
-                    intSorter.sort(array, start, end, kList);
-                } else {
-                    if (k <= 16) {
-                        if (n > 32678) {
-                            //QuickBitSorter/
-                            intSorter = new QuickBitSorterInt();
-                            intSorter.setUnsigned(unsigned);
-                            intSorter.sort(array, start, end, kList);
-                        } else {
-                            if (k >= 13) {//13 14 15 16
-                                intSorter = new RadixByteSorterInt();
-                                intSorter.setUnsigned(unsigned);
-                                intSorter.sort(array, start, end, kList);
-                            } else {
-                                if (k >= 10) {
-                                    if (n <= 512) {
-                                        intSorter = new RadixByteSorterInt();
-                                        intSorter.setUnsigned(unsigned);
-                                        intSorter.sort(array, start, end, kList);
-                                    } else {
-                                        intSorter = new RadixBitSorterInt();
-                                        intSorter.setUnsigned(unsigned);
-                                        intSorter.sort(array, start, end, kList);
-                                    }
-                                } else if (k > 2) {
-                                    if (n >= 4096) {
-                                        intSorter = new QuickBitSorterInt();
-                                        intSorter.setUnsigned(unsigned);
-                                        intSorter.sort(array, start, end, kList);
-                                    } else {
-                                        intSorter = new RadixBitSorterInt();
-                                        intSorter.setUnsigned(unsigned);
-                                        intSorter.sort(array, start, end, kList);
-                                    }
-                                } else {//k==2
-                                    intSorter = new RadixBitSorterInt();
-                                    intSorter.setUnsigned(unsigned);
-                                    intSorter.sort(array, start, end, kList);
-                                }
-                            }
-                        }
-                    } else {//k=17 or k=18
-                        if (n <= 1024) {
-                            intSorter = new RadixByteSorterInt();
-                            intSorter.setUnsigned(unsigned);
-                            intSorter.sort(array, start, end, kList);
-                        } else {
-                            intSorter = new RadixBitSorterInt();
-                            intSorter.setUnsigned(unsigned);
-                            intSorter.sort(array, start, end, kList);
-                        }
-                    }
-                    //QuickBitSorter/
-                    intSorter = new QuickBitSorterInt();
-                    intSorter.setUnsigned(unsigned);
-                    intSorter.sort(array, start, end, kList);
-                }
-            }
+        if (km1 > 27) {
+            km1 = 27;
         }
+        IntSorter sorter;
+        try {
+            sorter = ((Class<IntSorter>) sorterClasses[km1][log2Nm1]).newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        sorter.setUnsigned(unsigned);
+        sorter.sort(array, start, end, kList);
     }
 
 }

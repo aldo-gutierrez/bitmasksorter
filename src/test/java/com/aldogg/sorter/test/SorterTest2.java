@@ -47,10 +47,11 @@ public class SorterTest2 extends IntSorterTest {
 
     @Test
     public void speedTestPositiveIntSTBase2() throws IOException {
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+        IntSorter[] sorters = new IntSorter[] {new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
 
         BufferedWriter writer = getWriter("test-results/speed_positiveInt_st_base2.csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
+        BufferedWriter writer2 = getWriter("test-results/speed_positiveInt_st_base2.txt");
 
         TestAlgorithms<IntSorter> testAlgorithms;
 
@@ -70,25 +71,28 @@ public class SorterTest2 extends IntSorterTest {
             limitHigh.add(1 << i);
         }
 
+        writer2.write("{\n");
         for (Integer limitH : limitHigh) {
             params.limitHigh = limitH -1 ;
-
+            writer2.write("{");
             for (Integer size : limitHigh) {
                 testAlgorithms = new TestAlgorithms<>(sorters);
                 params.size = size;
                 testSpeedInt(ITERATIONS, params, testAlgorithms);
                 testAlgorithms.printTestSpeed(params, writer);
+                writer2.write(testAlgorithms.getWinners().get(0)[0] + ".class, ");
             }
-
+            writer2.write("}, \n");
             System.out.println("----------------------");
         }
+        writer2.write("\n}");
         System.out.println();
         writer.close();
+        writer2.close();
     }
 
     @Test
     public void speedTestPositiveIntMTBase2() throws IOException {
-
         IntSorter[] sorters = new IntSorter[] {new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         BufferedWriter writer = getWriter("test-results/speed_positiveInt_mt_base2.csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");

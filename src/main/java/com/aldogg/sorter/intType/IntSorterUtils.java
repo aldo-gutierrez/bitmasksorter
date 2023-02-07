@@ -1,6 +1,7 @@
 package com.aldogg.sorter.intType;
 
 import com.aldogg.sorter.AnalysisResult;
+import com.aldogg.sorter.BitSorterUtils;
 import com.aldogg.sorter.IntSection;
 import com.aldogg.sorter.IntSectionsInfo;
 
@@ -331,19 +332,9 @@ public class IntSorterUtils {
             };
 
 
-    public static int binlog( int bits ) // returns 0 for bits=0
-    {
-        int log = 0;
-        if( ( bits & 0xffff0000 ) != 0 ) { bits >>>= 16; log = 16; }
-        if( bits >= 256 ) { bits >>>= 8; log += 8; }
-        if( bits >= 16  ) { bits >>>= 4; log += 4; }
-        if( bits >= 4   ) { bits >>>= 2; log += 2; }
-        return log + ( bits >>> 1 );
-    }
-
     public static void sortShortK(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
         int km1 = (kList.length - kIndex) - 1; //K
-        int log2Nm1 = binlog(end - start) - 1; //Log2(N)
+        int log2Nm1 = BitSorterUtils.binlog(end - start) - 1; //Log2(N)
         ShortSorter sorter;
         if (log2Nm1 > 15) {
             sorter = CountSort;

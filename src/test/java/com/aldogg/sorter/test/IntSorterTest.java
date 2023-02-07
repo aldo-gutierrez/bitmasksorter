@@ -14,10 +14,7 @@ import com.aldogg.sorter.intType.mt.JavaSorterMTInt;
 import com.aldogg.sorter.intType.mt.MixedBitSorterMTInt;
 import com.aldogg.sorter.intType.mt.QuickBitSorterMTInt;
 import com.aldogg.sorter.intType.mt.RadixBitSorterMTInt;
-import com.aldogg.sorter.intType.st.JavaSorterInt;
-import com.aldogg.sorter.intType.st.QuickBitSorterInt;
-import com.aldogg.sorter.intType.st.RadixBitSorterInt;
-import com.aldogg.sorter.intType.st.RadixByteSorterInt;
+import com.aldogg.sorter.intType.st.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
@@ -32,7 +29,7 @@ public class IntSorterTest extends BaseTest {
 
     @Test
     public void speedTestPositiveIntST() throws IOException {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new AGSelectorSorterInt()};
         BufferedWriter writer = getWriter("test-results/speed_positiveInt_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
@@ -69,7 +66,7 @@ public class IntSorterTest extends BaseTest {
 
     @Test
     public void speedTestSignedIntSt() throws IOException {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new AGSelectorSorterInt()};
 
         BufferedWriter writer = getWriter("test-results/speed_signedInt_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
