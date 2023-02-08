@@ -312,23 +312,22 @@ public class IntSorterUtils {
      */
     static ShortSorter[][] shortSorters = new ShortSorter[][]
             {
-                    {StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableByte, CountSort, CountSort, StableBit,},
-                    {StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, CountSort, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, CountSort, CountSort, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableByte, StableBit, StableByte, StableBit,},
+                    {StableBit, StableBit, StableBit, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
                     {StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
                     {StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
                     {StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
                     {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort,},
                     {StableBit, StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort,},
                     {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort,},
                     {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort,},
                     {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte,},
-
             };
 
 
@@ -343,41 +342,6 @@ public class IntSorterUtils {
         }
         executeSorter(array, start, end, kList, kIndex, sorter);
     }
-
-    public static void sortShortKOld(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
-        int kDiff = kList.length - kIndex; //K
-        int n = end - start; //N
-        int twoPowerK = 1 << kDiff;
-        ShortSorter sorter;
-        if (twoPowerK <= 16) { //16
-            if (n >= twoPowerK * 128) {
-                sorter = CountSort;
-            } else if (n >= 32) {
-                sorter = StableByte;
-            } else {
-                sorter = StableBit;
-            }
-        } else if (twoPowerK <= 512) { //512
-            if (n >= twoPowerK * 16) {
-                sorter = CountSort;
-            } else if (n >= 32) {
-                sorter = StableByte;
-            } else {
-                sorter = StableBit;
-            }
-        } else {
-            if (n >= twoPowerK * 2) {
-                sorter = CountSort;
-            } else if (n >= 128) {
-                sorter = StableByte;
-            } else {
-                sorter = StableBit;
-            }
-        }
-
-        executeSorter(array, start, end, kList, kIndex, sorter);
-    }
-
 
     private static void executeSorter(int[] array, int start, int end, int[] kList, int kIndex, ShortSorter sorter) {
         int n = end - start;

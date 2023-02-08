@@ -135,7 +135,7 @@ public class BasicTest extends BaseTest {
         params.limitLow = 0;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
 
-        int iterations = HEAT_ITERATIONS*2;
+        int iterations = HEAT_ITERATIONS*200;
         for (int limitH : twoPowersHeat) {
             params.limitHigh = limitH - 1;
             for (int size : twoPowersHeat) {
@@ -148,7 +148,7 @@ public class BasicTest extends BaseTest {
 
         System.out.println("----------------------");
 
-        iterations = ITERATIONS*2;
+        iterations = ITERATIONS*200;
         writer2.write("{\n");
         for (int limitH : twoPowers) {
             params.limitHigh = limitH - 1;
