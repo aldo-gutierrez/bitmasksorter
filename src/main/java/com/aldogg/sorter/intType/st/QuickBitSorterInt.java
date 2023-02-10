@@ -12,20 +12,7 @@ public class QuickBitSorterInt extends IntBitMaskSorter {
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList) {
-        if (kList[0] == SIGN_BIT_POS) { //there are negative numbers
-            int sortMask = 1 << kList[0];
-            int finalLeft = isUnsigned()
-                    ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
-                    : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
-            if (finalLeft - start > 1) {
-                sort(array, start, finalLeft, kList, 1, true);
-            }
-            if (end - finalLeft > 1) {
-                sort(array, finalLeft, end, kList, 1, true);
-            }
-        } else {
-            sort(array, start, end, kList, 0, false);
-        }
+        sort(array, start, end, kList, 0, false);
     }
 
     public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {

@@ -22,16 +22,16 @@ import java.util.Random;
 public class SorterTest2 extends IntSorterTest {
     @Test
     public void testFunctionsSingleThread() throws IOException {
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
 
         GeneratorParams params = new GeneratorParams();
         params.random = new Random();
-        params.size= 4096;
+        params.size = 4096;
         params.limitLow = 0;
         params.limitHigh = params.size;
 
         BufferedWriter writer = getWriter("speed2.csv");
-        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         GeneratorFunctions[] values = GeneratorFunctions.values();
         for (GeneratorFunctions a : values) {
@@ -47,10 +47,10 @@ public class SorterTest2 extends IntSorterTest {
 
     @Test
     public void speedTestPositiveIntSTBase2() throws IOException {
-        IntSorter[] sorters = new IntSorter[] {new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+        IntSorter[] sorters = new IntSorter[]{new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
 
         BufferedWriter writer = getWriter("test-results/speed_positiveInt_st_base2.csv");
-        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
         BufferedWriter writer2 = getWriter("test-results/speed_positiveInt_st_base2.txt");
 
         TestAlgorithms<IntSorter> testAlgorithms;
@@ -58,8 +58,8 @@ public class SorterTest2 extends IntSorterTest {
         //heat up
         testAlgorithms = new TestAlgorithms<>(sorters);
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random(seed);
-        params.size=80000;
+        params.random = new Random(SEED);
+        params.size = 80000;
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
@@ -67,13 +67,13 @@ public class SorterTest2 extends IntSorterTest {
         System.out.println("----------------------");
 
         List<Integer> limitHigh = new ArrayList<>();
-        for (int i=1; i<29; i++) {
+        for (int i = 1; i < 29; i++) {
             limitHigh.add(1 << i);
         }
 
         writer2.write("{\n");
         for (Integer limitH : limitHigh) {
-            params.limitHigh = limitH -1 ;
+            params.limitHigh = limitH - 1;
             writer2.write("{");
             for (Integer size : limitHigh) {
                 testAlgorithms = new TestAlgorithms<>(sorters);
@@ -93,17 +93,17 @@ public class SorterTest2 extends IntSorterTest {
 
     @Test
     public void speedTestPositiveIntMTBase2() throws IOException {
-        IntSorter[] sorters = new IntSorter[] {new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        IntSorter[] sorters = new IntSorter[]{new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         BufferedWriter writer = getWriter("test-results/speed_positiveInt_mt_base2.csv");
-        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\""+  "," + "\"Time\""+"\n");
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
         TestAlgorithms<IntSorter> testAlgorithms;
 
         //heat up
         testAlgorithms = new TestAlgorithms<>(sorters);
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random(seed);
-        params.size=80000;
+        params.random = new Random(SEED);
+        params.size = 80000;
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
@@ -112,12 +112,12 @@ public class SorterTest2 extends IntSorterTest {
         System.out.println("----------------------");
 
         List<Integer> limitHigh = new ArrayList<>();
-        for (int i=1; i<29; i++) {
+        for (int i = 1; i < 29; i++) {
             limitHigh.add(1 << i);
         }
 
         for (Integer limitH : limitHigh) {
-            params.limitHigh = limitH -1 ;
+            params.limitHigh = limitH - 1;
 
             for (Integer size : limitHigh) {
                 testAlgorithms = new TestAlgorithms<>(sorters);

@@ -26,7 +26,7 @@ public class FloatSorterTest extends BasicTest {
         //heatup
         testAlgorithms = new TestAlgorithms(sorters);
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random(seed);
+        params.random = new Random(SEED);
         params.size = 80000;
         params.limitLow = 0;
         params.limitHigh = 80000;
@@ -34,7 +34,7 @@ public class FloatSorterTest extends BasicTest {
         testSpeedFloat(HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
-        params.random = new Random(seed);
+        params.random = new Random(SEED);
         int[] limitHigh = new int[]{10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
@@ -77,7 +77,7 @@ public class FloatSorterTest extends BasicTest {
         //heatup
         testAlgorithms = new TestAlgorithms(sorters);
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random(seed);
+        params.random = new Random(SEED);
         params.size = 80000;
         params.limitLow = -80000;
         params.limitHigh = 80000;
@@ -85,7 +85,7 @@ public class FloatSorterTest extends BasicTest {
         testSpeedFloat(HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
-        params.random = new Random(seed);
+        params.random = new Random(SEED);
         int[] limitHigh = new int[]{10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
@@ -129,7 +129,7 @@ public class FloatSorterTest extends BasicTest {
         //heatup
         testAlgorithms = new TestAlgorithms(sorters);
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random(seed);
+        params.random = new Random(SEED);
         params.size = 80000;
         params.limitLow = -80000;
         params.limitHigh = 80000;
@@ -137,7 +137,7 @@ public class FloatSorterTest extends BasicTest {
         testSpeedFloat(HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
-        params.random = new Random(seed);
+        params.random = new Random(SEED);
         int[] limitHigh = new int[]{10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {

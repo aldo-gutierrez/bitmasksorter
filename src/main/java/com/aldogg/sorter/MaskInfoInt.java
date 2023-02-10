@@ -25,6 +25,29 @@ public class MaskInfoInt {
         return m;
     }
 
+    public static MaskInfoInt getMaskBitDetectSignBit(final int[] array, final int start, final int end) {
+        int p_mask = 0x00000000;
+        int i_mask = 0x00000000;
+        int i = start;
+        for (; i < end; i += 512) {
+            int j = Math.min(i + 512, end);
+            for (; i < j; i++) {
+                int e = array[i];
+                p_mask = p_mask | e;
+                i_mask = i_mask | (~e);
+            }
+            if (p_mask < 0) {
+                if (i_mask < 0) {
+                    return null;
+                }
+            }
+        }
+        MaskInfoInt m = new MaskInfoInt();
+        m.p_mask = p_mask;
+        m.i_mask = i_mask;
+        return m;
+    }
+
     public static MaskInfoInt getMaskBit(final float[] array, final int start, final int end) {
         int p_mask = 0x00000000;
         int i_mask = 0x00000000;

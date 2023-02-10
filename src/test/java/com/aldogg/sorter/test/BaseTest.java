@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 public class BaseTest {
     final boolean validateResult = true;
 
-    public static final long seed = 1234567890;
+    public static final long SEED = 1234567890;
     public static final int ITERATIONS = 20;
     public static final int HEAT_ITERATIONS = 10;
 

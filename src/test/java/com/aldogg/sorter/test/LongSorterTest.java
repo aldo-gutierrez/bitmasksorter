@@ -37,7 +37,7 @@ public class LongSorterTest extends BasicTest {
         //heatup
         testAlgorithms = new TestAlgorithms(sorters);
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random(seed);
+        params.random = new Random(SEED);
         params.size = 80000;
         params.limitLow = 0;
         params.limitHigh = 80000;
@@ -45,7 +45,7 @@ public class LongSorterTest extends BasicTest {
         testSpeedLong(HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
-        params.random = new Random(seed);
+        params.random = new Random(SEED);
         long[] limitHigh = new long[]{1000000000, 10000000000000L};
 
         for (long limitH : limitHigh) {
@@ -88,7 +88,7 @@ public class LongSorterTest extends BasicTest {
         //heatup
         testAlgorithms = new TestAlgorithms(sorters);
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random(seed);
+        params.random = new Random(SEED);
         params.size = 80000;
         params.limitLow = -80000;
         params.limitHigh = 80000;
@@ -96,7 +96,7 @@ public class LongSorterTest extends BasicTest {
         testSpeedLong(HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
-        params.random = new Random(seed);
+        params.random = new Random(SEED);
         long[] limitHigh = new long[]{10, 100000, 1000000000, 10000000000000L};
 
         for (long limitH : limitHigh) {
@@ -151,7 +151,7 @@ public class LongSorterTest extends BasicTest {
         };
 
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random(seed);
+        params.random = new Random(SEED);
         params.size = 80000;
         params.limitLow = 0;
         params.limitHigh = 80000;
@@ -162,7 +162,7 @@ public class LongSorterTest extends BasicTest {
         testSpeedObject(comparator, HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
-        params.random = new Random(seed);
+        params.random = new Random(SEED);
         int[] limitHigh = new int[]{10, 1000, 100000, 10000000, 1000000000};
 
         for (int limitH : limitHigh) {
@@ -195,7 +195,7 @@ public class LongSorterTest extends BasicTest {
 
     @Test
     public void speedTestUnsigned() throws IOException {
-        BufferedWriter writer = getWriter("test-results/speed_unsignedLong_"+branch+".csv");
+        BufferedWriter writer = getWriter("test-results/speed_unsignedLong_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
         LongSorter[] sorters = new LongSorter[]{new RadixByteSorterLong(), new RadixBitBaseSorterLong(), new RadixBitSorterLong()};
 
@@ -206,7 +206,7 @@ public class LongSorterTest extends BasicTest {
         TestAlgorithms testAlgorithms;
 
         GeneratorParams params = new GeneratorParams();
-        params.random = new Random(seed);
+        params.random = new Random(SEED);
         params.size = 80000;
         params.limitLow = -1000;
         params.limitHigh = 1000L;
@@ -216,7 +216,7 @@ public class LongSorterTest extends BasicTest {
         testAlgorithms = new TestAlgorithms(sorters);
         testSpeedLong(HEAT_ITERATIONS, params, testAlgorithms, null);
 
-        params.random = new Random(seed);
+        params.random = new Random(SEED);
         System.out.println("----------------------");
         {
             testAlgorithms = new TestAlgorithms(sorters);
@@ -273,7 +273,7 @@ public class LongSorterTest extends BasicTest {
                     baseListSorted = listAux;
                 } else {
                     if (validateResult) {
-                        for (int j=0; j<listAux.length; j++) {
+                        for (int j = 0; j < listAux.length; j++) {
                             assertEquals(comparator.value(baseListSorted[j]), comparator.value(listAux[j]));
                         }
 //                        assertArrayEquals(baseListSorted, listAux);

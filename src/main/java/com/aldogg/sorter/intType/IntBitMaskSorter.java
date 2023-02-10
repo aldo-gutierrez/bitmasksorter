@@ -7,11 +7,10 @@ import com.aldogg.sorter.SortingNetworks;
 
 import java.util.function.BiConsumer;
 
-import static com.aldogg.sorter.MaskInfoInt.getMaskAsArray;
 import static com.aldogg.sorter.intType.IntSorterUtils.listIsOrderedSigned;
 import static com.aldogg.sorter.intType.IntSorterUtils.listIsOrderedUnSigned;
 
-public abstract class IntBitMaskSorter implements IntSorter{
+public abstract class IntBitMaskSorter implements IntSorter {
 
     protected boolean unsigned = false;
 
@@ -24,7 +23,7 @@ public abstract class IntBitMaskSorter implements IntSorter{
     }
 
     public void setSNFunctions(BiConsumer<int[], Integer>[] snFunctions) {
-        this.snFunctions =snFunctions;
+        this.snFunctions = snFunctions;
     }
 
     @Override
@@ -48,13 +47,38 @@ public abstract class IntBitMaskSorter implements IntSorter{
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, end);
-        int mask = maskInfo.getMask();
-        int[] kList = getMaskAsArray(mask);
-        if (kList.length == 0) {
-            return;
-        }
         setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
-        sort(array, start, end, kList);
+
+        MaskInfoInt maskInfo = MaskInfoInt.getMaskBitDetectSignBit(array, start, end);
+        if (maskInfo == null) { //the sign bit is set
+            int finalLeft = isUnsigned()
+                    ? IntSorterUtils.partitionNotStableSignBit(array, start, end)
+                    : IntSorterUtils.partitionReverseNotStableSignBit(array, start, end);
+            int n1 = finalLeft - start;
+            int n2 = end - finalLeft;
+            if (n1 > 1) { //sort negative numbers
+                maskInfo = MaskInfoInt.getMaskBit(array, start, finalLeft);
+                int mask = maskInfo.getMask();
+                int[] kList = MaskInfoInt.getMaskAsArray(mask);
+                if (kList.length > 0) {
+                    sort(array, start, finalLeft, kList); //aux
+                }
+            }
+            if (n2 > 1) { //sort positive numbers
+                maskInfo = MaskInfoInt.getMaskBit(array, finalLeft, end);
+                int mask = maskInfo.getMask();
+                int[] kList = MaskInfoInt.getMaskAsArray(mask);
+                if (kList.length > 0) {
+                    sort(array, finalLeft, end, kList);
+                }
+            }
+        } else {
+            int mask = maskInfo.getMask();
+            int[] kList = MaskInfoInt.getMaskAsArray(mask);
+            if (kList.length > 0) {
+                sort(array, start, end, kList);
+            }
+        }
     }
+
 }

@@ -47,6 +47,31 @@ public class IntSorterUtils {
         return left;
     }
 
+    public static int partitionNotStableSignBit(final int[] array, final int start, final int end) {
+        int left = start;
+        int right = end - 1;
+
+        while (left <= right) {
+            int element = array[left];
+            if (element >= 0) {
+                left++;
+            } else {
+                while (left <= right) {
+                    element = array[right];
+                    if (element >= 0) {
+                        swap(array, left, right);
+                        left++;
+                        right--;
+                        break;
+                    } else {
+                        right--;
+                    }
+                }
+            }
+        }
+        return left;
+    }
+
     /**
      * CPU: O(N)
      * MEM: O(1)
@@ -61,6 +86,32 @@ public class IntSorterUtils {
                 while (left <= right) {
                     element = array[right];
                     if (((element & mask) == 0)) {
+                        right--;
+                    } else {
+                        swap(array, left, right);
+                        left++;
+                        right--;
+                        break;
+                    }
+                }
+            } else {
+                left++;
+            }
+        }
+        return left;
+    }
+
+
+    public static int partitionReverseNotStableSignBit(final int[] array, final int start, final int end) {
+        int left = start;
+        int right = end - 1;
+
+        while (left <= right) {
+            int element = array[left];
+            if (element >= 0) {
+                while (left <= right) {
+                    element = array[right];
+                    if (element >= 0) {
                         right--;
                     } else {
                         swap(array, left, right);
