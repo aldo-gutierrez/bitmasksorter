@@ -29,8 +29,8 @@ public class MaskInfoInt {
         int p_mask = 0x00000000;
         int i_mask = 0x00000000;
         int i = start;
-        for (; i < end; i += 512) {
-            int j = Math.min(i + 512, end);
+        for (; i < end; i += 1024) {
+            int j = Math.min(i + 1024, end);
             for (; i < j; i++) {
                 int e = array[i];
                 p_mask = p_mask | e;

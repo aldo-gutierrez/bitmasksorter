@@ -37,6 +37,10 @@ public class TestAlgorithms<T extends Named> {
         return totalElapsed.get(name) / totalExecutions.get(name);
     }
 
+    public long getPercentage(String name) {
+        return Math.round(getAVG(name) * 100.0 / getAVG(getAlgorithms()[0].getName()));
+    }
+
     public List<Object[]> getWinners() {
         String sorterWinner = "";
         long sorterWinnerTime = 0;
@@ -85,7 +89,7 @@ public class TestAlgorithms<T extends Named> {
         Named[] sorters = algorithms;
         for (Named sorter : sorters) {
             if (writer != null)
-                writer.write(size + ",\"" + limitLow + ":" + limitHigh + "\",\"" + sorter.getName() + "\"," + getAVG(sorter.getName()) / 1000000 + "\n");
+                writer.write(size + ",\"" + limitLow + ":" + limitHigh + "\",\"" + sorter.getName() + "\"," + getAVG(sorter.getName()) / 1000000 + ","+ getPercentage(sorter.getName()) + "\n");
             if (writer != null) writer.flush();
         }
         System.out.printf("%,13d %18s %25s", size, limitLow + ":" + limitHigh, params.function.toString());

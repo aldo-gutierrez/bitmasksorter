@@ -21,9 +21,9 @@ public class ArrayParallelRunner {
             int finalStartThread = startThread;
             int finalEndThread = endThread;
             Runnable runnable = () -> {
-                numThreads.addAndGet(1);
+                if (numThreads != null) numThreads.addAndGet(1);
                 results[finalI] = mapReducer.map(array, finalStartThread, finalEndThread);
-                numThreads.addAndGet(-1);
+                if (numThreads != null) numThreads.addAndGet(-1);
             };
             threads[i] = new Thread(runnable);
             threads[i].start();
@@ -31,9 +31,9 @@ public class ArrayParallelRunner {
             endThread = startThread + range;
         }
         endThread = end;
-        numThreads.addAndGet(1);
+        if (numThreads!= null) numThreads.addAndGet(1);
         results[maxThreadsM1] = mapReducer.map(array, startThread, endThread);
-        numThreads.addAndGet(-1);
+        if (numThreads!= null) numThreads.addAndGet(-1);
 
         for (int i = 0; i < maxThreadsM1; i++) {
             try {

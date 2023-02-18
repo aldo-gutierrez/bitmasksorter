@@ -7,7 +7,7 @@ import com.aldogg.sorter.SortingNetworks;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.aldogg.sorter.MaskInfoInt.getMaskAsArray;
+import static com.aldogg.sorter.MaskInfoInt.*;
 import static com.aldogg.sorter.intType.IntSorterUtils.listIsOrderedSigned;
 import static com.aldogg.sorter.intType.IntSorterUtils.listIsOrderedUnSigned;
 
@@ -40,9 +40,8 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
         if (ordered != AnalysisResult.UNORDERED) return;
 
         MaskInfoInt maskInfo;
-        if (n >= 8388608) {
-            numThreads.set(0);
-            maskInfo = MaskInfoInt.getMaskBitParallel(array, start, end, params.getMaxThreads(), numThreads);
+        if (n >= 6000000) {
+            maskInfo = MaskInfoInt.getMaskBitParallel(array, start, end, 2, null);
         } else {
             maskInfo = MaskInfoInt.getMaskBit(array, start, end);
         }
