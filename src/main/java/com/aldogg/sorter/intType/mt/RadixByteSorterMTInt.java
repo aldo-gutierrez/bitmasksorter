@@ -1,5 +1,6 @@
 package com.aldogg.sorter.intType.mt;
 
+import com.aldogg.sorter.SortingNetworks;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntBitMaskSorterMT;
 import com.aldogg.sorter.intType.st.RadixByteSorterInt;
@@ -18,7 +19,10 @@ public class RadixByteSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
     public IntBitMaskSorter getSTIntSorter() {
-        return new RadixByteSorterInt();
+        RadixByteSorterInt sorter = new RadixByteSorterInt();
+        sorter.setUnsigned(isUnsigned());
+        sorter.setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
+        return sorter;
     }
 
 }

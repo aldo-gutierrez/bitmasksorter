@@ -3,7 +3,7 @@ package com.aldogg.sorter.intType.st;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntSorter;
 
-import static com.aldogg.sorter.BitSorterUtils.binlog;
+import static com.aldogg.sorter.BitSorterUtils.logBase2;
 
 
 /*
@@ -49,7 +49,7 @@ public class AGSelectorSorterInt extends IntBitMaskSorter {
         int n = end - start;
         int k = kList.length;
         int km1 = k - 1; //K
-        int log2Nm1 = binlog(n) - 1; //Log2(N)
+        int log2Nm1 = logBase2(n) - 1; //Log2(N)
         if (n < 2) {
             return;
         }

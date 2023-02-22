@@ -198,7 +198,7 @@ public class BitSorterUtils {
         return sectionsInfo;
     }
 
-    public static int binlog( int bits ) // returns 0 for bits=0
+    public static int logBase2(int bits ) // returns 0 for bits=0
     {
         int log = 0;
         if( ( bits & 0xffff0000 ) != 0 ) { bits >>>= 16; log = 16; }

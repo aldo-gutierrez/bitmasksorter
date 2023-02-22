@@ -384,12 +384,14 @@ public class IntSorterUtils {
 
     public static void sortShortK(final int[] array, final int start, final int end, final int[] kList, final int kIndex) {
         int km1 = (kList.length - kIndex) - 1; //K
-        int log2Nm1 = BitSorterUtils.binlog(end - start) - 1; //Log2(N)
+        int log2Nm1 = BitSorterUtils.logBase2(end - start) - 1; //Log2(N)
         ShortSorter sorter;
-        if (log2Nm1 > 15) {
+        if (log2Nm1 <= 15 && km1 <= 15) {
+            sorter = shortSorters[km1][log2Nm1];
+        } else if (km1 <= 15) {
             sorter = CountSort;
         } else {
-            sorter = shortSorters[km1][log2Nm1];
+            sorter = StableByte;
         }
         executeSorter(array, start, end, kList, kIndex, sorter);
     }

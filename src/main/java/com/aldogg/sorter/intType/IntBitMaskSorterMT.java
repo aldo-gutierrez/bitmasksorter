@@ -28,7 +28,6 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
             return;
         }
         stSorter = getSTIntSorter();
-        stSorter.setUnsigned(isUnsigned());
         if (n <= params.getDataSizeForThreads() || params.getMaxThreads() <= 1) {
             stSorter.sort(array, start, end);
             return;
@@ -40,7 +39,7 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
         if (ordered != AnalysisResult.UNORDERED) return;
 
         MaskInfoInt maskInfo;
-        if (n >= 6000000) {
+        if (n >= SIZE_FOR_PARALLEL_BIT_MASK) {
             maskInfo = MaskInfoInt.getMaskBitParallel(array, start, end, 2, null);
         } else {
             maskInfo = MaskInfoInt.getMaskBit(array, start, end);
@@ -51,7 +50,6 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
             return;
         }
         setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
-        stSorter.setSNFunctions(snFunctions);
         numThreads.set(NUM_THREADS_INITIAL);
         sort(array, start, end, kList);
     }

@@ -11,6 +11,7 @@ public class MaskInfoInt {
     public int p_mask;
     public int i_mask;
 
+    public static final int SIZE_FOR_PARALLEL_BIT_MASK = 6000000;
     public static MaskInfoInt getMaskBit(final int[] array, final int start, final int end) {
         int p_mask = 0x00000000;
         int i_mask = 0x00000000;
@@ -30,16 +31,16 @@ public class MaskInfoInt {
         int i_mask = 0x00000000;
         int i = start;
         for (; i < end; i += 1024) {
+            if (p_mask < 0) {
+                if (i_mask < 0) {
+                    return null;
+                }
+            }
             int j = Math.min(i + 1024, end);
             for (; i < j; i++) {
                 int e = array[i];
                 p_mask = p_mask | e;
                 i_mask = i_mask | (~e);
-            }
-            if (p_mask < 0) {
-                if (i_mask < 0) {
-                    return null;
-                }
             }
         }
         MaskInfoInt m = new MaskInfoInt();

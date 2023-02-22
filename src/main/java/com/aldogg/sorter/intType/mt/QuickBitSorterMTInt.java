@@ -2,6 +2,7 @@ package com.aldogg.sorter.intType.mt;
 
 import com.aldogg.parallel.SorterRunner;
 import com.aldogg.sorter.MaskInfoInt;
+import com.aldogg.sorter.SortingNetworks;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntBitMaskSorterMT;
 import com.aldogg.sorter.intType.IntSorterUtils;
@@ -99,6 +100,9 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
     public IntBitMaskSorter getSTIntSorter() {
-        return new QuickBitSorterInt();
+        QuickBitSorterInt sorter = new QuickBitSorterInt();
+        sorter.setUnsigned(isUnsigned());
+        sorter.setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
+        return sorter;
     }
 }

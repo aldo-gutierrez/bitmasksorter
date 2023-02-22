@@ -141,6 +141,9 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
     public IntBitMaskSorter getSTIntSorter() {
-        return new RadixBitSorterInt();
+        RadixBitSorterInt sorter = new RadixBitSorterInt();
+        sorter.setUnsigned(isUnsigned());
+        sorter.setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
+        return sorter;
     }
 }
