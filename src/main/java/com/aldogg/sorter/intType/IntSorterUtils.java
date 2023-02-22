@@ -1,5 +1,8 @@
 package com.aldogg.sorter.intType;
 
+import com.aldogg.parallel.ArrayParallelRunner;
+import com.aldogg.parallel.ArrayRunnableInt;
+import com.aldogg.parallel.SorterRunner;
 import com.aldogg.sorter.AnalysisResult;
 import com.aldogg.sorter.BitSorterUtils;
 import com.aldogg.sorter.IntSection;
@@ -189,6 +192,52 @@ public class IntSorterUtils {
         return count;
     }
 
+    public static int[] partitionStableLastBitsParallel(final int[] array, final int start, final IntSection section, final int[] aux, final int n) {
+        final int mask = section.sortMask;
+        final int end = start + n;
+        final int countLength = 1 << section.length;
+        int[] count = ArrayParallelRunner.runInParallel(array, start, end, 2, null, new ArrayRunnableInt<int[]>() {
+            @Override
+            public int[] map(int[] array, int start, int end) {
+                final int[] count = new int[countLength];
+                for (int i = start; i < end; ++i) {
+                    count[array[i] & mask]++;
+                }
+                return count;
+            }
+
+            @Override
+            public int[] reduce(int[] result, int[] partialResult) {
+                for (int i = 0; i < countLength; ++i) {
+                    result[i]+=partialResult[i];
+                }
+                return result;
+            }
+        });
+
+        int[] left = new int[countLength];
+        int[] right = new int[countLength];
+        for (int i = 0, sum = 0; i < countLength; ++i) {
+            int countI = count[i];
+            left[i] = sum;
+            sum += countI;
+            right[i] = sum - 1;
+            count[i] = sum;
+        }
+        int med = (start + end) /2;
+        SorterRunner.runTwoRunnable(() -> {
+            for (int i = start; i < med; ++i) {
+                int element = array[i];
+                aux[left[element & mask]++] = element;
+            }
+        }, med - start, () -> {
+            for (int i = end - 1; i >= med; --i) {
+                int element = array[i];
+                aux[right[element & mask]--] = element;
+            }
+        }, end - med, 0, 2 , null);
+        return count;
+    }
 
     public static int[] partitionStableOneGroupBits(final int[] array, final int start, final IntSection section, final int[] aux, int startAux, int n) {
         final int mask = section.sortMask;
@@ -229,6 +278,54 @@ public class IntSorterUtils {
             int element = array[i];
             aux[count[(element & mask) >>> shiftRight]++] = element;
         }
+        return count;
+    }
+
+    public static int[] partitionStableOneGroupBitsParallel(int[] array, int start, IntSection section, int[] aux, int n) {
+        final int mask = section.sortMask;
+        final int shiftRight = section.shiftRight;
+        final int end = start + n;
+        final int countLength = 1 << section.length;
+        final int[] count = ArrayParallelRunner.runInParallel(array, start, end, 2, null, new ArrayRunnableInt<int[]>() {
+            @Override
+            public int[] map(int[] array, int start, int end) {
+                final int[] count = new int[countLength];
+                for (int i = start; i < end; ++i) {
+                    count[(array[i] & mask) >>> shiftRight]++;
+                }
+                return count;
+            }
+
+            @Override
+            public int[] reduce(int[] result, int[] partialResult) {
+                for (int i = 0; i < countLength; ++i) {
+                    result[i]+=partialResult[i];
+                }
+                return result;
+            }
+        });
+
+        int[] left = new int[countLength];
+        int[] right = new int[countLength];
+        for (int i = 0, sum = 0; i < countLength; ++i) {
+            int countI = count[i];
+            left[i] = sum;
+            sum += countI;
+            right[i] = sum - 1;
+            count[i] = sum;
+        }
+        int med = (start + end) /2;
+        SorterRunner.runTwoRunnable(() -> {
+            for (int i = start; i < med; ++i) {
+                int element = array[i];
+                aux[left[(element & mask) >>> shiftRight]++] = element;
+            }
+        }, med - start, () -> {
+            for (int i = end - 1; i >= med; --i) {
+                int element = array[i];
+                aux[right[(element & mask) >>> shiftRight]--] = element;
+            }
+        }, end - med, 0, 2 , null);
         return count;
     }
 

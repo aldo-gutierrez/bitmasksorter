@@ -61,10 +61,18 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
         if (sections.length == 1) {
             IntSection section = sections[0];
             if (section.isSectionAtEnd()) {
-                leftX = IntSorterUtils.partitionStableLastBits(array, start, section, aux, n);
+                if (n > 2000000) {
+                    leftX = IntSorterUtils.partitionStableLastBitsParallel(array, start, section, aux, n);
+                } else {
+                    leftX = IntSorterUtils.partitionStableLastBits(array, start, section, aux, n);
+                }
                 System.arraycopy(aux, 0, array, start, n);
             } else {
-                leftX = IntSorterUtils.partitionStableOneGroupBits(array, start, section, aux, n);
+                if (n > 2000000) {
+                    leftX = IntSorterUtils.partitionStableOneGroupBitsParallel(array, start, section, aux, n);
+                } else {
+                    leftX = IntSorterUtils.partitionStableOneGroupBits(array, start, section, aux, n);
+                }
                 System.arraycopy(aux, 0, array, start, n);
             }
         } else {
