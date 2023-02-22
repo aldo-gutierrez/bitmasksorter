@@ -12,7 +12,7 @@ import com.aldogg.sorter.intType.IntSorterUtils;
 public class QuickBitBaseSorterInt extends IntBitMaskSorter {
 
     @Override
-    public void sort(int[] array, int start, int end, int[] kList) {
+    public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
         if (kList[0] == SIGN_BIT_POS) { //there are negative numbers
             int sortMask = 1 << kList[0];
             int finalLeft = isUnsigned()

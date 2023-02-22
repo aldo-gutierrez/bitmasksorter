@@ -39,11 +39,11 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
                 return;
             }
         }
-        sort(array, start, end, kList);
+        sort(array, start, end, kList, null);
     }
 
     @Override
-    public void sort(int[] array, int start, int end, int[] kList) {
+    public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
         int mask = 0xFFFFFFFF;
         if (calculateBitMaskOptimization) {
             if (kList.length == 0) {

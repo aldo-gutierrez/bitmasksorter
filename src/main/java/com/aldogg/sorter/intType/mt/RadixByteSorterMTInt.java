@@ -13,7 +13,7 @@ import com.aldogg.sorter.intType.st.RadixByteSorterInt;
 public class RadixByteSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
-    public void sort(int[] array, int start, int end, int[] kList) {
+    public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
         //TODO
     }
 

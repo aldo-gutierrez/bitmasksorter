@@ -11,7 +11,7 @@ import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 public class QuickBitSorterInt extends IntBitMaskSorter {
 
     @Override
-    public void sort(int[] array, int start, int end, int[] kList) {
+    public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
         sort(array, start, end, kList, 0, false);
     }
 

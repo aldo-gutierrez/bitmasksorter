@@ -12,7 +12,7 @@ import static com.aldogg.sorter.intType.IntSorterUtils.*;
 public class RadixBitSorterInt extends IntBitMaskSorter {
 
     @Override
-    public void sort(int[] array, int start, int end, int[] kList) {
+    public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
         if (kList[0] == SIGN_BIT_POS) { //there are negative numbers and positive numbers
             MaskInfoInt maskInfo;
             int mask;

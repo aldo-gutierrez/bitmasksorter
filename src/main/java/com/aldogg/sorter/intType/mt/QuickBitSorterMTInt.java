@@ -15,7 +15,7 @@ import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
 public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
-    public void sort(int[] array, int start, int end, int[] kList) {
+    public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
         if (kList[0] == SIGN_BIT_POS) { //there are negative numbers and positive numbers
             int sortMask = 1 << kList[0];
             int finalLeft = isUnsigned()

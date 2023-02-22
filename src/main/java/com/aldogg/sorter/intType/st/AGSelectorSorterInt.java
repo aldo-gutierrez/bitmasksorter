@@ -45,7 +45,7 @@ public class AGSelectorSorterInt extends IntBitMaskSorter {
     };
 
     @Override
-    public void sort(int[] array, int start, int end, int[] kList) {
+    public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
         int n = end - start;
         int k = kList.length;
         int km1 = k - 1; //K
@@ -66,7 +66,7 @@ public class AGSelectorSorterInt extends IntBitMaskSorter {
             throw new RuntimeException(e);
         }
         sorter.setUnsigned(unsigned);
-        sorter.sort(array, start, end, kList);
+        sorter.sort(array, start, end, kList, null);
     }
 
 }

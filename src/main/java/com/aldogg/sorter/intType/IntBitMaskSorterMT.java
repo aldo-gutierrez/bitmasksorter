@@ -51,7 +51,7 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
         }
         setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
         numThreads.set(NUM_THREADS_INITIAL);
-        sort(array, start, end, kList);
+        sort(array, start, end, kList, null);
     }
 
 }

@@ -61,7 +61,7 @@ public abstract class IntBitMaskSorter implements IntSorter {
                 int mask = maskInfo.getMask();
                 int[] kList = MaskInfoInt.getMaskAsArray(mask);
                 if (kList.length > 0) {
-                    sort(array, start, finalLeft, kList); //aux
+                    sort(array, start, finalLeft, kList, null); //aux
                 }
             }
             if (n2 > 1) { //sort positive numbers
@@ -69,14 +69,14 @@ public abstract class IntBitMaskSorter implements IntSorter {
                 int mask = maskInfo.getMask();
                 int[] kList = MaskInfoInt.getMaskAsArray(mask);
                 if (kList.length > 0) {
-                    sort(array, finalLeft, end, kList);
+                    sort(array, finalLeft, end, kList, null);
                 }
             }
         } else {
             int mask = maskInfo.getMask();
             int[] kList = MaskInfoInt.getMaskAsArray(mask);
             if (kList.length > 0) {
-                sort(array, start, end, kList);
+                sort(array, start, end, kList, null);
             }
         }
     }
