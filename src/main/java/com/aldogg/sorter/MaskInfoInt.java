@@ -81,6 +81,26 @@ public class MaskInfoInt {
         });
     }
 
+    public static MaskInfoInt getMaskBitDetectSignBitParallel(final int[] array, final int start, final int end, final int maxThreads, final AtomicInteger numThreads) {
+        return ArrayParallelRunner.runInParallel(array, start, end, maxThreads, numThreads, new ArrayRunnableInt<MaskInfoInt>() {
+            @Override
+            public MaskInfoInt map(final int[] list, final int start1, final int end1) {
+                return getMaskBitDetectSignBit(list, start1, end1);
+            }
+
+            @Override
+            public MaskInfoInt reduce(final MaskInfoInt m1, final MaskInfoInt m2) {
+                if (m1 == null || m2 == null) {
+                    return null;
+                }
+                MaskInfoInt res = new MaskInfoInt();
+                res.p_mask = m1.p_mask | m2.p_mask;
+                res.i_mask = m1.i_mask | m2.i_mask;
+                return res;
+            }
+        });
+    }
+
     public static int[] getMaskAsArray(final int mask) {
         List<Integer> list = new ArrayList<>();
         for (int i = 31; i >= 0; i--) {

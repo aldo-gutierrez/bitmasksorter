@@ -114,4 +114,26 @@ public class ArrayParallelRunner {
         return results[0];
     }
 
+    public static int[] splitWork(int n1, int n2, int maxThreads) {
+        int sum = n1 + n2;
+        int nPerThread = sum / maxThreads;
+        if (n1 < n2) {
+            if (n1 <= nPerThread) {
+                return new int[]{1, maxThreads - 1};
+            } else {
+                double t1 = n1 * 1.0 / nPerThread;
+                int t1i = (int) Math.round(t1);
+                return new int[]{t1i, maxThreads - t1i};
+            }
+        } else {
+            if (n2 <= nPerThread) {
+                return new int[]{maxThreads - 1, 1};
+            } else {
+                double t2 = n2 * 1.0 / nPerThread;
+                int t2i = (int) Math.round(t2);
+                return new int[]{maxThreads - t2i, t2i};
+            }
+        }
+    }
+
 }

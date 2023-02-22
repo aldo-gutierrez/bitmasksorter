@@ -18,30 +18,8 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
     @Override
     public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
         int maxThreadsBits = params.getMaxThreadsBits();
-        if (kList[0] == SIGN_BIT_POS) { //there are negative numbers and positive numbers
-            int sortMask = 1 << kList[0];
-            int finalLeft = isUnsigned()
-                    ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
-                    : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
-            int n1 = finalLeft - start;
-            int n2 = end - finalLeft;
-            SorterRunner.runTwoRunnable(
-                    n1 > 1 ? () -> { //sort negative numbers
-                        MaskInfoInt maskParts1 = MaskInfoInt.getMaskBit(array, start, finalLeft);
-                        int mask1 = maskParts1.getMask();
-                        int[] kList1 = MaskInfoInt.getMaskAsArray(mask1);
-                        sort(array, start, finalLeft, kList1, 0, maxThreadsBits - 1);
-                    } : null, n1,
-                    n2 > 1 ? () -> { //sort positive numbers
-                        MaskInfoInt maskParts2 = MaskInfoInt.getMaskBit(array, finalLeft, end);
-                        int mask2 = maskParts2.getMask();
-                        int[] kList2 = MaskInfoInt.getMaskAsArray(mask2);
-                        sort(array, finalLeft, end, kList2, 0, maxThreadsBits - 1);
-                    } : null, n2, params.getDataSizeForThreads(), 0, null);
-
-        } else {
-            sort(array, start, end, kList, 0, maxThreadsBits);
-        }
+        maxThreadsBits = params.getMaxThreads() == (Integer) multiThreadParams ? maxThreadsBits : maxThreadsBits - 1;
+        sort(array, start, end, kList, 0, maxThreadsBits);
     }
 
     public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, int paramsMaxThreadBits) {

@@ -1,6 +1,5 @@
 package com.aldogg.sorter.intType.mt;
 
-import com.aldogg.parallel.SorterRunner;
 import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.SortingNetworks;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
@@ -16,29 +15,7 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
-        if (kList[0] == SIGN_BIT_POS) { //there are negative numbers and positive numbers
-            int sortMask = 1 << kList[0];
-            int finalLeft = isUnsigned()
-                    ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
-                    : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
-            int n1 = finalLeft - start;
-            int n2 = end - finalLeft;
-            SorterRunner.runTwoRunnable(
-                    n1 > 1 ? () -> { //sort negative numbers
-                        MaskInfoInt maskInfo1 = getMaskBit(array, start, finalLeft);
-                        int mask1 = maskInfo1.getMask();
-                        int[] kList1 = getMaskAsArray(mask1);
-                        sortMT(array, start, finalLeft, kList1, 0, false);
-                    } : null, n1,
-                    n2 > 1 ? () -> { //sort positive numbers
-                        MaskInfoInt maskInfo2 = getMaskBit(array, finalLeft, end);
-                        int mask2 = maskInfo2.getMask();
-                        int[] kList2 = getMaskAsArray(mask2);
-                        sortMT(array, finalLeft, end, kList2, 0, false);
-                    } : null, n2, params.getDataSizeForThreads(), params.getMaxThreads(), numThreads);
-        } else {
-            sortMT(array, start, end, kList, 0, false);
-        }
+        sortMT(array, start, end, kList, 0, false);
     }
 
     public void sortMT(final int[] array, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
