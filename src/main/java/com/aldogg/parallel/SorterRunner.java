@@ -6,6 +6,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SorterRunner {
 
     public static void runTwoRunnable(Runnable r1, int length1, Runnable r2, int length2, int dataSizeForThreads, int maxThreads, AtomicInteger numThreads) {
+        if (r1 == null) {
+            r2.run();
+            return;
+        }
+        if (r2 == null) {
+            r1.run();
+            return;
+        }
+
         if (length1 < dataSizeForThreads || length2 < dataSizeForThreads) {
             r1.run();
             r2.run();
