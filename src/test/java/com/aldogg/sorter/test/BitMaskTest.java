@@ -7,11 +7,11 @@ import com.aldogg.sorter.MaskInfoInt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import static com.aldogg.sorter.MaskInfoInt.*;
-import static com.aldogg.sorter.intType.IntSorterUtils.partitionStableLastBits;
-import static com.aldogg.sorter.intType.IntSorterUtils.partitionStableLastBitsParallel;
+import static com.aldogg.sorter.intType.IntSorterUtils.*;
 
 public class BitMaskTest {
 
@@ -106,6 +106,52 @@ public class BitMaskTest {
         System.out.println("total = " + total);
         System.out.println("iterations = " + iterations);
         double t2 = (double) total / iterations;
+        System.out.println("total/iterations = " + t2);
+        Assertions.assertTrue(t2 < t1);
+    }
+
+    @Test
+    public void testPartitionStableParallel() {
+        Random random = new Random();
+        int arraySize = 200000;
+        int iterations = 100;
+        MaskInfoInt maskInfo = null;
+
+        long total1 = 0;
+        long total2 = 0;
+
+        for (int iteration = 0; iteration < iterations; iteration++) {
+            int[] a1 = new int[arraySize];
+            for (int i = 0; i < arraySize; i++) {
+                a1[i] = random.nextInt();
+            }
+            int[] a2 = Arrays.copyOf(a1, a1.length);
+
+            int[] aux = new int[arraySize];
+            long start1 = System.nanoTime();
+            int left1 = partitionStable(a1, 0, arraySize , 0x80000000, aux);
+            long elapsed1 = System.nanoTime() - start1;
+            total1 += elapsed1;
+
+            aux = new int[arraySize];
+            long start2 = System.nanoTime();
+            int left2 = partitionStableParallel(a2, 0, arraySize , 0x80000000, aux);
+            long elapsed2 = System.nanoTime() - start2;
+            total2 += elapsed2;
+
+            Assertions.assertArrayEquals(a1, a2);
+            Assertions.assertEquals(left1, left2);
+        }
+        System.out.println(maskInfo);
+        System.out.println("total = " + total1);
+        System.out.println("iterations = " + iterations);
+        double t1 = (double) total1 / iterations;
+        System.out.println("total/iterations = " + t1);
+
+        System.out.println(maskInfo);
+        System.out.println("total = " + total2);
+        System.out.println("iterations = " + iterations);
+        double t2 = (double) total2 / iterations;
         System.out.println("total/iterations = " + t2);
         Assertions.assertTrue(t2 < t1);
     }

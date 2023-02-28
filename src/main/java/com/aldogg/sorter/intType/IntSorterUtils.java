@@ -152,6 +152,50 @@ public class IntSorterUtils {
         return left;
     }
 
+    public static int partitionStableParallel(final int[] array, final int start, final int end, final int mask, final int[] aux) {
+        int med = (start + end) / 2;
+        int[] indexes = new int[]{start, 0, end - 1, end - 1};
+
+        SorterRunner.runTwoRunnable(() -> {
+            int zeroStart = indexes[0];
+            int oneAuxStart = indexes[1];
+            for (int i = start; i < med; ++i) {
+                int element = array[i];
+                if ((element & mask) == 0) {
+                    array[zeroStart] = element;
+                    zeroStart++;
+                } else {
+                    aux[oneAuxStart] = element;
+                    oneAuxStart++;
+                }
+            }
+            indexes[0] = zeroStart;
+            indexes[1] = oneAuxStart;
+        }, med - start, () -> {
+            int zeroAuxStart = indexes[2];
+            int oneStart = indexes[3];
+            for (int i = end - 1; i >= med; --i) {
+                int element = array[i];
+                if ((element & mask) != 0) {
+                    array[oneStart] = element;
+                    oneStart--;
+                } else {
+                    aux[zeroAuxStart] = element;
+                    zeroAuxStart--;
+                }
+            }
+            indexes[2] = zeroAuxStart;
+            indexes[3] = oneStart;
+        }, end - med, 0, 2, null);
+        int zeroStart = indexes[0];
+        int oneAuxStart = indexes[1];
+        int zeroAuxStart = indexes[2];
+        int lengthZeros2 = end - 1 - zeroAuxStart;
+        System.arraycopy(aux, zeroAuxStart + 1, array, zeroStart, lengthZeros2);
+        int lengthOnes2 = oneAuxStart - start;
+        System.arraycopy(aux, 0, array, zeroStart + lengthZeros2, lengthOnes2);
+        return zeroStart + lengthZeros2;
+    }
 
     public static void partitionStableLastBits(final int[] array, final int start, final IntSection section, final int[] aux, final int startAux, final int n) {
         final int mask = section.sortMask;
