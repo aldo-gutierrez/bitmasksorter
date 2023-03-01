@@ -31,9 +31,9 @@ public class ArrayParallelRunner {
             endThread = startThread + range;
         }
         endThread = end;
-        if (numThreads!= null) numThreads.addAndGet(1);
+        if (numThreads != null) numThreads.addAndGet(1);
         results[maxThreadsM1] = mapReducer.map(array, startThread, endThread);
-        if (numThreads!= null) numThreads.addAndGet(-1);
+        if (numThreads != null) numThreads.addAndGet(-1);
 
         for (int i = 0; i < maxThreadsM1; i++) {
             try {
@@ -49,10 +49,15 @@ public class ArrayParallelRunner {
             int reminder = numResults % 2;
 
             for (int i = 0; i < quotient; i++) {
-                results[i] = mapReducer.reduce(results[i * 2], results[i * 2 + 1]);
+                results[i] = mapReducer.reduce(results[i * 2], results[(i * 2) + 1]);
             }
             if (reminder == 1) {
-                results[quotient - 1] = mapReducer.reduce(results[quotient - 1], results[quotient * 2 + 2]);
+                try {
+                    int i = quotient - 1;
+                    results[i] = mapReducer.reduce(results[i * 2], results[(i * 2) + 2]);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
             numResults = quotient;
         }

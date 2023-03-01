@@ -8,6 +8,9 @@ import com.aldogg.sorter.BitSorterUtils;
 import com.aldogg.sorter.IntSection;
 import com.aldogg.sorter.IntSectionsInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.aldogg.sorter.BitSorterUtils.getKeySN;
 import static com.aldogg.sorter.intType.IntSorterUtils.ShortSorter.*;
 import static com.aldogg.sorter.intType.st.RadixBitSorterInt.radixSort;
@@ -195,6 +198,69 @@ public class IntSorterUtils {
         int lengthOnes2 = oneAuxStart - start;
         System.arraycopy(aux, 0, array, zeroStart + lengthZeros2, lengthOnes2);
         return zeroStart + lengthZeros2;
+    }
+
+    public static int partitionStableParallel2(final int[] array, final int start, final int end, final int mask, final int[] aux) {
+        int n = end - start;
+        final List<int[]> indexes = new ArrayList<>();
+        ArrayParallelRunner.runInParallel(array, start, end, 2, null, new ArrayRunnableInt<int[]>() {
+            @Override
+            public int[] map(int[] array, int start, int end) {
+                int left = start;
+                int right = start;
+                for (int i = start; i < end; ++i) {
+                    int element = array[i];
+                    if ((element & mask) == 0) {
+                        array[left] = element;
+                        left++;
+                    } else {
+                        aux[right] = element;
+                        right++;
+                    }
+                }
+                System.arraycopy(aux, start, array, left, right - start);
+                int[] result = {start, end, left};
+                return result;
+            }
+
+            @Override
+            public int[] reduce(int[] result, int[] partialResult) {
+                if (result != null) {
+                    indexes.add(result);
+                }
+                if (partialResult != null) {
+                    indexes.add(partialResult);
+                }
+                return null;
+            }
+        });
+        int totalZeroLength = 0;
+        for (int[] parts : indexes) {
+            int startX = parts[0];
+            int leftX = parts[2];
+            int zeroLengthX = leftX - startX;
+            totalZeroLength += zeroLengthX;
+        }
+        int left0 = start;
+        int left1 = totalZeroLength;
+        for (int[] parts : indexes) {
+            int startX = parts[0];
+            int endX = parts[1];
+            int leftX = parts[2];
+            int nX = endX - startX;
+            int lengthZero = leftX - startX;
+            int lengthOne = nX - lengthZero;
+            System.arraycopy(array, startX, aux, left0, lengthZero);
+            try {
+                System.arraycopy(array, leftX, aux, left1, lengthOne);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            left0 += lengthZero;
+            left1 += lengthOne;
+        }
+        System.arraycopy(aux, 0, array, 0, n);
+        return totalZeroLength;
     }
 
     public static void partitionStableLastBits(final int[] array, final int start, final IntSection section, final int[] aux, final int startAux, final int n) {
