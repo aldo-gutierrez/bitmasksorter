@@ -1,11 +1,11 @@
 package com.aldogg.sorter;
 
 import com.aldogg.parallel.ArrayParallelRunner;
-import com.aldogg.parallel.ArrayRunnableLong;
+import com.aldogg.parallel.ArrayRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.aldogg.sorter.longType.LongSorter.LONG_SIGN_BIT_POS;
 
@@ -42,11 +42,12 @@ public class MaskInfoLong {
     }
 
 
-    public static MaskInfoLong getMaskBitParallel(final long[] array, final int start, final int end, final int maxThreads, final AtomicInteger numThreads) {
-        MaskInfoLong maskInfo = ArrayParallelRunner.runInParallel(array, start, end, maxThreads, numThreads, new ArrayRunnableLong<MaskInfoLong>() {
+    public static MaskInfoLong getMaskBitParallel(final long[] array, final int start, final int end, final ArrayParallelRunner.APRParameters parameters) {
+        MaskInfoLong maskInfo = ArrayParallelRunner.runInParallel(array, start, end, parameters, new ArrayRunnable<MaskInfoLong>() {
+
             @Override
-            public MaskInfoLong map(final long[] list, final int start, final int end) {
-                return getMaskBit(list, start, end);
+            public MaskInfoLong map(Object array, int start, int end, int index, AtomicBoolean stop) {
+                return getMaskBit((long[]) array, start, end);
             }
 
             @Override

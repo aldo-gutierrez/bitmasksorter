@@ -1,5 +1,6 @@
 package com.aldogg.sorter.intType;
 
+import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.parallel.SorterRunner;
 import com.aldogg.sorter.AnalysisResult;
 import com.aldogg.sorter.BitSorterMTParams;
@@ -45,7 +46,7 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
 
         MaskInfoInt maskInfo;
         if (n >= SIZE_FOR_PARALLEL_BIT_MASK) {
-            maskInfo = MaskInfoInt.getMaskBitDetectSignBitParallel(array, start, end, 2, null);
+            maskInfo = MaskInfoInt.getMaskBitDetectSignBitParallel(array, start, end, new ArrayParallelRunner.APRParameters(2));
         } else {
             maskInfo = MaskInfoInt.getMaskBitDetectSignBit(array, start, end);
         }
@@ -62,7 +63,7 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
                         int maxThreads = threadNumbers[0];
                         MaskInfoInt maskInfo1;
                         if (n1 >= SIZE_FOR_PARALLEL_BIT_MASK & maxThreads >= 2) {
-                            maskInfo1 = MaskInfoInt.getMaskBitParallel(array, start, finalLeft, 2, null);
+                            maskInfo1 = MaskInfoInt.getMaskBitParallel(array, start, finalLeft, new ArrayParallelRunner.APRParameters(2));
                         } else {
                             maskInfo1 = MaskInfoInt.getMaskBit(array, start, finalLeft);
                         }
@@ -74,7 +75,7 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
                         int maxThreads = threadNumbers[1];
                         MaskInfoInt maskInfo2;
                         if (n2 >= SIZE_FOR_PARALLEL_BIT_MASK & maxThreads >= 2) {
-                            maskInfo2 = MaskInfoInt.getMaskBitParallel(array, finalLeft, end, 2, null);
+                            maskInfo2 = MaskInfoInt.getMaskBitParallel(array, finalLeft, end, new ArrayParallelRunner.APRParameters(2));
                         } else {
                             maskInfo2 = MaskInfoInt.getMaskBit(array, finalLeft, end);
                         }

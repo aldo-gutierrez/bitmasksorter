@@ -1,28 +1,47 @@
 package com.aldogg.parallel;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ArrayParallelRunner {
 
-    public static <R> R runInParallel(final int[] array, final int start, final int end, final int maxThreads,
-                                      AtomicInteger numThreads, ArrayRunnableInt<R> mapReducer) {
-        if (maxThreads <= 1) {
-            return mapReducer.map(array, start, end);
+    public static class APRParameters {
+        int maxThreads = 2;
+        AtomicInteger numThreads = null;
+        boolean reduceInParallel = false;
+
+        public APRParameters() {
         }
-        int length = end - start;
-        int range = length / maxThreads;
-        int maxThreadsM1 = maxThreads - 1;
-        Thread[] threads = new Thread[maxThreadsM1];
+
+        public APRParameters(int maxThreads) {
+            this.maxThreads = maxThreads;
+        }
+
+    }
+
+    public static <R> R runInParallel(final Object array, final int start, final int endPlus1, APRParameters parameters, ArrayRunnable<R> mapReducer) {
+        int maxThreads = parameters.maxThreads;
+        if (maxThreads <= 1) {
+            return mapReducer.map(array, start, endPlus1, 0, null);
+        }
+        AtomicBoolean stop = new AtomicBoolean(false);
+        AtomicInteger numThreads = parameters.numThreads;
+        int n = endPlus1 - start;
+        int range = n / maxThreads;
+        int maxThreadsMinus1 = maxThreads - 1;
+        Thread[] threads = new Thread[maxThreadsMinus1];
         final R[] results = (R[]) new Object[maxThreads];
         int startThread = start;
         int endThread = startThread + range;
-        for (int i = 0; i < maxThreadsM1; i++) {
+        for (int i = 0; i < maxThreadsMinus1; i++) {
             int finalI = i;
             int finalStartThread = startThread;
             int finalEndThread = endThread;
             Runnable runnable = () -> {
                 if (numThreads != null) numThreads.addAndGet(1);
-                results[finalI] = mapReducer.map(array, finalStartThread, finalEndThread);
+                results[finalI] = mapReducer.map(array, finalStartThread, finalEndThread, finalI, stop);
                 if (numThreads != null) numThreads.addAndGet(-1);
             };
             threads[i] = new Thread(runnable);
@@ -30,12 +49,12 @@ public class ArrayParallelRunner {
             startThread = endThread;
             endThread = startThread + range;
         }
-        endThread = end;
+        endThread = endPlus1;
         if (numThreads != null) numThreads.addAndGet(1);
-        results[maxThreadsM1] = mapReducer.map(array, startThread, endThread);
+        results[maxThreadsMinus1] = mapReducer.map(array, startThread, endThread, maxThreadsMinus1, stop);
         if (numThreads != null) numThreads.addAndGet(-1);
 
-        for (int i = 0; i < maxThreadsM1; i++) {
+        for (int i = 0; i < maxThreadsMinus1; i++) {
             try {
                 threads[i].join();
             } catch (InterruptedException e) {
@@ -43,78 +62,42 @@ public class ArrayParallelRunner {
             }
         }
 
-        int numResults = maxThreads;
-        while (numResults > 1) {
-            int quotient = numResults / 2;
-            int reminder = numResults % 2;
-
-            for (int i = 0; i < quotient; i++) {
-                results[i] = mapReducer.reduce(results[i * 2], results[(i * 2) + 1]);
+        int incD2 = 1;
+        int inc = 2;
+        if (!parameters.reduceInParallel) {
+            while (incD2 < maxThreads) {
+                for (int i = 0; i < maxThreads; i += inc) {
+                    int i2 = i + incD2;
+                    if (i2 < maxThreads) {
+                        results[i] = mapReducer.reduce(results[i], results[i + incD2]);
+                    }
+                }
+                inc = inc << 1;
+                incD2 = incD2 << 1;
             }
-            if (reminder == 1) {
-                try {
-                    int i = quotient - 1;
-                    results[i] = mapReducer.reduce(results[i * 2], results[(i * 2) + 2]);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+        } else {
+            while (incD2 < maxThreads) {
+                List<Thread> threadList2 = new ArrayList<>();
+                for (int i = 0; i < maxThreads; i += inc) {
+                    int i2 = i + incD2;
+                    if (i2 < maxThreads) {
+                        int finalI = i;
+                        int finalIncD2 = incD2;
+                        Thread t = new Thread(() -> results[finalI] = mapReducer.reduce(results[finalI], results[finalI + finalIncD2]));
+                        threadList2.add(t);
+                        t.start();
+                    }
+                }
+                inc = inc << 1;
+                incD2 = incD2 << 1;
+                for (Thread t : threadList2) {
+                    try {
+                        t.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-            numResults = quotient;
-        }
-        return results[0];
-    }
-
-    public static <R> R runInParallel(final long[] array, final int start, final int end, final int maxThreads,
-                                      AtomicInteger numThreads, ArrayRunnableLong<R> mapReducer) {
-        if (maxThreads <= 1) {
-            return mapReducer.map(array, start, end);
-        }
-        int length = end - start;
-        int range = length / maxThreads;
-        int maxThreadsM1 = maxThreads - 1;
-        Thread[] threads = new Thread[maxThreadsM1];
-        final R[] results = (R[]) new Object[maxThreads];
-        int startThread = start;
-        int endThread = startThread + range;
-        for (int i = 0; i < maxThreadsM1; i++) {
-            int finalI = i;
-            int finalStartThread = startThread;
-            int finalEndThread = endThread;
-            Runnable runnable = () -> {
-                numThreads.addAndGet(1);
-                results[finalI] = mapReducer.map(array, finalStartThread, finalEndThread);
-                numThreads.addAndGet(-1);
-            };
-            threads[i] = new Thread(runnable);
-            threads[i].start();
-            startThread = endThread;
-            endThread = startThread + range;
-        }
-        endThread = end;
-        numThreads.addAndGet(1);
-        results[maxThreadsM1] = mapReducer.map(array, startThread, endThread);
-        numThreads.addAndGet(-1);
-
-        for (int i = 0; i < maxThreadsM1; i++) {
-            try {
-                threads[i].join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        int numResults = maxThreads;
-        while (numResults > 1) {
-            int quotient = numResults / 2;
-            int reminder = numResults % 2;
-
-            for (int i = 0; i < quotient; i++) {
-                results[i] = mapReducer.reduce(results[i * 2], results[i * 2 + 1]);
-            }
-            if (reminder == 1) {
-                results[quotient - 1] = mapReducer.reduce(results[quotient - 1], results[quotient * 2 + 2]);
-            }
-            numResults = quotient;
         }
         return results[0];
     }

@@ -1,11 +1,11 @@
 package com.aldogg.sorter;
 
-import com.aldogg.parallel.ArrayRunnableInt;
+import com.aldogg.parallel.ArrayRunnable;
 import com.aldogg.parallel.ArrayParallelRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MaskInfoInt {
     public int p_mask;
@@ -64,11 +64,11 @@ public class MaskInfoInt {
     }
 
 
-    public static MaskInfoInt getMaskBitParallel(final int[] array, final int start, final int end, final int maxThreads, final AtomicInteger numThreads) {
-        return ArrayParallelRunner.runInParallel(array, start, end, maxThreads, numThreads, new ArrayRunnableInt<MaskInfoInt>() {
+    public static MaskInfoInt getMaskBitParallel(final int[] array, final int start, final int end, final ArrayParallelRunner.APRParameters parameters) {
+        return ArrayParallelRunner.runInParallel(array, start, end, parameters, new ArrayRunnable<MaskInfoInt>() {
             @Override
-            public MaskInfoInt map(final int[] list, final int start1, final int end1) {
-                return getMaskBit(list, start1, end1);
+            public MaskInfoInt map(final Object list, final int start1, final int end1, int index, final AtomicBoolean stop) {
+                return getMaskBit((int[]) list, start1, end1);
             }
 
             @Override
@@ -81,11 +81,11 @@ public class MaskInfoInt {
         });
     }
 
-    public static MaskInfoInt getMaskBitDetectSignBitParallel(final int[] array, final int start, final int end, final int maxThreads, final AtomicInteger numThreads) {
-        return ArrayParallelRunner.runInParallel(array, start, end, maxThreads, numThreads, new ArrayRunnableInt<MaskInfoInt>() {
+    public static MaskInfoInt getMaskBitDetectSignBitParallel(final int[] array, final int start, final int end, final ArrayParallelRunner.APRParameters parameters) {
+        return ArrayParallelRunner.runInParallel(array, start, end, parameters, new ArrayRunnable<MaskInfoInt>() {
             @Override
-            public MaskInfoInt map(final int[] list, final int start1, final int end1) {
-                return getMaskBitDetectSignBit(list, start1, end1);
+            public MaskInfoInt map(final Object list, final int start1, final int end1, final int index, final AtomicBoolean stop) {
+                return getMaskBitDetectSignBit((int[]) list, start1, end1);
             }
 
             @Override

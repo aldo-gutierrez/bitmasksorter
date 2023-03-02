@@ -1,5 +1,6 @@
 package com.aldogg.sorter.test;
 
+import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.sorter.BitSorterUtils;
 import com.aldogg.sorter.IntSection;
 import com.aldogg.sorter.IntSectionsInfo;
@@ -44,7 +45,7 @@ public class BitMaskTest {
                 a[i] = random.nextInt();
             }
             long start = System.nanoTime();
-            c = getMaskBitParallel(a, 0, a.length, 2, null);
+            c = getMaskBitParallel(a, 0, a.length, new ArrayParallelRunner.APRParameters(2));
             long elapsed = System.nanoTime() - start;
             total += elapsed;
         }
@@ -113,7 +114,7 @@ public class BitMaskTest {
     @Test
     public void testPartitionStableParallel() {
         Random random = new Random();
-        int arraySize = 200000;
+        int arraySize = 1000000;
         int iterations = 100;
         MaskInfoInt maskInfo = null;
 
@@ -159,7 +160,7 @@ public class BitMaskTest {
     @Test
     public void testPartitionStableParallel2() {
         Random random = new Random();
-        int arraySize = 300000;
+        int arraySize = 1000000;
         int iterations = 100;
         MaskInfoInt maskInfo = null;
 
@@ -202,4 +203,50 @@ public class BitMaskTest {
         Assertions.assertTrue(t2 < t1);
     }
 
+    @Test
+    public void testPartitionStableParallel2b() {
+        //partitionStableParallel  is faster than partitionStableParallel2 when using two threads only
+        Random random = new Random();
+        int arraySize = 1000000;
+        int iterations = 100;
+        MaskInfoInt maskInfo = null;
+
+        long total1 = 0;
+        long total2 = 0;
+
+        for (int iteration = 0; iteration < iterations; iteration++) {
+            int[] a1 = new int[arraySize];
+            for (int i = 0; i < arraySize; i++) {
+                a1[i] = random.nextInt();
+            }
+            int[] a2 = Arrays.copyOf(a1, a1.length);
+
+            int[] aux = new int[arraySize];
+            long start1 = System.nanoTime();
+            int left1 = partitionStableParallel2(a1, 0, arraySize , 0x80000000, aux);
+            long elapsed1 = System.nanoTime() - start1;
+            total1 += elapsed1;
+
+            aux = new int[arraySize];
+            long start2 = System.nanoTime();
+            int left2 = partitionStableParallel(a2, 0, arraySize , 0x80000000, aux);
+            long elapsed2 = System.nanoTime() - start2;
+            total2 += elapsed2;
+
+            Assertions.assertArrayEquals(a1, a2);
+            Assertions.assertEquals(left1, left2);
+        }
+        System.out.println(maskInfo);
+        System.out.println("total = " + total1);
+        System.out.println("iterations = " + iterations);
+        double t1 = (double) total1 / iterations;
+        System.out.println("total/iterations = " + t1);
+
+        System.out.println(maskInfo);
+        System.out.println("total = " + total2);
+        System.out.println("iterations = " + iterations);
+        double t2 = (double) total2 / iterations;
+        System.out.println("total/iterations = " + t2);
+        Assertions.assertTrue(t2 < t1);
+    }
 }

@@ -1,15 +1,14 @@
 package com.aldogg.sorter.intType;
 
 import com.aldogg.parallel.ArrayParallelRunner;
-import com.aldogg.parallel.ArrayRunnableInt;
+import com.aldogg.parallel.ArrayRunnable;
 import com.aldogg.parallel.SorterRunner;
 import com.aldogg.sorter.AnalysisResult;
 import com.aldogg.sorter.BitSorterUtils;
 import com.aldogg.sorter.IntSection;
 import com.aldogg.sorter.IntSectionsInfo;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.aldogg.sorter.BitSorterUtils.getKeySN;
 import static com.aldogg.sorter.intType.IntSorterUtils.ShortSorter.*;
@@ -202,10 +201,13 @@ public class IntSorterUtils {
 
     public static int partitionStableParallel2(final int[] array, final int start, final int end, final int mask, final int[] aux) {
         int n = end - start;
-        final List<int[]> indexes = new ArrayList<>();
-        ArrayParallelRunner.runInParallel(array, start, end, 2, null, new ArrayRunnableInt<int[]>() {
+        int maxThreads = 2; //best number is 5,7 then 4 then 3 then 6,8 then 2
+        ArrayParallelRunner.APRParameters parameters = new ArrayParallelRunner.APRParameters(maxThreads);
+        final int[][] indexes = new int[maxThreads][];
+        ArrayParallelRunner.runInParallel(array, start, end, parameters, new ArrayRunnable<int[]>() {
             @Override
-            public int[] map(int[] array, int start, int end) {
+            public int[] map(Object arrayX, int start, int end, int index, final AtomicBoolean stop) {
+                int[] array = (int[]) arrayX;
                 int left = start;
                 int right = start;
                 for (int i = start; i < end; ++i) {
@@ -218,48 +220,38 @@ public class IntSorterUtils {
                         right++;
                     }
                 }
-                System.arraycopy(aux, start, array, left, right - start);
                 int[] result = {start, end, left};
+                indexes[index] = result;
                 return result;
             }
 
             @Override
             public int[] reduce(int[] result, int[] partialResult) {
-                if (result != null) {
-                    indexes.add(result);
-                }
-                if (partialResult != null) {
-                    indexes.add(partialResult);
-                }
                 return null;
             }
         });
         int totalZeroLength = 0;
-        for (int[] parts : indexes) {
+
+        for (int i = 0; i < indexes.length; i++) {
+            int[] parts = indexes[i];
             int startX = parts[0];
             int leftX = parts[2];
             int zeroLengthX = leftX - startX;
+            if (i > 0) {
+                System.arraycopy(array, startX, array, totalZeroLength, zeroLengthX);
+            }
             totalZeroLength += zeroLengthX;
         }
-        int left0 = start;
-        int left1 = totalZeroLength;
-        for (int[] parts : indexes) {
+        int totalOneLength = totalZeroLength;
+        for (int i = 0; i < indexes.length; i++) {
+            int[] parts = indexes[i];
             int startX = parts[0];
             int endX = parts[1];
             int leftX = parts[2];
-            int nX = endX - startX;
-            int lengthZero = leftX - startX;
-            int lengthOne = nX - lengthZero;
-            System.arraycopy(array, startX, aux, left0, lengthZero);
-            try {
-                System.arraycopy(array, leftX, aux, left1, lengthOne);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            left0 += lengthZero;
-            left1 += lengthOne;
+            int oneLengthX = endX - leftX;
+            System.arraycopy(aux, startX, array, totalOneLength, oneLengthX);
+            totalOneLength += oneLengthX;
         }
-        System.arraycopy(aux, 0, array, 0, n);
         return totalZeroLength;
     }
 
@@ -306,9 +298,10 @@ public class IntSorterUtils {
         final int mask = section.sortMask;
         final int end = start + n;
         final int countLength = 1 << section.length;
-        int[] count = ArrayParallelRunner.runInParallel(array, start, end, 2, null, new ArrayRunnableInt<int[]>() {
+        int[] count = ArrayParallelRunner.runInParallel(array, start, end, new ArrayParallelRunner.APRParameters(2) , new ArrayRunnable<int[]>() {
             @Override
-            public int[] map(int[] array, int start, int end) {
+            public int[] map(final Object arrayX, final int start, final int end, final int index, final AtomicBoolean stop) {
+                int[] array = (int[]) arrayX;
                 final int[] count = new int[countLength];
                 for (int i = start; i < end; ++i) {
                     count[array[i] & mask]++;
@@ -396,9 +389,10 @@ public class IntSorterUtils {
         final int shiftRight = section.shiftRight;
         final int end = start + n;
         final int countLength = 1 << section.length;
-        final int[] count = ArrayParallelRunner.runInParallel(array, start, end, 2, null, new ArrayRunnableInt<int[]>() {
+        final int[] count = ArrayParallelRunner.runInParallel(array, start, end, new ArrayParallelRunner.APRParameters(2), new ArrayRunnable<int[]>() {
             @Override
-            public int[] map(int[] array, int start, int end) {
+            public int[] map(final Object arrayX, final int start, final int end, final int index, final AtomicBoolean stop) {
+                int[] array = (int[]) arrayX;
                 final int[] count = new int[countLength];
                 for (int i = start; i < end; ++i) {
                     count[(array[i] & mask) >>> shiftRight]++;
