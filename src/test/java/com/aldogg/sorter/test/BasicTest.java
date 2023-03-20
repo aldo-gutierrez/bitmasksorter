@@ -3,24 +3,25 @@ package com.aldogg.sorter.test;
 import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
-import com.aldogg.sorter.intType.IntCountSort;
-import com.aldogg.sorter.intType.IntSorter;
-import com.aldogg.sorter.intType.IntSorterUtils;
-import com.aldogg.sorter.intType.mt.JavaSorterMTInt;
-import com.aldogg.sorter.intType.mt.MixedBitSorterMTInt;
-import com.aldogg.sorter.intType.mt.QuickBitSorterMTInt;
-import com.aldogg.sorter.intType.mt.RadixBitSorterMTInt;
-import com.aldogg.sorter.intType.st.JavaSorterInt;
-import com.aldogg.sorter.intType.st.QuickBitSorterInt;
-import com.aldogg.sorter.intType.st.RadixBitSorterInt;
-import com.aldogg.sorter.intType.st.RadixByteSorterInt;
+import com.aldogg.sorter.int_.IntCountSort;
+import com.aldogg.sorter.int_.IntSorter;
+import com.aldogg.sorter.int_.IntSorterUtils;
+import com.aldogg.sorter.int_.mt.JavaSorterMTInt;
+import com.aldogg.sorter.int_.mt.MixedBitSorterMTInt;
+import com.aldogg.sorter.int_.mt.QuickBitSorterMTInt;
+import com.aldogg.sorter.int_.mt.RadixBitSorterMTInt;
+import com.aldogg.sorter.int_.st.JavaSorterInt;
+import com.aldogg.sorter.int_.st.QuickBitSorterInt;
+import com.aldogg.sorter.int_.st.RadixBitSorterInt;
+import com.aldogg.sorter.int_.st.RadixByteSorterInt;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.Random;
 
-import static com.aldogg.sorter.intType.IntSorterUtils.ShortSorter.*;
-import static com.aldogg.sorter.intType.st.RadixBitSorterInt.radixSort;
+import static com.aldogg.sorter.int_.IntSorterUtils.ShortSorter.*;
+import static com.aldogg.sorter.int_.st.RadixBitSorterInt.radixSort;
 
 public class BasicTest extends BaseTest {
     @Test

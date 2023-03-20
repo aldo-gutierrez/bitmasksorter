@@ -36,10 +36,9 @@ public class ArrayParallelRunner {
             int endThread = i == maxThreads - 1 ? endPlus1 : startThread + range;
             int finalI = i;
             int finalStartThread = startThread;
-            int finalEndThread = endThread;
             Runnable runnable = () -> {
                 if (numThreads != null) numThreads.addAndGet(1);
-                results[finalI] = mapReducer.map(array, finalStartThread, finalEndThread, finalI, stop);
+                results[finalI] = mapReducer.map(array, finalStartThread, endThread, finalI, stop);
                 if (numThreads != null) numThreads.addAndGet(-1);
             };
             parallelRunner.preSubmit(runnable);

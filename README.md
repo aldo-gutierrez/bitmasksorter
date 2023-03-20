@@ -307,13 +307,13 @@ TODO Needs to be evaluated in detail
 - q = number of bits for quick sort
 
 
-| Algorithm        | CPU worst     | CPU average         | CPU best       | MEM worst | MEM average | MEM best |
-| ---------------- |:-------------:| -------------------:| --------------:| ---------:| -----------:|---------:|
-| QuickBitSorter   | O(n * log(n)) | O(n * log(n))?      | O(n+k), k <= c | O(2^c)    | O(2^c)      |    1     |
-| RadixBitSorter   | O(n * log(n)) | O(n * k), k<log2(n) | O(n), k = 1    | O(n)      | O(n)        |    1     |
-| QuickBitSorterMT | O(n * log(n)) | O(n * log(n))?      | O(n+k), k <= c | O(t*2^c)  | O(2^c)      |    1     |
-| MixedBitSorterMT | O(n * log(n)) | O(n * log(n))?      | O(n), k <= t   | O(n*t)    | O(n*t)      |  O(2^c)  |
-| RadixBitSorterMT | O(n * log(n)) | O(n * k), k<log2(n) | O(n), k = 1    | O(n)      | O(n)        |    1     |
+| Algorithm        |   CPU worst   |         CPU average |       CPU best | MEM worst | MEM average | MEM best |
+|------------------|:-------------:|--------------------:|---------------:|----------:|------------:|---------:|
+| QuickBitSorter   | O(n * log(n)) |      O(n * log(n))? | O(n+k), k <= c |    O(2^c) |      O(2^c) |        1 |
+| RadixBitSorter   | O(n * log(n)) | O(n * k), k<log2(n) |    O(n), k = 1 |      O(n) |        O(n) |        1 |
+| QuickBitSorterMT | O(n * log(n)) |      O(n * log(n))? | O(n+k), k <= c |  O(t*2^c) |      O(2^c) |        1 |
+| MixedBitSorterMT | O(n * log(n)) |      O(n * log(n))? |   O(n), k <= t |    O(n*t) |      O(n*t) |   O(2^c) |
+| RadixBitSorterMT | O(n * log(n)) | O(n * k), k<log2(n) |    O(n), k = 1 |      O(n) |        O(n) |        1 |
 
 ## Comparing to Ska Sort
 See the repository (https://github.com/aldo-gutierrez/bitmasksorterCpp) where a comparison has been done.

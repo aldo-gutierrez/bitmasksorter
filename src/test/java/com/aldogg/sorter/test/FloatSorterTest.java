@@ -1,9 +1,9 @@
 package com.aldogg.sorter.test;
 
-import com.aldogg.sorter.floatType.FloatSorter;
-import com.aldogg.sorter.floatType.st.JavaSorterFloat;
-import com.aldogg.sorter.floatType.st.RadixBitBaseSorterFloat;
-import com.aldogg.sorter.floatType.st.RadixBitSorterFloat;
+import com.aldogg.sorter.float_.FloatSorter;
+import com.aldogg.sorter.float_.st.JavaSorterFloat;
+import com.aldogg.sorter.float_.st.RadixBitBaseSorterFloat;
+import com.aldogg.sorter.float_.st.RadixBitSorterFloat;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
 import org.junit.jupiter.api.Test;

@@ -1,8 +1,8 @@
 package com.aldogg.sorter.test;
 
-import com.aldogg.sorter.intType.st.QuickBitSorterInt;
-import com.aldogg.sorter.intType.st.RadixBitSorterInt;
-import com.aldogg.sorter.intType.mt.RadixBitSorterMTInt;
+import com.aldogg.sorter.int_.mt.RadixBitSorterMTInt;
+import com.aldogg.sorter.int_.st.QuickBitSorterInt;
+import com.aldogg.sorter.int_.st.RadixBitSorterInt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

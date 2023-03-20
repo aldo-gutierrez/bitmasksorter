@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.aldogg.sorter.longType.LongSorter.LONG_SIGN_BIT_POS;
+import static com.aldogg.sorter.long_.LongSorter.LONG_SIGN_BIT_POS;
 
 public class MaskInfoLong {
     long p_mask;
@@ -43,11 +43,11 @@ public class MaskInfoLong {
 
 
     public static MaskInfoLong getMaskBitParallel(final long[] array, final int start, final int end, final ArrayParallelRunner.APRParameters parameters) {
-        MaskInfoLong maskInfo = ArrayParallelRunner.runInParallel(array, start, end, parameters, new ArrayRunnable<MaskInfoLong>() {
+        return ArrayParallelRunner.runInParallel(array, start, end, parameters, new ArrayRunnable<MaskInfoLong>() {
 
             @Override
-            public MaskInfoLong map(Object array, int start, int end, int index, AtomicBoolean stop) {
-                return getMaskBit((long[]) array, start, end);
+            public MaskInfoLong map(Object array1, int start1, int end1, int index, AtomicBoolean stop) {
+                return getMaskBit((long[]) array1, start1, end1);
             }
 
             @Override
@@ -58,7 +58,6 @@ public class MaskInfoLong {
                 return res;
             }
         });
-        return maskInfo;
     }
 
     public static int[] getMaskAsArray(final long mask) {

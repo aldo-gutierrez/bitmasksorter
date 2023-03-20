@@ -1,13 +1,14 @@
 package com.aldogg.sorter;
 
-import com.aldogg.parallel.ArrayRunnable;
 import com.aldogg.parallel.ArrayParallelRunner;
+import com.aldogg.parallel.ArrayRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MaskInfoInt {
+    public static final int BATCH_SIZE = 1024;
     public int p_mask;
     public int i_mask;
 
@@ -26,22 +27,31 @@ public class MaskInfoInt {
         return m;
     }
 
-    public static MaskInfoInt getMaskBitDetectSignBit(final int[] array, final int start, final int end) {
+    public static MaskInfoInt getMaskBitDetectSignBit(final int[] array, final int start, final int end, AtomicBoolean stop) {
         int p_mask = 0x00000000;
         int i_mask = 0x00000000;
-        int i = start;
-        for (; i < end; i += 1024) {
+        for (int i = start; i < end; i += BATCH_SIZE) {
             if (p_mask < 0) {
                 if (i_mask < 0) {
+                    if (stop != null) {
+                        stop.set(true);
+                    }
                     return null;
                 }
             }
-            int j = Math.min(i + 1024, end);
+            if (stop != null) {
+                if (stop.get()) {
+                    return null;
+                }
+            }
+            int startBatch = i;
+            int j = Math.min(i + BATCH_SIZE, end);
             for (; i < j; i++) {
                 int e = array[i];
                 p_mask = p_mask | e;
                 i_mask = i_mask | (~e);
             }
+            i = startBatch;
         }
         MaskInfoInt m = new MaskInfoInt();
         m.p_mask = p_mask;
@@ -85,7 +95,7 @@ public class MaskInfoInt {
         return ArrayParallelRunner.runInParallel(array, start, end, parameters, new ArrayRunnable<MaskInfoInt>() {
             @Override
             public MaskInfoInt map(final Object list, final int start1, final int end1, final int index, final AtomicBoolean stop) {
-                return getMaskBitDetectSignBit((int[]) list, start1, end1);
+                return getMaskBitDetectSignBit((int[]) list, start1, end1, stop);
             }
 
             @Override

@@ -5,7 +5,9 @@ import com.aldogg.sorter.generators.GeneratorParams;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class TestAlgorithms<T extends Named> {
 

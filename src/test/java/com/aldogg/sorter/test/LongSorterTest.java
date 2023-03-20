@@ -1,17 +1,19 @@
 package com.aldogg.sorter.test;
 
 import com.aldogg.sorter.Sorter;
-import com.aldogg.sorter.generators.*;
-import com.aldogg.sorter.longType.LongSorter;
-import com.aldogg.sorter.longType.collection.EntityLong1;
-import com.aldogg.sorter.longType.collection.JavaSorterObjectLong;
-import com.aldogg.sorter.longType.collection.LongComparator;
-import com.aldogg.sorter.longType.collection.ObjectLongSorter;
-import com.aldogg.sorter.longType.collection.st.RadixBitSorterObjectLong;
-import com.aldogg.sorter.longType.st.JavaSorterLong;
-import com.aldogg.sorter.longType.st.RadixBitBaseSorterLong;
-import com.aldogg.sorter.longType.st.RadixBitSorterLong;
-import com.aldogg.sorter.longType.st.RadixByteSorterLong;
+import com.aldogg.sorter.generators.GeneratorFunctions;
+import com.aldogg.sorter.generators.GeneratorParams;
+import com.aldogg.sorter.generators.LongGenerator;
+import com.aldogg.sorter.long_.LongSorter;
+import com.aldogg.sorter.long_.collection.EntityLong1;
+import com.aldogg.sorter.long_.collection.JavaSorterObjectLong;
+import com.aldogg.sorter.long_.collection.LongComparator;
+import com.aldogg.sorter.long_.collection.ObjectLongSorter;
+import com.aldogg.sorter.long_.collection.st.RadixBitSorterObjectLong;
+import com.aldogg.sorter.long_.st.JavaSorterLong;
+import com.aldogg.sorter.long_.st.RadixBitBaseSorterLong;
+import com.aldogg.sorter.long_.st.RadixBitSorterLong;
+import com.aldogg.sorter.long_.st.RadixByteSorterLong;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
@@ -182,10 +184,6 @@ public class LongSorterTest extends BasicTest {
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
             testSpeedObject(comparator, ITERATIONS, params, testAlgorithms, writer);
-
-//            testSortResults = new TestSortResults(Arrays.asList(sorters));
-//            params.size = 40000000;
-//            testSpeedObject(sorters, comparator,ITERATIONS, params, testSortResults, writer);
 
             System.out.println("----------------------");
         }

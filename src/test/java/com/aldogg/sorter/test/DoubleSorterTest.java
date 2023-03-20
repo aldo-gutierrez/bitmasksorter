@@ -1,10 +1,10 @@
 package com.aldogg.sorter.test;
 
-import com.aldogg.sorter.doubleType.DoubleSorter;
-import com.aldogg.sorter.doubleType.collection.DoubleComparator;
-import com.aldogg.sorter.doubleType.collection.ObjectDoubleSorter;
-import com.aldogg.sorter.doubleType.collection.st.RadixBitSorterObjectDouble;
-import com.aldogg.sorter.doubleType.st.*;
+import com.aldogg.sorter.double_.DoubleSorter;
+import com.aldogg.sorter.double_.collection.DoubleComparator;
+import com.aldogg.sorter.double_.collection.ObjectDoubleSorter;
+import com.aldogg.sorter.double_.collection.st.RadixBitSorterObjectDouble;
+import com.aldogg.sorter.double_.st.*;
 import com.aldogg.sorter.generators.DoubleGenerator;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
@@ -230,10 +230,6 @@ public class DoubleSorterTest extends BasicTest {
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
             testSpeedObject(comparator, ITERATIONS, params, testAlgorithms, writer);
-
-//            testSortResults = new TestSortResults(Arrays.asList(sorters));
-//            params.size = 40000000;
-//            testSpeedObject(sorters, comparator,ITERATIONS, params, testSortResults, writer);
 
             System.out.println("----------------------");
         }

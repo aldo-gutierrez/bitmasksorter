@@ -1,28 +1,32 @@
 package com.aldogg.sorter.test;
 
-import com.aldogg.sorter.intType.collection.EntityInt1;
-import com.aldogg.sorter.intType.collection.mt.JavaSorterMTObjectInt;
-import com.aldogg.sorter.intType.collection.st.JavaSorterObjectInt;
-import com.aldogg.sorter.intType.collection.st.RadixBitSorterObjectInt;
 import com.aldogg.sorter.generators.GeneratorFunctions;
-import com.aldogg.sorter.generators.IntGenerator;
 import com.aldogg.sorter.generators.GeneratorParams;
-import com.aldogg.sorter.intType.IntSorter;
-import com.aldogg.sorter.intType.collection.IntComparator;
-import com.aldogg.sorter.intType.collection.ObjectIntSorter;
-import com.aldogg.sorter.intType.mt.JavaSorterMTInt;
-import com.aldogg.sorter.intType.mt.MixedBitSorterMTInt;
-import com.aldogg.sorter.intType.mt.QuickBitSorterMTInt;
-import com.aldogg.sorter.intType.mt.RadixBitSorterMTInt;
-import com.aldogg.sorter.intType.st.*;
+import com.aldogg.sorter.generators.IntGenerator;
+import com.aldogg.sorter.int_.IntSorter;
+import com.aldogg.sorter.int_.collection.EntityInt1;
+import com.aldogg.sorter.int_.collection.IntComparator;
+import com.aldogg.sorter.int_.collection.ObjectIntSorter;
+import com.aldogg.sorter.int_.collection.mt.JavaSorterMTObjectInt;
+import com.aldogg.sorter.int_.collection.st.JavaSorterObjectInt;
+import com.aldogg.sorter.int_.collection.st.RadixBitSorterObjectInt;
+import com.aldogg.sorter.int_.mt.JavaSorterMTInt;
+import com.aldogg.sorter.int_.mt.MixedBitSorterMTInt;
+import com.aldogg.sorter.int_.mt.QuickBitSorterMTInt;
+import com.aldogg.sorter.int_.mt.RadixBitSorterMTInt;
+import com.aldogg.sorter.int_.st.JavaSorterInt;
+import com.aldogg.sorter.int_.st.QuickBitSorterInt;
+import com.aldogg.sorter.int_.st.RadixBitSorterInt;
+import com.aldogg.sorter.int_.st.RadixByteSorterInt;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class IntSorterTest extends BaseTest {
 

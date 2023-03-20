@@ -11,8 +11,9 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Random;
 
-import static com.aldogg.sorter.MaskInfoInt.*;
-import static com.aldogg.sorter.intType.IntSorterUtils.*;
+import static com.aldogg.sorter.MaskInfoInt.getMaskBit;
+import static com.aldogg.sorter.MaskInfoInt.getMaskBitParallel;
+import static com.aldogg.sorter.int_.IntSorterUtils.*;
 
 public class BitMaskTest {
 

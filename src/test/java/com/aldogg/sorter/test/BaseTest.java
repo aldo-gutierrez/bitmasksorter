@@ -1,11 +1,11 @@
 package com.aldogg.sorter.test;
 
 
-import com.aldogg.sorter.doubleType.DoubleSorter;
-import com.aldogg.sorter.floatType.FloatSorter;
+import com.aldogg.sorter.double_.DoubleSorter;
+import com.aldogg.sorter.float_.FloatSorter;
 import com.aldogg.sorter.generators.*;
-import com.aldogg.sorter.intType.IntSorter;
-import com.aldogg.sorter.longType.LongSorter;
+import com.aldogg.sorter.int_.IntSorter;
+import com.aldogg.sorter.long_.LongSorter;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.*;
