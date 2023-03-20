@@ -1,14 +1,11 @@
 package com.aldogg.sorter.intType.mt;
 
-import com.aldogg.parallel.SorterRunner;
+import com.aldogg.parallel.ParallelRunner;
 import com.aldogg.sorter.*;
 import com.aldogg.sorter.intType.IntBitMaskSorter;
 import com.aldogg.sorter.intType.IntBitMaskSorterMT;
 import com.aldogg.sorter.intType.IntSorterUtils;
 import com.aldogg.sorter.intType.st.RadixBitSorterInt;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
 import static com.aldogg.sorter.intType.IntSorterUtils.sortShortK;
@@ -39,8 +36,7 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
         int sortMask1 = 0;
         int maxThreadBits = Math.min(Math.max(paramsMaxThreadBits, 0), kList.length) - 1;
         for (int i = maxThreadBits; i >= 0; i--) {
-            int kListI = kList[i];
-            int sortMaskI = 1 << kListI;
+            int sortMaskI = 1 << kList[i];
             sortMask1 = sortMask1 | sortMaskI;
             threadBits++;
         }
@@ -83,8 +79,9 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
 
 
         if (remainingBits > 0) {
-            List<Runnable> runInThreadList = new ArrayList<>();
-            List<Thread> threadList = new ArrayList<>();
+            ParallelRunner runner = new ParallelRunner();
+            runner.init(maxProcessNumber, 1);
+
             for (int i = 0; i < maxProcessNumber; i++) {
                 int finalI = i;
                 int lengthT = leftX[finalI] - (finalI == 0 ? 0 : leftX[finalI - 1]);
@@ -98,30 +95,11 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
                             RadixBitSorterInt.radixSort(array, start + endT - lengthT, start + endT, kList, threadBits, kList.length - 1, auxT);
                         }
                     };
-                    runInThreadList.add(r);
+                    runner.preSubmit(r);
                 }
             }
-
-            for (int i = 0; i < runInThreadList.size(); i++) {
-                Runnable r = runInThreadList.get(i);
-                if (i == runInThreadList.size() - 1) {
-                    r.run();
-                } else {
-                    Thread t = new Thread(r);
-                    t.start();
-                    threadList.add(t);
-                }
-            }
-
-
-            for (int t = 0; t < threadList.size(); t++) {
-                try {
-                    threadList.get(t).join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
+            runner.submit();
+            runner.waitAll();
         }
     }
 

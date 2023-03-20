@@ -1,7 +1,5 @@
 package com.aldogg.parallel;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,16 +24,16 @@ public class ArrayParallelRunner {
         if (maxThreads <= 1) {
             return mapReducer.map(array, start, endPlus1, 0, null);
         }
+        ParallelRunner parallelRunner = new ParallelRunner();
+        parallelRunner.init(maxThreads, 1);
         AtomicBoolean stop = new AtomicBoolean(false);
         AtomicInteger numThreads = parameters.numThreads;
         int n = endPlus1 - start;
         int range = n / maxThreads;
-        int maxThreadsMinus1 = maxThreads - 1;
-        Thread[] threads = new Thread[maxThreadsMinus1];
         final R[] results = (R[]) new Object[maxThreads];
         int startThread = start;
-        int endThread = startThread + range;
-        for (int i = 0; i < maxThreadsMinus1; i++) {
+        for (int i = 0; i < maxThreads; i++) {
+            int endThread = i == maxThreads - 1 ? endPlus1 : startThread + range;
             int finalI = i;
             int finalStartThread = startThread;
             int finalEndThread = endThread;
@@ -44,23 +42,11 @@ public class ArrayParallelRunner {
                 results[finalI] = mapReducer.map(array, finalStartThread, finalEndThread, finalI, stop);
                 if (numThreads != null) numThreads.addAndGet(-1);
             };
-            threads[i] = new Thread(runnable);
-            threads[i].start();
+            parallelRunner.preSubmit(runnable);
             startThread = endThread;
-            endThread = startThread + range;
         }
-        endThread = endPlus1;
-        if (numThreads != null) numThreads.addAndGet(1);
-        results[maxThreadsMinus1] = mapReducer.map(array, startThread, endThread, maxThreadsMinus1, stop);
-        if (numThreads != null) numThreads.addAndGet(-1);
-
-        for (int i = 0; i < maxThreadsMinus1; i++) {
-            try {
-                threads[i].join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        parallelRunner.submit();
+        parallelRunner.waitAll();
 
         int incD2 = 1;
         int inc = 2;
@@ -77,26 +63,18 @@ public class ArrayParallelRunner {
             }
         } else {
             while (incD2 < maxThreads) {
-                List<Thread> threadList2 = new ArrayList<>();
                 for (int i = 0; i < maxThreads; i += inc) {
                     int i2 = i + incD2;
                     if (i2 < maxThreads) {
                         int finalI = i;
                         int finalIncD2 = incD2;
-                        Thread t = new Thread(() -> results[finalI] = mapReducer.reduce(results[finalI], results[finalI + finalIncD2]));
-                        threadList2.add(t);
-                        t.start();
+                        parallelRunner.preSubmit(() -> results[finalI] = mapReducer.reduce(results[finalI], results[finalI + finalIncD2]));
                     }
                 }
                 inc = inc << 1;
                 incD2 = incD2 << 1;
-                for (Thread t : threadList2) {
-                    try {
-                        t.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+                parallelRunner.submit();
+                parallelRunner.waitAll();
             }
         }
         return results[0];

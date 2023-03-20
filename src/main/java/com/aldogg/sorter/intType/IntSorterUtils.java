@@ -2,7 +2,7 @@ package com.aldogg.sorter.intType;
 
 import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.parallel.ArrayRunnable;
-import com.aldogg.parallel.SorterRunner;
+import com.aldogg.parallel.ParallelRunner;
 import com.aldogg.sorter.AnalysisResult;
 import com.aldogg.sorter.BitSorterUtils;
 import com.aldogg.sorter.IntSection;
@@ -158,7 +158,7 @@ public class IntSorterUtils {
         int med = (start + end) / 2;
         int[] indexes = new int[]{start, 0, end - 1, end - 1};
 
-        SorterRunner.runTwoRunnable(() -> {
+        ParallelRunner.runTwoRunnable(() -> {
             int zeroStart = indexes[0];
             int oneAuxStart = indexes[1];
             for (int i = start; i < med; ++i) {
@@ -328,7 +328,7 @@ public class IntSorterUtils {
             count[i] = sum;
         }
         int med = (start + end) /2;
-        SorterRunner.runTwoRunnable(() -> {
+        ParallelRunner.runTwoRunnable(() -> {
             for (int i = start; i < med; ++i) {
                 int element = array[i];
                 aux[left[element & mask]++] = element;
@@ -419,7 +419,7 @@ public class IntSorterUtils {
             count[i] = sum;
         }
         int med = (start + end) /2;
-        SorterRunner.runTwoRunnable(() -> {
+        ParallelRunner.runTwoRunnable(() -> {
             for (int i = start; i < med; ++i) {
                 int element = array[i];
                 aux[left[(element & mask) >>> shiftRight]++] = element;

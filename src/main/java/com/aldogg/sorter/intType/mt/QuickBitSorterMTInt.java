@@ -51,11 +51,11 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
         Thread t1 = null;
         int n1 = finalLeft - start;
         if (n1 > 1) {
-            if (n1 > params.getDataSizeForThreads() && numThreads.get() < params.getMaxThreads() + 1) {
+            if (n1 > params.getDataSizeForThreads() && runningThreads.get() < params.getMaxThreads() + 1) {
                 Runnable r1 = () -> sortMT(array, start, finalLeft, finalKList, finalKIndex + 1, recalculateBitMask);
                 t1 = new Thread(r1);
                 t1.start();
-                numThreads.addAndGet(1);
+                runningThreads.addAndGet(1);
             } else {
                 sortMT(array, start, finalLeft, finalKList, finalKIndex + 1, recalculateBitMask);
             }
@@ -70,7 +70,7 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                numThreads.addAndGet(-1);
+                runningThreads.addAndGet(-1);
             }
         }
     }
