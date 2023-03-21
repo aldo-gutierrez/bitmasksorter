@@ -1,5 +1,6 @@
 package com.aldogg.sorter.int_.mt;
 
+import com.aldogg.parallel.ParallelRunner;
 import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.SortingNetworks;
 import com.aldogg.sorter.int_.IntBitMaskSorter;
@@ -7,6 +8,7 @@ import com.aldogg.sorter.int_.IntBitMaskSorterMT;
 import com.aldogg.sorter.int_.IntSorterUtils;
 import com.aldogg.sorter.int_.st.QuickBitSorterInt;
 
+import static com.aldogg.parallel.ArrayParallelRunner.splitWork;
 import static com.aldogg.sorter.MaskInfoInt.getMaskAsArray;
 import static com.aldogg.sorter.MaskInfoInt.getMaskBit;
 import static com.aldogg.sorter.int_.IntSorterUtils.sortShortK;
@@ -15,12 +17,13 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
-        sortMT(array, start, end, kList, 0, false);
+        //Number of Threads was multiplied by two to get back performance TODO investigate
+        sortMT(array, start, end, kList, 0, false, ((Integer) multiThreadParams)*2);
     }
 
-    public void sortMT(final int[] array, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
+    public void sortMT(final int[] array, final int start, final int end, int[] kList, int kIndex, boolean recalculate, int maxThreads) {
         final int n = end - start;
-        if (n < params.getDataSizeForThreads()) {
+        if (n < params.getDataSizeForThreads() || maxThreads == 1) {
             ((QuickBitSorterInt) getSTIntSorter()).sort(array, start, end, kList, kIndex, recalculate);
             return;
         }
@@ -48,31 +51,19 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
 
         int[] finalKList = kList;
         int finalKIndex = kIndex;
-        Thread t1 = null;
         int n1 = finalLeft - start;
-        if (n1 > 1) {
-            if (n1 > params.getDataSizeForThreads() && runningThreads.get() < params.getMaxThreads() + 1) {
-                Runnable r1 = () -> sortMT(array, start, finalLeft, finalKList, finalKIndex + 1, recalculateBitMask);
-                t1 = new Thread(r1);
-                t1.start();
-                runningThreads.addAndGet(1);
-            } else {
-                sortMT(array, start, finalLeft, finalKList, finalKIndex + 1, recalculateBitMask);
-            }
-        }
         int n2 = end - finalLeft;
-        if (n2 > 1) {
-            sortMT(array, finalLeft, end, kList, kIndex + 1, recalculateBitMask);
-        }
-        if (t1 != null) {
-            try {
-                t1.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                runningThreads.addAndGet(-1);
-            }
-        }
+
+        int[] threadNumbers = splitWork(n1, n2, maxThreads);
+        ParallelRunner.runTwoRunnable(
+                n1 > 1 ? () -> {
+                    int maxThreads1 = threadNumbers[0];
+                    sortMT(array, start, finalLeft, finalKList, finalKIndex + 1, recalculateBitMask, maxThreads1);
+                } : null, n1,
+                n2 > 1 ? () -> {
+                    int maxThreads2 = threadNumbers[1];
+                    sortMT(array, finalLeft, end, finalKList, finalKIndex + 1, recalculateBitMask, maxThreads2);
+                } : null, n2, params.getDataSizeForThreads(), maxThreads);
     }
 
     @Override

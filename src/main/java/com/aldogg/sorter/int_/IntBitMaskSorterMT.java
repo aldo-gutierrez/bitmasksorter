@@ -7,17 +7,12 @@ import com.aldogg.sorter.BitSorterMTParams;
 import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.SortingNetworks;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import static com.aldogg.parallel.ArrayParallelRunner.splitWork;
 import static com.aldogg.sorter.MaskInfoInt.*;
 import static com.aldogg.sorter.int_.IntSorterUtils.listIsOrderedSigned;
 import static com.aldogg.sorter.int_.IntSorterUtils.listIsOrderedUnSigned;
 
 public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
-    public static final int NUM_THREADS_INITIAL = 1;
-    protected final AtomicInteger runningThreads = new AtomicInteger(NUM_THREADS_INITIAL);
-
     protected final BitSorterMTParams params = BitSorterMTParams.getMTParams();
 
     public abstract IntBitMaskSorter getSTIntSorter();
@@ -40,7 +35,6 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
         if (ordered != AnalysisResult.UNORDERED) return;
 
         setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
-        runningThreads.set(NUM_THREADS_INITIAL);
 
         MaskInfoInt maskInfo;
         if (n >= SIZE_FOR_PARALLEL_BIT_MASK) {
@@ -89,7 +83,7 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
                         int mask2 = maskInfo2.getMask();
                         int[] kList2 = MaskInfoInt.getMaskAsArray(mask2);
                         sort(array, finalLeft, end, kList2, maxThreads2);
-                    } : null, n2, params.getDataSizeForThreads(), maxThreads, runningThreads);
+                    } : null, n2, params.getDataSizeForThreads(), maxThreads);
 
         } else {
             int mask = maskInfo.getMask();

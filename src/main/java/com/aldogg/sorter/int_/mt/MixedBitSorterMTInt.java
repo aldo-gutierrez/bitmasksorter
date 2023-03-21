@@ -59,7 +59,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
                     n2 > 1 ? () -> {
                         int maxThreads2 = threadNumbers[1];
                         sort(array, finalLeft, end, kList, kIndex + 1, level +1 , maxLevel, maxThreads2);
-                    } : null, n2, params.getDataSizeForThreads(), maxThreads, runningThreads);
+                    } : null, n2, params.getDataSizeForThreads(), maxThreads);
         }
     }
 
@@ -104,7 +104,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
 
         if (kIndex > 0) {
             final int[] kListCountS = Arrays.copyOfRange(kList, kIndex, kList.length);
-            if (runningThreads.get() < params.getMaxThreads() + 1) {
+            if (false) { //if (runningThreads.get() < params.getMaxThreads() + 1) {
                 Runnable r1 = () -> {
                     for (int i = 0; i < twoPowerK / 2; i++) {
                         int start1 = i > 0 ? leftX[i - 1] : 0;
@@ -116,7 +116,6 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
                 };
                 Thread t1 = new Thread(r1);
                 t1.start();
-                runningThreads.addAndGet(1);
                 for (int i = twoPowerK / 2; i < twoPowerK; i++) {
                     int start1 = i > 0 ? leftX[i - 1] : 0;
                     int end1 = leftX[i];
@@ -129,7 +128,6 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    runningThreads.addAndGet(-1);
                 }
             } else {
                 for (int i = 0; i < twoPowerK; i++) {

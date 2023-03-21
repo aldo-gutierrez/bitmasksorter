@@ -188,7 +188,7 @@ public class IntSorterUtils {
             }
             indexes[2] = zeroAuxStart;
             indexes[3] = oneStart;
-        }, end - med, 0, 2, null);
+        }, end - med, 0, 2);
         int zeroStart = indexes[0];
         int oneAuxStart = indexes[1];
         int zeroAuxStart = indexes[2];
@@ -338,7 +338,7 @@ public class IntSorterUtils {
                 int element = array[i];
                 aux[right[element & mask]--] = element;
             }
-        }, end - med, 0, 2 , null);
+        }, end - med, 0, 2);
         return count;
     }
 
@@ -429,7 +429,7 @@ public class IntSorterUtils {
                 int element = array[i];
                 aux[right[(element & mask) >>> shiftRight]--] = element;
             }
-        }, end - med, 0, 2 , null);
+        }, end - med, 0, 2);
         return count;
     }
 

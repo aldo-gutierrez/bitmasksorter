@@ -1,13 +1,11 @@
 package com.aldogg.parallel;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ArrayParallelRunner {
 
     public static class APRParameters {
         int maxThreads = 2;
-        AtomicInteger numThreads = null;
         boolean reduceInParallel = false;
 
         public APRParameters() {
@@ -27,7 +25,6 @@ public class ArrayParallelRunner {
         ParallelRunner parallelRunner = new ParallelRunner();
         parallelRunner.init(maxThreads, 1);
         AtomicBoolean stop = new AtomicBoolean(false);
-        AtomicInteger numThreads = parameters.numThreads;
         int n = endPlus1 - start;
         int range = n / maxThreads;
         final R[] results = (R[]) new Object[maxThreads];
@@ -37,9 +34,7 @@ public class ArrayParallelRunner {
             int finalI = i;
             int finalStartThread = startThread;
             Runnable runnable = () -> {
-                if (numThreads != null) numThreads.addAndGet(1);
                 results[finalI] = mapReducer.map(array, finalStartThread, endThread, finalI, stop);
-                if (numThreads != null) numThreads.addAndGet(-1);
             };
             parallelRunner.preSubmit(runnable);
             startThread = endThread;
