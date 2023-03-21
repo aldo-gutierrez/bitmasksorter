@@ -603,7 +603,7 @@ public class IntSorterUtils {
             IntCountSort.countSort(array, start, end, kList, kIndex);
         } else if (sorter.equals(StableByte)) {
             int[] aux = new int[n];
-            radixSort(array, start, end, kList, kIndex, kList.length - 1, aux);
+            radixSort(array, start, end, kList, kIndex, kList.length - 1, aux, 0);
         } else {
             int[] aux = new int[n];
             for (int i = kList.length - 1; i >= kIndex; i--) {

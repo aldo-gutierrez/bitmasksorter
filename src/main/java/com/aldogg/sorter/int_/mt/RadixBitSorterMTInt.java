@@ -25,8 +25,6 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
             return;
         }
 
-        int n = end - start;
-        int[] aux = new int[n];
 
         int threadBits = 0;
         int sortMask1 = 0;
@@ -36,10 +34,13 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
             sortMask1 = sortMask1 | sortMaskI;
             threadBits++;
         }
-        partitionStableNonConsecutiveBitsAndRadixSort(array, start, end, sortMask1, threadBits, kList, aux);
+        partitionStableNonConsecutiveBitsAndRadixSort(array, start, end, sortMask1, threadBits, kList);
     }
 
-    protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] array, final int start, final int end, int sortMask, int threadBits, int[] kList, final int[] aux) {
+    protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] array, final int start, final int end, int sortMask, int threadBits, int[] kList) {
+        int n = end - start;
+        int[] aux = new int[n];
+
         int remainingBits = kList.length - threadBits;
 
         int[] kListAux = MaskInfoInt.getMaskAsArray(sortMask);
@@ -48,7 +49,6 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
 
         int[] leftX;
 
-        int n = end - start;
         if (sections.length == 1) {
             IntSection section = sections[0];
             if (section.isSectionAtEnd()) {
@@ -83,12 +83,12 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
                 int lengthT = leftX[finalI] - (finalI == 0 ? 0 : leftX[finalI - 1]);
                 if (lengthT > 1) {
                     Runnable r = () -> {
-                        int endT = leftX[finalI];
+                        int endIBZ = leftX[finalI];
+                        int startIBZ = endIBZ - lengthT;
                         if (remainingBits <= params.getShortKBits()) {
-                            sortShortK(array, start + endT - lengthT, start + endT, kList, threadBits);
+                            sortShortK(array, start + startIBZ, start + endIBZ, kList, threadBits);
                         } else {
-                            int[] auxT = new int[lengthT];
-                            RadixBitSorterInt.radixSort(array, start + endT - lengthT, start + endT, kList, threadBits, kList.length - 1, auxT);
+                            RadixBitSorterInt.radixSort(array, start + startIBZ, start + endIBZ, kList, threadBits, kList.length - 1, aux, startIBZ);
                         }
                     };
                     runner.preSubmit(r);

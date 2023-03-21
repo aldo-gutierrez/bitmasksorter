@@ -8,7 +8,6 @@ import com.aldogg.sorter.int_.IntSorterUtils;
 import com.aldogg.sorter.int_.collection.IntComparator;
 import com.aldogg.sorter.int_.collection.ObjectIntSorter;
 import com.aldogg.sorter.int_.collection.st.RadixBitSorterObjectInt;
-import com.aldogg.sorter.int_.st.RadixBitSorterInt;
 
 import static com.aldogg.parallel.ArrayParallelRunner.splitWork;
 import static com.aldogg.sorter.BitSorterUtils.getMaskAsSections;
@@ -128,23 +127,23 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
 
         int maxThreadsBits = params.getMaxThreadsBits();
         maxThreadsBits = params.getMaxThreads() == (Integer) multiThreadParams ? maxThreadsBits : maxThreadsBits - 1;
-        int n = end - start;
-        Object[] oAux = new Object[n];
-        int[] aux = new int[n];
 
         int threadBits = 0;
         int sortMask1 = 0;
         int maxThreadBits = Math.min(Math.max(maxThreadsBits, 0), kList.length) - 1;
         for (int i = maxThreadBits; i >= 0; i--) {
-            int sortMaskI = 1 << kList[i];
-            sortMask1 = sortMask1 | sortMaskI;
+            sortMask1 = sortMask1 | 1 << kList[i];
             threadBits++;
         }
-        partitionStableNonConsecutiveBitsAndRadixSort(array, start, end, sortMask1, threadBits, kList, oAux, aux);
+        partitionStableNonConsecutiveBitsAndRadixSort(oArray, array, start, end, sortMask1, threadBits, kList);
 
     }
 
-    protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] array, final int start, final int end, int sortMask, int threadBits, int[] kList, Object[] oAux, final int[] aux) {
+    protected void partitionStableNonConsecutiveBitsAndRadixSort(Object[] oArray, final int[] array, final int start, final int end, int sortMask, int threadBits, int[] kList) {
+        int n = end - start;
+        Object[] oAux = new Object[n];
+        int[] aux = new int[n];
+
         int maxProcessNumber = 1 << threadBits;
         int remainingBits = kList.length - threadBits;
 
@@ -154,20 +153,16 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
 
         int[] leftX;
 
-        int n = end - start;
         if (sections.length == 1) {
             IntSection section = sections[0];
-            if (section.isSectionAtEnd()) {
-                leftX = IntSorterUtils.partitionStableLastBits(array, start, section, aux, n);
-                System.arraycopy(aux, 0, array, start, n);
+            if (!section.isSectionAtEnd()) {
+                leftX = partitionStableGroupBits(oArray, array, start, section, oAux, aux, 0, n);
             } else {
-                leftX = IntSorterUtils.partitionStableOneGroupBits(array, start, section, aux, n);
-                System.arraycopy(aux, 0, array, start, n);
+                leftX = partitionStableLastBits(oArray, array, start, section, oAux, aux, 0, n);
             }
         } else {
-            //TODO code never reaches this path in test, add more tests
-            leftX = IntSorterUtils.partitionStableNGroupBits(array, start, sectionsInfo, aux, n);
-            System.arraycopy(aux, 0, array, start, n);
+            throw new UnsupportedOperationException("");
+            //leftX = partitionStableNGroupBits(oArray, array, start, sectionsInfo, oAux, aux, 0, n);
         }
 
 
@@ -180,13 +175,9 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
                 int lengthT = leftX[finalI] - (finalI == 0 ? 0 : leftX[finalI - 1]);
                 if (lengthT > 1) {
                     Runnable r = () -> {
-                        int endT = leftX[finalI];
-                        if (remainingBits <= params.getShortKBits()) {
-                            sortShortK(array, start + endT - lengthT, start + endT, kList, threadBits);
-                        } else {
-                            int[] auxT = new int[lengthT];
-                            RadixBitSorterInt.radixSort(array, start + endT - lengthT, start + endT, kList, threadBits, kList.length - 1, auxT);
-                        }
+                        int endIBZ = leftX[finalI];
+                        int startIBZ = endIBZ - lengthT;
+                        RadixBitSorterObjectInt.radixSort(oArray, array, start + startIBZ, start + endIBZ,kList, threadBits, kList.length - 1, oAux, aux, startIBZ);
                     };
                     runner.preSubmit(r);
                 }

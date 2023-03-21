@@ -80,18 +80,18 @@ public class RadixBitSorterObjectInt implements ObjectIntSorter {
                 maskInfo = MaskInfoInt.getMaskBit(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfoInt.getMaskAsArray(mask);
-                radixSort(oArray, array, start, finalLeft, kList, 0, kList.length - 1, oAux, aux);
+                radixSort(oArray, array, start, finalLeft, kList, 0, kList.length - 1, oAux, aux, 0);
             }
             if (n2 > 1) { //sort positive numbers
                 maskInfo = MaskInfoInt.getMaskBit(array, finalLeft, end);
                 mask = maskInfo.getMask();
                 kList = MaskInfoInt.getMaskAsArray(mask);
-                radixSort(oArray, array, finalLeft, end, kList, 0, kList.length - 1, oAux, aux);
+                radixSort(oArray, array, finalLeft, end, kList, 0, kList.length - 1, oAux, aux, 0);
             }
         } else {
             int[] aux = new int[end - start];
             Object[] oAux = new Object[end - start];
-            radixSort(oArray, array, start, end, kList, 0, kList.length - 1, oAux, aux);
+            radixSort(oArray, array, start, end, kList, 0, kList.length - 1, oAux, aux, 0);
         }
     }
 
@@ -102,16 +102,15 @@ public class RadixBitSorterObjectInt implements ObjectIntSorter {
      * 10000000,"0:10000000","RadixBitSorterObjectInt",653->873
      * 1000000,"0:10000000","RadixBitSorterObjectInt",47->63
      */
-    public static void radixSort(Object[] oArray, int[] array, int start, int end, int[] kList, int kStart, int kEnd, Object[] oAux, int[] aux) {
+    public static void radixSort(Object[] oArray, int[] array, int start, int end, int[] kList, int kStart, int kEnd, Object[] oAux, int[] aux, int startAux) {
         IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(kList, kStart, kEnd);
         IntSection[] finalSectionList = sectionsInfo.sections;
 
         if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
-            partitionStable(oArray, array, start, end, finalSectionList[0].sortMask, oAux, aux);
+            partitionStable(oArray, array, start, end, finalSectionList[0].sortMask, oAux, aux); //TODO FALTA aumentar startAux
             return;
         }
         int n = end - start;
-        int startAux = 0;
 //        int ops = 0;
 //        int[] arrayOrig = array;
 //        Object[] oArrayOrig = oArray;

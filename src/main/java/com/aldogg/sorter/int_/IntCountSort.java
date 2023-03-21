@@ -12,24 +12,24 @@ public class IntCountSort {
 
     public static void countSort(final int[] array, final int start, final int end, int[] kList,  int kIndex) {
         int twoPowerK = 1 << (kList.length - kIndex);
-        kList = Arrays.copyOfRange(kList, kIndex, kList.length);
-        IntSectionsInfo sectionsInfo = getMaskAsSections(kList, 0, kList.length-1 );
+        int[] kListNew = Arrays.copyOfRange(kList, kIndex, kList.length);
+        IntSectionsInfo sectionsInfo = getMaskAsSections(kList, 0, kList.length - 1);
         IntSection[] sections = sectionsInfo.sections;
-        kIndex = 0;
-        int[] count = new int[twoPowerK];
-        int[] numberBuffer = null;
-        if (sections.length != 1 || !sections[0].isSectionAtEnd()) {
-            numberBuffer = new int[twoPowerK];
-        }
-        int sortMask = MaskInfoInt.getMaskLastBits(kList, kIndex);
-        countSort(array, start, end, sortMask, sections, count, numberBuffer);
+        int sortMask = MaskInfoInt.getMaskLastBits(kListNew, 0);
+        countSort(array, start, end, sortMask, sections, twoPowerK);
     }
 
     /**
      * CPU: N + MAX(2^K, N)
      * MEM: 2 * (2^K)
      */
-    public static void countSort(final int[] array, final int start, final int end, int mask, IntSection[] sections, int[] count, int[] number) {
+    public static void countSort(final int[] array, final int start, final int end, int mask, IntSection[] sections, int twoPowerK) {
+        int[] count = new int[twoPowerK];
+        int[] number = null;
+        if (sections.length != 1 || !sections[0].isSectionAtEnd()) {
+            number = new int[twoPowerK];
+        }
+
         if (sections.length == 1 && sections[0].isSectionAtEnd()) {
             int elementSample = array[start];
             elementSample = elementSample & ~mask;

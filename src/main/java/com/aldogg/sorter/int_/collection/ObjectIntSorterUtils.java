@@ -138,7 +138,7 @@ public class ObjectIntSorterUtils {
      *  CPU: 3*N + 2^K
      *  MEM: N + 2*2^K
      */
-    public static void partitionStableLastBits(final Object[] oArray, final int[] array, final int start, final IntSection section,
+    public static int[] partitionStableLastBits(final Object[] oArray, final int[] array, final int start, final IntSection section,
                                                final Object[] oAux, final int[] aux, int startAux, final int n) {
         int mask = section.sortMask;
         int end = start + n;
@@ -162,13 +162,14 @@ public class ObjectIntSorterUtils {
         }
         System.arraycopy(aux, startAux, array, start, n);
         System.arraycopy(oAux, startAux, oArray, start, n);
+        return count;
     }
 
     /**
      *  CPU: 3*N + 2^K
      *  MEM: N + 2*2^K
      */
-    public static void partitionStableGroupBits(final Object[] oArray, final int[] array, final int start, final IntSection section,
+    public static int[] partitionStableGroupBits(final Object[] oArray, final int[] array, final int start, final IntSection section,
                                                 final Object[] oAux, final int[] aux, int startAux, int n) {
         int mask = section.sortMask;
         int shiftRight = section.shiftRight;
@@ -193,6 +194,7 @@ public class ObjectIntSorterUtils {
         }
         System.arraycopy(aux, startAux, array, start, n);
         System.arraycopy(oAux, startAux, oArray, start, n);
+        return count;
     }
 
 }

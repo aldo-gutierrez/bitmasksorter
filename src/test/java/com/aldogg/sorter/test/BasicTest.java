@@ -83,7 +83,7 @@ public class BasicTest extends BaseTest {
                 int[] kList = MaskInfoInt.getMaskAsArray(mask);
                 int length = end - start;
                 int[] aux = new int[length];
-                radixSort(array, start, end, kList, 0, kList.length - 1, aux);
+                radixSort(array, start, end, kList, 0, kList.length - 1, aux, 0);
             }
 
             @Override
