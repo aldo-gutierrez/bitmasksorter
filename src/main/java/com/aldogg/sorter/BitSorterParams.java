@@ -23,17 +23,17 @@ public class BitSorterParams {
         }
     }
 
-    private int countingSortBits = 16;
+    private int shortKBits = 16;
 
     public int getShortKBits() {
-        return countingSortBits;
+        return shortKBits;
     }
 
-    public void setCountingSortBits(int countingSortBits) {
+    public void setShortKBits(int countingSortBits) {
         if (countingSortBits < 4) {
             throw new InvalidParameterException("maxBitsForCountingSort needs to be >=4");
         }
-        this.countingSortBits = countingSortBits;
+        this.shortKBits = countingSortBits;
     }
 
     public BitSorterParams() {

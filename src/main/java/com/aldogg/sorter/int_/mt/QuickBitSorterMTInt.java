@@ -21,7 +21,7 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
     public void sortMT(final int[] array, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
         final int n = end - start;
         if (n < params.getDataSizeForThreads()) {
-            ((QuickBitSorterInt) stSorter).sort(array, start, end, kList, kIndex, recalculate);
+            ((QuickBitSorterInt) getSTIntSorter()).sort(array, start, end, kList, kIndex, recalculate);
             return;
         }
 

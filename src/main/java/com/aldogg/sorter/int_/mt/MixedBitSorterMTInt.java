@@ -57,7 +57,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
                         sort(array, start, finalLeft, kList, kIndex + 1, level +1, maxLevel, maxThreads1);
                     } : null, n1,
                     n2 > 1 ? () -> {
-                        int maxThreads2 = threadNumbers[0];
+                        int maxThreads2 = threadNumbers[1];
                         sort(array, finalLeft, end, kList, kIndex + 1, level +1 , maxLevel, maxThreads2);
                     } : null, n2, params.getDataSizeForThreads(), maxThreads, runningThreads);
         }

@@ -20,8 +20,6 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
 
     protected final BitSorterMTParams params = BitSorterMTParams.getMTParams();
 
-    protected IntBitMaskSorter stSorter;
-
     public abstract IntBitMaskSorter getSTIntSorter();
 
     @Override
@@ -30,10 +28,9 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
         if (n < 2) {
             return;
         }
-        stSorter = getSTIntSorter();
         int maxThreads = params.getMaxThreads();
         if (n <= params.getDataSizeForThreads() || maxThreads <= 1) {
-            stSorter.sort(array, start, end);
+            getSTIntSorter().sort(array, start, end);
             return;
         }
         int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
@@ -62,8 +59,13 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
             ParallelRunner.runTwoRunnable(
                     n1 > 1 ? () -> { //sort negative numbers
                         int maxThreads1 = threadNumbers[0];
+                        if (maxThreads1 <= 1) {
+                            getSTIntSorter().sort(array, start, end);
+                            return;
+                        }
+
                         MaskInfoInt maskInfo1;
-                        if (n1 >= SIZE_FOR_PARALLEL_BIT_MASK & maxThreads1 >= 2) {
+                        if (n1 >= SIZE_FOR_PARALLEL_BIT_MASK) {
                             maskInfo1 = MaskInfoInt.getMaskBitParallel(array, start, finalLeft, new ArrayParallelRunner.APRParameters(2));
                         } else {
                             maskInfo1 = MaskInfoInt.getMaskBit(array, start, finalLeft);
@@ -74,8 +76,12 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
                     } : null, n1,
                     n2 > 1 ? () -> { //sort positive numbers
                         int maxThreads2 = threadNumbers[1];
+                        if (maxThreads2 <= 1) {
+                            getSTIntSorter().sort(array, start, end);
+                            return;
+                        }
                         MaskInfoInt maskInfo2;
-                        if (n2 >= SIZE_FOR_PARALLEL_BIT_MASK & maxThreads2 >= 2) {
+                        if (n2 >= SIZE_FOR_PARALLEL_BIT_MASK) {
                             maskInfo2 = MaskInfoInt.getMaskBitParallel(array, finalLeft, end, new ArrayParallelRunner.APRParameters(2));
                         } else {
                             maskInfo2 = MaskInfoInt.getMaskBit(array, finalLeft, end);
