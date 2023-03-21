@@ -57,12 +57,10 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
         int[] threadNumbers = splitWork(n1, n2, maxThreads);
         ParallelRunner.runTwoRunnable(
                 n1 > 1 ? () -> {
-                    int maxThreads1 = threadNumbers[0];
-                    sortMT(array, start, finalLeft, finalKList, finalKIndex + 1, recalculateBitMask, maxThreads1);
+                    sortMT(array, start, finalLeft, finalKList, finalKIndex + 1, recalculateBitMask, threadNumbers[0]);
                 } : null, n1,
                 n2 > 1 ? () -> {
-                    int maxThreads2 = threadNumbers[1];
-                    sortMT(array, finalLeft, end, finalKList, finalKIndex + 1, recalculateBitMask, maxThreads2);
+                    sortMT(array, finalLeft, end, finalKList, finalKIndex + 1, recalculateBitMask, threadNumbers[1]);
                 } : null, n2, params.getDataSizeForThreads(), maxThreads);
     }
 

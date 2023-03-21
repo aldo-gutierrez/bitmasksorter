@@ -14,8 +14,8 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
-        int maxThreadsBits = params.getMaxThreadsBits();
-        maxThreadsBits = params.getMaxThreads() == (Integer) multiThreadParams ? maxThreadsBits : maxThreadsBits - 1;
+        int maxThreadsAux = (Integer) multiThreadParams;
+        int maxThreadsBits = BitSorterUtils.logBase2(maxThreadsAux);
         int kDiff = kList.length;
         if (kDiff <= params.getShortKBits()) {
             if (kDiff < 1) {
@@ -40,7 +40,6 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
     }
 
     protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] array, final int start, final int end, int sortMask, int threadBits, int[] kList, final int[] aux) {
-        int maxProcessNumber = 1 << threadBits;
         int remainingBits = kList.length - threadBits;
 
         int[] kListAux = MaskInfoInt.getMaskAsArray(sortMask);
@@ -75,10 +74,11 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
 
 
         if (remainingBits > 0) {
+            int maxParts = 1 << threadBits;
             ParallelRunner runner = new ParallelRunner();
-            runner.init(maxProcessNumber, 1);
+            runner.init(maxParts, 1);
 
-            for (int i = 0; i < maxProcessNumber; i++) {
+            for (int i = 0; i < maxParts; i++) {
                 int finalI = i;
                 int lengthT = leftX[finalI] - (finalI == 0 ? 0 : leftX[finalI - 1]);
                 if (lengthT > 1) {

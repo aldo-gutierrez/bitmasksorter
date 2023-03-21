@@ -90,7 +90,7 @@ public class ParallelRunner {
             return;
         }
 
-        if (maxThreads <=2 || length1 < dataSizeForThreads || length2 < dataSizeForThreads) {
+        if (maxThreads <= 1 || length1 < dataSizeForThreads || length2 < dataSizeForThreads) {
             r1.run();
             r2.run();
             return;

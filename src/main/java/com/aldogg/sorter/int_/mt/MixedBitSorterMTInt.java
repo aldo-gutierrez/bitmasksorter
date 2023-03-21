@@ -22,13 +22,11 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
-        int maxLevel = params.getMaxThreadsBits() - 1;
         Integer maxThreads = (Integer) multiThreadParams;
-        int level = params.getMaxThreads() == maxThreads ? 0 : 1;
-        sort(array, start, end, kList, 0, level, maxLevel, maxThreads);
+        sort(array, start, end, kList, 0, maxThreads);
     }
 
-    public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, int level, int maxLevel, int maxThreads) {
+    public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, int maxThreads) {
         final int n = end - start;
         if (n <= VERY_SMALL_N_SIZE) {
             snFunctions[n].accept(array, start);
@@ -43,7 +41,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
             return;
         }
 
-        if (level >= maxLevel  || maxThreads == 1) {
+        if (maxThreads == 1) {
             radixCountSort(array, start, end, kList, kIndex);
         } else {
             int sortMask = 1 << kList[kIndex];
@@ -54,11 +52,11 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
             ParallelRunner.runTwoRunnable(
                     n1 > 1 ? () -> {
                         int maxThreads1 = threadNumbers[0];
-                        sort(array, start, finalLeft, kList, kIndex + 1, level +1, maxLevel, maxThreads1);
+                        sort(array, start, finalLeft, kList, kIndex + 1, maxThreads1);
                     } : null, n1,
                     n2 > 1 ? () -> {
                         int maxThreads2 = threadNumbers[1];
-                        sort(array, finalLeft, end, kList, kIndex + 1, level +1 , maxLevel, maxThreads2);
+                        sort(array, finalLeft, end, kList, kIndex + 1, maxThreads2);
                     } : null, n2, params.getDataSizeForThreads(), maxThreads);
         }
     }
@@ -104,41 +102,13 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
 
         if (kIndex > 0) {
             final int[] kListCountS = Arrays.copyOfRange(kList, kIndex, kList.length);
-            if (false) { //if (runningThreads.get() < params.getMaxThreads() + 1) {
-                Runnable r1 = () -> {
-                    for (int i = 0; i < twoPowerK / 2; i++) {
-                        int start1 = i > 0 ? leftX[i - 1] : 0;
-                        int end1 = leftX[i];
-                        if (end1 - start1 > 1) {
-                            smallListUtil(aux, start1, end1, kListCountS);
-                        }
-                    }
-                };
-                Thread t1 = new Thread(r1);
-                t1.start();
-                for (int i = twoPowerK / 2; i < twoPowerK; i++) {
-                    int start1 = i > 0 ? leftX[i - 1] : 0;
-                    int end1 = leftX[i];
-                    if (end1 - start1 > 1) {
-                        smallListUtil(aux, start1, end1, kListCountS);
-                    }
-                }
-                try {
-                    t1.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                }
-            } else {
-                for (int i = 0; i < twoPowerK; i++) {
-                    int start1 = i > 0 ? leftX[i - 1] : 0;
-                    int end1 = leftX[i];
-                    if (end1 - start1 > 1) {
-                        smallListUtil(aux, start1, end1, kListCountS);
-                    }
+            for (int i = 0; i < twoPowerK; i++) {
+                int start1 = i > 0 ? leftX[i - 1] : 0;
+                int end1 = leftX[i];
+                if (end1 - start1 > 1) {
+                    smallListUtil(aux, start1, end1, kListCountS);
                 }
             }
-
         }
         System.arraycopy(aux, 0, list, start, n);
     }
