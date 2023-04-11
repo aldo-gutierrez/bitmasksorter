@@ -50,7 +50,7 @@ public abstract class IntBitMaskSorter implements IntSorter {
         setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
 
         MaskInfoInt maskInfo = MaskInfoInt.getMaskBitDetectSignBit(array, start, end, null);
-        if (maskInfo == null) { //the sign bit is set
+        if (maskInfo == null || (maskInfo.getMask() & 0x80000000) != 0) { //the sign bit is set
             int finalLeft = isUnsigned()
                     ? IntSorterUtils.partitionNotStableSignBit(array, start, end)
                     : IntSorterUtils.partitionReverseNotStableSignBit(array, start, end);
