@@ -14,8 +14,6 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
     public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
-        int maxThreadsAux = (Integer) multiThreadParams;
-        int maxThreadsBits = BitSorterUtils.logBase2(maxThreadsAux);
         int kDiff = kList.length;
         if (kDiff <= params.getShortKBits()) {
             if (kDiff < 1) {
@@ -26,15 +24,15 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
         }
 
 
-        int threadBits = 0;
-        int sortMask1 = 0;
-        int maxThreadBits = Math.min(Math.max(maxThreadsBits, 0), kList.length) - 1;
-        for (int i = maxThreadBits; i >= 0; i--) {
-            int sortMaskI = 1 << kList[i];
-            sortMask1 = sortMask1 | sortMaskI;
-            threadBits++;
+        int maxThreads = (Integer) multiThreadParams;
+        int tBits = BitSorterUtils.logBase2(maxThreads);
+        if (!(1 << tBits == maxThreads)) {
+            tBits += 1;
         }
-        partitionStableNonConsecutiveBitsAndRadixSort(array, start, end, sortMask1, threadBits, kList);
+        int threadBits = Math.min(tBits, kList.length);
+        int sortMask = IntSorterUtils.getIntMask(kList, 0, threadBits - 1);
+
+        partitionStableNonConsecutiveBitsAndRadixSort(array, start, end, sortMask, threadBits, kList);
     }
 
     protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] array, final int start, final int end, int sortMask, int threadBits, int[] kList) {

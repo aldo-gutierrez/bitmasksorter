@@ -75,7 +75,7 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
             maskInfo = MaskInfoInt.getMaskBitDetectSignBit(array, start, end, null);
         }
 
-        if (maskInfo == null) { //there are negative numbers and positive numbers
+        if (maskInfo == null || (maskInfo.getMask() & 0x80000000) != 0) { //there are negative numbers and positive numbers
             int sortMask = 1 << IntSorter.SIGN_BIT_POS;
             int finalLeft = isStable()
                     ? (isUnsigned()
@@ -124,19 +124,14 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
     }
 
     private void radixSort(Object[] oArray, int[] array, int start, int end, int[] kList, Object multiThreadParams) {
-
-        int maxThreadsBits = params.getMaxThreadsBits();
-        maxThreadsBits = params.getMaxThreads() == (Integer) multiThreadParams ? maxThreadsBits : maxThreadsBits - 1;
-
-        int threadBits = 0;
-        int sortMask1 = 0;
-        int maxThreadBits = Math.min(Math.max(maxThreadsBits, 0), kList.length) - 1;
-        for (int i = maxThreadBits; i >= 0; i--) {
-            sortMask1 = sortMask1 | 1 << kList[i];
-            threadBits++;
+        int maxThreads = (Integer) multiThreadParams;
+        int tBits = BitSorterUtils.logBase2(maxThreads);
+        if (!(1 << tBits == maxThreads)) {
+            tBits += 1;
         }
-        partitionStableNonConsecutiveBitsAndRadixSort(oArray, array, start, end, sortMask1, threadBits, kList);
-
+        int threadBits = Math.min(tBits, kList.length);
+        int sortMask = IntSorterUtils.getIntMask(kList, 0, threadBits - 1);
+        partitionStableNonConsecutiveBitsAndRadixSort(oArray, array, start, end, sortMask, threadBits, kList);
     }
 
     protected void partitionStableNonConsecutiveBitsAndRadixSort(Object[] oArray, final int[] array, final int start, final int end, int sortMask, int threadBits, int[] kList) {

@@ -612,4 +612,13 @@ public class IntSorterUtils {
             }
         }
     }
+
+    public static int getIntMask(int[] kList, int start, int end) {
+        int mask = 0;
+        for (int i = start; i <= end; i++) {
+            mask = mask | 1 << kList[i];
+        }
+        return mask;
+    }
+
 }

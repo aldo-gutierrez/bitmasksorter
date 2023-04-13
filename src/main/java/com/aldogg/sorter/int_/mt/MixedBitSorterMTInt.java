@@ -63,12 +63,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
 
     protected void radixCountSort(int[] list, int start, int end, int[] kList, int kIndexEnd) {
         int kIndexCountSort = kList.length - params.getShortKBits();
-        int bits = 0;
-        int sortMask = 0;
-        for (int i = kIndexCountSort - 1; i >= kIndexEnd; i--) {
-            sortMask = sortMask | 1 << kList[i];
-            bits++;
-        }
+        int sortMask = IntSorterUtils.getIntMask(kList, kIndexEnd, kIndexCountSort - 1);
         partitionStableNonConsecutiveBitsAndCountSort(list, start, end, sortMask, kList, kIndexCountSort);
     }
 
