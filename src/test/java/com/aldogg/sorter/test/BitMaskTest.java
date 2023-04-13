@@ -78,7 +78,7 @@ public class BitMaskTest {
             IntSection[] finalSectionList = sectionsInfo.sections;
             int[] aux = new int[arraySize];
             long start = System.nanoTime();
-            partitionStableLastBits(a, 0, finalSectionList[0], aux, arraySize);
+            partitionStableLastBits(a, 0, finalSectionList[0], aux, 0, arraySize);
             long elapsed = System.nanoTime() - start;
             total += elapsed;
         }

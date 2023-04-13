@@ -53,20 +53,20 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
                 if (n > 2000000) {
                     leftX = IntSorterUtils.partitionStableLastBitsParallel(array, start, section, aux, n);
                 } else {
-                    leftX = IntSorterUtils.partitionStableLastBits(array, start, section, aux, n);
+                    leftX = IntSorterUtils.partitionStableLastBits(array, start, section, aux, 0, n);
                 }
                 System.arraycopy(aux, 0, array, start, n);
             } else {
                 if (n > 2000000) {
                     leftX = IntSorterUtils.partitionStableOneGroupBitsParallel(array, start, section, aux, n);
                 } else {
-                    leftX = IntSorterUtils.partitionStableOneGroupBits(array, start, section, aux, n);
+                    leftX = IntSorterUtils.partitionStableOneGroupBits(array, start, section, aux, 0, n);
                 }
                 System.arraycopy(aux, 0, array, start, n);
             }
         } else {
             //TODO code never reaches this path in test, add more tests
-            leftX = IntSorterUtils.partitionStableNGroupBits(array, start, sectionsInfo, aux, n);
+            leftX = IntSorterUtils.partitionStableNGroupBits(array, start, sectionsInfo, aux, 0, n);
             System.arraycopy(aux, 0, array, start, n);
         }
 

@@ -255,7 +255,7 @@ public class IntSorterUtils {
         return totalZeroLength;
     }
 
-    public static void partitionStableLastBits(final int[] array, final int start, final IntSection section, final int[] aux, final int startAux, final int n) {
+    public static int[] partitionStableLastBits(final int[] array, final int start, final IntSection section, final int[] aux, final int startAux, final int n) {
         final int mask = section.sortMask;
         final int end = start + n;
         final int countLength = 1 << section.length;
@@ -268,28 +268,16 @@ public class IntSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; ++i) {
-            int element = array[i];
-            aux[count[element & mask]++ + startAux] = element;
-        }
-    }
-
-    public static int[] partitionStableLastBits(final int[] array, final int start, final IntSection section, final int[] aux, final int n) {
-        final int mask = section.sortMask;
-        final int end = start + n;
-        final int countLength = 1 << section.length;
-        final int[] count = new int[countLength];
-        for (int i = start; i < end; ++i) {
-            count[array[i] & mask]++;
-        }
-        for (int i = 0, sum = 0; i < countLength; ++i) {
-            int countI = count[i];
-            count[i] = sum;
-            sum += countI;
-        }
-        for (int i = start; i < end; ++i) {
-            int element = array[i];
-            aux[count[element & mask]++] = element;
+        if (startAux == 0) {
+            for (int i = start; i < end; ++i) {
+                int element = array[i];
+                aux[count[element & mask]++] = element;
+            }
+        } else {
+            for (int i = start; i < end; ++i) {
+                int element = array[i];
+                aux[count[element & mask]++ +startAux] = element;
+            }
         }
         return count;
     }
@@ -356,30 +344,16 @@ public class IntSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; ++i) {
-            int element = array[i];
-            aux[count[(element & mask) >>> shiftRight]++ + startAux] = element;
-        }
-        return count;
-    }
-
-    public static int[] partitionStableOneGroupBits(final int[] array, final int start, final IntSection section, final int[] aux, int n) {
-        final int mask = section.sortMask;
-        final int shiftRight = section.shiftRight;
-        final int end = start + n;
-        final int countLength = 1 << section.length;
-        final int[] count = new int[countLength];
-        for (int i = start; i < end; ++i) {
-            count[(array[i] & mask) >>> shiftRight]++;
-        }
-        for (int i = 0, sum = 0; i < countLength; ++i) {
-            int countI = count[i];
-            count[i] = sum;
-            sum += countI;
-        }
-        for (int i = start; i < end; ++i) {
-            int element = array[i];
-            aux[count[(element & mask) >>> shiftRight]++] = element;
+        if (startAux == 0) {
+            for (int i = start; i < end; ++i) {
+                int element = array[i];
+                aux[count[(element & mask) >>> shiftRight]++] = element;
+            }
+        } else {
+            for (int i = start; i < end; ++i) {
+                int element = array[i];
+                aux[count[(element & mask) >>> shiftRight]++ + startAux] = element;
+            }
         }
         return count;
     }
@@ -433,7 +407,7 @@ public class IntSorterUtils {
         return count;
     }
 
-    public static int[] partitionStableNGroupBits(final int[] array, final int start, IntSectionsInfo sectionsInfo, final int[] aux, int n) {
+    public static int[] partitionStableNGroupBits(final int[] array, final int start, IntSectionsInfo sectionsInfo, final int[] aux, final int startAux, final int n) {
         final IntSection[] sections = sectionsInfo.sections;
         final int end = start + n;
         final int countLength = 1 << sectionsInfo.totalLength;
@@ -447,9 +421,16 @@ public class IntSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; ++i) {
-            int element = array[i];
-            aux[count[getKeySN(element, sections)]++] = element;
+        if (startAux == 0) {
+            for (int i = start; i < end; ++i) {
+                int element = array[i];
+                aux[count[getKeySN(element, sections)]++] = element;
+            }
+        } else {
+            for (int i = start; i < end; ++i) {
+                int element = array[i];
+                aux[count[getKeySN(element, sections)]++ + startAux] = element;
+            }
         }
         return count;
     }

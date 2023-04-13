@@ -8,6 +8,7 @@ import com.aldogg.sorter.int_.collection.EntityInt1;
 import com.aldogg.sorter.int_.collection.IntComparator;
 import com.aldogg.sorter.int_.collection.ObjectIntSorter;
 import com.aldogg.sorter.int_.collection.mt.JavaSorterMTObjectInt;
+import com.aldogg.sorter.int_.collection.mt.RadixBitSorterMTObjectInt;
 import com.aldogg.sorter.int_.collection.st.JavaSorterObjectInt;
 import com.aldogg.sorter.int_.collection.st.RadixBitSorterObjectInt;
 import com.aldogg.sorter.int_.mt.JavaSorterMTInt;
@@ -28,7 +29,7 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class IntSorterTest extends BaseTest {
+public class IntSorterPerformanceTest extends BaseTest {
 
     @Test
     public void speedTestPositiveIntST() throws IOException {
@@ -157,7 +158,7 @@ public class IntSorterTest extends BaseTest {
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
 
-        ObjectIntSorter[] sorters = new ObjectIntSorter[]{new JavaSorterObjectInt(), new JavaSorterMTObjectInt(), new RadixBitSorterObjectInt()};
+        ObjectIntSorter[] sorters = new ObjectIntSorter[]{new JavaSorterObjectInt(), new JavaSorterMTObjectInt(), new RadixBitSorterObjectInt(), new RadixBitSorterMTObjectInt()};
         TestAlgorithms<ObjectIntSorter> testAlgorithms;
 
         IntComparator<EntityInt1> comparator = new IntComparator<EntityInt1>() {

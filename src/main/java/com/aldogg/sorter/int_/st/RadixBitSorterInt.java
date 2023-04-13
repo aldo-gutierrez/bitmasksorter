@@ -32,17 +32,9 @@ public class RadixBitSorterInt extends IntBitMaskSorter {
         int startOrig = start;
         for (IntSection section: finalSectionList) {
             if (!section.isSectionAtEnd()) {
-                if (startAux == 0) {
-                    partitionStableOneGroupBits(array, start, section, aux, n);
-                } else {
-                    partitionStableOneGroupBits(array, start, section, aux, startAux, n);
-                }
+                partitionStableOneGroupBits(array, start, section, aux, startAux, n);
             } else {
-                if (startAux == 0) {
-                    partitionStableLastBits(array, start, section, aux, n);
-                } else {
-                    partitionStableLastBits(array, start, section, aux, startAux, n);
-                }
+                partitionStableLastBits(array, start, section, aux, startAux, n);
             }
 
             //System.arraycopy(aux, 0, array, start, n);

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class SorterSecondTest extends IntSorterTest {
+public class SorterSecondTest extends IntSorterPerformanceTest {
     @Test
     public void testFunctionsSingleThread() throws IOException {
         IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
