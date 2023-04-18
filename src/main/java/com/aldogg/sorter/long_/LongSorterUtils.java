@@ -93,28 +93,16 @@ public class LongSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; ++i) {
-            long element = array[i];
-            aux[count[(int) (element & mask)]++ + startAux] = element;
-        }
-    }
-
-    public static void partitionStableLastBits(final long[] array, final int start, final LongSection section, final long[] aux, int n) {
-        final long mask = section.sortMask;
-        final int end = start + n;
-        final int countLength = 1 << section.length;
-        final int[] count = new int[countLength];
-        for (int i = start; i < end; ++i) {
-            count[(int) (array[i] & mask)]++;
-        }
-        for (int i = 0, sum = 0; i < countLength; ++i) {
-            int countI = count[i];
-            count[i] = sum;
-            sum += countI;
-        }
-        for (int i = start; i < end; ++i) {
-            long element = array[i];
-            aux[count[(int) (element & mask)]++] = element;
+        if (startAux == 0) {
+            for (int i = start; i < end; ++i) {
+                long element = array[i];
+                aux[count[(int) (element & mask)]++] = element;
+            }
+        } else {
+            for (int i = start; i < end; ++i) {
+                long element = array[i];
+                aux[count[(int) (element & mask)]++ + startAux] = element;
+            }
         }
     }
 
@@ -133,30 +121,16 @@ public class LongSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; ++i) {
-            long element = array[i];
-            aux[count[(int) ((element & mask) >>> shiftRight)]++ + startAux] = element;
-        }
-        return count;
-    }
-
-    public static int[] partitionStableOneGroupBits(final long[] array, final int start, final LongSection section, final long[] aux, int n) {
-        final long mask = section.sortMask;
-        final int shiftRight = section.shiftRight;
-        final int end = start + n;
-        final int countLength = 1 << section.length;
-        final int[] count = new int[countLength];
-        for (int i = start; i < end; ++i) {
-            count[(int) ((array[i] & mask) >>> shiftRight)]++;
-        }
-        for (int i = 0, sum = 0; i < countLength; ++i) {
-            int countI = count[i];
-            count[i] = sum;
-            sum += countI;
-        }
-        for (int i = start; i < end; ++i) {
-            long element = array[i];
-            aux[count[(int) ((element & mask) >>> shiftRight)]++] = element;
+        if (startAux == 0) {
+            for (int i = start; i < end; ++i) {
+                long element = array[i];
+                aux[count[(int) ((element & mask) >>> shiftRight)]++] = element;
+            }
+        } else {
+            for (int i = start; i < end; ++i) {
+                long element = array[i];
+                aux[count[(int) ((element & mask) >>> shiftRight)]++ + startAux] = element;
+            }
         }
         return count;
     }

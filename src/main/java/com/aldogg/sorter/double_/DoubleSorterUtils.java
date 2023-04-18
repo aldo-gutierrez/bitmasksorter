@@ -91,33 +91,20 @@ public class DoubleSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; ++i) {
-            double element = array[i];
-            long elementM = Double.doubleToRawLongBits(element);
-            aux[count[(int) (elementM & mask)]++ + startAux] = element;
+        if (startAux == 0) {
+            for (int i = start; i < end; ++i) {
+                double element = array[i];
+                long elementM = Double.doubleToRawLongBits(element);
+                aux[count[(int) (elementM & mask)]++] = element;
+            }
+        } else {
+            for (int i = start; i < end; ++i) {
+                double element = array[i];
+                long elementM = Double.doubleToRawLongBits(element);
+                aux[count[(int) (elementM & mask)]++ + startAux] = element;
+            }
         }
     }
-
-    public static void partitionStableLastBits(final double[] array, final int start, final LongSection section, final double[] aux, int n) {
-        final long mask = section.sortMask;
-        final int end = start + n;
-        final int countLength = 1 << section.length;
-        final int[] count = new int[countLength];
-        for (int i = start; i < end; ++i) {
-            count[(int) (Double.doubleToRawLongBits(array[i]) & mask)]++;
-        }
-        for (int i = 0, sum = 0; i < countLength; ++i) {
-            int countI = count[i];
-            count[i] = sum;
-            sum += countI;
-        }
-        for (int i = start; i < end; ++i) {
-            double element = array[i];
-            long elementM = Double.doubleToRawLongBits(element);
-            aux[count[(int) (elementM & mask)]++] = element;
-        }
-    }
-
 
     public static void partitionStableOneGroupBits(final double[] array, final int start, final LongSection section, final double[] aux, int startAux, int n) {
         final long mask = section.sortMask;
@@ -133,31 +120,18 @@ public class DoubleSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; ++i) {
-            double element = array[i];
-            long elementM = Double.doubleToRawLongBits(element);
-            aux[count[(int) ((elementM & mask) >>> shiftRight)]++ + startAux] = element;
-        }
-    }
-
-    public static void partitionStableOneGroupBits(final double[] array, final int start, final LongSection section, final double[] aux, int n) {
-        final long mask = section.sortMask;
-        final int shiftRight = section.shiftRight;
-        final int end = start + n;
-        final int countLength = 1 << section.length;
-        final int[] count = new int[countLength];
-        for (int i = start; i < end; ++i) {
-            count[(int) ((Double.doubleToRawLongBits(array[i]) & mask) >>> shiftRight)]++;
-        }
-        for (int i = 0, sum = 0; i < countLength; ++i) {
-            int countI = count[i];
-            count[i] = sum;
-            sum += countI;
-        }
-        for (int i = start; i < end; ++i) {
-            double element = array[i];
-            long elementM = Double.doubleToRawLongBits(element);
-            aux[count[(int) ((elementM & mask) >>> shiftRight)]++] = element;
+        if (startAux == 0) {
+            for (int i = start; i < end; ++i) {
+                double element = array[i];
+                long elementM = Double.doubleToRawLongBits(element);
+                aux[count[(int) ((elementM & mask) >>> shiftRight)]++] = element;
+            }
+        } else {
+            for (int i = start; i < end; ++i) {
+                double element = array[i];
+                long elementM = Double.doubleToRawLongBits(element);
+                aux[count[(int) ((elementM & mask) >>> shiftRight)]++ + startAux] = element;
+            }
         }
     }
 

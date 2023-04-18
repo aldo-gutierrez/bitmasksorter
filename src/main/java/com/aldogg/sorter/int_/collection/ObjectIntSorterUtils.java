@@ -139,7 +139,7 @@ public class ObjectIntSorterUtils {
      *  MEM: N + 2*2^K
      */
     public static int[] partitionStableLastBits(final Object[] oArray, final int[] array, final int start, final IntSection section,
-                                               final Object[] oAux, final int[] aux, int startAux, final int n) {
+                                               final Object[] oAux, final int[] aux, final int startAux, final int n) {
         int mask = section.sortMask;
         int end = start + n;
         int[] count = new int[1 << section.length];
@@ -152,13 +152,24 @@ public class ObjectIntSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
-            int element = array[i];
-            int elementShiftMasked = element & mask;
-            int auxIndex = count[elementShiftMasked] + startAux;
-            aux[auxIndex] = element;
-            oAux[auxIndex] = oArray[i];
-            count[elementShiftMasked]++;
+        if (startAux == 0) {
+            for (int i = start; i < end; i++) {
+                int element = array[i];
+                int elementShiftMasked = element & mask;
+                int auxIndex = count[elementShiftMasked];
+                aux[auxIndex] = element;
+                oAux[auxIndex] = oArray[i];
+                count[elementShiftMasked]++;
+            }
+        } else {
+            for (int i = start; i < end; i++) {
+                int element = array[i];
+                int elementShiftMasked = element & mask;
+                int auxIndex = count[elementShiftMasked] + startAux;
+                aux[auxIndex] = element;
+                oAux[auxIndex] = oArray[i];
+                count[elementShiftMasked]++;
+            }
         }
         System.arraycopy(aux, startAux, array, start, n);
         System.arraycopy(oAux, startAux, oArray, start, n);
@@ -170,7 +181,7 @@ public class ObjectIntSorterUtils {
      *  MEM: N + 2*2^K
      */
     public static int[] partitionStableGroupBits(final Object[] oArray, final int[] array, final int start, final IntSection section,
-                                                final Object[] oAux, final int[] aux, int startAux, int n) {
+                                                final Object[] oAux, final int[] aux, final int startAux, final int n) {
         int mask = section.sortMask;
         int shiftRight = section.shiftRight;
         int end = start + n;
@@ -184,13 +195,24 @@ public class ObjectIntSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
-            int element = array[i];
-            int elementShiftMasked = (element & mask) >>> shiftRight;
-            int auxIndex = count[elementShiftMasked] + startAux;
-            aux[auxIndex] = element;
-            oAux[auxIndex] = oArray[i];
-            count[elementShiftMasked]++;
+        if (startAux == 0) {
+            for (int i = start; i < end; i++) {
+                int element = array[i];
+                int elementShiftMasked = (element & mask) >>> shiftRight;
+                int auxIndex = count[elementShiftMasked];
+                aux[auxIndex] = element;
+                oAux[auxIndex] = oArray[i];
+                count[elementShiftMasked]++;
+            }
+        } else {
+            for (int i = start; i < end; i++) {
+                int element = array[i];
+                int elementShiftMasked = (element & mask) >>> shiftRight;
+                int auxIndex = count[elementShiftMasked] + startAux;
+                aux[auxIndex] = element;
+                oAux[auxIndex] = oArray[i];
+                count[elementShiftMasked]++;
+            }
         }
         System.arraycopy(aux, startAux, array, start, n);
         System.arraycopy(oAux, startAux, oArray, start, n);

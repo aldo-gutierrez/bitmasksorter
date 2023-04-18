@@ -93,7 +93,7 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
         long sortMask = sortMasks[0];
         if ((mask & sortMask) != 0) {
             section.sortMask = sortMask;
-            LongSorterUtils.partitionStableLastBits(array, start, section, aux, n);
+            LongSorterUtils.partitionStableLastBits(array, start, section, aux, startAux, n);
 
             //System.arraycopy(aux, 0, array, start, n);
             //swap array with aux and start with startAux
@@ -111,11 +111,7 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
             if ((mask & sortMask) != 0) {
                 section.sortMask = sortMask;
                 section.shiftRight = shiftRights[i];
-                if (startAux == 0) {
-                    LongSorterUtils.partitionStableOneGroupBits(array, start, section, aux, n);
-                } else {
-                    LongSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
-                }
+                LongSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
                 long[] tempArray = array;
                 array = aux;
                 aux = tempArray;
@@ -131,11 +127,7 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
         if ((mask & sortMask) != 0) {
             section.sortMask = sortMask;
             section.shiftRight = shiftRights[7];
-            if (startAux == 0) {
-                LongSorterUtils.partitionStableOneGroupBits(array, start, section, aux, n);
-            } else {
-                LongSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
-            }
+            LongSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
             array = aux;
             start = startAux;
             ops++;
