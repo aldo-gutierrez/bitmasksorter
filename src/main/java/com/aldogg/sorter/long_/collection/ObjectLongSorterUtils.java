@@ -6,9 +6,9 @@ import com.aldogg.sorter.long_.LongSorterUtils;
 
 public class ObjectLongSorterUtils {
 
-    public static int partitionNotStable(final Object[] oArray, final long[] array, final int start, final int end, final long mask) {
+    public static int partitionNotStable(final Object[] oArray, final long[] array, final int start, final int endP1, final long mask) {
         int left = start;
-        int right = end - 1;
+        int right = endP1 - 1;
 
         while (left <= right) {
             long element = array[left];
@@ -32,9 +32,9 @@ public class ObjectLongSorterUtils {
         return left;
     }
 
-    public static int partitionReverseNotStable(final Object[] oArray, final long[] array, final int start, final int end, final long mask) {
+    public static int partitionReverseNotStable(final Object[] oArray, final long[] array, final int start, final int endP1, final long mask) {
         int left = start;
-        int right = end - 1;
+        int right = endP1 - 1;
 
         while (left <= right) {
             long element = array[left];
@@ -58,17 +58,17 @@ public class ObjectLongSorterUtils {
         return left;
     }
 
-    public static int partitionStable(final Object[] oArray, final long[] array, final int start, final int end, final long mask) {
-        long[] aux = new long[end - start];
-        Object[] oAux = new Object[end - start];
-        return partitionStable(oArray, array, start, end, mask, oAux, aux);
+    public static int partitionStable(final Object[] oArray, final long[] array, final int start, final int endP1, final long mask) {
+        long[] aux = new long[endP1 - start];
+        Object[] oAux = new Object[endP1 - start];
+        return partitionStable(oArray, array, start, endP1, mask, oAux, aux);
     }
 
-    public static int partitionStable(final Object[] oArray, final long[] array, final int start, final int end, final long mask,
+    public static int partitionStable(final Object[] oArray, final long[] array, final int start, final int endP1, final long mask,
                                       final Object[] oAux, final long[] aux) {
         int left = start;
         int right = start;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             long element = array[i];
             Object oElement = oArray[i];
             if ((element & mask) == 0) {
@@ -87,18 +87,18 @@ public class ObjectLongSorterUtils {
         return left;
     }
 
-    public static int partitionReverseStable(final Object[] oArray, final long[] array, final int start, final int end, final long mask) {
-        long[] aux = new long[end - start];
-        Object[] oAux = new Object[end - start];
-        return partitionReverseStable(oArray, array, start, end, mask, oAux, aux);
+    public static int partitionReverseStable(final Object[] oArray, final long[] array, final int start, final int endP1, final long mask) {
+        long[] aux = new long[endP1 - start];
+        Object[] oAux = new Object[endP1 - start];
+        return partitionReverseStable(oArray, array, start, endP1, mask, oAux, aux);
     }
 
 
-    public static int partitionReverseStable(final Object[] oArray, final long[] array, final int start, final int end,
+    public static int partitionReverseStable(final Object[] oArray, final long[] array, final int start, final int endP1,
                                              final long mask, final Object[] oAux, final long[] aux) {
         int left = start;
         int right = start;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             long element = array[i];
             Object oElement = oArray[i];
             if (!((element & mask) == 0)) {
@@ -120,9 +120,9 @@ public class ObjectLongSorterUtils {
     public static void partitionStableLastBits(final Object[] oArray, final long[] array, final int start, final LongSection section,
                                                final Object[] oAux, final long[] aux, int startAux, final int n) {
         long mask = section.sortMask;
-        int end = start + n;
+        int endP1 = start + n;
         int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             count[(int) (array[i] & mask)]++;
         }
         int cLength = count.length;
@@ -131,7 +131,7 @@ public class ObjectLongSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             long element = array[i];
             int elementShiftMasked = (int) (element & mask);
             int auxIndex = count[elementShiftMasked] + startAux;
@@ -147,9 +147,9 @@ public class ObjectLongSorterUtils {
                                                 final Object[] oAux, final long[] aux, int startAux, int n) {
         long mask = section.sortMask;
         int shiftRight = section.shiftRight;
-        int end = start + n;
+        int endP1 = start + n;
         int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             count[(int) ((array[i] & mask) >>> shiftRight)]++;
         }
         int cLength = count.length;
@@ -158,7 +158,7 @@ public class ObjectLongSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             long element = array[i];
             int elementShiftMasked = (int) ((element & mask) >>> shiftRight);
             int auxIndex = count[elementShiftMasked] + startAux;

@@ -10,7 +10,7 @@ import static com.aldogg.sorter.int_.IntSorter.SIGN_BIT_POS;
 public class RadixBitBaseSorterFloat extends FloatBitMaskSorter {
 
     @Override
-    public void sort(float[] array, int start, int end, int[] kList) {
+    public void sort(float[] array, int start, int endP1, int[] kList) {
         if (kList.length == 0) {
             return;
         }
@@ -18,7 +18,7 @@ public class RadixBitBaseSorterFloat extends FloatBitMaskSorter {
             MaskInfoInt maskInfo;
             int mask;
             int sortMask = 1 << kList[0];
-            int finalLeft = partitionReverseNotStable(array, start, end, sortMask);
+            int finalLeft = partitionReverseNotStable(array, start, endP1, sortMask);
             if (finalLeft - start > 1) { //sort negative numbers
                 float[] aux = new float[finalLeft - start];
                 maskInfo = MaskInfoInt.getMaskBit(array, start, finalLeft);
@@ -30,24 +30,24 @@ public class RadixBitBaseSorterFloat extends FloatBitMaskSorter {
                 }
                 reverse(array, start, finalLeft);
             }
-            if (end - finalLeft > 1) { //sort positive numbers
-                float[] aux = new float[end - finalLeft];
-                maskInfo = MaskInfoInt.getMaskBit(array, finalLeft, end);
+            if (endP1 - finalLeft > 1) { //sort positive numbers
+                float[] aux = new float[endP1 - finalLeft];
+                maskInfo = MaskInfoInt.getMaskBit(array, finalLeft, endP1);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
                     int sortMaskI = 1 << kList[i];
-                    partitionStable(array, finalLeft, end, sortMaskI, aux);
+                    partitionStable(array, finalLeft, endP1, sortMaskI, aux);
                 }
             }
         } else {
-            float[] aux = new float[end - start];
+            float[] aux = new float[endP1 - start];
             for (int i = kList.length - 1; i >= 0; i--) {
                 int sortMask = 1 << kList[i];
-                partitionStable(array, start, end, sortMask, aux);
+                partitionStable(array, start, endP1, sortMask, aux);
             }
             if (array[0] < 0) { //all negative numbers
-                reverse(array, start, end);
+                reverse(array, start, endP1);
             }
         }
     }

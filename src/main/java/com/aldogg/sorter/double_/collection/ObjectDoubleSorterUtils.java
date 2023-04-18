@@ -6,9 +6,9 @@ import com.aldogg.sorter.double_.DoubleSorterUtils;
 
 public class ObjectDoubleSorterUtils {
 
-    public static int partitionNotStable(final Object[] oArray, final double[] array, final int start, final int end, final long mask) {
+    public static int partitionNotStable(final Object[] oArray, final double[] array, final int start, final int endP1, final long mask) {
         int left = start;
-        int right = end - 1;
+        int right = endP1 - 1;
 
         while (left <= right) {
             long element = Double.doubleToRawLongBits(array[left]);
@@ -32,9 +32,9 @@ public class ObjectDoubleSorterUtils {
         return left;
     }
 
-    public static int partitionReverseNotStable(final Object[] oArray, final double[] array, final int start, final int end, final long mask) {
+    public static int partitionReverseNotStable(final Object[] oArray, final double[] array, final int start, final int endP1, final long mask) {
         int left = start;
-        int right = end - 1;
+        int right = endP1 - 1;
 
         while (left <= right) {
             long element = Double.doubleToRawLongBits(array[left]);
@@ -58,17 +58,17 @@ public class ObjectDoubleSorterUtils {
         return left;
     }
 
-    public static int partitionStable(final Object[] oArray, final double[] array, final int start, final int end, final long mask) {
-        double[] aux = new double[end - start];
-        Object[] oAux = new Object[end - start];
-        return partitionStable(oArray, array, start, end, mask, oAux, aux);
+    public static int partitionStable(final Object[] oArray, final double[] array, final int start, final int endP1, final long mask) {
+        double[] aux = new double[endP1 - start];
+        Object[] oAux = new Object[endP1 - start];
+        return partitionStable(oArray, array, start, endP1, mask, oAux, aux);
     }
 
-    public static int partitionStable(final Object[] oArray, final double[] array, final int start, final int end, final long mask,
+    public static int partitionStable(final Object[] oArray, final double[] array, final int start, final int endP1, final long mask,
                                       final Object[] oAux, final double[] aux) {
         int left = start;
         int right = start;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             double element = array[i];
             long elementFM = Double.doubleToRawLongBits(array[i]);
             Object oElement = oArray[i];
@@ -88,18 +88,18 @@ public class ObjectDoubleSorterUtils {
         return left;
     }
 
-    public static int partitionReverseStable(final Object[] oArray, final double[] array, final int start, final int end, final long mask) {
-        double[] aux = new double[end - start];
-        Object[] oAux = new Object[end - start];
-        return partitionReverseStable(oArray, array, start, end, mask, oAux, aux);
+    public static int partitionReverseStable(final Object[] oArray, final double[] array, final int start, final int endP1, final long mask) {
+        double[] aux = new double[endP1 - start];
+        Object[] oAux = new Object[endP1 - start];
+        return partitionReverseStable(oArray, array, start, endP1, mask, oAux, aux);
     }
 
 
-    public static int partitionReverseStable(final Object[] oArray, final double[] array, final int start, final int end,
+    public static int partitionReverseStable(final Object[] oArray, final double[] array, final int start, final int endP1,
                                              final long mask, final Object[] oAux, final double[] aux) {
         int left = start;
         int right = start;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             double element = array[i];
             long elementFM = Double.doubleToRawLongBits(array[i]);
             Object oElement = oArray[i];
@@ -122,9 +122,9 @@ public class ObjectDoubleSorterUtils {
     public static void partitionStableLastBits(final Object[] oArray, final double[] array, final int start, final LongSection section,
                                                final Object[] oAux, final double[] aux, int startAux, final int n) {
         long mask = section.sortMask;
-        int end = start + n;
+        int endP1 = start + n;
         int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             count[(int) (Double.doubleToRawLongBits(array[i]) & mask)]++;
         }
         int cLength = count.length;
@@ -133,7 +133,7 @@ public class ObjectDoubleSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             double element = array[i];
             long elementM = Double.doubleToRawLongBits(element);
             int elementShiftMasked = (int) (elementM & mask);
@@ -150,9 +150,9 @@ public class ObjectDoubleSorterUtils {
                                                 final Object[] oAux, final double[] aux, int startAux, int n) {
         long mask = section.sortMask;
         int shiftRight = section.shiftRight;
-        int end = start + n;
+        int endP1 = start + n;
         int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             count[(int) ((Double.doubleToRawLongBits(array[i]) & mask) >>> shiftRight)]++;
         }
         int cLength = count.length;
@@ -161,7 +161,7 @@ public class ObjectDoubleSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             double element = array[i];
             long elementM = Double.doubleToRawLongBits(element);
             int elementShiftMasked = (int) ((elementM & mask) >>> shiftRight);

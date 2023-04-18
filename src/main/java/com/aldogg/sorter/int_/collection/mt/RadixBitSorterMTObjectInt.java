@@ -43,8 +43,8 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
     }
 
     @Override
-    public void sort(Object[] oArray, int start, int end, IntComparator comparator) {
-        int n = end - start;
+    public void sort(Object[] oArray, int start, int endP1, IntComparator comparator) {
+        int n = endP1 - start;
         if (n < 2) {
             return;
         }
@@ -52,7 +52,7 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
         if (n <= params.getDataSizeForThreads() || maxThreads <= 1) {
             RadixBitSorterObjectInt stSorter = new RadixBitSorterObjectInt();
             stSorter.setUnsigned(isUnsigned());
-            stSorter.sort(oArray, start, end, comparator);
+            stSorter.sort(oArray, start, endP1, comparator);
             return;
         }
 
@@ -61,32 +61,32 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
             array[i] = comparator.value(oArray[i]);
         }
 
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
+        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == AnalysisResult.DESCENDING) {
-            IntSorterUtils.reverse(array, start, end);
-            ObjectSorterUtils.reverse(oArray, start, end);
+            IntSorterUtils.reverse(array, start, endP1);
+            ObjectSorterUtils.reverse(oArray, start, endP1);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
         MaskInfoInt maskInfo;
         if (n >= SIZE_FOR_PARALLEL_BIT_MASK) {
-            maskInfo = MaskInfoInt.getMaskBitDetectSignBitParallel(array, start, end, new ArrayParallelRunner.APRParameters(2));
+            maskInfo = MaskInfoInt.getMaskBitDetectSignBitParallel(array, start, endP1, new ArrayParallelRunner.APRParameters(2));
         } else {
-            maskInfo = MaskInfoInt.getMaskBitDetectSignBit(array, start, end, null);
+            maskInfo = MaskInfoInt.getMaskBitDetectSignBit(array, start, endP1, null);
         }
 
         if (maskInfo == null || (maskInfo.getMask() & 0x80000000) != 0) { //there are negative numbers and positive numbers
             int sortMask = 1 << IntSorter.SIGN_BIT_POS;
             int finalLeft = isStable()
                     ? (isUnsigned()
-                    ? partitionStable(oArray, array, start, end, sortMask)
-                    : partitionReverseStable(oArray, array, start, end, sortMask))
+                    ? partitionStable(oArray, array, start, endP1, sortMask)
+                    : partitionReverseStable(oArray, array, start, endP1, sortMask))
                     : (isUnsigned()
-                    ? partitionNotStable(oArray, array, start, end, sortMask)
-                    : partitionReverseNotStable(oArray, array, start, end, sortMask));
+                    ? partitionNotStable(oArray, array, start, endP1, sortMask)
+                    : partitionReverseNotStable(oArray, array, start, endP1, sortMask));
 
             int n1 = finalLeft - start;
-            int n2 = end - finalLeft;
+            int n2 = endP1 - finalLeft;
             int[] threadNumbers = splitWork(n1, n2, maxThreads);
             ParallelRunner.runTwoRunnable(
                     n1 > 1 ? () -> { //sort negative numbers
@@ -105,25 +105,25 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
                         int maxThreads2 = threadNumbers[1];
                         MaskInfoInt maskInfo2;
                         if (n2 >= SIZE_FOR_PARALLEL_BIT_MASK & maxThreads2 >= 2) {
-                            maskInfo2 = MaskInfoInt.getMaskBitParallel(array, finalLeft, end, new ArrayParallelRunner.APRParameters(2));
+                            maskInfo2 = MaskInfoInt.getMaskBitParallel(array, finalLeft, endP1, new ArrayParallelRunner.APRParameters(2));
                         } else {
-                            maskInfo2 = MaskInfoInt.getMaskBit(array, finalLeft, end);
+                            maskInfo2 = MaskInfoInt.getMaskBit(array, finalLeft, endP1);
                         }
                         int mask2 = maskInfo2.getMask();
                         int[] kList2 = MaskInfoInt.getMaskAsArray(mask2);
-                        radixSort(oArray, array, finalLeft, end, kList2, maxThreads2);
+                        radixSort(oArray, array, finalLeft, endP1, kList2, maxThreads2);
                     } : null, n2, params.getDataSizeForThreads(), maxThreads);
 
         } else {
             int mask = maskInfo.getMask();
             if (mask != 0) {
                 int[] kList = MaskInfoInt.getMaskAsArray(mask);
-                radixSort(oArray, array, start, end, kList, maxThreads);
+                radixSort(oArray, array, start, endP1, kList, maxThreads);
             }
         }
     }
 
-    private void radixSort(Object[] oArray, int[] array, int start, int end, int[] kList, Object multiThreadParams) {
+    private void radixSort(Object[] oArray, int[] array, int start, int endP1, int[] kList, Object multiThreadParams) {
         int maxThreads = (Integer) multiThreadParams;
         int tBits = BitSorterUtils.logBase2(maxThreads);
         if (!(1 << tBits == maxThreads)) {
@@ -131,11 +131,11 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
         }
         int threadBits = Math.min(tBits, kList.length);
         int sortMask = IntSorterUtils.getIntMask(kList, 0, threadBits - 1);
-        partitionStableNonConsecutiveBitsAndRadixSort(oArray, array, start, end, sortMask, threadBits, kList);
+        partitionStableNonConsecutiveBitsAndRadixSort(oArray, array, start, endP1, sortMask, threadBits, kList);
     }
 
-    protected void partitionStableNonConsecutiveBitsAndRadixSort(Object[] oArray, final int[] array, final int start, final int end, int sortMask, int threadBits, int[] kList) {
-        int n = end - start;
+    protected void partitionStableNonConsecutiveBitsAndRadixSort(Object[] oArray, final int[] array, final int start, final int endP1, int sortMask, int threadBits, int[] kList) {
+        int n = endP1 - start;
         Object[] oAux = new Object[n];
         int[] aux = new int[n];
 

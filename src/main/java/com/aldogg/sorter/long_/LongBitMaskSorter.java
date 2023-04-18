@@ -27,24 +27,24 @@ public abstract class LongBitMaskSorter implements LongSorter {
     }
 
     @Override
-    public void sort(long[] array, int start, int end) {
-        int n = end - start;
+    public void sort(long[] array, int start, int endP1) {
+        int n = endP1 - start;
         if (n < 2) {
             return;
         }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
+        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == AnalysisResult.DESCENDING) {
-            reverse(array, start, end);
+            reverse(array, start, endP1);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        MaskInfoLong maskInfo = MaskInfoLong.getMaskBit(array, start, end);
+        MaskInfoLong maskInfo = MaskInfoLong.getMaskBit(array, start, endP1);
         long mask = maskInfo.getMask();
         int[] kList = getMaskAsArray(mask);
         if (kList.length == 0) {
             return;
         }
 //        setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
-        sort(array, start, end, kList);
+        sort(array, start, endP1, kList);
     }
 }

@@ -8,6 +8,6 @@ public interface ObjectFloatSorter extends Sorter {
         sort(arrayObject, 0, arrayObject.length, comparator);
     }
 
-    void sort(Object[] arrayObject, int start, int end, FloatComparator comparator);
+    void sort(Object[] arrayObject, int start, int endP1, FloatComparator comparator);
 
 }

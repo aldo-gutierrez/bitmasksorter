@@ -21,13 +21,13 @@ import static com.aldogg.sorter.int_.IntSorterUtils.sortShortK;
 public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
-    public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
+    public void sort(int[] array, int start, int endP1, int[] kList, Object multiThreadParams) {
         Integer maxThreads = (Integer) multiThreadParams;
-        sort(array, start, end, kList, 0, maxThreads);
+        sort(array, start, endP1, kList, 0, maxThreads);
     }
 
-    public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, int maxThreads) {
-        final int n = end - start;
+    public void sort(final int[] array, final int start, final int endP1, int[] kList, int kIndex, int maxThreads) {
+        final int n = endP1 - start;
         if (n <= VERY_SMALL_N_SIZE) {
             snFunctions[n].accept(array, start);
             return;
@@ -37,17 +37,17 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
             if (kDiff < 1) {
                 return;
             }
-            sortShortK(array, start, end, kList, kIndex);
+            sortShortK(array, start, endP1, kList, kIndex);
             return;
         }
 
         if (maxThreads == 1) {
-            radixCountSort(array, start, end, kList, kIndex);
+            radixCountSort(array, start, endP1, kList, kIndex);
         } else {
             int sortMask = 1 << kList[kIndex];
-            int finalLeft = IntSorterUtils.partitionNotStable(array, start, end, sortMask);
+            int finalLeft = IntSorterUtils.partitionNotStable(array, start, endP1, sortMask);
             int n1 = finalLeft - start;
-            int n2 = end - finalLeft;
+            int n2 = endP1 - finalLeft;
             int[] threadNumbers = splitWork(n1, n2, maxThreads);
             ParallelRunner.runTwoRunnable(
                     n1 > 1 ? () -> {
@@ -56,20 +56,20 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
                     } : null, n1,
                     n2 > 1 ? () -> {
                         int maxThreads2 = threadNumbers[1];
-                        sort(array, finalLeft, end, kList, kIndex + 1, maxThreads2);
+                        sort(array, finalLeft, endP1, kList, kIndex + 1, maxThreads2);
                     } : null, n2, params.getDataSizeForThreads(), maxThreads);
         }
     }
 
-    protected void radixCountSort(int[] list, int start, int end, int[] kList, int kIndexEnd) {
+    protected void radixCountSort(int[] list, int start, int endP1, int[] kList, int kIndexEnd) {
         int kIndexCountSort = kList.length - params.getShortKBits();
         int sortMask = IntSorterUtils.getIntMask(kList, kIndexEnd, kIndexCountSort - 1);
-        partitionStableNonConsecutiveBitsAndCountSort(list, start, end, sortMask, kList, kIndexCountSort);
+        partitionStableNonConsecutiveBitsAndCountSort(list, start, endP1, sortMask, kList, kIndexCountSort);
     }
 
     //partitionStableLastBits
-    protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] array, final int start, final int end, int sortMask, int[] kList, int kIndex) {
-        int n = end - start;
+    protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] array, final int start, final int endP1, int sortMask, int[] kList, int kIndex) {
+        int n = endP1 - start;
         int[] aux = new int[n];
         int[] kListAux = MaskInfoInt.getMaskAsArray(sortMask);
         int bits = kListAux.length;
@@ -96,10 +96,10 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
         if (kIndex > 0) {
             final int[] kListCountS = Arrays.copyOfRange(kList, kIndex, kList.length);
             for (int i = 0; i < twoPowerK; i++) {
-                int start1 = i > 0 ? leftX[i - 1] : 0;
-                int end1 = leftX[i];
-                if (end1 - start1 > 1) {
-                    smallListUtil(aux, start1, end1, kListCountS, array);
+                int startI = i > 0 ? leftX[i - 1] : 0;
+                int endI = leftX[i];
+                if (endI - startI > 1) {
+                    smallListUtil(aux, startI, endI, kListCountS, array);
                 }
             }
         }

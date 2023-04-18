@@ -11,9 +11,9 @@ public class FloatSorterUtils {
         array[right] = auxS;
     }
 
-    public static int partitionNotStable(final float[] array, final int start, final int end, final int mask) {
+    public static int partitionNotStable(final float[] array, final int start, final int endP1, final int mask) {
         int left = start;
-        int right = end - 1;
+        int right = endP1 - 1;
         while (left <= right) {
             int element = Float.floatToRawIntBits(array[left]);
             if ((element & mask) == 0) {
@@ -35,9 +35,9 @@ public class FloatSorterUtils {
         return left;
     }
 
-    public static int partitionReverseNotStable(final float[] array, final int start, final int end, final int mask) {
+    public static int partitionReverseNotStable(final float[] array, final int start, final int endP1, final int mask) {
         int left = start;
-        int right = end - 1;
+        int right = endP1 - 1;
 
         while (left <= right) {
             int element = Float.floatToRawIntBits(array[left]);
@@ -61,10 +61,10 @@ public class FloatSorterUtils {
     }
 
 
-    public static int partitionStable(final float[] array, final int start, final int end, final int mask, final float[] aux) {
+    public static int partitionStable(final float[] array, final int start, final int endP1, final int mask, final float[] aux) {
         int left = start;
         int right = 0;
-        for (int i = start; i < end; ++i) {
+        for (int i = start; i < endP1; ++i) {
             float element = array[i];
             int elementFM = Float.floatToRawIntBits(array[i]);
             if ((elementFM & mask) == 0) {
@@ -81,10 +81,10 @@ public class FloatSorterUtils {
 
     public static void partitionStableLastBits(final float[] array, final int start, final IntSection section, final float[] aux, int startAux, int n) {
         final int mask = section.sortMask;
-        final int end = start + n;
+        final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];
-        for (int i = start; i < end; ++i) {
+        for (int i = start; i < endP1; ++i) {
             count[Float.floatToRawIntBits(array[i]) & mask]++;
         }
         for (int i = 0, sum = 0; i < countLength; ++i) {
@@ -93,13 +93,13 @@ public class FloatSorterUtils {
             sum += countI;
         }
         if (startAux == 0) {
-            for (int i = start; i < end; ++i) {
+            for (int i = start; i < endP1; ++i) {
                 float element = array[i];
                 int elementM = Float.floatToRawIntBits(element);
                 aux[count[elementM & mask]++] = element;
             }
         } else  {
-            for (int i = start; i < end; ++i) {
+            for (int i = start; i < endP1; ++i) {
                 float element = array[i];
                 int elementM = Float.floatToRawIntBits(element);
                 aux[count[elementM & mask]++ + startAux] = element;
@@ -110,10 +110,10 @@ public class FloatSorterUtils {
     public static void partitionStableOneGroupBits(final float[] array, final int start, final IntSection section, final float[] aux, int startAux, int n) {
         final int mask = section.sortMask;
         final int shiftRight = section.shiftRight;
-        final int end = start + n;
+        final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];
-        for (int i = start; i < end; ++i) {
+        for (int i = start; i < endP1; ++i) {
             count[(Float.floatToRawIntBits(array[i]) & mask) >>> shiftRight]++;
         }
         for (int i = 0, sum = 0; i < countLength; ++i) {
@@ -122,13 +122,13 @@ public class FloatSorterUtils {
             sum += countI;
         }
         if (startAux == 0 ) {
-            for (int i = start; i < end; ++i) {
+            for (int i = start; i < endP1; ++i) {
                 float element = array[i];
                 int elementM = Float.floatToRawIntBits(element);
                 aux[count[(elementM & mask) >>> shiftRight]++] = element;
             }
         } else {
-            for (int i = start; i < end; ++i) {
+            for (int i = start; i < endP1; ++i) {
                 float element = array[i];
                 int elementM = Float.floatToRawIntBits(element);
                 aux[count[(elementM & mask) >>> shiftRight]++ + startAux] = element;
@@ -137,27 +137,27 @@ public class FloatSorterUtils {
     }
 
 
-    public static void reverse(final float[] array, final int start, final int end) {
-        int length = end - start;
+    public static void reverse(final float[] array, final int start, final int endP1) {
+        int length = endP1 - start;
         int ld2 = length / 2;
-        int endL1 = end - 1;
+        int end = endP1 - 1;
         for (int i = 0; i < ld2; ++i) {
-            swap(array, start + i, endL1 - i);
+            swap(array, start + i, end - i);
         }
     }
 
 
-    public static int listIsOrderedSigned(final float[] array, final int start, final int end) {
+    public static int listIsOrderedSigned(final float[] array, final int start, final int endP1) {
         float i1 = array[start];
         int i = start + 1;
-        while (i < end) {
+        while (i < endP1) {
             float i2 = array[i];
             if (i2 != i1) {
                 break;
             }
             ++i;
         }
-        if (i == end) {
+        if (i == endP1) {
             return AnalysisResult.ALL_EQUAL;
         }
 
@@ -165,28 +165,28 @@ public class FloatSorterUtils {
         i1 = array[i];
         if (array[i - 1] < i1) {
             ++i;
-            for (; i < end; ++i) {
+            for (; i < endP1; ++i) {
                 float i2 = array[i];
                 if (i1 > i2) {
                     break;
                 }
                 i1 = i2;
             }
-            if (i == end) {
+            if (i == endP1) {
                 return AnalysisResult.ASCENDING;
             }
         }
         //descending
         else {
             ++i;
-            for (; i < end; ++i) {
+            for (; i < endP1; ++i) {
                 float i2 = array[i];
                 if (i1 < i2) {
                     break;
                 }
                 i1 = i2;
             }
-            if (i == end) {
+            if (i == endP1) {
                 return AnalysisResult.DESCENDING;
             }
         }

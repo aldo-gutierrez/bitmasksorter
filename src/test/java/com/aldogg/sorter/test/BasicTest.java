@@ -77,13 +77,13 @@ public class BasicTest extends BaseTest {
 
         IntSorter[] sorters = new IntSorter[]{new IntSorter() {
             @Override
-            public void sort(int[] array, int start, int end) {
-                MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, end);
+            public void sort(int[] array, int start, int endP1) {
+                MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, endP1);
                 int mask = maskInfo.getMask();
                 int[] kList = MaskInfoInt.getMaskAsArray(mask);
-                int length = end - start;
+                int length = endP1 - start;
                 int[] aux = new int[length];
-                radixSort(array, start, end, kList, 0, kList.length - 1, aux, 0);
+                radixSort(array, start, endP1, kList, 0, kList.length - 1, aux, 0);
             }
 
             @Override
@@ -93,14 +93,14 @@ public class BasicTest extends BaseTest {
 
         }, new IntSorter() {
             @Override
-            public void sort(int[] array, int start, int end) {
-                MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, end);
+            public void sort(int[] array, int start, int endP1) {
+                MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, endP1);
                 int mask = maskInfo.getMask();
                 int[] kList = MaskInfoInt.getMaskAsArray(mask);
-                int[] aux = new int[end - start];
+                int[] aux = new int[endP1 - start];
                 for (int i = kList.length - 1; i >= 0; i--) {
                     int sortMask = 1 << kList[i];
-                    IntSorterUtils.partitionStable(array, start, end, sortMask, aux);
+                    IntSorterUtils.partitionStable(array, start, endP1, sortMask, aux);
                 }
             }
 
@@ -111,11 +111,11 @@ public class BasicTest extends BaseTest {
 
         }, new IntSorter() {
             @Override
-            public void sort(int[] array, int start, int end) {
-                MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, end);
+            public void sort(int[] array, int start, int endP1) {
+                MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, endP1);
                 int mask = maskInfo.getMask();
                 int[] kList = MaskInfoInt.getMaskAsArray(mask);
-                IntCountSort.countSort(array, start, end, kList, 0);
+                IntCountSort.countSort(array, start, endP1, kList, 0);
             }
 
             @Override

@@ -12,14 +12,14 @@ import static com.aldogg.sorter.long_.LongSorter.LONG_SIGN_BIT_POS;
 public class RadixBitSorterDouble extends DoubleBitMaskSorter {
 
     @Override
-    public void sort(double[] array, int start, int end, int[] kList) {
+    public void sort(double[] array, int start, int endP1, int[] kList) {
         if (kList[0] == LONG_SIGN_BIT_POS) { //there are negative numbers and positive numbers
             MaskInfoLong maskInfo;
             long mask;
             long sortMask = 1L << kList[0];
-            int finalLeft = partitionReverseNotStable(array, start, end, sortMask);
+            int finalLeft = partitionReverseNotStable(array, start, endP1, sortMask);
             int n1 = finalLeft - start;
-            int n2 = end - finalLeft;
+            int n2 = endP1 - finalLeft;
             double[] aux = new double[Math.max(n1, n2)];
             if (n1 > 1) { //sort negative numbers
                 maskInfo = MaskInfoLong.getMaskBit(array, start, finalLeft);
@@ -29,30 +29,30 @@ public class RadixBitSorterDouble extends DoubleBitMaskSorter {
                 reverse(array, start, finalLeft);
             }
             if (n2 > 1) { //sort positive numbers
-                maskInfo = MaskInfoLong.getMaskBit(array, finalLeft, end);
+                maskInfo = MaskInfoLong.getMaskBit(array, finalLeft, endP1);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
-                radixSort(array, finalLeft, end, kList, 0, kList.length - 1, aux);
+                radixSort(array, finalLeft, endP1, kList, 0, kList.length - 1, aux);
             }
         } else {
-            double[] aux = new double[end - start];
-            radixSort(array, start, end, kList, 0, kList.length - 1, aux);
+            double[] aux = new double[endP1 - start];
+            radixSort(array, start, endP1, kList, 0, kList.length - 1, aux);
             if (array[0] < 0) { //all negative numbers
-                reverse(array, start, end);
+                reverse(array, start, endP1);
             }
         }
     }
 
-    public static void radixSort(double[] array, int start, int end, int[] kList, int kStart, int kEnd, double[] aux) {
+    public static void radixSort(double[] array, int start, int endP1, int[] kList, int kStart, int kEnd, double[] aux) {
         LongSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSectionsLong(kList, kStart, kEnd);
         LongSection[] finalSectionList = sectionsInfo.sections;
 
         if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
-            partitionStable(array, start, end, finalSectionList[0].sortMask, aux);
+            partitionStable(array, start, endP1, finalSectionList[0].sortMask, aux);
             return;
         }
 
-        int n = end - start;
+        int n = endP1 - start;
         int startAux = 0;
         int ops = 0;
         double[] arrayOrig = array;

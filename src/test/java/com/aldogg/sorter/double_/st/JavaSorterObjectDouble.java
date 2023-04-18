@@ -7,8 +7,8 @@ import java.util.Arrays;
 
 public class JavaSorterObjectDouble implements ObjectDoubleSorter {
     @Override
-    public void sort(Object[] array, int start, int end, DoubleComparator comparator) {
-        Arrays.sort(array, start, end, comparator);
+    public void sort(Object[] array, int start, int endP1, DoubleComparator comparator) {
+        Arrays.sort(array, start, endP1, comparator);
     }
 
 }

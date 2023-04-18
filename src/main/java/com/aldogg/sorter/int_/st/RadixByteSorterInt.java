@@ -18,32 +18,32 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
     }
 
     @Override
-    public void sort(int[] array, final int start, final int end) {
-        int n = end - start;
+    public void sort(int[] array, final int start, final int endP1) {
+        int n = endP1 - start;
         if (n < 2) {
             return;
         }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
+        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == AnalysisResult.DESCENDING) {
-            IntSorterUtils.reverse(array, start, end);
+            IntSorterUtils.reverse(array, start, endP1);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
         int[] kList = null;
 
         if (calculateBitMaskOptimization) {
-            MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, end);
+            MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, endP1);
             int mask = maskInfo.getMask();
             kList = MaskInfoInt.getMaskAsArray(mask);
             if (kList.length == 0) {
                 return;
             }
         }
-        sort(array, start, end, kList, null);
+        sort(array, start, endP1, kList, null);
     }
 
     @Override
-    public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
+    public void sort(int[] array, int start, int endP1, int[] kList, Object multiThreadParams) {
         int mask = 0xFFFFFFFF;
         if (calculateBitMaskOptimization) {
             if (kList.length == 0) {
@@ -53,10 +53,10 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
             if (kList[0] == SIGN_BIT_POS && !isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
                 int sortMask = 1 << kList[0];
                 int finalLeft = isUnsigned()
-                        ? IntSorterUtils.partitionNotStable(array, start, end, sortMask)
-                        : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
+                        ? IntSorterUtils.partitionNotStable(array, start, endP1, sortMask)
+                        : IntSorterUtils.partitionReverseNotStable(array, start, endP1, sortMask);
                 int n1 = finalLeft - start;
-                int n2 = end - finalLeft;
+                int n2 = endP1 - finalLeft;
                 int[] aux = new int[Math.max(n1, n2)];
                 if (n1 > 1) { //sort negative numbers
                     maskParts = MaskInfoInt.getMaskBit(array, start, finalLeft);
@@ -64,26 +64,26 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
                     sortBytes(array, start, finalLeft, aux, mask);
                 }
                 if (n2 > 1) { //sort positive numbers
-                    maskParts = MaskInfoInt.getMaskBit(array, finalLeft, end);
+                    maskParts = MaskInfoInt.getMaskBit(array, finalLeft, endP1);
                     mask = maskParts.getMask();
-                    sortBytes(array, finalLeft, end, aux, mask);
+                    sortBytes(array, finalLeft, endP1, aux, mask);
                 }
                 return;
             } else {
                 mask = MaskInfoInt.getMaskLastBits(kList, 0);
             }
         }
-        int n = end - start;
+        int n = endP1 - start;
         int[] aux = new int[n];
-        sortBytes(array, start, end, aux, mask);
+        sortBytes(array, start, endP1, aux, mask);
     }
 
-    private void sortBytes(int[] array, int start, int end, int[] aux, int mask) {
+    private void sortBytes(int[] array, int start, int endP1, int[] aux, int mask) {
         boolean s0 = (mask & 0xFF) != 0;
         boolean s8 = (mask & 0xFF00) != 0;
         boolean s16 = (mask & 0xFF0000) != 0;
         boolean s24 = (mask & 0xFF000000) != 0;
-        int n = end - start;
+        int n = endP1 - start;
         IntSection section = new IntSection();
         section.length = 8;
         int ops = 0;

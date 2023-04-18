@@ -16,24 +16,24 @@ public class FloatBitMaskSorter implements FloatSorter {
     }
 
     @Override
-    public void sort(float[] array, int start, int end) {
-        int n = end - start;
+    public void sort(float[] array, int start, int endP1) {
+        int n = endP1 - start;
         if (n < 2) {
             return;
         }
-        int ordered = listIsOrderedSigned(array, start, end);
+        int ordered = listIsOrderedSigned(array, start, endP1);
         if (ordered == AnalysisResult.DESCENDING) {
-            reverse(array, start, end);
+            reverse(array, start, endP1);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, end);
+        MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, endP1);
         int mask = maskInfo.getMask();
         int[] kList = getMaskAsArray(mask);
         if (kList.length == 0) {
             return;
         }
 //        setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
-        sort(array, start, end, kList);
+        sort(array, start, endP1, kList);
     }
 }

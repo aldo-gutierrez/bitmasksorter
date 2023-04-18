@@ -12,9 +12,9 @@ public class ObjectIntSorterUtils {
      *   MEM: 1
      *   not stable?
      */
-    public static int partitionNotStable(final Object[] oArray, final int[] array, final  int start, final int end, final int mask) {
+    public static int partitionNotStable(final Object[] oArray, final int[] array, final  int start, final int endP1, final int mask) {
         int left = start;
-        int right = end - 1;
+        int right = endP1 - 1;
 
         while (left <= right) {
             int element = array[left];
@@ -44,9 +44,9 @@ public class ObjectIntSorterUtils {
      *   MEM: 1
      *   not stable?
      */
-    public static int partitionReverseNotStable(final Object[] oArray, final int[] array, final int start, final int end, final int mask) {
+    public static int partitionReverseNotStable(final Object[] oArray, final int[] array, final int start, final int endP1, final int mask) {
         int left = start;
-        int right = end - 1;
+        int right = endP1 - 1;
 
         while (left <= right) {
             int element = array[left];
@@ -70,10 +70,10 @@ public class ObjectIntSorterUtils {
         return left;
     }
 
-    public static int partitionStable(final Object[] oArray, final int[] array, final int start, final int end, final int mask) {
-        int[] aux = new int[end - start];
-        Object[] oAux = new Object[end - start];
-        return partitionStable(oArray, array, start, end, mask, oAux, aux);
+    public static int partitionStable(final Object[] oArray, final int[] array, final int start, final int endP1, final int mask) {
+        int[] aux = new int[endP1 - start];
+        Object[] oAux = new Object[endP1 - start];
+        return partitionStable(oArray, array, start, endP1, mask, oAux, aux);
     }
 
     /**
@@ -81,11 +81,11 @@ public class ObjectIntSorterUtils {
      *  CPU: 2*N*K (K=1 for 1 bit) //review
      *  MEM: N //review
      */
-    public static int partitionStable(final Object[] oArray, final int[] array, final int start, final int end, final int mask,
+    public static int partitionStable(final Object[] oArray, final int[] array, final int start, final int endP1, final int mask,
                                       final Object[] oAux, final int[] aux) {
         int left = start;
         int right = start;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             int element = array[i];
             Object oElement = oArray[i];
             if ((element & mask) == 0) {
@@ -104,18 +104,18 @@ public class ObjectIntSorterUtils {
         return left;
     }
 
-    public static int partitionReverseStable(final Object[] oArray, final int[] array, final int start, final int end, final int mask) {
-        int[] aux = new int[end - start];
-        Object[] oAux = new Object[end - start];
-        return partitionReverseStable(oArray, array, start, end, mask, oAux, aux);
+    public static int partitionReverseStable(final Object[] oArray, final int[] array, final int start, final int endP1, final int mask) {
+        int[] aux = new int[endP1 - start];
+        Object[] oAux = new Object[endP1 - start];
+        return partitionReverseStable(oArray, array, start, endP1, mask, oAux, aux);
     }
 
 
-    public static int partitionReverseStable(final Object[] oArray, final int[] array, final int start, final int end,
+    public static int partitionReverseStable(final Object[] oArray, final int[] array, final int start, final int endP1,
                                              final int mask, final Object[] oAux, final int[] aux) {
         int left = start;
         int right = start;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             int element = array[i];
             Object oElement = oArray[i];
             if (!((element & mask) == 0)) {
@@ -141,9 +141,9 @@ public class ObjectIntSorterUtils {
     public static int[] partitionStableLastBits(final Object[] oArray, final int[] array, final int start, final IntSection section,
                                                final Object[] oAux, final int[] aux, final int startAux, final int n) {
         int mask = section.sortMask;
-        int end = start + n;
+        int endP1 = start + n;
         int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             count[array[i] & mask]++;
         }
         int cLength = count.length;
@@ -153,7 +153,7 @@ public class ObjectIntSorterUtils {
             sum += countI;
         }
         if (startAux == 0) {
-            for (int i = start; i < end; i++) {
+            for (int i = start; i < endP1; i++) {
                 int element = array[i];
                 int elementShiftMasked = element & mask;
                 int auxIndex = count[elementShiftMasked];
@@ -162,7 +162,7 @@ public class ObjectIntSorterUtils {
                 count[elementShiftMasked]++;
             }
         } else {
-            for (int i = start; i < end; i++) {
+            for (int i = start; i < endP1; i++) {
                 int element = array[i];
                 int elementShiftMasked = element & mask;
                 int auxIndex = count[elementShiftMasked] + startAux;
@@ -184,9 +184,9 @@ public class ObjectIntSorterUtils {
                                                 final Object[] oAux, final int[] aux, final int startAux, final int n) {
         int mask = section.sortMask;
         int shiftRight = section.shiftRight;
-        int end = start + n;
+        int endP1 = start + n;
         int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             count[(array[i] & mask) >>> shiftRight]++;
         }
         int cLength = count.length;
@@ -196,7 +196,7 @@ public class ObjectIntSorterUtils {
             sum += countI;
         }
         if (startAux == 0) {
-            for (int i = start; i < end; i++) {
+            for (int i = start; i < endP1; i++) {
                 int element = array[i];
                 int elementShiftMasked = (element & mask) >>> shiftRight;
                 int auxIndex = count[elementShiftMasked];
@@ -205,7 +205,7 @@ public class ObjectIntSorterUtils {
                 count[elementShiftMasked]++;
             }
         } else {
-            for (int i = start; i < end; i++) {
+            for (int i = start; i < endP1; i++) {
                 int element = array[i];
                 int elementShiftMasked = (element & mask) >>> shiftRight;
                 int auxIndex = count[elementShiftMasked] + startAux;

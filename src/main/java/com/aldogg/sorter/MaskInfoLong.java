@@ -13,10 +13,10 @@ public class MaskInfoLong {
     long p_mask;
     long  i_mask;
 
-    public static MaskInfoLong getMaskBit(final long[] array, final int start, final int end) {
+    public static MaskInfoLong getMaskBit(final long[] array, final int start, final int endP1) {
         long p_mask = 0x0000000000000000;
         long i_mask = 0x0000000000000000;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             long e = array[i];
             p_mask = p_mask | e;
             i_mask = i_mask | (~e);
@@ -27,10 +27,10 @@ public class MaskInfoLong {
         return m;
     }
 
-    public static MaskInfoLong getMaskBit(final double[] array, final int start, final int end) {
+    public static MaskInfoLong getMaskBit(final double[] array, final int start, final int endP1) {
         long p_mask = 0x0000000000000000;
         long i_mask = 0x0000000000000000;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             long e = Double.doubleToRawLongBits(array[i]);
             p_mask = p_mask | e;
             i_mask = i_mask | (~e);
@@ -42,12 +42,12 @@ public class MaskInfoLong {
     }
 
 
-    public static MaskInfoLong getMaskBitParallel(final long[] array, final int start, final int end, final ArrayParallelRunner.APRParameters parameters) {
-        return ArrayParallelRunner.runInParallel(array, start, end, parameters, new ArrayRunnable<MaskInfoLong>() {
+    public static MaskInfoLong getMaskBitParallel(final long[] array, final int start, final int endP1, final ArrayParallelRunner.APRParameters parameters) {
+        return ArrayParallelRunner.runInParallel(array, start, endP1, parameters, new ArrayRunnable<MaskInfoLong>() {
 
             @Override
-            public MaskInfoLong map(Object array1, int start1, int end1, int index, AtomicBoolean stop) {
-                return getMaskBit((long[]) array1, start1, end1);
+            public MaskInfoLong map(Object array1, int start1, int endP1, int index, AtomicBoolean stop) {
+                return getMaskBit((long[]) array1, start1, endP1);
             }
 
             @Override

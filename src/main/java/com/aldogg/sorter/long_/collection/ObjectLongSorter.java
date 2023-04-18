@@ -8,6 +8,6 @@ public interface ObjectLongSorter extends Sorter {
         sort(arrayObject, 0, arrayObject.length, comparator);
     }
 
-    void sort(Object[] arrayObject, int start, int end, LongComparator comparator);
+    void sort(Object[] arrayObject, int start, int endP1, LongComparator comparator);
 
 }

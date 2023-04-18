@@ -24,8 +24,8 @@ public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
     }
 
     @Override
-    public void sort(Object[] oArray, int start, int end, FloatComparator comparator) {
-        int n = end - start;
+    public void sort(Object[] oArray, int start, int endP1, FloatComparator comparator) {
+        int n = endP1 - start;
         if (n < 2) {
             return;
         }
@@ -33,20 +33,20 @@ public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
         for (int i = 0; i < array.length; i++) {
             array[i] = comparator.value(oArray[i]);
         }
-        int ordered = listIsOrderedSigned(array, start, end);
+        int ordered = listIsOrderedSigned(array, start, endP1);
         if (ordered == AnalysisResult.DESCENDING) {
-            FloatSorterUtils.reverse(array, start, end);
-            ObjectSorterUtils.reverse(oArray, start, end);
+            FloatSorterUtils.reverse(array, start, endP1);
+            ObjectSorterUtils.reverse(oArray, start, endP1);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, end);
+        MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, endP1);
         int mask = maskInfo.getMask();
         int[] kList = MaskInfoInt.getMaskAsArray(mask);
         if (kList.length == 0) { //all numbers are equal
             return;
         }
-        sort(oArray, array, start, end, kList);
+        sort(oArray, array, start, endP1, kList);
     }
 
     public void sort(Object[] oArray, float[] array, int start, int end, int[] kList) {

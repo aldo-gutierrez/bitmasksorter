@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public class JavaSorterObjectLong implements ObjectLongSorter {
     @Override
-    public void sort(Object[] array, int start, int end, LongComparator comparator) {
-        Arrays.sort(array, start, end, comparator);
+    public void sort(Object[] array, int start, int endP1, LongComparator comparator) {
+        Arrays.sort(array, start, endP1, comparator);
     }
 
 }

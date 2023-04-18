@@ -36,26 +36,26 @@ public abstract class IntBitMaskSorter implements IntSorter {
     }
 
     @Override
-    public void sort(int[] array, int start, int end) {
-        int n = end - start;
+    public void sort(int[] array, int start, int endP1) {
+        int n = endP1 - start;
         if (n < 2) {
             return;
         }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
+        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == AnalysisResult.DESCENDING) {
-            IntSorterUtils.reverse(array, start, end);
+            IntSorterUtils.reverse(array, start, endP1);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
         setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
 
-        MaskInfoInt maskInfo = MaskInfoInt.getMaskBitDetectSignBit(array, start, end, null);
+        MaskInfoInt maskInfo = MaskInfoInt.getMaskBitDetectSignBit(array, start, endP1, null);
         if (maskInfo == null || (maskInfo.getMask() & 0x80000000) != 0) { //the sign bit is set
             int finalLeft = isUnsigned()
-                    ? IntSorterUtils.partitionNotStableSignBit(array, start, end)
-                    : IntSorterUtils.partitionReverseNotStableSignBit(array, start, end);
+                    ? IntSorterUtils.partitionNotStableSignBit(array, start, endP1)
+                    : IntSorterUtils.partitionReverseNotStableSignBit(array, start, endP1);
             int n1 = finalLeft - start;
-            int n2 = end - finalLeft;
+            int n2 = endP1 - finalLeft;
             if (n1 > 1) { //sort negative numbers
                 maskInfo = MaskInfoInt.getMaskBit(array, start, finalLeft);
                 int mask = maskInfo.getMask();
@@ -65,18 +65,18 @@ public abstract class IntBitMaskSorter implements IntSorter {
                 }
             }
             if (n2 > 1) { //sort positive numbers
-                maskInfo = MaskInfoInt.getMaskBit(array, finalLeft, end);
+                maskInfo = MaskInfoInt.getMaskBit(array, finalLeft, endP1);
                 int mask = maskInfo.getMask();
                 int[] kList = MaskInfoInt.getMaskAsArray(mask);
                 if (kList.length > 0) {
-                    sort(array, finalLeft, end, kList, null);
+                    sort(array, finalLeft, endP1, kList, null);
                 }
             }
         } else {
             int mask = maskInfo.getMask();
             int[] kList = MaskInfoInt.getMaskAsArray(mask);
             if (kList.length > 0) {
-                sort(array, start, end, kList, null);
+                sort(array, start, endP1, kList, null);
             }
         }
     }

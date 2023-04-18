@@ -11,19 +11,19 @@ import static com.aldogg.sorter.int_.IntSorterUtils.sortShortK;
 public class QuickBitSorterInt extends IntBitMaskSorter {
 
     @Override
-    public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
-        sort(array, start, end, kList, 0, false);
+    public void sort(int[] array, int start, int endP1, int[] kList, Object multiThreadParams) {
+        sort(array, start, endP1, kList, 0, false);
     }
 
-    public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex, boolean recalculate) {
-        final int n = end - start;
+    public void sort(final int[] array, final int start, final int endP1, int[] kList, int kIndex, boolean recalculate) {
+        final int n = endP1 - start;
         if (n <= VERY_SMALL_N_SIZE) {
             snFunctions[n].accept(array, start);
             return;
         }
 
         if (recalculate && kIndex < 3) {
-            MaskInfoInt maskParts = MaskInfoInt.getMaskBit(array, start, end);
+            MaskInfoInt maskParts = MaskInfoInt.getMaskBit(array, start, endP1);
             int mask = maskParts.getMask();
             kList = MaskInfoInt.getMaskAsArray(mask);
             kIndex = 0;
@@ -34,33 +34,33 @@ public class QuickBitSorterInt extends IntBitMaskSorter {
             if (kDiff < 1) {
                 return;
             }
-            sortShortK(array, start, end, kList, kIndex);
+            sortShortK(array, start, endP1, kList, kIndex);
             return;
         }
 
         int sortMask = 1 << kList[kIndex];
-        int finalLeft = IntSorterUtils.partitionNotStable(array, start, end, sortMask);
+        int finalLeft = IntSorterUtils.partitionNotStable(array, start, endP1, sortMask);
         if (recalculate) {
             if (finalLeft - start > 1) {
                 sort(array, start, finalLeft, kList, kIndex + 1);
             }
-            if (end - finalLeft > 1) {
-                sort(array, finalLeft, end, kList, kIndex + 1);
+            if (endP1 - finalLeft > 1) {
+                sort(array, finalLeft, endP1, kList, kIndex + 1);
             }
         } else {
-            boolean recalculateBitMask = (finalLeft == start || finalLeft == end);
+            boolean recalculateBitMask = (finalLeft == start || finalLeft == endP1);
 
             if (finalLeft - start > 1) {
                 sort(array, start, finalLeft, kList, kIndex + 1, recalculateBitMask);
             }
-            if (end - finalLeft > 1) {
-                sort(array, finalLeft, end, kList, kIndex + 1, recalculateBitMask);
+            if (endP1 - finalLeft > 1) {
+                sort(array, finalLeft, endP1, kList, kIndex + 1, recalculateBitMask);
             }
         }
     }
 
-    public void sort(final int[] array, final int start, final int end, int[] kList, int kIndex) {
-        final int n = end - start;
+    public void sort(final int[] array, final int start, final int endP1, int[] kList, int kIndex) {
+        final int n = endP1 - start;
         if (n <= VERY_SMALL_N_SIZE) {
             snFunctions[n].accept(array, start);
             return;
@@ -71,18 +71,18 @@ public class QuickBitSorterInt extends IntBitMaskSorter {
             if (kDiff < 1) {
                 return;
             }
-            sortShortK(array, start, end, kList, kIndex);
+            sortShortK(array, start, endP1, kList, kIndex);
             return;
         }
 
         int sortMask = 1 << kList[kIndex];
-        int finalLeft = IntSorterUtils.partitionNotStable(array, start, end, sortMask);
+        int finalLeft = IntSorterUtils.partitionNotStable(array, start, endP1, sortMask);
 
         if (finalLeft - start > 1) {
             sort(array, start, finalLeft, kList, kIndex + 1);
         }
-        if (end - finalLeft > 1) {
-            sort(array, finalLeft, end, kList, kIndex + 1);
+        if (endP1 - finalLeft > 1) {
+            sort(array, finalLeft, endP1, kList, kIndex + 1);
         }
     }
 

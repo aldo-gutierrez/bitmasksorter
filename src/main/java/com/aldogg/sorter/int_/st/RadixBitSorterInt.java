@@ -12,21 +12,21 @@ import static com.aldogg.sorter.int_.IntSorterUtils.*;
 public class RadixBitSorterInt extends IntBitMaskSorter {
 
     @Override
-    public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
-        int[] aux = new int[end - start];
-        radixSort(array, start, end, kList, 0, kList.length - 1, aux, 0);
+    public void sort(int[] array, int start, int endP1, int[] kList, Object multiThreadParams) {
+        int[] aux = new int[endP1 - start];
+        radixSort(array, start, endP1, kList, 0, kList.length - 1, aux, 0);
     }
 
-    public static void radixSort(int[] array, int start, int end, int[] kList, int kStart, int kEnd, int[] aux, int startAux) {
+    public static void radixSort(int[] array, int start, int endP1, int[] kList, int kStart, int kEnd, int[] aux, int startAux) {
         IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(kList, kStart, kEnd);
         IntSection[] finalSectionList = sectionsInfo.sections;
 
         if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
-            partitionStable(array, start, end, finalSectionList[0].sortMask, aux);
+            partitionStable(array, start, endP1, finalSectionList[0].sortMask, aux);
             return;
         }
 
-        int n = end - start;
+        int n = endP1 - start;
         int ops = 0;
         int[] arrayOrig = array;
         int startOrig = start;

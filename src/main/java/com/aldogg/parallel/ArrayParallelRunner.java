@@ -17,20 +17,20 @@ public class ArrayParallelRunner {
 
     }
 
-    public static <R> R runInParallel(final Object array, final int start, final int endPlus1, APRParameters parameters, ArrayRunnable<R> mapReducer) {
+    public static <R> R runInParallel(final Object array, final int start, final int endP1, APRParameters parameters, ArrayRunnable<R> mapReducer) {
         int maxThreads = parameters.maxThreads;
         if (maxThreads <= 1) {
-            return mapReducer.map(array, start, endPlus1, 0, null);
+            return mapReducer.map(array, start, endP1, 0, null);
         }
         ParallelRunner parallelRunner = new ParallelRunner();
         parallelRunner.init(maxThreads, 1);
         AtomicBoolean stop = new AtomicBoolean(false);
-        int n = endPlus1 - start;
+        int n = endP1 - start;
         int range = n / maxThreads;
         final R[] results = (R[]) new Object[maxThreads];
         int startThread = start;
         for (int i = 0; i < maxThreads; i++) {
-            int endThread = i == maxThreads - 1 ? endPlus1 : startThread + range;
+            int endThread = i == maxThreads - 1 ? endP1 : startThread + range;
             int finalI = i;
             int finalStartThread = startThread;
             Runnable runnable = () -> {

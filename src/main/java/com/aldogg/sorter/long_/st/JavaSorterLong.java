@@ -9,8 +9,8 @@ import java.util.List;
 public class JavaSorterLong implements LongSorter {
 
     @Override
-    public void sort(long[] array, int start, int end) {
-        Arrays.sort(array, start, end);
+    public void sort(long[] array, int start, int endP1) {
+        Arrays.sort(array, start, endP1);
     }
 
     @Override

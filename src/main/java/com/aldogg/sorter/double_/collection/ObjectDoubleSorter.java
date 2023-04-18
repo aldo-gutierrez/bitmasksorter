@@ -8,6 +8,6 @@ public interface ObjectDoubleSorter extends Sorter {
         sort(arrayObject, 0, arrayObject.length, comparator);
     }
 
-    void sort(Object[] arrayObject, int start, int end, DoubleComparator comparator);
+    void sort(Object[] arrayObject, int start, int endP1, DoubleComparator comparator);
 
 }

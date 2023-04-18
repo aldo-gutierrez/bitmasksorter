@@ -13,10 +13,10 @@ public class MaskInfoInt {
     public int i_mask;
 
     public static final int SIZE_FOR_PARALLEL_BIT_MASK = 6000000;
-    public static MaskInfoInt getMaskBit(final int[] array, final int start, final int end) {
+    public static MaskInfoInt getMaskBit(final int[] array, final int start, final int endP1) {
         int p_mask = 0x00000000;
         int i_mask = 0x00000000;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             int e = array[i];
             p_mask = p_mask | e;
             i_mask = i_mask | (~e);
@@ -27,10 +27,10 @@ public class MaskInfoInt {
         return m;
     }
 
-    public static MaskInfoInt getMaskBitDetectSignBit(final int[] array, final int start, final int end, AtomicBoolean stop) {
+    public static MaskInfoInt getMaskBitDetectSignBit(final int[] array, final int start, final int endP1, AtomicBoolean stop) {
         int p_mask = 0x00000000;
         int i_mask = 0x00000000;
-        for (int i = start; i < end; i += BATCH_SIZE) {
+        for (int i = start; i < endP1; i += BATCH_SIZE) {
             if (p_mask < 0) {
                 if (i_mask < 0) {
                     if (stop != null) {
@@ -45,7 +45,7 @@ public class MaskInfoInt {
                 }
             }
             int startBatch = i;
-            int j = Math.min(i + BATCH_SIZE, end);
+            int j = Math.min(i + BATCH_SIZE, endP1);
             for (; i < j; i++) {
                 int e = array[i];
                 p_mask = p_mask | e;
@@ -59,10 +59,10 @@ public class MaskInfoInt {
         return m;
     }
 
-    public static MaskInfoInt getMaskBit(final float[] array, final int start, final int end) {
+    public static MaskInfoInt getMaskBit(final float[] array, final int start, final int endP1) {
         int p_mask = 0x00000000;
         int i_mask = 0x00000000;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             int e = Float.floatToRawIntBits(array[i]);
             p_mask = p_mask | e;
             i_mask = i_mask | (~e);
@@ -74,11 +74,11 @@ public class MaskInfoInt {
     }
 
 
-    public static MaskInfoInt getMaskBitParallel(final int[] array, final int start, final int end, final ArrayParallelRunner.APRParameters parameters) {
-        return ArrayParallelRunner.runInParallel(array, start, end, parameters, new ArrayRunnable<MaskInfoInt>() {
+    public static MaskInfoInt getMaskBitParallel(final int[] array, final int start, final int endP1, final ArrayParallelRunner.APRParameters parameters) {
+        return ArrayParallelRunner.runInParallel(array, start, endP1, parameters, new ArrayRunnable<MaskInfoInt>() {
             @Override
-            public MaskInfoInt map(final Object list, final int start1, final int end1, int index, final AtomicBoolean stop) {
-                return getMaskBit((int[]) list, start1, end1);
+            public MaskInfoInt map(final Object list, final int start1, final int endP1, int index, final AtomicBoolean stop) {
+                return getMaskBit((int[]) list, start1, endP1);
             }
 
             @Override
@@ -91,11 +91,11 @@ public class MaskInfoInt {
         });
     }
 
-    public static MaskInfoInt getMaskBitDetectSignBitParallel(final int[] array, final int start, final int end, final ArrayParallelRunner.APRParameters parameters) {
-        return ArrayParallelRunner.runInParallel(array, start, end, parameters, new ArrayRunnable<MaskInfoInt>() {
+    public static MaskInfoInt getMaskBitDetectSignBitParallel(final int[] array, final int start, final int endP1, final ArrayParallelRunner.APRParameters parameters) {
+        return ArrayParallelRunner.runInParallel(array, start, endP1, parameters, new ArrayRunnable<MaskInfoInt>() {
             @Override
-            public MaskInfoInt map(final Object list, final int start1, final int end1, final int index, final AtomicBoolean stop) {
-                return getMaskBitDetectSignBit((int[]) list, start1, end1, stop);
+            public MaskInfoInt map(final Object list, final int start1, final int endP1, final int index, final AtomicBoolean stop) {
+                return getMaskBitDetectSignBit((int[]) list, start1, endP1, stop);
             }
 
             @Override

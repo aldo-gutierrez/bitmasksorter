@@ -6,9 +6,9 @@ import com.aldogg.sorter.float_.FloatSorterUtils;
 
 public class ObjectFloatSorterUtils {
 
-    public static int partitionNotStable(final Object[] oArray, final float[] array, final int start, final int end, final int mask) {
+    public static int partitionNotStable(final Object[] oArray, final float[] array, final int start, final int endP1, final int mask) {
         int left = start;
-        int right = end - 1;
+        int right = endP1 - 1;
 
         while (left <= right) {
             int element = Float.floatToRawIntBits(array[left]);
@@ -32,9 +32,9 @@ public class ObjectFloatSorterUtils {
         return left;
     }
 
-    public static int partitionReverseNotStable(final Object[] oArray, final float[] array, final int start, final int end, final int mask) {
+    public static int partitionReverseNotStable(final Object[] oArray, final float[] array, final int start, final int endP1, final int mask) {
         int left = start;
-        int right = end - 1;
+        int right = endP1 - 1;
 
         while (left <= right) {
             int element = Float.floatToRawIntBits(array[left]);
@@ -58,17 +58,17 @@ public class ObjectFloatSorterUtils {
         return left;
     }
 
-    public static int partitionStable(final Object[] oArray, final float[] array, final int start, final int end, final int mask) {
-        float[] aux = new float[end - start];
-        Object[] oAux = new Object[end - start];
-        return partitionStable(oArray, array, start, end, mask, oAux, aux);
+    public static int partitionStable(final Object[] oArray, final float[] array, final int start, final int endP1, final int mask) {
+        float[] aux = new float[endP1 - start];
+        Object[] oAux = new Object[endP1 - start];
+        return partitionStable(oArray, array, start, endP1, mask, oAux, aux);
     }
 
-    public static int partitionStable(final Object[] oArray, final float[] array, final int start, final int end, final int mask,
+    public static int partitionStable(final Object[] oArray, final float[] array, final int start, final int endP1, final int mask,
                                       final Object[] oAux, final float[] aux) {
         int left = start;
         int right = start;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             float element = array[i];
             int elementFM = Float.floatToRawIntBits(array[i]);
             Object oElement = oArray[i];
@@ -88,18 +88,18 @@ public class ObjectFloatSorterUtils {
         return left;
     }
 
-    public static int partitionReverseStable(final Object[] oArray, final float[] array, final int start, final int end, final int mask) {
-        float[] aux = new float[end - start];
-        Object[] oAux = new Object[end - start];
-        return partitionReverseStable(oArray, array, start, end, mask, oAux, aux);
+    public static int partitionReverseStable(final Object[] oArray, final float[] array, final int start, final int endP1, final int mask) {
+        float[] aux = new float[endP1 - start];
+        Object[] oAux = new Object[endP1 - start];
+        return partitionReverseStable(oArray, array, start, endP1, mask, oAux, aux);
     }
 
 
-    public static int partitionReverseStable(final Object[] oArray, final float[] array, final int start, final int end,
+    public static int partitionReverseStable(final Object[] oArray, final float[] array, final int start, final int endP1,
                                              final int mask, final Object[] oAux, final float[] aux) {
         int left = start;
         int right = start;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             float element = array[i];
             int elementFM = Float.floatToRawIntBits(array[i]);
             Object oElement = oArray[i];
@@ -122,9 +122,9 @@ public class ObjectFloatSorterUtils {
     public static void partitionStableLastBits(final Object[] oArray, final float[] array, final int start, final IntSection section,
                                                final Object[] oAux, final float[] aux, int startAux, final int n) {
         int mask = section.sortMask;
-        int end = start + n;
+        int endP1 = start + n;
         int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             count[Float.floatToRawIntBits(array[i]) & mask]++;
         }
         int cLength = count.length;
@@ -133,7 +133,7 @@ public class ObjectFloatSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             float element = array[i];
             int elementM = Float.floatToRawIntBits(element);
             int elementShiftMasked = elementM & mask;
@@ -150,9 +150,9 @@ public class ObjectFloatSorterUtils {
                                                 final Object[] oAux, final float[] aux, int startAux, int n) {
         int mask = section.sortMask;
         int shiftRight = section.shiftRight;
-        int end = start + n;
+        int endP1 = start + n;
         int[] count = new int[1 << section.length];
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             count[(Float.floatToRawIntBits(array[i]) & mask) >>> shiftRight]++;
         }
         int cLength = count.length;
@@ -161,7 +161,7 @@ public class ObjectFloatSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        for (int i = start; i < end; i++) {
+        for (int i = start; i < endP1; i++) {
             float element = array[i];
             int elementM = Float.floatToRawIntBits(element);
             int elementShiftMasked = (elementM & mask) >>> shiftRight;

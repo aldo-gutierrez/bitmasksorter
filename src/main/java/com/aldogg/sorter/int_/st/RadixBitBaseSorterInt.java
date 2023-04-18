@@ -20,8 +20,8 @@ public class RadixBitBaseSorterInt implements IntSorter {
     }
 
     @Override
-    public void sort(int[] array, int start, int end) {
-        MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, end);
+    public void sort(int[] array, int start, int endP1) {
+        MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, endP1);
         int mask = maskInfo.getMask();
         int[] kList = MaskInfoInt.getMaskAsArray(mask);
         if (kList.length == 0) {
@@ -29,7 +29,7 @@ public class RadixBitBaseSorterInt implements IntSorter {
         }
         if (kList[0] == SIGN_BIT_POS) { //there are negative numbers and positive numbers
             int sortMask = 1 << kList[0];
-            int finalLeft = isUnsigned() ? IntSorterUtils.partitionNotStable(array, start, end, sortMask) : IntSorterUtils.partitionReverseNotStable(array, start, end, sortMask);
+            int finalLeft = isUnsigned() ? IntSorterUtils.partitionNotStable(array, start, endP1, sortMask) : IntSorterUtils.partitionReverseNotStable(array, start, endP1, sortMask);
             if (finalLeft - start > 1) { //sort negative numbers
                 int[] aux = new int[finalLeft - start];
                 maskInfo = MaskInfoInt.getMaskBit(array, start, finalLeft);
@@ -40,21 +40,21 @@ public class RadixBitBaseSorterInt implements IntSorter {
                     partitionStable(array, start, finalLeft, sortMaskI, aux);
                 }
             }
-            if (end - finalLeft > 1) { //sort positive numbers
-                int[] aux = new int[end - finalLeft];
-                maskInfo = MaskInfoInt.getMaskBit(array, finalLeft, end);
+            if (endP1 - finalLeft > 1) { //sort positive numbers
+                int[] aux = new int[endP1 - finalLeft];
+                maskInfo = MaskInfoInt.getMaskBit(array, finalLeft, endP1);
                 mask = maskInfo.getMask();
                 kList = MaskInfoInt.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
                     int sortMaskI = 1 << kList[i];
-                    partitionStable(array, finalLeft, end, sortMaskI, aux);
+                    partitionStable(array, finalLeft, endP1, sortMaskI, aux);
                 }
             }
         } else {
-            int[] aux = new int[end - start];
+            int[] aux = new int[endP1 - start];
             for (int i = kList.length - 1; i >= 0; i--) {
                 int sortMask = 1 << kList[i];
-                partitionStable(array, start, end, sortMask, aux);
+                partitionStable(array, start, endP1, sortMask, aux);
             }
         }
     }

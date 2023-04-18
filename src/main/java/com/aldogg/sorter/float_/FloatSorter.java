@@ -10,9 +10,9 @@ public interface FloatSorter extends Sorter {
         sort(array, 0, array.length);
     }
 
-    void sort(float[] array, int start, int end);
+    void sort(float[] array, int start, int endP1);
 
-    default void sort(float[] array, int start, int end, int[] kList) {
+    default void sort(float[] array, int start, int endP1, int[] kList) {
         throw new UnsupportedOperationException();
     }
 
@@ -20,16 +20,16 @@ public interface FloatSorter extends Sorter {
         sort(list, 0, list.size());
     }
 
-    default void sort(List<Float> list, int start, int end) {
-        int n = end - start;
+    default void sort(List<Float> list, int start, int endP1) {
+        int n = endP1 - start;
         float[] a = new float[n];
         int j = 0;
-        for (int i = start; i < end; i++, j++) {
+        for (int i = start; i < endP1; i++, j++) {
             a[j] = list.get(i);
         }
         sort(a, 0, n);
         j = 0;
-        for (int i = start; i < end; i++, j++) {
+        for (int i = start; i < endP1; i++, j++) {
             list.set(i, a[j]);
         }
     }

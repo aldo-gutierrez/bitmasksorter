@@ -13,13 +13,13 @@ import static com.aldogg.sorter.int_.IntSorterUtils.sortShortK;
 public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
-    public void sort(int[] array, int start, int end, int[] kList, Object multiThreadParams) {
+    public void sort(int[] array, int start, int endP1, int[] kList, Object multiThreadParams) {
         int kDiff = kList.length;
         if (kDiff <= params.getShortKBits()) {
             if (kDiff < 1) {
                 return;
             }
-            sortShortK(array, start, end, kList, 0);
+            sortShortK(array, start, endP1, kList, 0);
             return;
         }
 
@@ -32,11 +32,11 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
         int threadBits = Math.min(tBits, kList.length);
         int sortMask = IntSorterUtils.getIntMask(kList, 0, threadBits - 1);
 
-        partitionStableNonConsecutiveBitsAndRadixSort(array, start, end, sortMask, threadBits, kList);
+        partitionStableNonConsecutiveBitsAndRadixSort(array, start, endP1, sortMask, threadBits, kList);
     }
 
-    protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] array, final int start, final int end, int sortMask, int threadBits, int[] kList) {
-        int n = end - start;
+    protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] array, final int start, final int endP1, int sortMask, int threadBits, int[] kList) {
+        int n = endP1 - start;
         int[] aux = new int[n];
 
         int remainingBits = kList.length - threadBits;

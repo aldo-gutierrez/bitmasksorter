@@ -18,19 +18,19 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
     public abstract IntBitMaskSorter getSTIntSorter();
 
     @Override
-    public void sort(int[] array, int start, int end) {
-        int n = end - start;
+    public void sort(int[] array, int start, int endP1) {
+        int n = endP1 - start;
         if (n < 2) {
             return;
         }
         int maxThreads = params.getMaxThreads();
         if (n <= params.getDataSizeForThreads() || maxThreads <= 1) {
-            getSTIntSorter().sort(array, start, end);
+            getSTIntSorter().sort(array, start, endP1);
             return;
         }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, end) : listIsOrderedSigned(array, start, end);
+        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == AnalysisResult.DESCENDING) {
-            IntSorterUtils.reverse(array, start, end);
+            IntSorterUtils.reverse(array, start, endP1);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
@@ -38,23 +38,23 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
 
         MaskInfoInt maskInfo;
         if (n >= SIZE_FOR_PARALLEL_BIT_MASK) {
-            maskInfo = MaskInfoInt.getMaskBitDetectSignBitParallel(array, start, end, new ArrayParallelRunner.APRParameters(2));
+            maskInfo = MaskInfoInt.getMaskBitDetectSignBitParallel(array, start, endP1, new ArrayParallelRunner.APRParameters(2));
         } else {
-            maskInfo = MaskInfoInt.getMaskBitDetectSignBit(array, start, end, null);
+            maskInfo = MaskInfoInt.getMaskBitDetectSignBit(array, start, endP1, null);
         }
 
         if (maskInfo == null) { //there are negative numbers and positive numbers
             int finalLeft = isUnsigned()
-                    ? IntSorterUtils.partitionNotStableSignBit(array, start, end)
-                    : IntSorterUtils.partitionReverseNotStableSignBit(array, start, end);
+                    ? IntSorterUtils.partitionNotStableSignBit(array, start, endP1)
+                    : IntSorterUtils.partitionReverseNotStableSignBit(array, start, endP1);
             int n1 = finalLeft - start;
-            int n2 = end - finalLeft;
+            int n2 = endP1 - finalLeft;
             int[] threadNumbers = splitWork(n1, n2, maxThreads);
             ParallelRunner.runTwoRunnable(
                     n1 > 1 ? () -> { //sort negative numbers
                         int maxThreads1 = threadNumbers[0];
                         if (maxThreads1 <= 1) {
-                            getSTIntSorter().sort(array, start, end);
+                            getSTIntSorter().sort(array, start, endP1);
                             return;
                         }
 
@@ -71,25 +71,25 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
                     n2 > 1 ? () -> { //sort positive numbers
                         int maxThreads2 = threadNumbers[1];
                         if (maxThreads2 <= 1) {
-                            getSTIntSorter().sort(array, start, end);
+                            getSTIntSorter().sort(array, start, endP1);
                             return;
                         }
                         MaskInfoInt maskInfo2;
                         if (n2 >= SIZE_FOR_PARALLEL_BIT_MASK) {
-                            maskInfo2 = MaskInfoInt.getMaskBitParallel(array, finalLeft, end, new ArrayParallelRunner.APRParameters(2));
+                            maskInfo2 = MaskInfoInt.getMaskBitParallel(array, finalLeft, endP1, new ArrayParallelRunner.APRParameters(2));
                         } else {
-                            maskInfo2 = MaskInfoInt.getMaskBit(array, finalLeft, end);
+                            maskInfo2 = MaskInfoInt.getMaskBit(array, finalLeft, endP1);
                         }
                         int mask2 = maskInfo2.getMask();
                         int[] kList2 = MaskInfoInt.getMaskAsArray(mask2);
-                        sort(array, finalLeft, end, kList2, maxThreads2);
+                        sort(array, finalLeft, endP1, kList2, maxThreads2);
                     } : null, n2, params.getDataSizeForThreads(), maxThreads);
 
         } else {
             int mask = maskInfo.getMask();
             if (mask != 0) {
                 int[] kList = MaskInfoInt.getMaskAsArray(mask);
-                sort(array, start, end, kList, maxThreads);
+                sort(array, start, endP1, kList, maxThreads);
             }
         }
     }

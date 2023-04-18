@@ -9,8 +9,8 @@ import java.util.List;
 public class JavaSorterFloat implements FloatSorter {
 
     @Override
-    public void sort(float[] array, int start, int end) {
-        Arrays.sort(array, start, end);
+    public void sort(float[] array, int start, int endP1) {
+        Arrays.sort(array, start, endP1);
     }
 
     @Override

@@ -13,9 +13,9 @@ public class LongSorterUtils {
         array[right] = auxS;
     }
 
-    public static int partitionNotStable(final long[] array, final int start, final int end, final long mask) {
+    public static int partitionNotStable(final long[] array, final int start, final int endP1, final long mask) {
         int left = start;
-        int right = end - 1;
+        int right = endP1 - 1;
         while (left <= right) {
             long element = array[left];
             if ((element & mask) == 0) {
@@ -37,9 +37,9 @@ public class LongSorterUtils {
         return left;
     }
 
-    public static int partitionReverseNotStable(final long[] array, final int start, final int end, final long mask) {
+    public static int partitionReverseNotStable(final long[] array, final int start, final int endP1, final long mask) {
         int left = start;
-        int right = end - 1;
+        int right = endP1 - 1;
 
         while (left <= right) {
             long element = array[left];
@@ -63,10 +63,10 @@ public class LongSorterUtils {
     }
 
 
-    public static int partitionStable(final long[] array, final int start, final int end, final long mask, final long[] aux) {
+    public static int partitionStable(final long[] array, final int start, final int endP1, final long mask, final long[] aux) {
         int left = start;
         int right = 0;
-        for (int i = start; i < end; ++i) {
+        for (int i = start; i < endP1; ++i) {
             long element = array[i];
             if ((element & mask) == 0) {
                 array[left] = element;
@@ -82,10 +82,10 @@ public class LongSorterUtils {
 
     public static void partitionStableLastBits(final long[] array, final int start, final LongSection section, final long[] aux, int startAux, int n) {
         final long mask = section.sortMask;
-        final int end = start + n;
+        final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];
-        for (int i = start; i < end; ++i) {
+        for (int i = start; i < endP1; ++i) {
             count[(int) (array[i] & mask)]++;
         }
         for (int i = 0, sum = 0; i < countLength; ++i) {
@@ -94,12 +94,12 @@ public class LongSorterUtils {
             sum += countI;
         }
         if (startAux == 0) {
-            for (int i = start; i < end; ++i) {
+            for (int i = start; i < endP1; ++i) {
                 long element = array[i];
                 aux[count[(int) (element & mask)]++] = element;
             }
         } else {
-            for (int i = start; i < end; ++i) {
+            for (int i = start; i < endP1; ++i) {
                 long element = array[i];
                 aux[count[(int) (element & mask)]++ + startAux] = element;
             }
@@ -110,10 +110,10 @@ public class LongSorterUtils {
     public static int[] partitionStableOneGroupBits(final long[] array, final int start, final LongSection section, final long[] aux, int startAux, int n) {
         final long mask = section.sortMask;
         final int shiftRight = section.shiftRight;
-        final int end = start + n;
+        final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];
-        for (int i = start; i < end; ++i) {
+        for (int i = start; i < endP1; ++i) {
             count[(int) ((array[i] & mask) >>> shiftRight)]++;
         }
         for (int i = 0, sum = 0; i < countLength; ++i) {
@@ -122,12 +122,12 @@ public class LongSorterUtils {
             sum += countI;
         }
         if (startAux == 0) {
-            for (int i = start; i < end; ++i) {
+            for (int i = start; i < endP1; ++i) {
                 long element = array[i];
                 aux[count[(int) ((element & mask) >>> shiftRight)]++] = element;
             }
         } else {
-            for (int i = start; i < end; ++i) {
+            for (int i = start; i < endP1; ++i) {
                 long element = array[i];
                 aux[count[(int) ((element & mask) >>> shiftRight)]++ + startAux] = element;
             }
@@ -135,26 +135,26 @@ public class LongSorterUtils {
         return count;
     }
 
-    public static void reverse(final long[] array, final int start, final int end) {
-        int length = end - start;
+    public static void reverse(final long[] array, final int start, final int endP1) {
+        int length = endP1 - start;
         int ld2 = length / 2;
-        int endL1 = end - 1;
+        int end = endP1 - 1;
         for (int i = 0; i < ld2; ++i) {
-            swap(array, start + i, endL1 - i);
+            swap(array, start + i, end - i);
         }
     }
 
-    public static int listIsOrderedSigned(final long[] array, final int start, final int end) {
+    public static int listIsOrderedSigned(final long[] array, final int start, final int endP1) {
         long i1 = array[start];
         int i = start + 1;
-        while (i < end) {
+        while (i < endP1) {
             long i2 = array[i];
             if (i2 != i1) {
                 break;
             }
             ++i;
         }
-        if (i == end) {
+        if (i == endP1) {
             return AnalysisResult.ALL_EQUAL;
         }
 
@@ -162,45 +162,45 @@ public class LongSorterUtils {
         i1 = array[i];
         if (array[i - 1] < i1) {
             ++i;
-            for (; i < end; ++i) {
+            for (; i < endP1; ++i) {
                 long i2 = array[i];
                 if (i1 > i2) {
                     break;
                 }
                 i1 = i2;
             }
-            if (i == end) {
+            if (i == endP1) {
                 return AnalysisResult.ASCENDING;
             }
         }
         //descending
         else {
             ++i;
-            for (; i < end; ++i) {
+            for (; i < endP1; ++i) {
                 long i2 = array[i];
                 if (i1 < i2) {
                     break;
                 }
                 i1 = i2;
             }
-            if (i == end) {
+            if (i == endP1) {
                 return AnalysisResult.DESCENDING;
             }
         }
         return AnalysisResult.UNORDERED;
     }
 
-    public static int listIsOrderedUnSigned(long[] array, int start, int end) {
+    public static int listIsOrderedUnSigned(long[] array, int start, int endP1) {
         long i1 = array[start];
         int i = start + 1;
-        while (i < end) {
+        while (i < endP1) {
             long i2 = array[i];
             if (i2 != i1) {
                 break;
             }
             ++i;
         }
-        if (i == end) {
+        if (i == endP1) {
             return AnalysisResult.ALL_EQUAL;
         }
 
@@ -208,28 +208,28 @@ public class LongSorterUtils {
         i1 = array[i];
         if (array[i - 1] < i1) {
             ++i;
-            for (; i < end; ++i) {
+            for (; i < endP1; ++i) {
                 long i2 = array[i];
                 if (i1 + MIN_VALUE > i2 + MIN_VALUE) {
                     break;
                 }
                 i1 = i2;
             }
-            if (i == end) {
+            if (i == endP1) {
                 return AnalysisResult.ASCENDING;
             }
         }
         //descending
         else {
             ++i;
-            for (; i < end; ++i) {
+            for (; i < endP1; ++i) {
                 long i2 = array[i];
                 if (i1 + MIN_VALUE < i2 + MIN_VALUE) {
                     break;
                 }
                 i1 = i2;
             }
-            if (i == end) {
+            if (i == endP1) {
                 return AnalysisResult.DESCENDING;
             }
         }
