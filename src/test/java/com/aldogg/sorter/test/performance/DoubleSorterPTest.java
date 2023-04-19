@@ -1,4 +1,4 @@
-package com.aldogg.sorter.test;
+package com.aldogg.sorter.test.performance;
 
 import com.aldogg.sorter.double_.DoubleSorter;
 import com.aldogg.sorter.double_.collection.DoubleComparator;
@@ -8,6 +8,8 @@ import com.aldogg.sorter.double_.st.*;
 import com.aldogg.sorter.generators.DoubleGenerator;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
+import com.aldogg.sorter.test.unit.IntBasicTest;
+import com.aldogg.sorter.test.TestAlgorithms;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
@@ -17,9 +19,10 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.function.Function;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DoubleSorterTest extends BasicTest {
+public class DoubleSorterPTest extends IntBasicTest {
 
 
     @Test
@@ -289,6 +292,53 @@ public class DoubleSorterTest extends BasicTest {
                 ex.printStackTrace();
             }
         }
+    }
+
+    public void testSort(double[] list, TestAlgorithms<DoubleSorter> testAlgorithms) {
+        double[] baseListSorted = null;
+        DoubleSorter[] sorters = testAlgorithms.getAlgorithms();
+        for (int i = 0; i < sorters.length; i++) {
+            DoubleSorter sorter = sorters[i];
+            double[] listAux = Arrays.copyOf(list, list.length);
+            try {
+                long start = System.nanoTime();
+                sorter.sort(listAux);
+                long elapsed = System.nanoTime() - start;
+                if (i == 0) {
+                    baseListSorted = listAux;
+                } else {
+                    if (validateResult) {
+                        assertArrayEquals(baseListSorted, listAux);
+                    }
+                }
+                testAlgorithms.set(sorter.getName(), elapsed);
+            } catch (Throwable ex) {
+                testAlgorithms.set(sorter.getName(), 0);
+                if (list.length <= 10000) {
+                    System.err.println("Sorter " + sorter.getName());
+                    String orig = Arrays.toString(list);
+                    System.err.println("List orig: " + orig);
+                    String failed = Arrays.toString(listAux);
+                    System.err.println("List fail: " + failed);
+                    String ok = Arrays.toString(baseListSorted);
+                    System.err.println("List ok: " + ok);
+                } else {
+                    System.err.println("Sorter " + sorter.getName());
+                    System.err.println("List order is not OK ");
+                }
+                ex.printStackTrace();
+            }
+        }
+    }
+
+
+    public void testSpeedDouble(int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
+        Function<GeneratorParams, double[]> function = DoubleGenerator.getGFunction(params.function);
+        for (int iter = 0; iter < iterations; iter++) {
+            double[] list = function.apply(params);
+            testSort(list, testAlgorithms);
+        }
+        testAlgorithms.printTestSpeed(params, writer);
     }
 
 }

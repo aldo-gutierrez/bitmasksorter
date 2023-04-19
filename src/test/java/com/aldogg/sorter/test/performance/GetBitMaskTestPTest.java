@@ -1,4 +1,4 @@
-package com.aldogg.sorter.test;
+package com.aldogg.sorter.test.performance;
 
 import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.sorter.BitSorterUtils;
@@ -15,7 +15,7 @@ import static com.aldogg.sorter.MaskInfoInt.getMaskBit;
 import static com.aldogg.sorter.MaskInfoInt.getMaskBitParallel;
 import static com.aldogg.sorter.int_.IntSorterUtils.*;
 
-public class BitMaskTest {
+public class GetBitMaskTestPTest {
 
     @Test
     public void testGetMaskBitParallel() {

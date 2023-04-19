@@ -1,4 +1,4 @@
-package com.aldogg.sorter.test;
+package com.aldogg.sorter.test.performance.generators;
 
 import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.generators.GeneratorFunctions;
@@ -10,65 +10,23 @@ import com.aldogg.sorter.int_.mt.JavaSorterMTInt;
 import com.aldogg.sorter.int_.mt.MixedBitSorterMTInt;
 import com.aldogg.sorter.int_.mt.QuickBitSorterMTInt;
 import com.aldogg.sorter.int_.mt.RadixBitSorterMTInt;
-import com.aldogg.sorter.int_.st.JavaSorterInt;
 import com.aldogg.sorter.int_.st.QuickBitSorterInt;
 import com.aldogg.sorter.int_.st.RadixBitSorterInt;
 import com.aldogg.sorter.int_.st.RadixByteSorterInt;
+import com.aldogg.sorter.test.BaseTest;
+import com.aldogg.sorter.test.TestAlgorithms;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static com.aldogg.sorter.int_.IntSorterUtils.ShortSorter.*;
 import static com.aldogg.sorter.int_.st.RadixBitSorterInt.radixSort;
 
-public class BasicTest extends BaseTest {
-    @Test
-    public void basicTests() {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new MixedBitSorterMTInt(), new QuickBitSorterInt(), new QuickBitSorterMTInt(), new RadixBitSorterInt(), new RadixBitSorterMTInt(), new RadixByteSorterInt()};
-        TestAlgorithms sorterTests = new TestAlgorithms(sorters);
-        testSort(new int[]{}, sorterTests);
-        testSort(new int[]{1}, sorterTests);
-        testSort(new int[]{2, 1}, sorterTests);
-        testSort(new int[]{1, 2}, sorterTests);
-        testSort(new int[]{1, 1}, sorterTests);
-        testSort(new int[]{53, 11, 13}, sorterTests);
-        testSort(new int[]{70, 11, 13, 53}, sorterTests);
-        testSort(new int[]{54, 46, 95, 96, 59, 58, 29, 18, 6, 12, 56, 76, 55, 16, 85, 88, 87, 54, 21, 90, 27, 79, 29, 23, 41, 74}, sorterTests);
-        testSort(new int[]{
-                70, 11, 13, 53, 54, 46, 95, 96, 59, 58, 29, 18, 6, 12, 56, 76, 55, 16, 85, 88,
-                87, 54, 21, 90, 27, 79, 29, 23, 41, 74, 55, 8, 87, 87, 17, 73, 9, 47, 21, 22,
-                77, 53, 67, 24, 11, 24, 47, 38, 26, 42, 14, 91, 36, 19, 12, 35, 79, 91, 71, 81,
-                70, 51, 94, 43, 33, 7, 47, 32, 6, 66, 76, 81, 89, 18, 10, 83, 19, 67, 87, 86, 45,
-                31, 70, 13, 16, 40, 31, 55, 81, 75, 71, 16, 31, 27, 17, 5, 36, 29, 63, 60}, sorterTests);
-        //test bit mask 110110000 and 111110000
-        testSort(new int[]{432, 496, 432, 496, 432, 496, 432, 496, 432, 496, 432, 496, 432, 496, 432, 496, 432, 496, 432, 432, 496, 496, 496, 496, 496, 432}, sorterTests);
-    }
-
-    @Test
-    public void testNegativeNumbers() {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
-        TestAlgorithms testSorter = new TestAlgorithms(sorters);
-        testSort(new int[]{}, testSorter);
-        testSort(new int[]{1}, testSorter);
-        testSort(new int[]{2, 1}, testSorter);
-        testSort(new int[]{1, 2}, testSorter);
-        testSort(new int[]{1, 1}, testSorter);
-        testSort(new int[]{53, 11, 13}, testSorter);
-        testSort(new int[]{70, 11, 13, 53}, testSorter);
-        testSort(new int[]{-70, -11, -13, -53}, testSorter);
-        testSort(new int[]{-54, -46, -95, -96, -59, -58, -29, 18, 6, 12, 56, 76, 55, 16, 85, 88, 87, 54, 21, 90, 27, 79, 29, 23, 41, 74}, testSorter);
-
-    }
-
-    @Test
-    public void testBooleans() {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt()};
-        TestAlgorithms sorter = new TestAlgorithms(sorters);
-        testSort(new int[]{33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0}, sorter);
-    }
-
+public class GeneratorPTest extends BaseTest {
     @Test
     public void smallListAlgorithmSpeedTest() throws IOException {
         BufferedWriter writer = getWriter("small.csv");
@@ -170,5 +128,91 @@ public class BasicTest extends BaseTest {
         writer2.close();
     }
 
+    @Test
+    public void speedTestPositiveIntSTBase2() throws IOException {
+        IntSorter[] sorters = new IntSorter[]{new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+
+        BufferedWriter writer = getWriter("test-results/speed_positiveInt_st_base2.csv");
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
+        BufferedWriter writer2 = getWriter("test-results/speed_positiveInt_st_base2.txt");
+
+        TestAlgorithms<IntSorter> testAlgorithms;
+
+        //heat up
+        testAlgorithms = new TestAlgorithms<>(sorters);
+        GeneratorParams params = new GeneratorParams();
+        params.random = new Random(SEED);
+        params.size = 80000;
+        params.limitLow = 0;
+        params.limitHigh = 80000;
+        params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
+        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms);
+        System.out.println("----------------------");
+
+        List<Integer> limitHigh = new ArrayList<>();
+        for (int i = 1; i < 29; i++) {
+            limitHigh.add(1 << i);
+        }
+
+        writer2.write("{\n");
+        for (Integer limitH : limitHigh) {
+            params.limitHigh = limitH - 1;
+            writer2.write("{");
+            for (Integer size : limitHigh) {
+                testAlgorithms = new TestAlgorithms<>(sorters);
+                params.size = size;
+                testSpeedInt(ITERATIONS, params, testAlgorithms);
+                testAlgorithms.printTestSpeed(params, writer);
+                writer2.write(testAlgorithms.getWinners().get(0)[0] + ".class, ");
+            }
+            writer2.write("}, \n");
+            System.out.println("----------------------");
+        }
+        writer2.write("\n}");
+        System.out.println();
+        writer.close();
+        writer2.close();
+    }
+
+    @Test
+    public void speedTestPositiveIntMTBase2() throws IOException {
+        IntSorter[] sorters = new IntSorter[]{new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        BufferedWriter writer = getWriter("test-results/speed_positiveInt_mt_base2.csv");
+        writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
+
+        TestAlgorithms<IntSorter> testAlgorithms;
+
+        //heat up
+        testAlgorithms = new TestAlgorithms<>(sorters);
+        GeneratorParams params = new GeneratorParams();
+        params.random = new Random(SEED);
+        params.size = 80000;
+        params.limitLow = 0;
+        params.limitHigh = 80000;
+        params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
+        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms);
+        testAlgorithms.printTestSpeed(params, null);
+        System.out.println("----------------------");
+
+        List<Integer> limitHigh = new ArrayList<>();
+        for (int i = 1; i < 29; i++) {
+            limitHigh.add(1 << i);
+        }
+
+        for (Integer limitH : limitHigh) {
+            params.limitHigh = limitH - 1;
+
+            for (Integer size : limitHigh) {
+                testAlgorithms = new TestAlgorithms<>(sorters);
+                params.size = size;
+                testSpeedInt(ITERATIONS, params, testAlgorithms);
+                testAlgorithms.printTestSpeed(params, null);
+            }
+
+            System.out.println("----------------------");
+        }
+        System.out.println();
+        writer.close();
+    }
 
 }

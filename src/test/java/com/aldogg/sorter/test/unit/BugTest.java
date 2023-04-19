@@ -1,4 +1,4 @@
-package com.aldogg.sorter.test;
+package com.aldogg.sorter.test.unit;
 
 import com.aldogg.sorter.int_.mt.RadixBitSorterMTInt;
 import com.aldogg.sorter.int_.st.QuickBitSorterInt;

@@ -84,7 +84,7 @@ public class TestAlgorithms<T extends Named> {
         return result;
     }
 
-    protected void printTestSpeed(GeneratorParams params, Writer writer) throws IOException {
+    public void printTestSpeed(GeneratorParams params, Writer writer) throws IOException {
         int size = params.size;
         int limitLow = params.limitLow;
         long limitHigh = params.limitHigh;

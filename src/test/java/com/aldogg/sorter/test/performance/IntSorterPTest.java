@@ -1,4 +1,4 @@
-package com.aldogg.sorter.test;
+package com.aldogg.sorter.test.performance;
 
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
@@ -19,6 +19,8 @@ import com.aldogg.sorter.int_.st.JavaSorterInt;
 import com.aldogg.sorter.int_.st.QuickBitSorterInt;
 import com.aldogg.sorter.int_.st.RadixBitSorterInt;
 import com.aldogg.sorter.int_.st.RadixByteSorterInt;
+import com.aldogg.sorter.test.BaseTest;
+import com.aldogg.sorter.test.TestAlgorithms;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
@@ -29,7 +31,7 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class IntSorterPerformanceTest extends BaseTest {
+public class IntSorterPTest extends BaseTest {
 
     @Test
     public void speedTestPositiveIntST() throws IOException {
