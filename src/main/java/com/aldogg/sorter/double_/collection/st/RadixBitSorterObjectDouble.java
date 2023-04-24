@@ -40,7 +40,7 @@ public class RadixBitSorterObjectDouble implements ObjectDoubleSorter {
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        MaskInfoLong maskInfo = MaskInfoLong.getMaskBit(array, start, endP1);
+        MaskInfoLong maskInfo = MaskInfoLong.getMaskInfo(array, start, endP1);
         long mask = maskInfo.getMask();
         int[] kList = MaskInfoLong.getMaskAsArray(mask);
         if (kList.length == 0) { //all numbers are equal
@@ -62,13 +62,13 @@ public class RadixBitSorterObjectDouble implements ObjectDoubleSorter {
             double[] aux = new double[Math.max(n1, n2)];
             Object[] oAux = new Object[Math.max(n1, n2)];
             if (n1 > 1) { //sort negative numbers
-                maskInfo = MaskInfoLong.getMaskBit(array, start, finalLeft);
+                maskInfo = MaskInfoLong.getMaskInfo(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 radixSort(oArray, array, start, finalLeft, kList, 0, kList.length - 1, oAux, aux);
             }
             if (n2 > 1) { //sort positive numbers
-                maskInfo = MaskInfoLong.getMaskBit(array, finalLeft, endP1);
+                maskInfo = MaskInfoLong.getMaskInfo(array, finalLeft, endP1);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 radixSort(oArray, array, finalLeft, endP1, kList, 0, kList.length - 1, oAux, aux);

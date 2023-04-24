@@ -23,7 +23,7 @@ public class QuickBitSorterInt extends IntBitMaskSorter {
         }
 
         if (recalculate && kIndex < 3) {
-            MaskInfoInt maskParts = MaskInfoInt.getMaskBit(array, start, endP1);
+            MaskInfoInt maskParts = MaskInfoInt.getMaskInfo(array, start, endP1);
             int mask = maskParts.getMask();
             kList = MaskInfoInt.getMaskAsArray(mask);
             kIndex = 0;

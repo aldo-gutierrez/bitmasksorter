@@ -62,7 +62,7 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
                         if (n1 >= SIZE_FOR_PARALLEL_BIT_MASK) {
                             maskInfo1 = MaskInfoInt.getMaskBitParallel(array, start, finalLeft, new ArrayParallelRunner.APRParameters(2));
                         } else {
-                            maskInfo1 = MaskInfoInt.getMaskBit(array, start, finalLeft);
+                            maskInfo1 = MaskInfoInt.getMaskInfo(array, start, finalLeft);
                         }
                         int mask1 = maskInfo1.getMask();
                         int[] kList1 = MaskInfoInt.getMaskAsArray(mask1);
@@ -78,7 +78,7 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
                         if (n2 >= SIZE_FOR_PARALLEL_BIT_MASK) {
                             maskInfo2 = MaskInfoInt.getMaskBitParallel(array, finalLeft, endP1, new ArrayParallelRunner.APRParameters(2));
                         } else {
-                            maskInfo2 = MaskInfoInt.getMaskBit(array, finalLeft, endP1);
+                            maskInfo2 = MaskInfoInt.getMaskInfo(array, finalLeft, endP1);
                         }
                         int mask2 = maskInfo2.getMask();
                         int[] kList2 = MaskInfoInt.getMaskAsArray(mask2);

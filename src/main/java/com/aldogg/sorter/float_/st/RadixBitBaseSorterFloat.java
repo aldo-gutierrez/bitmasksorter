@@ -21,7 +21,7 @@ public class RadixBitBaseSorterFloat extends FloatBitMaskSorter {
             int finalLeft = partitionReverseNotStable(array, start, endP1, sortMask);
             if (finalLeft - start > 1) { //sort negative numbers
                 float[] aux = new float[finalLeft - start];
-                maskInfo = MaskInfoInt.getMaskBit(array, start, finalLeft);
+                maskInfo = MaskInfoInt.getMaskInfo(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
@@ -32,7 +32,7 @@ public class RadixBitBaseSorterFloat extends FloatBitMaskSorter {
             }
             if (endP1 - finalLeft > 1) { //sort positive numbers
                 float[] aux = new float[endP1 - finalLeft];
-                maskInfo = MaskInfoInt.getMaskBit(array, finalLeft, endP1);
+                maskInfo = MaskInfoInt.getMaskInfo(array, finalLeft, endP1);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {

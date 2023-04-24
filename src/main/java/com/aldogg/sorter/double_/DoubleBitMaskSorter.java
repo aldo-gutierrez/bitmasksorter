@@ -27,7 +27,7 @@ public class DoubleBitMaskSorter implements DoubleSorter {
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        MaskInfoLong maskInfo = MaskInfoLong.getMaskBit(array, start, endP1);
+        MaskInfoLong maskInfo = MaskInfoLong.getMaskInfo(array, start, endP1);
         long mask = maskInfo.getMask();
         int[] kList = MaskInfoLong.getMaskAsArray(mask);
         if (kList.length == 0) {

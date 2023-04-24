@@ -22,14 +22,14 @@ public class RadixBitSorterDouble extends DoubleBitMaskSorter {
             int n2 = endP1 - finalLeft;
             double[] aux = new double[Math.max(n1, n2)];
             if (n1 > 1) { //sort negative numbers
-                maskInfo = MaskInfoLong.getMaskBit(array, start, finalLeft);
+                maskInfo = MaskInfoLong.getMaskInfo(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 radixSort(array, start, finalLeft, kList, 0, kList.length - 1, aux);
                 reverse(array, start, finalLeft);
             }
             if (n2 > 1) { //sort positive numbers
-                maskInfo = MaskInfoLong.getMaskBit(array, finalLeft, endP1);
+                maskInfo = MaskInfoLong.getMaskInfo(array, finalLeft, endP1);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 radixSort(array, finalLeft, endP1, kList, 0, kList.length - 1, aux);

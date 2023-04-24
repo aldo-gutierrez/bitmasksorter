@@ -32,7 +32,7 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
         int[] kList = null;
 
         if (calculateBitMaskOptimization) {
-            MaskInfoLong maskInfo = MaskInfoLong.getMaskBit(array, start, endP1);
+            MaskInfoLong maskInfo = MaskInfoLong.getMaskInfo(array, start, endP1);
             long mask = maskInfo.getMask();
             kList = MaskInfoLong.getMaskAsArray(mask);
             if (kList.length == 0) {
@@ -59,12 +59,12 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
                 int n2 = endP1 - finalLeft;
                 long[] aux = new long[Math.max(n1, n2)];
                 if (n1 > 1) { //sort negative numbers
-                    maskParts = MaskInfoLong.getMaskBit(array, start, finalLeft);
+                    maskParts = MaskInfoLong.getMaskInfo(array, start, finalLeft);
                     mask = maskParts.getMask();
                     sortBytes(array, start, finalLeft, aux, mask);
                 }
                 if (n2 > 1) { //sort positive numbers
-                    maskParts = MaskInfoLong.getMaskBit(array, finalLeft, endP1);
+                    maskParts = MaskInfoLong.getMaskInfo(array, finalLeft, endP1);
                     mask = maskParts.getMask();
                     sortBytes(array, finalLeft, endP1, aux, mask);
                 }

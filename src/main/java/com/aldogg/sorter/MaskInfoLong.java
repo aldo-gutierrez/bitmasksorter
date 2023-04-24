@@ -10,34 +10,34 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.aldogg.sorter.long_.LongSorter.LONG_SIGN_BIT_POS;
 
 public class MaskInfoLong {
-    long p_mask;
-    long  i_mask;
+    long pMask;
+    long iMask;
 
-    public static MaskInfoLong getMaskBit(final long[] array, final int start, final int endP1) {
-        long p_mask = 0x0000000000000000;
-        long i_mask = 0x0000000000000000;
+    public static MaskInfoLong getMaskInfo(final long[] array, final int start, final int endP1) {
+        long pMask = 0x0000000000000000;
+        long iMask = 0x0000000000000000;
         for (int i = start; i < endP1; i++) {
             long e = array[i];
-            p_mask = p_mask | e;
-            i_mask = i_mask | (~e);
+            pMask = pMask | e;
+            iMask = iMask | (~e);
         }
         MaskInfoLong m = new MaskInfoLong();
-        m.p_mask = p_mask;
-        m.i_mask = i_mask;
+        m.pMask = pMask;
+        m.iMask = iMask;
         return m;
     }
 
-    public static MaskInfoLong getMaskBit(final double[] array, final int start, final int endP1) {
-        long p_mask = 0x0000000000000000;
-        long i_mask = 0x0000000000000000;
+    public static MaskInfoLong getMaskInfo(final double[] array, final int start, final int endP1) {
+        long pMask = 0x0000000000000000;
+        long iMask = 0x0000000000000000;
         for (int i = start; i < endP1; i++) {
             long e = Double.doubleToRawLongBits(array[i]);
-            p_mask = p_mask | e;
-            i_mask = i_mask | (~e);
+            pMask = pMask | e;
+            iMask = iMask | (~e);
         }
         MaskInfoLong m = new MaskInfoLong();
-        m.p_mask = p_mask;
-        m.i_mask = i_mask;
+        m.pMask = pMask;
+        m.iMask = iMask;
         return m;
     }
 
@@ -47,14 +47,14 @@ public class MaskInfoLong {
 
             @Override
             public MaskInfoLong map(Object array1, int start1, int endP1, int index, AtomicBoolean stop) {
-                return getMaskBit((long[]) array1, start1, endP1);
+                return getMaskInfo((long[]) array1, start1, endP1);
             }
 
             @Override
             public MaskInfoLong reduce(final MaskInfoLong m1, final MaskInfoLong m2) {
                 MaskInfoLong res = new MaskInfoLong();
-                res.p_mask = m1.p_mask | m2.p_mask;
-                res.i_mask = m1.i_mask | m2.i_mask;
+                res.pMask = m1.pMask | m2.pMask;
+                res.iMask = m1.iMask | m2.iMask;
                 return res;
             }
         });
@@ -92,7 +92,7 @@ public class MaskInfoLong {
     }
 
     public long getMask() {
-        return p_mask & i_mask;
+        return pMask & iMask;
     }
 
 }

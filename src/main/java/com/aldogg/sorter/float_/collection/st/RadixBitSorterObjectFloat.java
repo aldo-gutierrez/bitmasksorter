@@ -40,7 +40,7 @@ public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, endP1);
+        MaskInfoInt maskInfo = MaskInfoInt.getMaskInfo(array, start, endP1);
         int mask = maskInfo.getMask();
         int[] kList = MaskInfoInt.getMaskAsArray(mask);
         if (kList.length == 0) { //all numbers are equal
@@ -62,13 +62,13 @@ public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
             float[] aux = new float[Math.max(n1, n2)];
             Object[] oAux = new Object[Math.max(n1, n2)];
             if (n1 > 1) { //sort negative numbers
-                maskInfo = MaskInfoInt.getMaskBit(array, start, finalLeft);
+                maskInfo = MaskInfoInt.getMaskInfo(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfoInt.getMaskAsArray(mask);
                 radixSort(oArray, array, start, finalLeft, kList, 0, kList.length - 1, oAux, aux);
             }
             if (n2 > 1) { //sort positive numbers
-                maskInfo = MaskInfoInt.getMaskBit(array, finalLeft, end);
+                maskInfo = MaskInfoInt.getMaskInfo(array, finalLeft, end);
                 mask = maskInfo.getMask();
                 kList = MaskInfoInt.getMaskAsArray(mask);
                 radixSort(oArray, array, finalLeft, end, kList, 0, kList.length - 1, oAux, aux);

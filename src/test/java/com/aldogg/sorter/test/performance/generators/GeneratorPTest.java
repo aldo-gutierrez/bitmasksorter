@@ -36,7 +36,7 @@ public class GeneratorPTest extends BaseTest {
         IntSorter[] sorters = new IntSorter[]{new IntSorter() {
             @Override
             public void sort(int[] array, int start, int endP1) {
-                MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, endP1);
+                MaskInfoInt maskInfo = MaskInfoInt.getMaskInfo(array, start, endP1);
                 int mask = maskInfo.getMask();
                 int[] kList = MaskInfoInt.getMaskAsArray(mask);
                 int length = endP1 - start;
@@ -52,7 +52,7 @@ public class GeneratorPTest extends BaseTest {
         }, new IntSorter() {
             @Override
             public void sort(int[] array, int start, int endP1) {
-                MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, endP1);
+                MaskInfoInt maskInfo = MaskInfoInt.getMaskInfo(array, start, endP1);
                 int mask = maskInfo.getMask();
                 int[] kList = MaskInfoInt.getMaskAsArray(mask);
                 int[] aux = new int[endP1 - start];
@@ -70,7 +70,7 @@ public class GeneratorPTest extends BaseTest {
         }, new IntSorter() {
             @Override
             public void sort(int[] array, int start, int endP1) {
-                MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, endP1);
+                MaskInfoInt maskInfo = MaskInfoInt.getMaskInfo(array, start, endP1);
                 int mask = maskInfo.getMask();
                 int[] kList = MaskInfoInt.getMaskAsArray(mask);
                 IntCountSort.countSort(array, start, endP1, kList, 0);

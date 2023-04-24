@@ -9,30 +9,30 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MaskInfoInt {
     public static final int BATCH_SIZE = 1024;
-    public int p_mask;
-    public int i_mask;
+    public int pMask;
+    public int iMask;
 
     public static final int SIZE_FOR_PARALLEL_BIT_MASK = 6000000;
-    public static MaskInfoInt getMaskBit(final int[] array, final int start, final int endP1) {
-        int p_mask = 0x00000000;
-        int i_mask = 0x00000000;
+    public static MaskInfoInt getMaskInfo(final int[] array, final int start, final int endP1) {
+        int pMask = 0x00000000;
+        int iMask = 0x00000000;
         for (int i = start; i < endP1; i++) {
             int e = array[i];
-            p_mask = p_mask | e;
-            i_mask = i_mask | (~e);
+            pMask = pMask | e;
+            iMask = iMask | (~e);
         }
         MaskInfoInt m = new MaskInfoInt();
-        m.p_mask = p_mask;
-        m.i_mask = i_mask;
+        m.pMask = pMask;
+        m.iMask = iMask;
         return m;
     }
 
     public static MaskInfoInt getMaskBitDetectSignBit(final int[] array, final int start, final int endP1, AtomicBoolean stop) {
-        int p_mask = 0x00000000;
-        int i_mask = 0x00000000;
+        int pMask = 0x00000000;
+        int iMask = 0x00000000;
         for (int i = start; i < endP1; i += BATCH_SIZE) {
-            if (p_mask < 0) {
-                if (i_mask < 0) {
+            if (pMask < 0) {
+                if (iMask < 0) {
                     if (stop != null) {
                         stop.set(true);
                     }
@@ -48,28 +48,28 @@ public class MaskInfoInt {
             int j = Math.min(i + BATCH_SIZE, endP1);
             for (; i < j; i++) {
                 int e = array[i];
-                p_mask = p_mask | e;
-                i_mask = i_mask | (~e);
+                pMask = pMask | e;
+                iMask = iMask | (~e);
             }
             i = startBatch;
         }
         MaskInfoInt m = new MaskInfoInt();
-        m.p_mask = p_mask;
-        m.i_mask = i_mask;
+        m.pMask = pMask;
+        m.iMask = iMask;
         return m;
     }
 
-    public static MaskInfoInt getMaskBit(final float[] array, final int start, final int endP1) {
-        int p_mask = 0x00000000;
-        int i_mask = 0x00000000;
+    public static MaskInfoInt getMaskInfo(final float[] array, final int start, final int endP1) {
+        int pMask = 0x00000000;
+        int iMask = 0x00000000;
         for (int i = start; i < endP1; i++) {
             int e = Float.floatToRawIntBits(array[i]);
-            p_mask = p_mask | e;
-            i_mask = i_mask | (~e);
+            pMask = pMask | e;
+            iMask = iMask | (~e);
         }
         MaskInfoInt m = new MaskInfoInt();
-        m.p_mask = p_mask;
-        m.i_mask = i_mask;
+        m.pMask = pMask;
+        m.iMask = iMask;
         return m;
     }
 
@@ -78,14 +78,14 @@ public class MaskInfoInt {
         return ArrayParallelRunner.runInParallel(array, start, endP1, parameters, new ArrayRunnable<MaskInfoInt>() {
             @Override
             public MaskInfoInt map(final Object list, final int start1, final int endP1, int index, final AtomicBoolean stop) {
-                return getMaskBit((int[]) list, start1, endP1);
+                return getMaskInfo((int[]) list, start1, endP1);
             }
 
             @Override
             public MaskInfoInt reduce(final MaskInfoInt m1, final MaskInfoInt m2) {
                 MaskInfoInt res = new MaskInfoInt();
-                res.p_mask = m1.p_mask | m2.p_mask;
-                res.i_mask = m1.i_mask | m2.i_mask;
+                res.pMask = m1.pMask | m2.pMask;
+                res.iMask = m1.iMask | m2.iMask;
                 return res;
             }
         });
@@ -104,8 +104,8 @@ public class MaskInfoInt {
                     return null;
                 }
                 MaskInfoInt res = new MaskInfoInt();
-                res.p_mask = m1.p_mask | m2.p_mask;
-                res.i_mask = m1.i_mask | m2.i_mask;
+                res.pMask = m1.pMask | m2.pMask;
+                res.iMask = m1.iMask | m2.iMask;
                 return res;
             }
         });
@@ -143,7 +143,7 @@ public class MaskInfoInt {
     }
 
     public int getMask() {
-        return p_mask & i_mask;
+        return pMask & iMask;
     }
 
 

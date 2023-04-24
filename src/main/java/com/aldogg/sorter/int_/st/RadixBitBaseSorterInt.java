@@ -21,7 +21,7 @@ public class RadixBitBaseSorterInt implements IntSorter {
 
     @Override
     public void sort(int[] array, int start, int endP1) {
-        MaskInfoInt maskInfo = MaskInfoInt.getMaskBit(array, start, endP1);
+        MaskInfoInt maskInfo = MaskInfoInt.getMaskInfo(array, start, endP1);
         int mask = maskInfo.getMask();
         int[] kList = MaskInfoInt.getMaskAsArray(mask);
         if (kList.length == 0) {
@@ -32,7 +32,7 @@ public class RadixBitBaseSorterInt implements IntSorter {
             int finalLeft = isUnsigned() ? IntSorterUtils.partitionNotStable(array, start, endP1, sortMask) : IntSorterUtils.partitionReverseNotStable(array, start, endP1, sortMask);
             if (finalLeft - start > 1) { //sort negative numbers
                 int[] aux = new int[finalLeft - start];
-                maskInfo = MaskInfoInt.getMaskBit(array, start, finalLeft);
+                maskInfo = MaskInfoInt.getMaskInfo(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfoInt.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
@@ -42,7 +42,7 @@ public class RadixBitBaseSorterInt implements IntSorter {
             }
             if (endP1 - finalLeft > 1) { //sort positive numbers
                 int[] aux = new int[endP1 - finalLeft];
-                maskInfo = MaskInfoInt.getMaskBit(array, finalLeft, endP1);
+                maskInfo = MaskInfoInt.getMaskInfo(array, finalLeft, endP1);
                 mask = maskInfo.getMask();
                 kList = MaskInfoInt.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {

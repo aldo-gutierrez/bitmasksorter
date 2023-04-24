@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Random;
 
-import static com.aldogg.sorter.MaskInfoInt.getMaskBit;
+import static com.aldogg.sorter.MaskInfoInt.getMaskInfo;
 import static com.aldogg.sorter.MaskInfoInt.getMaskBitParallel;
 import static com.aldogg.sorter.int_.IntSorterUtils.*;
 
@@ -30,7 +30,7 @@ public class GetBitMaskTestPTest {
                 a[i] = random.nextInt();
             }
             long start = System.nanoTime();
-            c = getMaskBit(a, 0, a.length);
+            c = getMaskInfo(a, 0, a.length);
             long elapsed = System.nanoTime() - start;
             total += elapsed;
         }
@@ -71,7 +71,7 @@ public class GetBitMaskTestPTest {
             for (int i = 0; i < arraySize; i++) {
                 a[i] = random.nextInt();
             }
-            maskInfo = getMaskBit(a, 0, a.length);
+            maskInfo = getMaskInfo(a, 0, a.length);
             int mask = maskInfo.getMask();
             int[] kList = MaskInfoInt.getMaskAsArray(mask);
             IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(kList, 0, kList.length - 1);
@@ -93,7 +93,7 @@ public class GetBitMaskTestPTest {
             for (int i = 0; i < arraySize; i++) {
                 a[i] = random.nextInt();
             }
-            maskInfo = getMaskBit(a, 0, a.length);
+            maskInfo = getMaskInfo(a, 0, a.length);
             int mask = maskInfo.getMask();
             int[] kList = MaskInfoInt.getMaskAsArray(mask);
             IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(kList, 0, kList.length - 1);

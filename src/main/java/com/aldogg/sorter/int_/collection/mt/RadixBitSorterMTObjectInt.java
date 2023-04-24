@@ -95,7 +95,7 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
                         if (n1 >= SIZE_FOR_PARALLEL_BIT_MASK & maxThreads1 >= 2) {
                             maskInfo1 = MaskInfoInt.getMaskBitParallel(array, start, finalLeft, new ArrayParallelRunner.APRParameters(2));
                         } else {
-                            maskInfo1 = MaskInfoInt.getMaskBit(array, start, finalLeft);
+                            maskInfo1 = MaskInfoInt.getMaskInfo(array, start, finalLeft);
                         }
                         int mask1 = maskInfo1.getMask();
                         int[] kList1 = MaskInfoInt.getMaskAsArray(mask1);
@@ -107,7 +107,7 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
                         if (n2 >= SIZE_FOR_PARALLEL_BIT_MASK & maxThreads2 >= 2) {
                             maskInfo2 = MaskInfoInt.getMaskBitParallel(array, finalLeft, endP1, new ArrayParallelRunner.APRParameters(2));
                         } else {
-                            maskInfo2 = MaskInfoInt.getMaskBit(array, finalLeft, endP1);
+                            maskInfo2 = MaskInfoInt.getMaskInfo(array, finalLeft, endP1);
                         }
                         int mask2 = maskInfo2.getMask();
                         int[] kList2 = MaskInfoInt.getMaskAsArray(mask2);

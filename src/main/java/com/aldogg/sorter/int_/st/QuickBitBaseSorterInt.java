@@ -21,13 +21,13 @@ public class QuickBitBaseSorterInt extends IntBitMaskSorter {
             MaskInfoInt maskInfo;
             int mask;
             if (finalLeft - start > 1) {
-                maskInfo = MaskInfoInt.getMaskBit(array, start, finalLeft);
+                maskInfo = MaskInfoInt.getMaskInfo(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfoInt.getMaskAsArray(mask);
                 sort(array, start, finalLeft, kList, 0);
             }
             if (endP1 - finalLeft > 1) {
-                maskInfo = MaskInfoInt.getMaskBit(array, finalLeft, endP1);
+                maskInfo = MaskInfoInt.getMaskInfo(array, finalLeft, endP1);
                 mask = maskInfo.getMask();
                 kList = MaskInfoInt.getMaskAsArray(mask);
                 sort(array, finalLeft, endP1, kList, 0);

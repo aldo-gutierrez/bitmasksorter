@@ -20,7 +20,7 @@ public class RadixBitBaseSorterDouble extends DoubleBitMaskSorter {
             int finalLeft = partitionReverseNotStable(array, start, endP1, sortMask);
             if (finalLeft - start > 1) { //sort negative numbers
                 double[] aux = new double[finalLeft - start];
-                maskInfo = MaskInfoLong.getMaskBit(array, start, finalLeft);
+                maskInfo = MaskInfoLong.getMaskInfo(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
@@ -31,7 +31,7 @@ public class RadixBitBaseSorterDouble extends DoubleBitMaskSorter {
             }
             if (endP1 - finalLeft > 1) { //sort positive numbers
                 double[] aux = new double[endP1 - finalLeft];
-                maskInfo = MaskInfoLong.getMaskBit(array, finalLeft, endP1);
+                maskInfo = MaskInfoLong.getMaskInfo(array, finalLeft, endP1);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
