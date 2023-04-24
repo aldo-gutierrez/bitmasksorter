@@ -33,6 +33,4 @@ public interface IntSorter extends Sorter {
         }
     }
 
-    int SIGN_BIT_POS = 31;
-
 }

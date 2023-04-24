@@ -27,7 +27,7 @@ public class FloatBitMaskSorter implements FloatSorter {
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        MaskInfoInt maskInfo = MaskInfoInt.getMaskInfo(array, start, endP1);
+        MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
         int mask = maskInfo.getMask();
         int[] kList = getMaskAsArray(mask);
         if (kList.length == 0) {

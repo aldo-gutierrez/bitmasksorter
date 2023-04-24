@@ -12,7 +12,7 @@ public class RadixBitBaseSorterLong extends LongBitMaskSorter {
         if (kList.length == 0) {
             return;
         }
-        if (kList[0] == LONG_SIGN_BIT_POS) { //there are negative numbers and positive numbers
+        if (kList[0] == MaskInfoLong.UPPER_BIT) { //there are negative numbers and positive numbers
             MaskInfoLong maskInfo;
             long mask;
             long sortMask = 1L << kList[0];
@@ -21,7 +21,7 @@ public class RadixBitBaseSorterLong extends LongBitMaskSorter {
                     : partitionReverseNotStable(array, start, endP1, sortMask);
             if (finalLeft - start > 1) { //sort negative numbers
                 long[] aux = new long[finalLeft - start];
-                maskInfo = MaskInfoLong.getMaskInfo(array, start, finalLeft);
+                maskInfo = MaskInfoLong.calculateMask(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
@@ -31,7 +31,7 @@ public class RadixBitBaseSorterLong extends LongBitMaskSorter {
             }
             if (endP1 - finalLeft > 1) { //sort positive numbers
                 long[] aux = new long[endP1 - finalLeft];
-                maskInfo = MaskInfoLong.getMaskInfo(array, finalLeft, endP1);
+                maskInfo = MaskInfoLong.calculateMask(array, finalLeft, endP1);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {

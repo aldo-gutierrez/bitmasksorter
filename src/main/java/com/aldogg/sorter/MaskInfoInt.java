@@ -9,11 +9,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MaskInfoInt {
     public static final int BATCH_SIZE = 1024;
+    public static final int UPPER_BIT = 31;
     public int pMask;
     public int iMask;
 
     public static final int SIZE_FOR_PARALLEL_BIT_MASK = 6000000;
-    public static MaskInfoInt getMaskInfo(final int[] array, final int start, final int endP1) {
+    public static MaskInfoInt calculateMask(final int[] array, final int start, final int endP1) {
         int pMask = 0x00000000;
         int iMask = 0x00000000;
         for (int i = start; i < endP1; i++) {
@@ -27,7 +28,7 @@ public class MaskInfoInt {
         return m;
     }
 
-    public static MaskInfoInt getMaskBitDetectSignBit(final int[] array, final int start, final int endP1, AtomicBoolean stop) {
+    public static MaskInfoInt calculateMaskBreakIfUpperBit(final int[] array, final int start, final int endP1, AtomicBoolean stop) {
         int pMask = 0x00000000;
         int iMask = 0x00000000;
         for (int i = start; i < endP1; i += BATCH_SIZE) {
@@ -59,7 +60,7 @@ public class MaskInfoInt {
         return m;
     }
 
-    public static MaskInfoInt getMaskInfo(final float[] array, final int start, final int endP1) {
+    public static MaskInfoInt calculateMask(final float[] array, final int start, final int endP1) {
         int pMask = 0x00000000;
         int iMask = 0x00000000;
         for (int i = start; i < endP1; i++) {
@@ -74,11 +75,11 @@ public class MaskInfoInt {
     }
 
 
-    public static MaskInfoInt getMaskBitParallel(final int[] array, final int start, final int endP1, final ArrayParallelRunner.APRParameters parameters) {
+    public static MaskInfoInt calculateMaskInParallel(final int[] array, final int start, final int endP1, final ArrayParallelRunner.APRParameters parameters) {
         return ArrayParallelRunner.runInParallel(array, start, endP1, parameters, new ArrayRunnable<MaskInfoInt>() {
             @Override
             public MaskInfoInt map(final Object list, final int start1, final int endP1, int index, final AtomicBoolean stop) {
-                return getMaskInfo((int[]) list, start1, endP1);
+                return calculateMask((int[]) list, start1, endP1);
             }
 
             @Override
@@ -91,11 +92,11 @@ public class MaskInfoInt {
         });
     }
 
-    public static MaskInfoInt getMaskBitDetectSignBitParallel(final int[] array, final int start, final int endP1, final ArrayParallelRunner.APRParameters parameters) {
+    public static MaskInfoInt calculateMaskInParallelBreakIfUpperBit(final int[] array, final int start, final int endP1, final ArrayParallelRunner.APRParameters parameters) {
         return ArrayParallelRunner.runInParallel(array, start, endP1, parameters, new ArrayRunnable<MaskInfoInt>() {
             @Override
             public MaskInfoInt map(final Object list, final int start1, final int endP1, final int index, final AtomicBoolean stop) {
-                return getMaskBitDetectSignBit((int[]) list, start1, endP1, stop);
+                return calculateMaskBreakIfUpperBit((int[]) list, start1, endP1, stop);
             }
 
             @Override

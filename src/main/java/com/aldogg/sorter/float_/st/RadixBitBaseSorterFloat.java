@@ -5,7 +5,7 @@ import com.aldogg.sorter.MaskInfoLong;
 import com.aldogg.sorter.float_.FloatBitMaskSorter;
 
 import static com.aldogg.sorter.float_.FloatSorterUtils.*;
-import static com.aldogg.sorter.int_.IntSorter.SIGN_BIT_POS;
+import static com.aldogg.sorter.MaskInfoInt.UPPER_BIT;
 
 public class RadixBitBaseSorterFloat extends FloatBitMaskSorter {
 
@@ -14,14 +14,14 @@ public class RadixBitBaseSorterFloat extends FloatBitMaskSorter {
         if (kList.length == 0) {
             return;
         }
-        if (kList[0] == SIGN_BIT_POS) { //there are negative numbers and positive numbers
+        if (kList[0] == UPPER_BIT) { //there are negative numbers and positive numbers
             MaskInfoInt maskInfo;
             int mask;
             int sortMask = 1 << kList[0];
             int finalLeft = partitionReverseNotStable(array, start, endP1, sortMask);
             if (finalLeft - start > 1) { //sort negative numbers
                 float[] aux = new float[finalLeft - start];
-                maskInfo = MaskInfoInt.getMaskInfo(array, start, finalLeft);
+                maskInfo = MaskInfoInt.calculateMask(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {
@@ -32,7 +32,7 @@ public class RadixBitBaseSorterFloat extends FloatBitMaskSorter {
             }
             if (endP1 - finalLeft > 1) { //sort positive numbers
                 float[] aux = new float[endP1 - finalLeft];
-                maskInfo = MaskInfoInt.getMaskInfo(array, finalLeft, endP1);
+                maskInfo = MaskInfoInt.calculateMask(array, finalLeft, endP1);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 for (int i = kList.length - 1; i >= 0; i--) {

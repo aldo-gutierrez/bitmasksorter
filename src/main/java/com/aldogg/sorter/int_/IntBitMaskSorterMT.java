@@ -38,9 +38,9 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
 
         MaskInfoInt maskInfo;
         if (n >= SIZE_FOR_PARALLEL_BIT_MASK) {
-            maskInfo = MaskInfoInt.getMaskBitDetectSignBitParallel(array, start, endP1, new ArrayParallelRunner.APRParameters(2));
+            maskInfo = MaskInfoInt.calculateMaskInParallelBreakIfUpperBit(array, start, endP1, new ArrayParallelRunner.APRParameters(2));
         } else {
-            maskInfo = MaskInfoInt.getMaskBitDetectSignBit(array, start, endP1, null);
+            maskInfo = MaskInfoInt.calculateMaskBreakIfUpperBit(array, start, endP1, null);
         }
 
         if (maskInfo == null) { //there are negative numbers and positive numbers
@@ -60,9 +60,9 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
 
                         MaskInfoInt maskInfo1;
                         if (n1 >= SIZE_FOR_PARALLEL_BIT_MASK) {
-                            maskInfo1 = MaskInfoInt.getMaskBitParallel(array, start, finalLeft, new ArrayParallelRunner.APRParameters(2));
+                            maskInfo1 = MaskInfoInt.calculateMaskInParallel(array, start, finalLeft, new ArrayParallelRunner.APRParameters(2));
                         } else {
-                            maskInfo1 = MaskInfoInt.getMaskInfo(array, start, finalLeft);
+                            maskInfo1 = MaskInfoInt.calculateMask(array, start, finalLeft);
                         }
                         int mask1 = maskInfo1.getMask();
                         int[] kList1 = MaskInfoInt.getMaskAsArray(mask1);
@@ -76,9 +76,9 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
                         }
                         MaskInfoInt maskInfo2;
                         if (n2 >= SIZE_FOR_PARALLEL_BIT_MASK) {
-                            maskInfo2 = MaskInfoInt.getMaskBitParallel(array, finalLeft, endP1, new ArrayParallelRunner.APRParameters(2));
+                            maskInfo2 = MaskInfoInt.calculateMaskInParallel(array, finalLeft, endP1, new ArrayParallelRunner.APRParameters(2));
                         } else {
-                            maskInfo2 = MaskInfoInt.getMaskInfo(array, finalLeft, endP1);
+                            maskInfo2 = MaskInfoInt.calculateMask(array, finalLeft, endP1);
                         }
                         int mask2 = maskInfo2.getMask();
                         int[] kList2 = MaskInfoInt.getMaskAsArray(mask2);

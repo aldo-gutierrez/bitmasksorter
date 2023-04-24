@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Random;
 
-import static com.aldogg.sorter.MaskInfoInt.getMaskInfo;
-import static com.aldogg.sorter.MaskInfoInt.getMaskBitParallel;
+import static com.aldogg.sorter.MaskInfoInt.calculateMask;
+import static com.aldogg.sorter.MaskInfoInt.calculateMaskInParallel;
 import static com.aldogg.sorter.int_.IntSorterUtils.*;
 
 public class GetBitMaskTestPTest {
@@ -30,7 +30,7 @@ public class GetBitMaskTestPTest {
                 a[i] = random.nextInt();
             }
             long start = System.nanoTime();
-            c = getMaskInfo(a, 0, a.length);
+            c = MaskInfoInt.calculateMask(a, 0, a.length);
             long elapsed = System.nanoTime() - start;
             total += elapsed;
         }
@@ -46,7 +46,7 @@ public class GetBitMaskTestPTest {
                 a[i] = random.nextInt();
             }
             long start = System.nanoTime();
-            c = getMaskBitParallel(a, 0, a.length, new ArrayParallelRunner.APRParameters(2));
+            c = calculateMaskInParallel(a, 0, a.length, new ArrayParallelRunner.APRParameters(2));
             long elapsed = System.nanoTime() - start;
             total += elapsed;
         }
@@ -71,7 +71,7 @@ public class GetBitMaskTestPTest {
             for (int i = 0; i < arraySize; i++) {
                 a[i] = random.nextInt();
             }
-            maskInfo = getMaskInfo(a, 0, a.length);
+            maskInfo = MaskInfoInt.calculateMask(a, 0, a.length);
             int mask = maskInfo.getMask();
             int[] kList = MaskInfoInt.getMaskAsArray(mask);
             IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(kList, 0, kList.length - 1);
@@ -93,7 +93,7 @@ public class GetBitMaskTestPTest {
             for (int i = 0; i < arraySize; i++) {
                 a[i] = random.nextInt();
             }
-            maskInfo = getMaskInfo(a, 0, a.length);
+            maskInfo = MaskInfoInt.calculateMask(a, 0, a.length);
             int mask = maskInfo.getMask();
             int[] kList = MaskInfoInt.getMaskAsArray(mask);
             IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(kList, 0, kList.length - 1);

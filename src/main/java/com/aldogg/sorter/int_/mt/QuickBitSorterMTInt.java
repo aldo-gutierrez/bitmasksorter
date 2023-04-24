@@ -10,7 +10,6 @@ import com.aldogg.sorter.int_.st.QuickBitSorterInt;
 
 import static com.aldogg.parallel.ArrayParallelRunner.splitWork;
 import static com.aldogg.sorter.MaskInfoInt.getMaskAsArray;
-import static com.aldogg.sorter.MaskInfoInt.getMaskInfo;
 import static com.aldogg.sorter.int_.IntSorterUtils.sortShortK;
 
 public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
@@ -29,7 +28,7 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
         }
 
         if (recalculate && kIndex < 3) {
-            MaskInfoInt maskParts = getMaskInfo(array, start, endP1);
+            MaskInfoInt maskParts = MaskInfoInt.calculateMask(array, start, endP1);
             int mask = maskParts.getMask();
             kList = getMaskAsArray(mask);
             kIndex = 0;

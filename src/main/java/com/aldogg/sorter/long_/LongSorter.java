@@ -34,5 +34,4 @@ public interface LongSorter extends Sorter {
         }
     }
 
-    int LONG_SIGN_BIT_POS = 63;
 }

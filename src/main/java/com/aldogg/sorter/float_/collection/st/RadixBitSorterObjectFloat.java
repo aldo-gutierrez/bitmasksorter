@@ -7,7 +7,7 @@ import com.aldogg.sorter.float_.collection.ObjectFloatSorter;
 
 import static com.aldogg.sorter.float_.FloatSorterUtils.listIsOrderedSigned;
 import static com.aldogg.sorter.float_.collection.ObjectFloatSorterUtils.*;
-import static com.aldogg.sorter.int_.IntSorter.SIGN_BIT_POS;
+import static com.aldogg.sorter.MaskInfoInt.UPPER_BIT;
 
 public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
 
@@ -40,7 +40,7 @@ public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        MaskInfoInt maskInfo = MaskInfoInt.getMaskInfo(array, start, endP1);
+        MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
         int mask = maskInfo.getMask();
         int[] kList = MaskInfoInt.getMaskAsArray(mask);
         if (kList.length == 0) { //all numbers are equal
@@ -50,7 +50,7 @@ public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
     }
 
     public void sort(Object[] oArray, float[] array, int start, int end, int[] kList) {
-        if (kList[0] == SIGN_BIT_POS) { //there are negative numbers and positive numbers
+        if (kList[0] == UPPER_BIT) { //there are negative numbers and positive numbers
             MaskInfoInt maskInfo;
             int mask;
             int sortMask = 1 << kList[0];
@@ -62,13 +62,13 @@ public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
             float[] aux = new float[Math.max(n1, n2)];
             Object[] oAux = new Object[Math.max(n1, n2)];
             if (n1 > 1) { //sort negative numbers
-                maskInfo = MaskInfoInt.getMaskInfo(array, start, finalLeft);
+                maskInfo = MaskInfoInt.calculateMask(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfoInt.getMaskAsArray(mask);
                 radixSort(oArray, array, start, finalLeft, kList, 0, kList.length - 1, oAux, aux);
             }
             if (n2 > 1) { //sort positive numbers
-                maskInfo = MaskInfoInt.getMaskInfo(array, finalLeft, end);
+                maskInfo = MaskInfoInt.calculateMask(array, finalLeft, end);
                 mask = maskInfo.getMask();
                 kList = MaskInfoInt.getMaskAsArray(mask);
                 radixSort(oArray, array, finalLeft, end, kList, 0, kList.length - 1, oAux, aux);

@@ -7,13 +7,13 @@ import com.aldogg.sorter.MaskInfoLong;
 import com.aldogg.sorter.double_.DoubleBitMaskSorter;
 
 import static com.aldogg.sorter.double_.DoubleSorterUtils.*;
-import static com.aldogg.sorter.long_.LongSorter.LONG_SIGN_BIT_POS;
+import static com.aldogg.sorter.MaskInfoLong.UPPER_BIT;
 
 public class RadixBitSorterDouble extends DoubleBitMaskSorter {
 
     @Override
     public void sort(double[] array, int start, int endP1, int[] kList) {
-        if (kList[0] == LONG_SIGN_BIT_POS) { //there are negative numbers and positive numbers
+        if (kList[0] == UPPER_BIT) { //there are negative numbers and positive numbers
             MaskInfoLong maskInfo;
             long mask;
             long sortMask = 1L << kList[0];
@@ -22,14 +22,14 @@ public class RadixBitSorterDouble extends DoubleBitMaskSorter {
             int n2 = endP1 - finalLeft;
             double[] aux = new double[Math.max(n1, n2)];
             if (n1 > 1) { //sort negative numbers
-                maskInfo = MaskInfoLong.getMaskInfo(array, start, finalLeft);
+                maskInfo = MaskInfoLong.calculateMask(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 radixSort(array, start, finalLeft, kList, 0, kList.length - 1, aux);
                 reverse(array, start, finalLeft);
             }
             if (n2 > 1) { //sort positive numbers
-                maskInfo = MaskInfoLong.getMaskInfo(array, finalLeft, endP1);
+                maskInfo = MaskInfoLong.calculateMask(array, finalLeft, endP1);
                 mask = maskInfo.getMask();
                 kList = MaskInfoLong.getMaskAsArray(mask);
                 radixSort(array, finalLeft, endP1, kList, 0, kList.length - 1, aux);

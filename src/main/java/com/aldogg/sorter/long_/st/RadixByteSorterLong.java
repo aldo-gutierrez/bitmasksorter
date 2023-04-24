@@ -32,7 +32,7 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
         int[] kList = null;
 
         if (calculateBitMaskOptimization) {
-            MaskInfoLong maskInfo = MaskInfoLong.getMaskInfo(array, start, endP1);
+            MaskInfoLong maskInfo = MaskInfoLong.calculateMask(array, start, endP1);
             long mask = maskInfo.getMask();
             kList = MaskInfoLong.getMaskAsArray(mask);
             if (kList.length == 0) {
@@ -50,7 +50,7 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
                 return;
             }
             MaskInfoLong maskParts;
-            if (kList[0] == LONG_SIGN_BIT_POS && !isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
+            if (kList[0] == MaskInfoLong.UPPER_BIT && !isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
                 int sortMask = 1 << kList[0];
                 int finalLeft = isUnsigned()
                         ? LongSorterUtils.partitionNotStable(array, start, endP1, sortMask)
@@ -59,12 +59,12 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
                 int n2 = endP1 - finalLeft;
                 long[] aux = new long[Math.max(n1, n2)];
                 if (n1 > 1) { //sort negative numbers
-                    maskParts = MaskInfoLong.getMaskInfo(array, start, finalLeft);
+                    maskParts = MaskInfoLong.calculateMask(array, start, finalLeft);
                     mask = maskParts.getMask();
                     sortBytes(array, start, finalLeft, aux, mask);
                 }
                 if (n2 > 1) { //sort positive numbers
-                    maskParts = MaskInfoLong.getMaskInfo(array, finalLeft, endP1);
+                    maskParts = MaskInfoLong.calculateMask(array, finalLeft, endP1);
                     mask = maskParts.getMask();
                     sortBytes(array, finalLeft, endP1, aux, mask);
                 }

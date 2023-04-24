@@ -49,7 +49,7 @@ public abstract class IntBitMaskSorter implements IntSorter {
 
         setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
 
-        MaskInfoInt maskInfo = MaskInfoInt.getMaskBitDetectSignBit(array, start, endP1, null);
+        MaskInfoInt maskInfo = MaskInfoInt.calculateMaskBreakIfUpperBit(array, start, endP1, null);
         if (maskInfo == null || (maskInfo.getMask() & 0x80000000) != 0) { //the sign bit is set
             int finalLeft = isUnsigned()
                     ? IntSorterUtils.partitionNotStableSignBit(array, start, endP1)
@@ -57,7 +57,7 @@ public abstract class IntBitMaskSorter implements IntSorter {
             int n1 = finalLeft - start;
             int n2 = endP1 - finalLeft;
             if (n1 > 1) { //sort negative numbers
-                maskInfo = MaskInfoInt.getMaskInfo(array, start, finalLeft);
+                maskInfo = MaskInfoInt.calculateMask(array, start, finalLeft);
                 int mask = maskInfo.getMask();
                 int[] kList = MaskInfoInt.getMaskAsArray(mask);
                 if (kList.length > 0) {
@@ -65,7 +65,7 @@ public abstract class IntBitMaskSorter implements IntSorter {
                 }
             }
             if (n2 > 1) { //sort positive numbers
-                maskInfo = MaskInfoInt.getMaskInfo(array, finalLeft, endP1);
+                maskInfo = MaskInfoInt.calculateMask(array, finalLeft, endP1);
                 int mask = maskInfo.getMask();
                 int[] kList = MaskInfoInt.getMaskAsArray(mask);
                 if (kList.length > 0) {

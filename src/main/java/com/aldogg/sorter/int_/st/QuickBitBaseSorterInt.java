@@ -13,7 +13,7 @@ public class QuickBitBaseSorterInt extends IntBitMaskSorter {
 
     @Override
     public void sort(int[] array, int start, int endP1, int[] kList, Object multiThreadParams) {
-        if (kList[0] == SIGN_BIT_POS) { //there are negative numbers
+        if (kList[0] == MaskInfoInt.UPPER_BIT) { //there are negative numbers
             int sortMask = 1 << kList[0];
             int finalLeft = isUnsigned()
                     ? IntSorterUtils.partitionNotStable(array, start, endP1, sortMask)
@@ -21,13 +21,13 @@ public class QuickBitBaseSorterInt extends IntBitMaskSorter {
             MaskInfoInt maskInfo;
             int mask;
             if (finalLeft - start > 1) {
-                maskInfo = MaskInfoInt.getMaskInfo(array, start, finalLeft);
+                maskInfo = MaskInfoInt.calculateMask(array, start, finalLeft);
                 mask = maskInfo.getMask();
                 kList = MaskInfoInt.getMaskAsArray(mask);
                 sort(array, start, finalLeft, kList, 0);
             }
             if (endP1 - finalLeft > 1) {
-                maskInfo = MaskInfoInt.getMaskInfo(array, finalLeft, endP1);
+                maskInfo = MaskInfoInt.calculateMask(array, finalLeft, endP1);
                 mask = maskInfo.getMask();
                 kList = MaskInfoInt.getMaskAsArray(mask);
                 sort(array, finalLeft, endP1, kList, 0);

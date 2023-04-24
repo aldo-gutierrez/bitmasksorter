@@ -3,7 +3,6 @@ package com.aldogg.sorter.int_.collection.mt;
 import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.parallel.ParallelRunner;
 import com.aldogg.sorter.*;
-import com.aldogg.sorter.int_.IntSorter;
 import com.aldogg.sorter.int_.IntSorterUtils;
 import com.aldogg.sorter.int_.collection.IntComparator;
 import com.aldogg.sorter.int_.collection.ObjectIntSorter;
@@ -70,13 +69,13 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
 
         MaskInfoInt maskInfo;
         if (n >= SIZE_FOR_PARALLEL_BIT_MASK) {
-            maskInfo = MaskInfoInt.getMaskBitDetectSignBitParallel(array, start, endP1, new ArrayParallelRunner.APRParameters(2));
+            maskInfo = MaskInfoInt.calculateMaskInParallelBreakIfUpperBit(array, start, endP1, new ArrayParallelRunner.APRParameters(2));
         } else {
-            maskInfo = MaskInfoInt.getMaskBitDetectSignBit(array, start, endP1, null);
+            maskInfo = MaskInfoInt.calculateMaskBreakIfUpperBit(array, start, endP1, null);
         }
 
         if (maskInfo == null || (maskInfo.getMask() & 0x80000000) != 0) { //there are negative numbers and positive numbers
-            int sortMask = 1 << IntSorter.SIGN_BIT_POS;
+            int sortMask = 1 << MaskInfoInt.UPPER_BIT;
             int finalLeft = isStable()
                     ? (isUnsigned()
                     ? partitionStable(oArray, array, start, endP1, sortMask)
@@ -93,9 +92,9 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
                         int maxThreads1 = threadNumbers[0];
                         MaskInfoInt maskInfo1;
                         if (n1 >= SIZE_FOR_PARALLEL_BIT_MASK & maxThreads1 >= 2) {
-                            maskInfo1 = MaskInfoInt.getMaskBitParallel(array, start, finalLeft, new ArrayParallelRunner.APRParameters(2));
+                            maskInfo1 = MaskInfoInt.calculateMaskInParallel(array, start, finalLeft, new ArrayParallelRunner.APRParameters(2));
                         } else {
-                            maskInfo1 = MaskInfoInt.getMaskInfo(array, start, finalLeft);
+                            maskInfo1 = MaskInfoInt.calculateMask(array, start, finalLeft);
                         }
                         int mask1 = maskInfo1.getMask();
                         int[] kList1 = MaskInfoInt.getMaskAsArray(mask1);
@@ -105,9 +104,9 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
                         int maxThreads2 = threadNumbers[1];
                         MaskInfoInt maskInfo2;
                         if (n2 >= SIZE_FOR_PARALLEL_BIT_MASK & maxThreads2 >= 2) {
-                            maskInfo2 = MaskInfoInt.getMaskBitParallel(array, finalLeft, endP1, new ArrayParallelRunner.APRParameters(2));
+                            maskInfo2 = MaskInfoInt.calculateMaskInParallel(array, finalLeft, endP1, new ArrayParallelRunner.APRParameters(2));
                         } else {
-                            maskInfo2 = MaskInfoInt.getMaskInfo(array, finalLeft, endP1);
+                            maskInfo2 = MaskInfoInt.calculateMask(array, finalLeft, endP1);
                         }
                         int mask2 = maskInfo2.getMask();
                         int[] kList2 = MaskInfoInt.getMaskAsArray(mask2);
