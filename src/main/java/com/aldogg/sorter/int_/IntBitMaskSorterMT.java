@@ -45,8 +45,8 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
 
         if (maskInfo == null) { //there are negative numbers and positive numbers
             int finalLeft = isUnsigned()
-                    ? IntSorterUtils.partitionNotStableSignBit(array, start, endP1)
-                    : IntSorterUtils.partitionReverseNotStableSignBit(array, start, endP1);
+                    ? IntSorterUtils.partitionNotStableUpperBit(array, start, endP1)
+                    : IntSorterUtils.partitionReverseNotStableUpperBit(array, start, endP1);
             int n1 = finalLeft - start;
             int n2 = endP1 - finalLeft;
             int[] threadNumbers = splitWork(n1, n2, maxThreads);

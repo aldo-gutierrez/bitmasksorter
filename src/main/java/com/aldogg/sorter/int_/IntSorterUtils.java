@@ -52,7 +52,7 @@ public class IntSorterUtils {
         return left;
     }
 
-    public static int partitionNotStableSignBit(final int[] array, final int start, final int endP1) {
+    public static int partitionNotStableUpperBit(final int[] array, final int start, final int endP1) {
         int left = start;
         int right = endP1 - 1;
 
@@ -107,7 +107,7 @@ public class IntSorterUtils {
     }
 
 
-    public static int partitionReverseNotStableSignBit(final int[] array, final int start, final int endP1) {
+    public static int partitionReverseNotStableUpperBit(final int[] array, final int start, final int endP1) {
         int left = start;
         int right = endP1 - 1;
 

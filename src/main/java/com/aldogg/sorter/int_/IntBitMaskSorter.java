@@ -52,8 +52,8 @@ public abstract class IntBitMaskSorter implements IntSorter {
         MaskInfoInt maskInfo = MaskInfoInt.calculateMaskBreakIfUpperBit(array, start, endP1, null);
         if (maskInfo == null || (maskInfo.getMask() & 0x80000000) != 0) { //the sign bit is set
             int finalLeft = isUnsigned()
-                    ? IntSorterUtils.partitionNotStableSignBit(array, start, endP1)
-                    : IntSorterUtils.partitionReverseNotStableSignBit(array, start, endP1);
+                    ? IntSorterUtils.partitionNotStableUpperBit(array, start, endP1)
+                    : IntSorterUtils.partitionReverseNotStableUpperBit(array, start, endP1);
             int n1 = finalLeft - start;
             int n2 = endP1 - finalLeft;
             if (n1 > 1) { //sort negative numbers
