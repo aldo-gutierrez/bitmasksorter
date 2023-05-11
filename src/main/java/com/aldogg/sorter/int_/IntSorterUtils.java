@@ -256,7 +256,7 @@ public class IntSorterUtils {
     }
 
     public static int[] partitionStableLastBits(final int[] array, final int start, final IntSection section, final int[] aux, final int startAux, final int n) {
-        final int mask = section.sortMask;
+        final int mask = section.mask;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];
@@ -276,17 +276,17 @@ public class IntSorterUtils {
         } else {
             for (int i = start; i < endP1; ++i) {
                 int element = array[i];
-                aux[count[element & mask]++ +startAux] = element;
+                aux[count[element & mask]++ + startAux] = element;
             }
         }
         return count;
     }
 
     public static int[] partitionStableLastBitsParallel(final int[] array, final int start, final IntSection section, final int[] aux, final int n) {
-        final int mask = section.sortMask;
+        final int mask = section.mask;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
-        int[] count = ArrayParallelRunner.runInParallel(array, start, endP1, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS , new ArrayRunnable<int[]>() {
+        int[] count = ArrayParallelRunner.runInParallel(array, start, endP1, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS, new ArrayRunnable<int[]>() {
             @Override
             public int[] map(final Object arrayX, final int start, final int endP1, final int index, final AtomicBoolean stop) {
                 int[] array = (int[]) arrayX;
@@ -300,7 +300,7 @@ public class IntSorterUtils {
             @Override
             public int[] reduce(int[] result, int[] partialResult) {
                 for (int i = 0; i < countLength; ++i) {
-                    result[i]+=partialResult[i];
+                    result[i] += partialResult[i];
                 }
                 return result;
             }
@@ -315,7 +315,7 @@ public class IntSorterUtils {
             right[i] = sum - 1;
             count[i] = sum;
         }
-        int med = (start + endP1) /2;
+        int med = (start + endP1) / 2;
         ParallelRunner.runTwoRunnable(() -> {
             for (int i = start; i < med; ++i) {
                 int element = array[i];
@@ -331,8 +331,8 @@ public class IntSorterUtils {
     }
 
     public static int[] partitionStableOneGroupBits(final int[] array, final int start, final IntSection section, final int[] aux, int startAux, int n) {
-        final int mask = section.sortMask;
-        final int shiftRight = section.shiftRight;
+        final int mask = section.mask;
+        final int shiftRight = section.shift;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];
@@ -359,8 +359,8 @@ public class IntSorterUtils {
     }
 
     public static int[] partitionStableOneGroupBitsParallel(int[] array, int start, IntSection section, int[] aux, int n) {
-        final int mask = section.sortMask;
-        final int shiftRight = section.shiftRight;
+        final int mask = section.mask;
+        final int shiftRight = section.shift;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = ArrayParallelRunner.runInParallel(array, start, endP1, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS, new ArrayRunnable<int[]>() {
@@ -377,7 +377,7 @@ public class IntSorterUtils {
             @Override
             public int[] reduce(int[] result, int[] partialResult) {
                 for (int i = 0; i < countLength; ++i) {
-                    result[i]+=partialResult[i];
+                    result[i] += partialResult[i];
                 }
                 return result;
             }
@@ -392,7 +392,7 @@ public class IntSorterUtils {
             right[i] = sum - 1;
             count[i] = sum;
         }
-        int med = (start + endP1) /2;
+        int med = (start + endP1) / 2;
         ParallelRunner.runTwoRunnable(() -> {
             for (int i = start; i < med; ++i) {
                 int element = array[i];
@@ -564,8 +564,8 @@ public class IntSorterUtils {
             };
 
 
-    public static void sortShortK(final int[] array, final int start, final int endP1, final int[] kList, final int kIndex) {
-        int km1 = (kList.length - kIndex) - 1; //K
+    public static void sortShortK(final int[] array, final int start, final int endP1, final int[] bList, final int kIndex) {
+        int km1 = (bList.length - kIndex) - 1; //K
         int log2Nm1 = BitSorterUtils.logBase2(endP1 - start) - 1; //Log2(N)
         ShortSorter sorter;
         if (log2Nm1 <= 15 && km1 <= 15) {
@@ -575,29 +575,29 @@ public class IntSorterUtils {
         } else {
             sorter = StableByte;
         }
-        executeSorter(array, start, endP1, kList, kIndex, sorter);
+        executeSorter(array, start, endP1, bList, kIndex, sorter);
     }
 
-    private static void executeSorter(int[] array, int start, int endP1, int[] kList, int kIndex, ShortSorter sorter) {
+    private static void executeSorter(int[] array, int start, int endP1, int[] bList, int kIndex, ShortSorter sorter) {
         int n = endP1 - start;
         if (sorter.equals(CountSort)) {
-            IntCountSort.countSort(array, start, endP1, kList, kIndex);
+            DestructiveCountSortInt.countSort(array, start, endP1, bList, kIndex);
         } else if (sorter.equals(StableByte)) {
             int[] aux = new int[n];
-            radixSort(array, start, endP1, kList, kIndex, kList.length - 1, aux, 0);
+            radixSort(array, start, endP1, bList, kIndex, bList.length - 1, aux, 0);
         } else {
             int[] aux = new int[n];
-            for (int i = kList.length - 1; i >= kIndex; i--) {
-                int sortMask = 1 << kList[i];
+            for (int i = bList.length - 1; i >= kIndex; i--) {
+                int sortMask = 1 << bList[i];
                 partitionStable(array, start, endP1, sortMask, aux);
             }
         }
     }
 
-    public static int getIntMask(int[] kList, int start, int endP1) {
+    public static int getIntMask(int[] bList, int start, int endP1) {
         int mask = 0;
         for (int i = start; i <= endP1; i++) {
-            mask = mask | 1 << kList[i];
+            mask = mask | 1 << bList[i];
         }
         return mask;
     }

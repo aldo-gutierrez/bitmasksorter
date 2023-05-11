@@ -5,7 +5,7 @@ import java.security.InvalidParameterException;
 public class BitSorterParams {
     public static final int VERY_SMALL_N_SIZE = 16;
 
-    public static final int MAX_BITS_RADIX_SORT;
+    public static int MAX_BITS_RADIX_SORT = 8;
 
     static {
         //looks like MAX_BITS_RADIX_SORT depends on cache size, an approximation is to use the number of cores

@@ -97,8 +97,8 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
                             maskInfo1 = MaskInfoInt.calculateMask(array, start, finalLeft);
                         }
                         int mask1 = maskInfo1.getMask();
-                        int[] kList1 = MaskInfoInt.getMaskAsArray(mask1);
-                        radixSort(oArray, array, start, finalLeft, kList1, maxThreads1);
+                        int[] bList1 = MaskInfoInt.getMaskAsArray(mask1);
+                        radixSort(oArray, array, start, finalLeft, bList1, maxThreads1);
                     } : null, n1,
                     n2 > 1 ? () -> { //sort positive numbers
                         int maxThreads2 = threadNumbers[1];
@@ -109,40 +109,40 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
                             maskInfo2 = MaskInfoInt.calculateMask(array, finalLeft, endP1);
                         }
                         int mask2 = maskInfo2.getMask();
-                        int[] kList2 = MaskInfoInt.getMaskAsArray(mask2);
-                        radixSort(oArray, array, finalLeft, endP1, kList2, maxThreads2);
+                        int[] bList2 = MaskInfoInt.getMaskAsArray(mask2);
+                        radixSort(oArray, array, finalLeft, endP1, bList2, maxThreads2);
                     } : null, n2, params.getDataSizeForThreads(), maxThreads);
 
         } else {
             int mask = maskInfo.getMask();
             if (mask != 0) {
-                int[] kList = MaskInfoInt.getMaskAsArray(mask);
-                radixSort(oArray, array, start, endP1, kList, maxThreads);
+                int[] bList = MaskInfoInt.getMaskAsArray(mask);
+                radixSort(oArray, array, start, endP1, bList, maxThreads);
             }
         }
     }
 
-    private void radixSort(Object[] oArray, int[] array, int start, int endP1, int[] kList, Object multiThreadParams) {
+    private void radixSort(Object[] oArray, int[] array, int start, int endP1, int[] bList, Object multiThreadParams) {
         int maxThreads = (Integer) multiThreadParams;
         int tBits = BitSorterUtils.logBase2(maxThreads);
         if (!(1 << tBits == maxThreads)) {
             tBits += 1;
         }
-        int threadBits = Math.min(tBits, kList.length);
-        int sortMask = IntSorterUtils.getIntMask(kList, 0, threadBits - 1);
-        partitionStableNonConsecutiveBitsAndRadixSort(oArray, array, start, endP1, sortMask, threadBits, kList);
+        int threadBits = Math.min(tBits, bList.length);
+        int sortMask = IntSorterUtils.getIntMask(bList, 0, threadBits - 1);
+        partitionStableNonConsecutiveBitsAndRadixSort(oArray, array, start, endP1, sortMask, threadBits, bList);
     }
 
-    protected void partitionStableNonConsecutiveBitsAndRadixSort(Object[] oArray, final int[] array, final int start, final int endP1, int sortMask, int threadBits, int[] kList) {
+    protected void partitionStableNonConsecutiveBitsAndRadixSort(Object[] oArray, final int[] array, final int start, final int endP1, int sortMask, int threadBits, int[] bList) {
         int n = endP1 - start;
         Object[] oAux = new Object[n];
         int[] aux = new int[n];
 
         int maxProcessNumber = 1 << threadBits;
-        int remainingBits = kList.length - threadBits;
+        int remainingBits = bList.length - threadBits;
 
-        int[] kListAux = MaskInfoInt.getMaskAsArray(sortMask);
-        IntSectionsInfo sectionsInfo = getMaskAsSections(kListAux, 0, kListAux.length - 1);
+        int[] bListAux = MaskInfoInt.getMaskAsArray(sortMask);
+        IntSectionsInfo sectionsInfo = getMaskAsSections(bListAux, 0, bListAux.length - 1);
         IntSection[] sections = sectionsInfo.sections;
 
         int[] leftX;
@@ -171,7 +171,7 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
                     Runnable r = () -> {
                         int endIBZ = leftX[finalI];
                         int startIBZ = endIBZ - lengthT;
-                        RadixBitSorterObjectInt.radixSort(oArray, array, start + startIBZ, start + endIBZ,kList, threadBits, kList.length - 1, oAux, aux, startIBZ);
+                        RadixBitSorterObjectInt.radixSort(oArray, array, start + startIBZ, start + endIBZ, bList, threadBits, bList.length - 1, oAux, aux, startIBZ);
                     };
                     runner.preSubmit(r);
                 }

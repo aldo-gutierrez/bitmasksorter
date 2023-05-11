@@ -40,11 +40,11 @@ public abstract class LongBitMaskSorter implements LongSorter {
 
         MaskInfoLong maskInfo = MaskInfoLong.calculateMask(array, start, endP1);
         long mask = maskInfo.getMask();
-        int[] kList = getMaskAsArray(mask);
-        if (kList.length == 0) {
+        int[] bList = getMaskAsArray(mask);
+        if (bList.length == 0) {
             return;
         }
 //        setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
-        sort(array, start, endP1, kList);
+        sort(array, start, endP1, bList);
     }
 }

@@ -81,7 +81,7 @@ public class LongSorterUtils {
     }
 
     public static void partitionStableLastBits(final long[] array, final int start, final LongSection section, final long[] aux, int startAux, int n) {
-        final long mask = section.sortMask;
+        final long mask = section.mask;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];
@@ -108,8 +108,8 @@ public class LongSorterUtils {
 
 
     public static int[] partitionStableOneGroupBits(final long[] array, final int start, final LongSection section, final long[] aux, int startAux, int n) {
-        final long mask = section.sortMask;
-        final int shiftRight = section.shiftRight;
+        final long mask = section.mask;
+        final int shiftRight = section.shift;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];

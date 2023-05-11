@@ -80,7 +80,7 @@ public class FloatSorterUtils {
     }
 
     public static void partitionStableLastBits(final float[] array, final int start, final IntSection section, final float[] aux, int startAux, int n) {
-        final int mask = section.sortMask;
+        final int mask = section.mask;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];
@@ -98,7 +98,7 @@ public class FloatSorterUtils {
                 int elementM = Float.floatToRawIntBits(element);
                 aux[count[elementM & mask]++] = element;
             }
-        } else  {
+        } else {
             for (int i = start; i < endP1; ++i) {
                 float element = array[i];
                 int elementM = Float.floatToRawIntBits(element);
@@ -108,8 +108,8 @@ public class FloatSorterUtils {
     }
 
     public static void partitionStableOneGroupBits(final float[] array, final int start, final IntSection section, final float[] aux, int startAux, int n) {
-        final int mask = section.sortMask;
-        final int shiftRight = section.shiftRight;
+        final int mask = section.mask;
+        final int shiftRight = section.shift;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];
@@ -121,7 +121,7 @@ public class FloatSorterUtils {
             count[i] = sum;
             sum += countI;
         }
-        if (startAux == 0 ) {
+        if (startAux == 0) {
             for (int i = start; i < endP1; ++i) {
                 float element = array[i];
                 int elementM = Float.floatToRawIntBits(element);

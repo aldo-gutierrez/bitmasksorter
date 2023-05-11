@@ -12,7 +12,7 @@ public interface FloatSorter extends Sorter {
 
     void sort(float[] array, int start, int endP1);
 
-    default void sort(float[] array, int start, int endP1, int[] kList) {
+    default void sort(float[] array, int start, int endP1, int[] bList) {
         throw new UnsupportedOperationException();
     }
 

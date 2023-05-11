@@ -30,10 +30,9 @@ public class IntGenerator {
         return functions.get(String.valueOf(functionName));
     }
 
-    public IntGenerator(){
+    public IntGenerator() {
 
     }
-
 
 
     static int[] shuffled_int(GeneratorParams params) {
@@ -102,7 +101,7 @@ public class IntGenerator {
         for (; i < size; ++i) {
             v[i] = i;
         }
-        v[size-1] = 0;
+        v[size - 1] = 0;
         return v;
     }
 
@@ -115,7 +114,7 @@ public class IntGenerator {
                 v[i] = i;
             }
         }
-        v[size-1] = size / 2;
+        v[size - 1] = size / 2;
         return v;
     }
 
@@ -166,7 +165,7 @@ public class IntGenerator {
             int range = (int) (params.limitHigh - (long) params.limitLow);
             for (int i = 0; i < size; ++i) {
                 long randomLong = params.random.nextInt(range) + (long) params.limitLow;
-                v[i] =  ((Long) randomLong).intValue();
+                v[i] = ((Long) randomLong).intValue();
             }
         } else {
             int range = (int) (params.limitHigh - params.limitLow);
@@ -188,8 +187,8 @@ public class IntGenerator {
             array[i] = temp;
         }
     }
-    static private double log2(int N)
-    {
+
+    static private double log2(int N) {
 
         // calculate log2 N indirectly
         // using log() method

@@ -12,7 +12,7 @@ public interface LongSorter extends Sorter {
 
     void sort(long[] array, int start, int endP1);
 
-    default void sort(long[] array, int start, int endP1, int[] kList) {
+    default void sort(long[] array, int start, int endP1, int[] bList) {
         throw new UnsupportedOperationException();
     }
 

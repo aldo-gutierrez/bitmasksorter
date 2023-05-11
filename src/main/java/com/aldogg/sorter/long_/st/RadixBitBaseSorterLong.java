@@ -8,14 +8,14 @@ import static com.aldogg.sorter.long_.LongSorterUtils.*;
 public class RadixBitBaseSorterLong extends LongBitMaskSorter {
 
     @Override
-    public void sort(long[] array, int start, int endP1, int[] kList) {
-        if (kList.length == 0) {
+    public void sort(long[] array, int start, int endP1, int[] bList) {
+        if (bList.length == 0) {
             return;
         }
-        if (kList[0] == MaskInfoLong.UPPER_BIT) { //there are negative numbers and positive numbers
+        if (bList[0] == MaskInfoLong.UPPER_BIT) { //there are negative numbers and positive numbers
             MaskInfoLong maskInfo;
             long mask;
-            long sortMask = 1L << kList[0];
+            long sortMask = 1L << bList[0];
             int finalLeft = isUnsigned()
                     ? partitionNotStable(array, start, endP1, sortMask)
                     : partitionReverseNotStable(array, start, endP1, sortMask);
@@ -23,9 +23,9 @@ public class RadixBitBaseSorterLong extends LongBitMaskSorter {
                 long[] aux = new long[finalLeft - start];
                 maskInfo = MaskInfoLong.calculateMask(array, start, finalLeft);
                 mask = maskInfo.getMask();
-                kList = MaskInfoLong.getMaskAsArray(mask);
-                for (int i = kList.length - 1; i >= 0; i--) {
-                    long sortMaskI = 1L << kList[i];
+                bList = MaskInfoLong.getMaskAsArray(mask);
+                for (int i = bList.length - 1; i >= 0; i--) {
+                    long sortMaskI = 1L << bList[i];
                     partitionStable(array, start, finalLeft, sortMaskI, aux);
                 }
             }
@@ -33,16 +33,16 @@ public class RadixBitBaseSorterLong extends LongBitMaskSorter {
                 long[] aux = new long[endP1 - finalLeft];
                 maskInfo = MaskInfoLong.calculateMask(array, finalLeft, endP1);
                 mask = maskInfo.getMask();
-                kList = MaskInfoLong.getMaskAsArray(mask);
-                for (int i = kList.length - 1; i >= 0; i--) {
-                    long sortMaskI = 1L << kList[i];
+                bList = MaskInfoLong.getMaskAsArray(mask);
+                for (int i = bList.length - 1; i >= 0; i--) {
+                    long sortMaskI = 1L << bList[i];
                     partitionStable(array, finalLeft, endP1, sortMaskI, aux);
                 }
             }
         } else {
             long[] aux = new long[endP1 - start];
-            for (int i = kList.length - 1; i >= 0; i--) {
-                long sortMask = 1L << kList[i];
+            for (int i = bList.length - 1; i >= 0; i--) {
+                long sortMask = 1L << bList[i];
                 partitionStable(array, start, endP1, sortMask, aux);
             }
         }

@@ -300,7 +300,7 @@ public class LongSorterPTest extends IntBasicTest {
         }
     }
 
-    public void testSort(long[] list,  TestAlgorithms<LongSorter> testAlgorithms) {
+    public void testSort(long[] list, TestAlgorithms<LongSorter> testAlgorithms) {
         long[] baseListSorted = null;
         LongSorter[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {

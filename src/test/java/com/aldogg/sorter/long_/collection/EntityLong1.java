@@ -27,7 +27,7 @@ public class EntityLong1 {
 
     @Override
     public String toString() {
-        return id+"";
+        return id + "";
     }
 
 }

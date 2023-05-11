@@ -42,18 +42,18 @@ public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
 
         MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
         int mask = maskInfo.getMask();
-        int[] kList = MaskInfoInt.getMaskAsArray(mask);
-        if (kList.length == 0) { //all numbers are equal
+        int[] bList = MaskInfoInt.getMaskAsArray(mask);
+        if (bList.length == 0) { //all numbers are equal
             return;
         }
-        sort(oArray, array, start, endP1, kList);
+        sort(oArray, array, start, endP1, bList);
     }
 
-    public void sort(Object[] oArray, float[] array, int start, int end, int[] kList) {
-        if (kList[0] == UPPER_BIT) { //there are negative numbers and positive numbers
+    public void sort(Object[] oArray, float[] array, int start, int end, int[] bList) {
+        if (bList[0] == UPPER_BIT) { //there are negative numbers and positive numbers
             MaskInfoInt maskInfo;
             int mask;
-            int sortMask = 1 << kList[0];
+            int sortMask = 1 << bList[0];
             int finalLeft = isStable()
                     ? (partitionReverseStable(oArray, array, start, end, sortMask))
                     : (partitionReverseNotStable(oArray, array, start, end, sortMask));
@@ -64,28 +64,28 @@ public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
             if (n1 > 1) { //sort negative numbers
                 maskInfo = MaskInfoInt.calculateMask(array, start, finalLeft);
                 mask = maskInfo.getMask();
-                kList = MaskInfoInt.getMaskAsArray(mask);
-                radixSort(oArray, array, start, finalLeft, kList, 0, kList.length - 1, oAux, aux);
+                bList = MaskInfoInt.getMaskAsArray(mask);
+                radixSort(oArray, array, start, finalLeft, bList, 0, bList.length - 1, oAux, aux);
             }
             if (n2 > 1) { //sort positive numbers
                 maskInfo = MaskInfoInt.calculateMask(array, finalLeft, end);
                 mask = maskInfo.getMask();
-                kList = MaskInfoInt.getMaskAsArray(mask);
-                radixSort(oArray, array, finalLeft, end, kList, 0, kList.length - 1, oAux, aux);
+                bList = MaskInfoInt.getMaskAsArray(mask);
+                radixSort(oArray, array, finalLeft, end, bList, 0, bList.length - 1, oAux, aux);
             }
         } else {
             float[] aux = new float[end - start];
             Object[] oAux = new Object[end - start];
-            radixSort(oArray, array, start, end, kList, 0, kList.length - 1, oAux, aux);
+            radixSort(oArray, array, start, end, bList, 0, bList.length - 1, oAux, aux);
         }
     }
 
-    public static void radixSort(Object[] oArray, float[] array, int start, int end, int[] kList, int kStart, int kEnd, Object[] oAux, float[] aux) {
-        IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(kList, kStart, kEnd);
+    public static void radixSort(Object[] oArray, float[] array, int start, int end, int[] bList, int bListStart, int bListEnd, Object[] oAux, float[] aux) {
+        IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
         IntSection[] finalSectionList = sectionsInfo.sections;
 
         if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
-            partitionStable(oArray, array, start, end, finalSectionList[0].sortMask, oAux, aux);
+            partitionStable(oArray, array, start, end, finalSectionList[0].mask, oAux, aux);
             return;
         }
         int n = end - start;

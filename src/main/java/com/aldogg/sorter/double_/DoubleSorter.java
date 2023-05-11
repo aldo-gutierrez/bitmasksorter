@@ -12,7 +12,7 @@ public interface DoubleSorter extends Sorter {
 
     void sort(double[] array, int start, int endP1);
 
-    default void sort(double[] array, int start, int endP1, int[] kList) {
+    default void sort(double[] array, int start, int endP1, int[] bList) {
         throw new UnsupportedOperationException();
     }
 

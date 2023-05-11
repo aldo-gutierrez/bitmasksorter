@@ -14,6 +14,7 @@ public class MaskInfoInt {
     public int iMask;
 
     public static final int SIZE_FOR_PARALLEL_BIT_MASK = 6000000;
+
     public static MaskInfoInt calculateMask(final int[] array, final int start, final int endP1) {
         int pMask = 0x00000000;
         int iMask = 0x00000000;
@@ -126,18 +127,18 @@ public class MaskInfoInt {
         return res;
     }
 
-    public static int getMaskLastBits(final int[] kList, final int kIndex) {
+    public static int getMaskLastBits(final int[] bList, final int kIndex) {
         int mask = 0;
-        for (int i = kIndex; i < kList.length; i++) {
-            int k = kList[i];
+        for (int i = kIndex; i < bList.length; i++) {
+            int k = bList[i];
             mask = mask | 1 << k;
         }
         return mask;
     }
 
-    public static int getMaskRangeBits(final int kIndexStart, final int kIndexEnd) {
+    public static int getMaskRangeBits(final int bStart, final int bEnd) {
         int mask = 0;
-        for (int k = kIndexStart; k >= kIndexEnd; k--) {
+        for (int k = bStart; k >= bEnd; k--) {
             mask = mask | 1 << k;
         }
         return mask;

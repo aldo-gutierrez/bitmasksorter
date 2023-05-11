@@ -11,7 +11,7 @@ public interface IntSorter extends Sorter {
 
     void sort(int[] array, int start, int endP1);
 
-    default void sort(int[] array, int start, int endP1, int[] kList, Object multiThreadParams) {
+    default void sort(int[] array, int start, int endP1, int[] bList, Object multiThreadParams) {
         throw new UnsupportedOperationException();
     }
 

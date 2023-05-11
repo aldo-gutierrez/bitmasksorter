@@ -8,26 +8,26 @@ import java.util.Arrays;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
 
-public class IntCountSort {
+public class DestructiveCountSortInt {
 
-    public static void countSort(final int[] array, final int start, final int endP1, int[] kList,  int kIndex) {
-        int twoPowerK = 1 << (kList.length - kIndex);
-        int[] kListNew = Arrays.copyOfRange(kList, kIndex, kList.length);
-        IntSectionsInfo sectionsInfo = getMaskAsSections(kList, 0, kList.length - 1);
+    public static void countSort(final int[] array, final int start, final int endP1, int[] bList, int bListStart) {
+        int kRange = 1 << (bList.length - bListStart);
+        int[] bListNew = Arrays.copyOfRange(bList, bListStart, bList.length);
+        IntSectionsInfo sectionsInfo = getMaskAsSections(bList, 0, bList.length - 1);
         IntSection[] sections = sectionsInfo.sections;
-        int sortMask = MaskInfoInt.getMaskLastBits(kListNew, 0);
-        countSort(array, start, endP1, sortMask, sections, twoPowerK);
+        int sortMask = MaskInfoInt.getMaskLastBits(bListNew, 0);
+        countSort(array, start, endP1, sortMask, sections, kRange);
     }
 
     /**
      * CPU: N + MAX(2^K, N)
      * MEM: 2 * (2^K)
      */
-    public static void countSort(final int[] array, final int start, final int endP1, int mask, IntSection[] sections, int twoPowerK) {
-        int[] count = new int[twoPowerK];
+    public static void countSort(final int[] array, final int start, final int endP1, int mask, IntSection[] sections, int kRange) {
+        int[] count = new int[kRange];
         int[] number = null;
         if (sections.length != 1 || !sections[0].isSectionAtEnd()) {
-            number = new int[twoPowerK];
+            number = new int[kRange];
         }
 
         if (sections.length == 1 && sections[0].isSectionAtEnd()) {
@@ -35,10 +35,10 @@ public class IntCountSort {
             elementSample = elementSample & ~mask;
             if (elementSample == 0) { //last bits and includes all numbers
                 for (int i = start; i < endP1; i++) {
-                    count[array[i]]++;
+                    count[array[i]]++; //TODO check if it can fail with negative numbers
                 }
                 int i = start;
-                for (int j = 0; j < count.length; j++) {
+                for (int j = 0; j < count.length; j++) { //Destructive (Creates new numbers no swaps)
                     int countJ = count[j];
                     if (countJ > 0) {
                         for (int k = 0; k < countJ; k++) {
@@ -56,7 +56,7 @@ public class IntCountSort {
                     count[array[i] & mask]++;
                 }
                 int i = start;
-                for (int j = 0; j < count.length; j++) {
+                for (int j = 0; j < count.length; j++) { //Destructive (Creates new numbers no swaps)
                     int countJ = count[j];
                     if (countJ > 0) {
                         int value = j | elementSample;
@@ -73,18 +73,19 @@ public class IntCountSort {
         } else {
             if (sections.length == 1) {
                 IntSection section = sections[0];
+                int mask1 = section.mask;
                 if (section.isSectionAtEnd()) {
                     //TODO check if this code is executed or not
                     for (int i = start; i < endP1; i++) {
                         int element = array[i];
-                        int key = element & section.sortMask;
+                        int key = element & mask1;
                         count[key]++;
                         number[key] = element;
                     }
                 } else {
                     for (int i = start; i < endP1; i++) {
                         int element = array[i];
-                        int key = (element & section.sortMask) >> section.shiftRight;
+                        int key = (element & mask1) >> section.shift;
                         count[key]++;
                         number[key] = element;
                     }
@@ -102,7 +103,7 @@ public class IntCountSort {
                 int countJ = count[j];
                 if (countJ > 0) {
                     int value = number[j];
-                    for (int k = 0; k < countJ; k++) {
+                    for (int k = 0; k < countJ; k++) { //Destructive as it just use the first object/number to clone it
                         array[i] = value;
                         i++;
                     }

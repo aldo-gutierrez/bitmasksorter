@@ -29,29 +29,29 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        int[] kList = null;
+        int[] bList = null;
 
         if (calculateBitMaskOptimization) {
             MaskInfoLong maskInfo = MaskInfoLong.calculateMask(array, start, endP1);
             long mask = maskInfo.getMask();
-            kList = MaskInfoLong.getMaskAsArray(mask);
-            if (kList.length == 0) {
+            bList = MaskInfoLong.getMaskAsArray(mask);
+            if (bList.length == 0) {
                 return;
             }
         }
-        sort(array, start, endP1, kList);
+        sort(array, start, endP1, bList);
     }
 
     @Override
-    public void sort(long[] array, int start, int endP1, int[] kList) {
+    public void sort(long[] array, int start, int endP1, int[] bList) {
         long mask = 0xFFFFFFFFFFFFFFFFL;
         if (calculateBitMaskOptimization) {
-            if (kList.length == 0) {
+            if (bList.length == 0) {
                 return;
             }
             MaskInfoLong maskParts;
-            if (kList[0] == MaskInfoLong.UPPER_BIT && !isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
-                int sortMask = 1 << kList[0];
+            if (bList[0] == MaskInfoLong.UPPER_BIT && !isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
+                int sortMask = 1 << bList[0];
                 int finalLeft = isUnsigned()
                         ? LongSorterUtils.partitionNotStable(array, start, endP1, sortMask)
                         : LongSorterUtils.partitionReverseNotStable(array, start, endP1, sortMask);
@@ -70,7 +70,7 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
                 }
                 return;
             } else {
-                mask = MaskInfoLong.getMaskLastBits(kList, 0);
+                mask = MaskInfoLong.getMaskLastBits(bList, 0);
             }
         }
         int n = endP1 - start;
@@ -92,7 +92,7 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
 
         long sortMask = sortMasks[0];
         if ((mask & sortMask) != 0) {
-            section.sortMask = sortMask;
+            section.mask = sortMask;
             LongSorterUtils.partitionStableLastBits(array, start, section, aux, startAux, n);
 
             //System.arraycopy(aux, 0, array, start, n);
@@ -109,8 +109,8 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
         for (int i = 0; i < shiftRights.length; ++i) {
             sortMask = sortMasks[i];
             if ((mask & sortMask) != 0) {
-                section.sortMask = sortMask;
-                section.shiftRight = shiftRights[i];
+                section.mask = sortMask;
+                section.shift = shiftRights[i];
                 LongSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
                 long[] tempArray = array;
                 array = aux;
@@ -125,8 +125,8 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
 
         sortMask = sortMasks[7];
         if ((mask & sortMask) != 0) {
-            section.sortMask = sortMask;
-            section.shiftRight = shiftRights[7];
+            section.mask = sortMask;
+            section.shift = shiftRights[7];
             LongSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
             array = aux;
             start = startAux;

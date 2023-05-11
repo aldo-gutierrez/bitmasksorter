@@ -65,8 +65,8 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
                             maskInfo1 = MaskInfoInt.calculateMask(array, start, finalLeft);
                         }
                         int mask1 = maskInfo1.getMask();
-                        int[] kList1 = MaskInfoInt.getMaskAsArray(mask1);
-                        sort(array, start, finalLeft, kList1, maxThreads1);
+                        int[] bList1 = MaskInfoInt.getMaskAsArray(mask1);
+                        sort(array, start, finalLeft, bList1, maxThreads1);
                     } : null, n1,
                     n2 > 1 ? () -> { //sort positive numbers
                         int maxThreads2 = threadNumbers[1];
@@ -81,15 +81,15 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
                             maskInfo2 = MaskInfoInt.calculateMask(array, finalLeft, endP1);
                         }
                         int mask2 = maskInfo2.getMask();
-                        int[] kList2 = MaskInfoInt.getMaskAsArray(mask2);
-                        sort(array, finalLeft, endP1, kList2, maxThreads2);
+                        int[] bList2 = MaskInfoInt.getMaskAsArray(mask2);
+                        sort(array, finalLeft, endP1, bList2, maxThreads2);
                     } : null, n2, params.getDataSizeForThreads(), maxThreads);
 
         } else {
             int mask = maskInfo.getMask();
             if (mask != 0) {
-                int[] kList = MaskInfoInt.getMaskAsArray(mask);
-                sort(array, start, endP1, kList, maxThreads);
+                int[] bList = MaskInfoInt.getMaskAsArray(mask);
+                sort(array, start, endP1, bList, maxThreads);
             }
         }
     }

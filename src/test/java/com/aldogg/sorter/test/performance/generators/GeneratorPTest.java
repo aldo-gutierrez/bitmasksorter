@@ -3,7 +3,7 @@ package com.aldogg.sorter.test.performance.generators;
 import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
-import com.aldogg.sorter.int_.IntCountSort;
+import com.aldogg.sorter.int_.DestructiveCountSortInt;
 import com.aldogg.sorter.int_.IntSorter;
 import com.aldogg.sorter.int_.IntSorterUtils;
 import com.aldogg.sorter.int_.mt.JavaSorterMTInt;
@@ -38,10 +38,10 @@ public class GeneratorPTest extends BaseTest {
             public void sort(int[] array, int start, int endP1) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
                 int mask = maskInfo.getMask();
-                int[] kList = MaskInfoInt.getMaskAsArray(mask);
+                int[] bList = MaskInfoInt.getMaskAsArray(mask);
                 int length = endP1 - start;
                 int[] aux = new int[length];
-                radixSort(array, start, endP1, kList, 0, kList.length - 1, aux, 0);
+                radixSort(array, start, endP1, bList, 0, bList.length - 1, aux, 0);
             }
 
             @Override
@@ -54,10 +54,10 @@ public class GeneratorPTest extends BaseTest {
             public void sort(int[] array, int start, int endP1) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
                 int mask = maskInfo.getMask();
-                int[] kList = MaskInfoInt.getMaskAsArray(mask);
+                int[] bList = MaskInfoInt.getMaskAsArray(mask);
                 int[] aux = new int[endP1 - start];
-                for (int i = kList.length - 1; i >= 0; i--) {
-                    int sortMask = 1 << kList[i];
+                for (int i = bList.length - 1; i >= 0; i--) {
+                    int sortMask = 1 << bList[i];
                     IntSorterUtils.partitionStable(array, start, endP1, sortMask, aux);
                 }
             }
@@ -72,8 +72,8 @@ public class GeneratorPTest extends BaseTest {
             public void sort(int[] array, int start, int endP1) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
                 int mask = maskInfo.getMask();
-                int[] kList = MaskInfoInt.getMaskAsArray(mask);
-                IntCountSort.countSort(array, start, endP1, kList, 0);
+                int[] bList = MaskInfoInt.getMaskAsArray(mask);
+                DestructiveCountSortInt.countSort(array, start, endP1, bList, 0);
             }
 
             @Override
@@ -94,7 +94,7 @@ public class GeneratorPTest extends BaseTest {
         params.limitLow = 0;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
 
-        int iterations = HEAT_ITERATIONS*200;
+        int iterations = HEAT_ITERATIONS * 200;
         for (int limitH : twoPowersHeat) {
             params.limitHigh = limitH - 1;
             for (int size : twoPowersHeat) {
@@ -107,7 +107,7 @@ public class GeneratorPTest extends BaseTest {
 
         System.out.println("----------------------");
 
-        iterations = ITERATIONS*200;
+        iterations = ITERATIONS * 200;
         writer2.write("{\n");
         for (int limitH : twoPowers) {
             params.limitHigh = limitH - 1;

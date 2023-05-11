@@ -13,13 +13,13 @@ import static com.aldogg.sorter.int_.IntSorterUtils.sortShortK;
 public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
 
     @Override
-    public void sort(int[] array, int start, int endP1, int[] kList, Object multiThreadParams) {
-        int kDiff = kList.length;
+    public void sort(int[] array, int start, int endP1, int[] bList, Object multiThreadParams) {
+        int kDiff = bList.length;
         if (kDiff <= params.getShortKBits()) {
             if (kDiff < 1) {
                 return;
             }
-            sortShortK(array, start, endP1, kList, 0);
+            sortShortK(array, start, endP1, bList, 0);
             return;
         }
 
@@ -29,20 +29,20 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
         if (!(1 << tBits == maxThreads)) {
             tBits += 1;
         }
-        int threadBits = Math.min(tBits, kList.length);
-        int sortMask = IntSorterUtils.getIntMask(kList, 0, threadBits - 1);
+        int threadBits = Math.min(tBits, bList.length);
+        int sortMask = IntSorterUtils.getIntMask(bList, 0, threadBits - 1);
 
-        partitionStableNonConsecutiveBitsAndRadixSort(array, start, endP1, sortMask, threadBits, kList);
+        partitionStableNonConsecutiveBitsAndRadixSort(array, start, endP1, sortMask, threadBits, bList);
     }
 
-    protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] array, final int start, final int endP1, int sortMask, int threadBits, int[] kList) {
+    protected void partitionStableNonConsecutiveBitsAndRadixSort(final int[] array, final int start, final int endP1, int sortMask, int threadBits, int[] bList) {
         int n = endP1 - start;
         int[] aux = new int[n];
 
-        int remainingBits = kList.length - threadBits;
+        int remainingBits = bList.length - threadBits;
 
-        int[] kListAux = MaskInfoInt.getMaskAsArray(sortMask);
-        IntSectionsInfo sectionsInfo = getMaskAsSections(kListAux, 0, kListAux.length - 1);
+        int[] bListAux = MaskInfoInt.getMaskAsArray(sortMask);
+        IntSectionsInfo sectionsInfo = getMaskAsSections(bListAux, 0, bListAux.length - 1);
         IntSection[] sections = sectionsInfo.sections;
 
         int[] leftX;
@@ -84,9 +84,9 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
                         int endIBZ = leftX[finalI];
                         int startIBZ = endIBZ - lengthT;
                         if (remainingBits <= params.getShortKBits()) {
-                            sortShortK(array, start + startIBZ, start + endIBZ, kList, threadBits);
+                            sortShortK(array, start + startIBZ, start + endIBZ, bList, threadBits);
                         } else {
-                            RadixBitSorterInt.radixSort(array, start + startIBZ, start + endIBZ, kList, threadBits, kList.length - 1, aux, startIBZ);
+                            RadixBitSorterInt.radixSort(array, start + startIBZ, start + endIBZ, bList, threadBits, bList.length - 1, aux, startIBZ);
                         }
                     };
                     runner.preSubmit(r);

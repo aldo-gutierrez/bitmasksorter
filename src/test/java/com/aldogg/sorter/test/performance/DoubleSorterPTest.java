@@ -268,7 +268,7 @@ public class DoubleSorterPTest extends IntBasicTest {
                     baseListSorted = listAux;
                 } else {
                     if (validateResult) {
-                        for (int j=0; j<listAux.length; j++) {
+                        for (int j = 0; j < listAux.length; j++) {
                             assertEquals(comparator.value(baseListSorted[j]), comparator.value(listAux[j]));
                         }
 //                        assertArrayEquals(baseListSorted, listAux);

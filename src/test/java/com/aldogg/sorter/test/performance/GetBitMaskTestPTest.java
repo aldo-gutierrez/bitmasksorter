@@ -72,8 +72,8 @@ public class GetBitMaskTestPTest {
             }
             maskInfo = MaskInfoInt.calculateMask(a, 0, a.length);
             int mask = maskInfo.getMask();
-            int[] kList = MaskInfoInt.getMaskAsArray(mask);
-            IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(kList, 0, kList.length - 1);
+            int[] bList = MaskInfoInt.getMaskAsArray(mask);
+            IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(bList, 0, bList.length - 1);
             IntSection[] finalSectionList = sectionsInfo.sections;
             int[] aux = new int[arraySize];
             long start = System.nanoTime();
@@ -94,8 +94,8 @@ public class GetBitMaskTestPTest {
             }
             maskInfo = MaskInfoInt.calculateMask(a, 0, a.length);
             int mask = maskInfo.getMask();
-            int[] kList = MaskInfoInt.getMaskAsArray(mask);
-            IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(kList, 0, kList.length - 1);
+            int[] bList = MaskInfoInt.getMaskAsArray(mask);
+            IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(bList, 0, bList.length - 1);
             IntSection[] finalSectionList = sectionsInfo.sections;
             int[] aux = new int[arraySize];
             long start = System.nanoTime();
@@ -130,13 +130,13 @@ public class GetBitMaskTestPTest {
 
             int[] aux = new int[arraySize];
             long start1 = System.nanoTime();
-            int left1 = partitionStable(a1, 0, arraySize , 0x80000000, aux);
+            int left1 = partitionStable(a1, 0, arraySize, 0x80000000, aux);
             long elapsed1 = System.nanoTime() - start1;
             total1 += elapsed1;
 
             aux = new int[arraySize];
             long start2 = System.nanoTime();
-            int left2 = partitionStableParallel(a2, 0, arraySize , 0x80000000, aux);
+            int left2 = partitionStableParallel(a2, 0, arraySize, 0x80000000, aux);
             long elapsed2 = System.nanoTime() - start2;
             total2 += elapsed2;
 
@@ -176,13 +176,13 @@ public class GetBitMaskTestPTest {
 
             int[] aux = new int[arraySize];
             long start1 = System.nanoTime();
-            int left1 = partitionStable(a1, 0, arraySize , 0x80000000, aux);
+            int left1 = partitionStable(a1, 0, arraySize, 0x80000000, aux);
             long elapsed1 = System.nanoTime() - start1;
             total1 += elapsed1;
 
             aux = new int[arraySize];
             long start2 = System.nanoTime();
-            int left2 = partitionStableParallel2(a2, 0, arraySize , 0x80000000, aux);
+            int left2 = partitionStableParallel2(a2, 0, arraySize, 0x80000000, aux);
             long elapsed2 = System.nanoTime() - start2;
             total2 += elapsed2;
 
@@ -223,13 +223,13 @@ public class GetBitMaskTestPTest {
 
             int[] aux = new int[arraySize];
             long start1 = System.nanoTime();
-            int left1 = partitionStableParallel2(a1, 0, arraySize , 0x80000000, aux);
+            int left1 = partitionStableParallel2(a1, 0, arraySize, 0x80000000, aux);
             long elapsed1 = System.nanoTime() - start1;
             total1 += elapsed1;
 
             aux = new int[arraySize];
             long start2 = System.nanoTime();
-            int left2 = partitionStableParallel(a2, 0, arraySize , 0x80000000, aux);
+            int left2 = partitionStableParallel(a2, 0, arraySize, 0x80000000, aux);
             long elapsed2 = System.nanoTime() - start2;
             total2 += elapsed2;
 

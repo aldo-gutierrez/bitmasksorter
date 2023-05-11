@@ -98,7 +98,7 @@ public class FloatSorterPTest extends IntBasicTest {
 
         for (int limitH : limitHigh) {
             params.limitHigh = limitH;
-            params.limitLow = (int) - params.limitHigh;
+            params.limitLow = (int) -params.limitHigh;
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000;
@@ -150,7 +150,7 @@ public class FloatSorterPTest extends IntBasicTest {
 
         for (int limitH : limitHigh) {
             params.limitHigh = limitH;
-            params.limitLow = (int) - params.limitHigh;
+            params.limitLow = (int) -params.limitHigh;
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000;

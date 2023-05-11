@@ -10,20 +10,20 @@ public class RadixBitSorterInt extends IntBitMaskSorter {
     int[] aux = null;
 
     @Override
-    public void sort(int[] array, int start, int endP1, int[] kList, Object multiThreadParams) {
+    public void sort(int[] array, int start, int endP1, int[] bList, Object multiThreadParams) {
         if (aux == null) {
             aux = new int[auxSize];
         }
-        radixSort(array, start, endP1, kList, 0, kList.length - 1, aux, 0);
+        radixSort(array, start, endP1, bList, 0, bList.length - 1, aux, 0);
         aux = null;
     }
 
-    public static void radixSort(int[] array, int start, int endP1, int[] kList, int kStart, int kEnd, int[] aux, int startAux) {
-        IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(kList, kStart, kEnd);
+    public static void radixSort(int[] array, int start, int endP1, int[] bList, int bListStart, int bListEnd, int[] aux, int startAux) {
+        IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
         IntSection[] finalSectionList = sectionsInfo.sections;
 
         if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
-            partitionStable(array, start, endP1, finalSectionList[0].sortMask, aux);
+            partitionStable(array, start, endP1, finalSectionList[0].mask, aux);
             return;
         }
 
@@ -31,7 +31,7 @@ public class RadixBitSorterInt extends IntBitMaskSorter {
         int ops = 0;
         int[] arrayOrig = array;
         int startOrig = start;
-        for (IntSection section: finalSectionList) {
+        for (IntSection section : finalSectionList) {
             if (!section.isSectionAtEnd()) {
                 partitionStableOneGroupBits(array, start, section, aux, startAux, n);
             } else {

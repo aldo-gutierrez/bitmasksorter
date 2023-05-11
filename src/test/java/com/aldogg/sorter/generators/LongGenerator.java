@@ -28,10 +28,9 @@ public class LongGenerator {
         return functions.get(String.valueOf(functionName));
     }
 
-    public LongGenerator(){
+    public LongGenerator() {
 
     }
-
 
 
     static long[] shuffled_int(GeneratorParams params) {
@@ -100,7 +99,7 @@ public class LongGenerator {
         for (; i < size; ++i) {
             v[i] = i;
         }
-        v[size-1] = 0;
+        v[size - 1] = 0;
         return v;
     }
 
@@ -113,7 +112,7 @@ public class LongGenerator {
                 v[i] = i;
             }
         }
-        v[size-1] = size / 2;
+        v[size - 1] = size / 2;
         return v;
     }
 
@@ -179,8 +178,8 @@ public class LongGenerator {
             array[i] = temp;
         }
     }
-    static private double log2(int N)
-    {
+
+    static private double log2(int N) {
 
         // calculate log2 N indirectly
         // using log() method

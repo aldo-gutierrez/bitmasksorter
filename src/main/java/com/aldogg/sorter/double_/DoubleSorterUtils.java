@@ -79,7 +79,7 @@ public class DoubleSorterUtils {
     }
 
     public static void partitionStableLastBits(final double[] array, final int start, final LongSection section, final double[] aux, int startAux, int n) {
-        final long mask = section.sortMask;
+        final long mask = section.mask;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];
@@ -107,8 +107,8 @@ public class DoubleSorterUtils {
     }
 
     public static void partitionStableOneGroupBits(final double[] array, final int start, final LongSection section, final double[] aux, int startAux, int n) {
-        final long mask = section.sortMask;
-        final int shiftRight = section.shiftRight;
+        final long mask = section.mask;
+        final int shiftRight = section.shift;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];

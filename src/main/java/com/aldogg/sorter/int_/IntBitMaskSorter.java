@@ -58,36 +58,36 @@ public abstract class IntBitMaskSorter implements IntSorter {
                     : IntSorterUtils.partitionReverseNotStableUpperBit(array, start, endP1);
             int n1 = finalLeft - start;
             int n2 = endP1 - finalLeft;
-            int[] kList1 = null;
-            int[] kList2 = null;
+            int[] bList1 = null;
+            int[] bList2 = null;
             if (n1 > 1) { //sort negative numbers
                 MaskInfoInt maskInfo1 = MaskInfoInt.calculateMask(array, start, finalLeft);
-                kList1 = MaskInfoInt.getMaskAsArray(maskInfo1.getMask());
-                if (kList1.length <= 0) {
+                bList1 = MaskInfoInt.getMaskAsArray(maskInfo1.getMask());
+                if (bList1.length <= 0) {
                     n1 = 0;
                 }
             }
             if (n2 > 1) { //sort positive numbers
                 MaskInfoInt maskInfo2 = MaskInfoInt.calculateMask(array, finalLeft, endP1);
-                kList2 = MaskInfoInt.getMaskAsArray(maskInfo2.getMask());
-                if (kList2.length <= 0) {
+                bList2 = MaskInfoInt.getMaskAsArray(maskInfo2.getMask());
+                if (bList2.length <= 0) {
                     n2 = 0;
                 }
             }
             auxSize = Math.max(n1, n2);
             if (n1 > 1) {
-                sort(array, start, finalLeft, kList1, null);
+                sort(array, start, finalLeft, bList1, null);
             }
             if (n2 > 1) {
-                sort(array, finalLeft, endP1, kList2, null);
+                sort(array, finalLeft, endP1, bList2, null);
             }
 
         } else {
             auxSize = n;
             int mask = maskInfo.getMask();
-            int[] kList = MaskInfoInt.getMaskAsArray(mask);
-            if (kList.length > 0) {
-                sort(array, start, endP1, kList, null);
+            int[] bList = MaskInfoInt.getMaskAsArray(mask);
+            if (bList.length > 0) {
+                sort(array, start, endP1, bList, null);
             }
         }
     }

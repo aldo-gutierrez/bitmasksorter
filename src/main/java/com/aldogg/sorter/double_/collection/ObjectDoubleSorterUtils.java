@@ -121,7 +121,7 @@ public class ObjectDoubleSorterUtils {
 
     public static void partitionStableLastBits(final Object[] oArray, final double[] array, final int start, final LongSection section,
                                                final Object[] oAux, final double[] aux, int startAux, final int n) {
-        long mask = section.sortMask;
+        long mask = section.mask;
         int endP1 = start + n;
         int[] count = new int[1 << section.length];
         for (int i = start; i < endP1; i++) {
@@ -148,8 +148,8 @@ public class ObjectDoubleSorterUtils {
 
     public static void partitionStableGroupBits(final Object[] oArray, final double[] array, final int start, final LongSection section,
                                                 final Object[] oAux, final double[] aux, int startAux, int n) {
-        long mask = section.sortMask;
-        int shiftRight = section.shiftRight;
+        long mask = section.mask;
+        int shiftRight = section.shift;
         int endP1 = start + n;
         int[] count = new int[1 << section.length];
         for (int i = start; i < endP1; i++) {
