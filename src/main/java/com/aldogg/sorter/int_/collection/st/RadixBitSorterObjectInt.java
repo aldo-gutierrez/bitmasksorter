@@ -103,11 +103,12 @@ public class RadixBitSorterObjectInt implements ObjectIntSorter {
      * 1000000,"0:10000000","RadixBitSorterObjectInt",47->63
      */
     public static void radixSort(Object[] oArray, int[] array, int start, int endP1, int[] bList, int bListStart, int bListEnd, Object[] oAux, int[] aux, int startAux) {
-        IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
-        IntSection[] finalSectionList = sectionsInfo.sections;
+        Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
 
         if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
-            partitionStable(oArray, array, start, endP1, finalSectionList[0].mask, oAux, aux); //TODO FALTA aumentar startAux
+            Section section = finalSectionList[0];
+            int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
+            partitionStable(oArray, array, start, endP1, mask, oAux, aux); //TODO FALTA aumentar startAux
             return;
         }
         int n = endP1 - start;
@@ -116,7 +117,7 @@ public class RadixBitSorterObjectInt implements ObjectIntSorter {
 //        Object[] oArrayOrig = oArray;
 //        int startOrig = start;
 
-        for (IntSection section : finalSectionList) {
+        for (Section section : finalSectionList) {
             if (!section.isSectionAtEnd()) {
                 partitionStableGroupBits(oArray, array, start, section, oAux, aux, startAux, n);
             } else {

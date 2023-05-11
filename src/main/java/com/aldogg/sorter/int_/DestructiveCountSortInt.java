@@ -1,8 +1,7 @@
 package com.aldogg.sorter.int_;
 
-import com.aldogg.sorter.IntSection;
-import com.aldogg.sorter.IntSectionsInfo;
 import com.aldogg.sorter.MaskInfoInt;
+import com.aldogg.sorter.Section;
 
 import java.util.Arrays;
 
@@ -13,8 +12,7 @@ public class DestructiveCountSortInt {
     public static void countSort(final int[] array, final int start, final int endP1, int[] bList, int bListStart) {
         int kRange = 1 << (bList.length - bListStart);
         int[] bListNew = Arrays.copyOfRange(bList, bListStart, bList.length);
-        IntSectionsInfo sectionsInfo = getMaskAsSections(bList, 0, bList.length - 1);
-        IntSection[] sections = sectionsInfo.sections;
+        Section[] sections = getMaskAsSections(bList, 0, bList.length - 1);
         int sortMask = MaskInfoInt.getMaskLastBits(bListNew, 0);
         countSort(array, start, endP1, sortMask, sections, kRange);
     }
@@ -23,7 +21,7 @@ public class DestructiveCountSortInt {
      * CPU: N + MAX(2^K, N)
      * MEM: 2 * (2^K)
      */
-    public static void countSort(final int[] array, final int start, final int endP1, int mask, IntSection[] sections, int kRange) {
+    public static void countSort(final int[] array, final int start, final int endP1, int mask, Section[] sections, int kRange) {
         int[] count = new int[kRange];
         int[] number = null;
         if (sections.length != 1 || !sections[0].isSectionAtEnd()) {
@@ -72,8 +70,8 @@ public class DestructiveCountSortInt {
             }
         } else {
             if (sections.length == 1) {
-                IntSection section = sections[0];
-                int mask1 = section.mask;
+                Section section = sections[0];
+                int mask1 = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
                 if (section.isSectionAtEnd()) {
                     //TODO check if this code is executed or not
                     for (int i = start; i < endP1; i++) {

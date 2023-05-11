@@ -1,7 +1,8 @@
 package com.aldogg.sorter.double_;
 
 import com.aldogg.sorter.AnalysisResult;
-import com.aldogg.sorter.LongSection;
+import com.aldogg.sorter.MaskInfoLong;
+import com.aldogg.sorter.Section;
 
 public class DoubleSorterUtils {
     public static void swap(final double[] array, final int left, final int right) {
@@ -78,8 +79,8 @@ public class DoubleSorterUtils {
         return left;
     }
 
-    public static void partitionStableLastBits(final double[] array, final int start, final LongSection section, final double[] aux, int startAux, int n) {
-        final long mask = section.mask;
+    public static void partitionStableLastBits(final double[] array, final int start, final Section section, final double[] aux, int startAux, int n) {
+        final long mask = MaskInfoLong.getMaskRangeBits(section.start, section.shift);
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];
@@ -106,8 +107,8 @@ public class DoubleSorterUtils {
         }
     }
 
-    public static void partitionStableOneGroupBits(final double[] array, final int start, final LongSection section, final double[] aux, int startAux, int n) {
-        final long mask = section.mask;
+    public static void partitionStableOneGroupBits(final double[] array, final int start, final Section section, final double[] aux, int startAux, int n) {
+        final long mask = MaskInfoLong.getMaskRangeBits(section.start, section.shift);
         final int shiftRight = section.shift;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;

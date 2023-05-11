@@ -42,13 +42,12 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
         int remainingBits = bList.length - threadBits;
 
         int[] bListAux = MaskInfoInt.getMaskAsArray(sortMask);
-        IntSectionsInfo sectionsInfo = getMaskAsSections(bListAux, 0, bListAux.length - 1);
-        IntSection[] sections = sectionsInfo.sections;
+        Section[] sections = getMaskAsSections(bListAux, 0, bListAux.length - 1);
 
         int[] leftX;
 
         if (sections.length == 1) {
-            IntSection section = sections[0];
+            Section section = sections[0];
             if (section.isSectionAtEnd()) {
                 if (n > 2000000) {
                     leftX = IntSorterUtils.partitionStableLastBitsParallel(array, start, section, aux, n);
@@ -66,7 +65,7 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
             }
         } else {
             //TODO code never reaches this path in test, add more tests
-            leftX = IntSorterUtils.partitionStableNGroupBits(array, start, sectionsInfo, aux, 0, n);
+            leftX = IntSorterUtils.partitionStableNGroupBits(array, start, sections, aux, 0, n);
             System.arraycopy(aux, 0, array, start, n);
         }
 

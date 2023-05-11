@@ -1,7 +1,8 @@
 package com.aldogg.sorter.int_.collection;
 
-import com.aldogg.sorter.IntSection;
+import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.ObjectSorterUtils;
+import com.aldogg.sorter.Section;
 import com.aldogg.sorter.int_.IntSorterUtils;
 
 public class ObjectIntSorterUtils {
@@ -138,9 +139,9 @@ public class ObjectIntSorterUtils {
      * CPU: 3*N + 2^K
      * MEM: N + 2*2^K
      */
-    public static int[] partitionStableLastBits(final Object[] oArray, final int[] array, final int start, final IntSection section,
+    public static int[] partitionStableLastBits(final Object[] oArray, final int[] array, final int start, final Section section,
                                                 final Object[] oAux, final int[] aux, final int startAux, final int n) {
-        int mask = section.mask;
+        int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         int endP1 = start + n;
         int[] count = new int[1 << section.length];
         for (int i = start; i < endP1; i++) {
@@ -180,9 +181,9 @@ public class ObjectIntSorterUtils {
      * CPU: 3*N + 2^K
      * MEM: N + 2*2^K
      */
-    public static int[] partitionStableGroupBits(final Object[] oArray, final int[] array, final int start, final IntSection section,
+    public static int[] partitionStableGroupBits(final Object[] oArray, final int[] array, final int start, final Section section,
                                                  final Object[] oAux, final int[] aux, final int startAux, final int n) {
-        int mask = section.mask;
+        int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         int shiftRight = section.shift;
         int endP1 = start + n;
         int[] count = new int[1 << section.length];

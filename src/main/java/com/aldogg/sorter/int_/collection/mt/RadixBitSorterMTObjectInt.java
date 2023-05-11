@@ -142,13 +142,12 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
         int remainingBits = bList.length - threadBits;
 
         int[] bListAux = MaskInfoInt.getMaskAsArray(sortMask);
-        IntSectionsInfo sectionsInfo = getMaskAsSections(bListAux, 0, bListAux.length - 1);
-        IntSection[] sections = sectionsInfo.sections;
+        Section[] sections = getMaskAsSections(bListAux, 0, bListAux.length - 1);
 
         int[] leftX;
 
         if (sections.length == 1) {
-            IntSection section = sections[0];
+            Section section = sections[0];
             if (!section.isSectionAtEnd()) {
                 leftX = partitionStableGroupBits(oArray, array, start, section, oAux, aux, 0, n);
             } else {

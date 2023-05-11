@@ -73,21 +73,17 @@ public class MaskInfoLong {
         return res;
     }
 
-    public static long getMaskLastBits(final int[] bList, final int kIndex) {
+    public static long getMaskLastBits(final int[] bList, final int bListStart) {
         long mask = 0;
-        for (int i = kIndex; i < bList.length; i++) {
+        for (int i = bListStart; i < bList.length; i++) {
             int k = bList[i];
             mask = mask | 1L << k;
         }
         return mask;
     }
 
-    public static long getMaskRangeBits(final int kIndexStart, final int kIndexEnd) {
-        long mask = 0;
-        for (int k = kIndexStart; k >= kIndexEnd; k--) {
-            mask = mask | 1L << k;
-        }
-        return mask;
+    public static long getMaskRangeBits(final int bStart, final int bEnd) {
+        return ((1L << bStart + 1 - bEnd) - 1) << bEnd;
     }
 
     public long getMask() {

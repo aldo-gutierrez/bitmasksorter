@@ -81,17 +81,18 @@ public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
     }
 
     public static void radixSort(Object[] oArray, float[] array, int start, int end, int[] bList, int bListStart, int bListEnd, Object[] oAux, float[] aux) {
-        IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
-        IntSection[] finalSectionList = sectionsInfo.sections;
+        Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
 
         if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
-            partitionStable(oArray, array, start, end, finalSectionList[0].mask, oAux, aux);
+            Section section = finalSectionList[0];
+            int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
+            partitionStable(oArray, array, start, end, mask, oAux, aux);
             return;
         }
         int n = end - start;
         int startAux = 0;
 
-        for (IntSection section : finalSectionList) {
+        for (Section section : finalSectionList) {
             if (!section.isSectionAtEnd()) {
                 partitionStableGroupBits(oArray, array, start, section, oAux, aux, startAux, n);
             } else {

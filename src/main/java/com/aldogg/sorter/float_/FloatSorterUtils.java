@@ -1,7 +1,8 @@
 package com.aldogg.sorter.float_;
 
 import com.aldogg.sorter.AnalysisResult;
-import com.aldogg.sorter.IntSection;
+import com.aldogg.sorter.MaskInfoInt;
+import com.aldogg.sorter.Section;
 
 public class FloatSorterUtils {
 
@@ -79,8 +80,8 @@ public class FloatSorterUtils {
         return left;
     }
 
-    public static void partitionStableLastBits(final float[] array, final int start, final IntSection section, final float[] aux, int startAux, int n) {
-        final int mask = section.mask;
+    public static void partitionStableLastBits(final float[] array, final int start, final Section section, final float[] aux, int startAux, int n) {
+        final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];
@@ -107,8 +108,8 @@ public class FloatSorterUtils {
         }
     }
 
-    public static void partitionStableOneGroupBits(final float[] array, final int start, final IntSection section, final float[] aux, int startAux, int n) {
-        final int mask = section.mask;
+    public static void partitionStableOneGroupBits(final float[] array, final int start, final Section section, final float[] aux, int startAux, int n) {
+        final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         final int shiftRight = section.shift;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;

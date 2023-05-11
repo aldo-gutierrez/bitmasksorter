@@ -1,7 +1,9 @@
 package com.aldogg.sorter.long_.collection;
 
-import com.aldogg.sorter.LongSection;
+import com.aldogg.sorter.MaskInfoInt;
+import com.aldogg.sorter.MaskInfoLong;
 import com.aldogg.sorter.ObjectSorterUtils;
+import com.aldogg.sorter.Section;
 import com.aldogg.sorter.long_.LongSorterUtils;
 
 public class ObjectLongSorterUtils {
@@ -117,9 +119,9 @@ public class ObjectLongSorterUtils {
         return left;
     }
 
-    public static void partitionStableLastBits(final Object[] oArray, final long[] array, final int start, final LongSection section,
+    public static void partitionStableLastBits(final Object[] oArray, final long[] array, final int start, final Section section,
                                                final Object[] oAux, final long[] aux, int startAux, final int n) {
-        long mask = section.mask;
+        long mask = MaskInfoLong.getMaskRangeBits(section.start, section.shift);
         int endP1 = start + n;
         int[] count = new int[1 << section.length];
         for (int i = start; i < endP1; i++) {
@@ -143,9 +145,9 @@ public class ObjectLongSorterUtils {
         System.arraycopy(oAux, startAux, oArray, start, n);
     }
 
-    public static void partitionStableGroupBits(final Object[] oArray, final long[] array, final int start, final LongSection section,
+    public static void partitionStableGroupBits(final Object[] oArray, final long[] array, final int start, final Section section,
                                                 final Object[] oAux, final long[] aux, int startAux, int n) {
-        long mask = section.mask;
+        long mask = MaskInfoLong.getMaskRangeBits(section.start, section.shift);
         int shiftRight = section.shift;
         int endP1 = start + n;
         int[] count = new int[1 << section.length];

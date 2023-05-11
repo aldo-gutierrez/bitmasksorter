@@ -2,9 +2,8 @@ package com.aldogg.sorter.test.performance;
 
 import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.sorter.BitSorterUtils;
-import com.aldogg.sorter.IntSection;
-import com.aldogg.sorter.IntSectionsInfo;
 import com.aldogg.sorter.MaskInfoInt;
+import com.aldogg.sorter.Section;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -73,8 +72,7 @@ public class GetBitMaskTestPTest {
             maskInfo = MaskInfoInt.calculateMask(a, 0, a.length);
             int mask = maskInfo.getMask();
             int[] bList = MaskInfoInt.getMaskAsArray(mask);
-            IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(bList, 0, bList.length - 1);
-            IntSection[] finalSectionList = sectionsInfo.sections;
+            Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, 0, bList.length - 1);
             int[] aux = new int[arraySize];
             long start = System.nanoTime();
             partitionStableLastBits(a, 0, finalSectionList[0], aux, 0, arraySize);
@@ -95,8 +93,7 @@ public class GetBitMaskTestPTest {
             maskInfo = MaskInfoInt.calculateMask(a, 0, a.length);
             int mask = maskInfo.getMask();
             int[] bList = MaskInfoInt.getMaskAsArray(mask);
-            IntSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSections(bList, 0, bList.length - 1);
-            IntSection[] finalSectionList = sectionsInfo.sections;
+            Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, 0, bList.length - 1);
             int[] aux = new int[arraySize];
             long start = System.nanoTime();
             partitionStableLastBitsParallel(a, 0, finalSectionList[0], aux, arraySize);

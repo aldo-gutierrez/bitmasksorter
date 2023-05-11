@@ -127,9 +127,9 @@ public class MaskInfoInt {
         return res;
     }
 
-    public static int getMaskLastBits(final int[] bList, final int kIndex) {
+    public static int getMaskLastBits(final int[] bList, final int bListStart) {
         int mask = 0;
-        for (int i = kIndex; i < bList.length; i++) {
+        for (int i = bListStart; i < bList.length; i++) {
             int k = bList[i];
             mask = mask | 1 << k;
         }
@@ -137,11 +137,7 @@ public class MaskInfoInt {
     }
 
     public static int getMaskRangeBits(final int bStart, final int bEnd) {
-        int mask = 0;
-        for (int k = bStart; k >= bEnd; k--) {
-            mask = mask | 1 << k;
-        }
-        return mask;
+        return ((1 << bStart + 1 - bEnd) - 1) << bEnd;
     }
 
     public int getMask() {

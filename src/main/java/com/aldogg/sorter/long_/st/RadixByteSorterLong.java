@@ -1,8 +1,8 @@
 package com.aldogg.sorter.long_.st;
 
 import com.aldogg.sorter.AnalysisResult;
-import com.aldogg.sorter.LongSection;
 import com.aldogg.sorter.MaskInfoLong;
+import com.aldogg.sorter.Section;
 import com.aldogg.sorter.long_.LongBitMaskSorter;
 import com.aldogg.sorter.long_.LongSorterUtils;
 
@@ -80,7 +80,7 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
 
     private void sortBytes(long[] array, int start, int endP1, long[] aux, long mask) {
         int n = endP1 - start;
-        LongSection section = new LongSection();
+        Section section = new Section();
         section.length = 8;
         int ops = 0;
         long[] arrayOrig = array;
@@ -92,7 +92,7 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
 
         long sortMask = sortMasks[0];
         if ((mask & sortMask) != 0) {
-            section.mask = sortMask;
+            section.start = shiftRights[0] + 7;
             LongSorterUtils.partitionStableLastBits(array, start, section, aux, startAux, n);
 
             //System.arraycopy(aux, 0, array, start, n);
@@ -109,7 +109,7 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
         for (int i = 0; i < shiftRights.length; ++i) {
             sortMask = sortMasks[i];
             if ((mask & sortMask) != 0) {
-                section.mask = sortMask;
+                section.start = shiftRights[i] + 7;
                 section.shift = shiftRights[i];
                 LongSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
                 long[] tempArray = array;
@@ -125,7 +125,7 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
 
         sortMask = sortMasks[7];
         if ((mask & sortMask) != 0) {
-            section.mask = sortMask;
+            section.start = shiftRights[7] + 7;
             section.shift = shiftRights[7];
             LongSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
             array = aux;

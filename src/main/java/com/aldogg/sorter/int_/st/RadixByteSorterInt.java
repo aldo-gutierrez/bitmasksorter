@@ -1,8 +1,8 @@
 package com.aldogg.sorter.int_.st;
 
 import com.aldogg.sorter.AnalysisResult;
-import com.aldogg.sorter.IntSection;
 import com.aldogg.sorter.MaskInfoInt;
+import com.aldogg.sorter.Section;
 import com.aldogg.sorter.int_.IntBitMaskSorter;
 import com.aldogg.sorter.int_.IntSorterUtils;
 
@@ -84,7 +84,7 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
         boolean s16 = (mask & 0xFF0000) != 0;
         boolean s24 = (mask & 0xFF000000) != 0;
         int n = endP1 - start;
-        IntSection section = new IntSection();
+        Section section = new Section();
         section.length = 8;
         int ops = 0;
         int[] arrayOrig = array;
@@ -92,7 +92,7 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
         int startAux = 0;
 
         if (s0) {
-            section.mask = 0xFF;
+            section.start = 7;
             IntSorterUtils.partitionStableLastBits(array, start, section, aux, startAux, n);
 
             //System.arraycopy(aux, 0, array, start, n);
@@ -107,7 +107,7 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
 
         }
         if (s8) {
-            section.mask = 0xFF00;
+            section.start = 15;
             section.shift = 8;
             IntSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
 
@@ -123,7 +123,7 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
 
         }
         if (s16) {
-            section.mask = 0xFF0000;
+            section.start = 23;
             section.shift = 16;
             IntSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
 
@@ -139,7 +139,7 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
 
         }
         if (s24) {
-            section.mask = 0xFF000000;
+            section.start = 31;
             section.shift = 24;
             IntSorterUtils.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
             array = aux;

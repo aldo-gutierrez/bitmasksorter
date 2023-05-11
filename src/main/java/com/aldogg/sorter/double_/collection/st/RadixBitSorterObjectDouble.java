@@ -81,17 +81,18 @@ public class RadixBitSorterObjectDouble implements ObjectDoubleSorter {
     }
 
     public static void radixSort(Object[] oArray, double[] array, int start, int endP1, int[] bList, int bListStart, int bListEnd, Object[] oAux, double[] aux) {
-        LongSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSectionsLong(bList, bListStart, bListEnd);
-        LongSection[] finalSectionList = sectionsInfo.sections;
+        Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
 
         if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
-            partitionStable(oArray, array, start, endP1, finalSectionList[0].mask, oAux, aux);
+            Section section = finalSectionList[0];
+            long mask = MaskInfoLong.getMaskRangeBits(section.start, section.shift);
+            partitionStable(oArray, array, start, endP1, mask, oAux, aux);
             return;
         }
         int n = endP1 - start;
         int startAux = 0;
 
-        for (LongSection section : finalSectionList) {
+        for (Section section : finalSectionList) {
             if (!section.isSectionAtEnd()) {
                 partitionStableGroupBits(oArray, array, start, section, oAux, aux, startAux, n);
             } else {

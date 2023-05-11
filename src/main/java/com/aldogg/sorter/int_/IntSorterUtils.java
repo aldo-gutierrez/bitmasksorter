@@ -3,10 +3,7 @@ package com.aldogg.sorter.int_;
 import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.parallel.ArrayRunnable;
 import com.aldogg.parallel.ParallelRunner;
-import com.aldogg.sorter.AnalysisResult;
-import com.aldogg.sorter.BitSorterUtils;
-import com.aldogg.sorter.IntSection;
-import com.aldogg.sorter.IntSectionsInfo;
+import com.aldogg.sorter.*;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -255,8 +252,8 @@ public class IntSorterUtils {
         return totalZeroLength;
     }
 
-    public static int[] partitionStableLastBits(final int[] array, final int start, final IntSection section, final int[] aux, final int startAux, final int n) {
-        final int mask = section.mask;
+    public static int[] partitionStableLastBits(final int[] array, final int start, final Section section, final int[] aux, final int startAux, final int n) {
+        final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
         final int[] count = new int[countLength];
@@ -282,8 +279,8 @@ public class IntSorterUtils {
         return count;
     }
 
-    public static int[] partitionStableLastBitsParallel(final int[] array, final int start, final IntSection section, final int[] aux, final int n) {
-        final int mask = section.mask;
+    public static int[] partitionStableLastBitsParallel(final int[] array, final int start, final Section section, final int[] aux, final int n) {
+        final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
         int[] count = ArrayParallelRunner.runInParallel(array, start, endP1, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS, new ArrayRunnable<int[]>() {
@@ -330,8 +327,8 @@ public class IntSorterUtils {
         return count;
     }
 
-    public static int[] partitionStableOneGroupBits(final int[] array, final int start, final IntSection section, final int[] aux, int startAux, int n) {
-        final int mask = section.mask;
+    public static int[] partitionStableOneGroupBits(final int[] array, final int start, final Section section, final int[] aux, int startAux, int n) {
+        final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         final int shiftRight = section.shift;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
@@ -358,8 +355,8 @@ public class IntSorterUtils {
         return count;
     }
 
-    public static int[] partitionStableOneGroupBitsParallel(int[] array, int start, IntSection section, int[] aux, int n) {
-        final int mask = section.mask;
+    public static int[] partitionStableOneGroupBitsParallel(int[] array, int start, Section section, int[] aux, int n) {
+        final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         final int shiftRight = section.shift;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
@@ -407,10 +404,13 @@ public class IntSorterUtils {
         return count;
     }
 
-    public static int[] partitionStableNGroupBits(final int[] array, final int start, IntSectionsInfo sectionsInfo, final int[] aux, final int startAux, final int n) {
-        final IntSection[] sections = sectionsInfo.sections;
+    public static int[] partitionStableNGroupBits(final int[] array, final int start, Section[] sections, final int[] aux, final int startAux, final int n) {
         final int endP1 = start + n;
-        final int countLength = 1 << sectionsInfo.totalLength;
+        int totalLength = 0;
+        for (Section section : sections) {
+            totalLength += section.length;
+        }
+        final int countLength = 1 << totalLength;
         final int[] count = new int[countLength];
         for (int i = start; i < endP1; ++i) {
             int element = array[i];

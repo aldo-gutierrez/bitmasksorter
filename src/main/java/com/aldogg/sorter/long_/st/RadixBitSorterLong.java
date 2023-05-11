@@ -1,9 +1,8 @@
 package com.aldogg.sorter.long_.st;
 
 import com.aldogg.sorter.BitSorterUtils;
-import com.aldogg.sorter.LongSection;
-import com.aldogg.sorter.LongSectionsInfo;
 import com.aldogg.sorter.MaskInfoLong;
+import com.aldogg.sorter.Section;
 import com.aldogg.sorter.long_.LongBitMaskSorter;
 
 import static com.aldogg.sorter.long_.LongSorterUtils.*;
@@ -41,11 +40,12 @@ public class RadixBitSorterLong extends LongBitMaskSorter {
     }
 
     public static void radixSort(long[] array, int start, int endP1, int[] bList, int bListStart, int bListEnd, long[] aux) {
-        LongSectionsInfo sectionsInfo = BitSorterUtils.getOrderedSectionsLong(bList, bListStart, bListEnd);
-        LongSection[] finalSectionList = sectionsInfo.sections;
+        Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
 
         if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
-            partitionStable(array, start, endP1, finalSectionList[0].mask, aux);
+            Section section = finalSectionList[0];
+            long mask = MaskInfoLong.getMaskRangeBits(section.start, section.shift);
+            partitionStable(array, start, endP1, mask, aux);
             return;
         }
 
@@ -54,7 +54,7 @@ public class RadixBitSorterLong extends LongBitMaskSorter {
         int ops = 0;
         long[] arrayOrig = array;
         int startOrig = start;
-        for (LongSection section : finalSectionList) {
+        for (Section section : finalSectionList) {
             if (!section.isSectionAtEnd()) {
                 partitionStableOneGroupBits(array, start, section, aux, startAux, n);
             } else {

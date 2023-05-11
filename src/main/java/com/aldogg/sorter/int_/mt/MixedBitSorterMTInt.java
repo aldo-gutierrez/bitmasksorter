@@ -73,13 +73,12 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
         int[] aux = new int[n];
         int[] bListAux = MaskInfoInt.getMaskAsArray(sortMask);
         int bits = bListAux.length;
-        int twoPowerK = 1 << bits;
-        IntSectionsInfo sectionsInfo = getMaskAsSections(bListAux, 0, bListAux.length - 1);
-        IntSection[] sections = sectionsInfo.sections;
+        int kRange = 1 << bits;
+        Section[] sections = getMaskAsSections(bListAux, 0, bListAux.length - 1);
         int[] leftX;
 
         if (sections.length == 1) {
-            IntSection section = sections[0];
+            Section section = sections[0];
             if (section.isSectionAtEnd()) {
                 leftX = IntSorterUtils.partitionStableLastBits(array, start, section, aux, 0, n);
                 System.arraycopy(aux, 0, array, start, n);
@@ -89,13 +88,13 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
             }
         } else {
             //TODO code never reaches this path in test, add more tests
-            leftX = IntSorterUtils.partitionStableNGroupBits(array, start, sectionsInfo, aux, 0, n);
+            leftX = IntSorterUtils.partitionStableNGroupBits(array, start, sections, aux, 0, n);
             System.arraycopy(aux, 0, array, start, n);
         }
 
         if (kIndex > 0) {
             final int[] bListCountS = Arrays.copyOfRange(bList, kIndex, bList.length);
-            for (int i = 0; i < twoPowerK; i++) {
+            for (int i = 0; i < kRange; i++) {
                 int startI = i > 0 ? leftX[i - 1] : 0;
                 int endI = leftX[i];
                 if (endI - startI > 1) {
