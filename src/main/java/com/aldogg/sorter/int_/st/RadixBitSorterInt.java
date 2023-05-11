@@ -3,18 +3,19 @@ package com.aldogg.sorter.int_.st;
 import com.aldogg.sorter.BitSorterUtils;
 import com.aldogg.sorter.IntSection;
 import com.aldogg.sorter.IntSectionsInfo;
-import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.int_.IntBitMaskSorter;
-import com.aldogg.sorter.int_.IntSorterUtils;
-
 import static com.aldogg.sorter.int_.IntSorterUtils.*;
 
 public class RadixBitSorterInt extends IntBitMaskSorter {
+    int[] aux = null;
 
     @Override
     public void sort(int[] array, int start, int endP1, int[] kList, Object multiThreadParams) {
-        int[] aux = new int[endP1 - start];
+        if (aux == null) {
+            aux = new int[auxSize];
+        }
         radixSort(array, start, endP1, kList, 0, kList.length - 1, aux, 0);
+        aux = null;
     }
 
     public static void radixSort(int[] array, int start, int endP1, int[] kList, int kStart, int kEnd, int[] aux, int startAux) {

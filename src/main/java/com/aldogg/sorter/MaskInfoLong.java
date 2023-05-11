@@ -18,7 +18,7 @@ public class MaskInfoLong {
         for (int i = start; i < endP1; i++) {
             long e = array[i];
             pMask = pMask | e;
-            iMask = iMask | (~e);
+            iMask = iMask | ~e;
         }
         MaskInfoLong m = new MaskInfoLong();
         m.pMask = pMask;
@@ -32,7 +32,7 @@ public class MaskInfoLong {
         for (int i = start; i < endP1; i++) {
             long e = Double.doubleToRawLongBits(array[i]);
             pMask = pMask | e;
-            iMask = iMask | (~e);
+            iMask = iMask | ~e;
         }
         MaskInfoLong m = new MaskInfoLong();
         m.pMask = pMask;

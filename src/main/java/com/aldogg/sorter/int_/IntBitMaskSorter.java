@@ -14,6 +14,8 @@ public abstract class IntBitMaskSorter implements IntSorter {
 
     protected boolean unsigned = false;
 
+    protected int auxSize = 0;
+
     protected BiConsumer<int[], Integer>[] snFunctions;
 
     protected BitSorterParams params = BitSorterParams.getSTParams();
@@ -56,23 +58,32 @@ public abstract class IntBitMaskSorter implements IntSorter {
                     : IntSorterUtils.partitionReverseNotStableUpperBit(array, start, endP1);
             int n1 = finalLeft - start;
             int n2 = endP1 - finalLeft;
+            int[] kList1 = null;
+            int[] kList2 = null;
             if (n1 > 1) { //sort negative numbers
-                maskInfo = MaskInfoInt.calculateMask(array, start, finalLeft);
-                int mask = maskInfo.getMask();
-                int[] kList = MaskInfoInt.getMaskAsArray(mask);
-                if (kList.length > 0) {
-                    sort(array, start, finalLeft, kList, null); //aux
+                MaskInfoInt maskInfo1 = MaskInfoInt.calculateMask(array, start, finalLeft);
+                kList1 = MaskInfoInt.getMaskAsArray(maskInfo1.getMask());
+                if (kList1.length <= 0) {
+                    n1 = 0;
                 }
             }
             if (n2 > 1) { //sort positive numbers
-                maskInfo = MaskInfoInt.calculateMask(array, finalLeft, endP1);
-                int mask = maskInfo.getMask();
-                int[] kList = MaskInfoInt.getMaskAsArray(mask);
-                if (kList.length > 0) {
-                    sort(array, finalLeft, endP1, kList, null);
+                MaskInfoInt maskInfo2 = MaskInfoInt.calculateMask(array, finalLeft, endP1);
+                kList2 = MaskInfoInt.getMaskAsArray(maskInfo2.getMask());
+                if (kList2.length <= 0) {
+                    n2 = 0;
                 }
             }
+            auxSize = Math.max(n1, n2);
+            if (n1 > 1) {
+                sort(array, start, finalLeft, kList1, null);
+            }
+            if (n2 > 1) {
+                sort(array, finalLeft, endP1, kList2, null);
+            }
+
         } else {
+            auxSize = n;
             int mask = maskInfo.getMask();
             int[] kList = MaskInfoInt.getMaskAsArray(mask);
             if (kList.length > 0) {

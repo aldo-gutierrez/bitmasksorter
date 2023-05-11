@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Random;
 
-import static com.aldogg.sorter.MaskInfoInt.calculateMask;
 import static com.aldogg.sorter.MaskInfoInt.calculateMaskInParallel;
 import static com.aldogg.sorter.int_.IntSorterUtils.*;
 
@@ -46,7 +45,7 @@ public class GetBitMaskTestPTest {
                 a[i] = random.nextInt();
             }
             long start = System.nanoTime();
-            c = calculateMaskInParallel(a, 0, a.length, new ArrayParallelRunner.APRParameters(2));
+            c = calculateMaskInParallel(a, 0, a.length, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS);
             long elapsed = System.nanoTime() - start;
             total += elapsed;
         }

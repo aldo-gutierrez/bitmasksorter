@@ -3,21 +3,14 @@ package com.aldogg.sorter.test;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.int_.IntSorter;
-import com.aldogg.sorter.int_.mt.JavaSorterMTInt;
-import com.aldogg.sorter.int_.mt.MixedBitSorterMTInt;
-import com.aldogg.sorter.int_.mt.QuickBitSorterMTInt;
-import com.aldogg.sorter.int_.mt.RadixBitSorterMTInt;
 import com.aldogg.sorter.int_.st.JavaSorterInt;
 import com.aldogg.sorter.int_.st.QuickBitSorterInt;
 import com.aldogg.sorter.int_.st.RadixBitSorterInt;
 import com.aldogg.sorter.int_.st.RadixByteSorterInt;
-import com.aldogg.sorter.test.performance.IntSorterPTest;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class SorterSecondTest extends BaseTest {

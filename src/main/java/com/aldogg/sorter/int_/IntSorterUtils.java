@@ -286,7 +286,7 @@ public class IntSorterUtils {
         final int mask = section.sortMask;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
-        int[] count = ArrayParallelRunner.runInParallel(array, start, endP1, new ArrayParallelRunner.APRParameters(2) , new ArrayRunnable<int[]>() {
+        int[] count = ArrayParallelRunner.runInParallel(array, start, endP1, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS , new ArrayRunnable<int[]>() {
             @Override
             public int[] map(final Object arrayX, final int start, final int endP1, final int index, final AtomicBoolean stop) {
                 int[] array = (int[]) arrayX;
@@ -363,7 +363,7 @@ public class IntSorterUtils {
         final int shiftRight = section.shiftRight;
         final int endP1 = start + n;
         final int countLength = 1 << section.length;
-        final int[] count = ArrayParallelRunner.runInParallel(array, start, endP1, new ArrayParallelRunner.APRParameters(2), new ArrayRunnable<int[]>() {
+        final int[] count = ArrayParallelRunner.runInParallel(array, start, endP1, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS, new ArrayRunnable<int[]>() {
             @Override
             public int[] map(final Object arrayX, final int start, final int endP1, final int index, final AtomicBoolean stop) {
                 int[] array = (int[]) arrayX;

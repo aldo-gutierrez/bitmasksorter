@@ -38,7 +38,7 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
 
         MaskInfoInt maskInfo;
         if (n >= SIZE_FOR_PARALLEL_BIT_MASK) {
-            maskInfo = MaskInfoInt.calculateMaskInParallelBreakIfUpperBit(array, start, endP1, new ArrayParallelRunner.APRParameters(2));
+            maskInfo = MaskInfoInt.calculateMaskInParallelBreakIfUpperBit(array, start, endP1, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS);
         } else {
             maskInfo = MaskInfoInt.calculateMaskBreakIfUpperBit(array, start, endP1, null);
         }
@@ -60,7 +60,7 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
 
                         MaskInfoInt maskInfo1;
                         if (n1 >= SIZE_FOR_PARALLEL_BIT_MASK) {
-                            maskInfo1 = MaskInfoInt.calculateMaskInParallel(array, start, finalLeft, new ArrayParallelRunner.APRParameters(2));
+                            maskInfo1 = MaskInfoInt.calculateMaskInParallel(array, start, finalLeft, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS);
                         } else {
                             maskInfo1 = MaskInfoInt.calculateMask(array, start, finalLeft);
                         }
@@ -76,7 +76,7 @@ public abstract class IntBitMaskSorterMT extends IntBitMaskSorter {
                         }
                         MaskInfoInt maskInfo2;
                         if (n2 >= SIZE_FOR_PARALLEL_BIT_MASK) {
-                            maskInfo2 = MaskInfoInt.calculateMaskInParallel(array, finalLeft, endP1, new ArrayParallelRunner.APRParameters(2));
+                            maskInfo2 = MaskInfoInt.calculateMaskInParallel(array, finalLeft, endP1, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS);
                         } else {
                             maskInfo2 = MaskInfoInt.calculateMask(array, finalLeft, endP1);
                         }

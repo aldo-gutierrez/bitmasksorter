@@ -69,7 +69,7 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
 
         MaskInfoInt maskInfo;
         if (n >= SIZE_FOR_PARALLEL_BIT_MASK) {
-            maskInfo = MaskInfoInt.calculateMaskInParallelBreakIfUpperBit(array, start, endP1, new ArrayParallelRunner.APRParameters(2));
+            maskInfo = MaskInfoInt.calculateMaskInParallelBreakIfUpperBit(array, start, endP1, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS);
         } else {
             maskInfo = MaskInfoInt.calculateMaskBreakIfUpperBit(array, start, endP1, null);
         }
@@ -92,7 +92,7 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
                         int maxThreads1 = threadNumbers[0];
                         MaskInfoInt maskInfo1;
                         if (n1 >= SIZE_FOR_PARALLEL_BIT_MASK & maxThreads1 >= 2) {
-                            maskInfo1 = MaskInfoInt.calculateMaskInParallel(array, start, finalLeft, new ArrayParallelRunner.APRParameters(2));
+                            maskInfo1 = MaskInfoInt.calculateMaskInParallel(array, start, finalLeft, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS);
                         } else {
                             maskInfo1 = MaskInfoInt.calculateMask(array, start, finalLeft);
                         }
@@ -104,7 +104,7 @@ public class RadixBitSorterMTObjectInt implements ObjectIntSorter {
                         int maxThreads2 = threadNumbers[1];
                         MaskInfoInt maskInfo2;
                         if (n2 >= SIZE_FOR_PARALLEL_BIT_MASK & maxThreads2 >= 2) {
-                            maskInfo2 = MaskInfoInt.calculateMaskInParallel(array, finalLeft, endP1, new ArrayParallelRunner.APRParameters(2));
+                            maskInfo2 = MaskInfoInt.calculateMaskInParallel(array, finalLeft, endP1, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS);
                         } else {
                             maskInfo2 = MaskInfoInt.calculateMask(array, finalLeft, endP1);
                         }

@@ -20,7 +20,7 @@ public class MaskInfoInt {
         for (int i = start; i < endP1; i++) {
             int e = array[i];
             pMask = pMask | e;
-            iMask = iMask | (~e);
+            iMask = iMask | ~e;
         }
         MaskInfoInt m = new MaskInfoInt();
         m.pMask = pMask;
@@ -50,7 +50,7 @@ public class MaskInfoInt {
             for (; i < j; i++) {
                 int e = array[i];
                 pMask = pMask | e;
-                iMask = iMask | (~e);
+                iMask = iMask | ~e;
             }
             i = startBatch;
         }
@@ -66,7 +66,7 @@ public class MaskInfoInt {
         for (int i = start; i < endP1; i++) {
             int e = Float.floatToRawIntBits(array[i]);
             pMask = pMask | e;
-            iMask = iMask | (~e);
+            iMask = iMask | ~e;
         }
         MaskInfoInt m = new MaskInfoInt();
         m.pMask = pMask;

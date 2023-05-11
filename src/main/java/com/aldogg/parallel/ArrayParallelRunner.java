@@ -4,6 +4,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ArrayParallelRunner {
 
+    public static final APRParameters APR_PARAMETERS_TWO_THREADS = new ArrayParallelRunner.APRParameters(2);
+
     public static class APRParameters {
         int maxThreads = 2;
         boolean reduceInParallel = false;
