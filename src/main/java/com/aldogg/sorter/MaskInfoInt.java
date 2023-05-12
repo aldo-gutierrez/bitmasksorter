@@ -130,8 +130,8 @@ public class MaskInfoInt {
     public static int getMaskLastBits(final int[] bList, final int bListStart) {
         int mask = 0;
         for (int i = bListStart; i < bList.length; i++) {
-            int k = bList[i];
-            mask = mask | 1 << k;
+            int bIndex = bList[i];
+            mask = mask | 1 << bIndex;
         }
         return mask;
     }

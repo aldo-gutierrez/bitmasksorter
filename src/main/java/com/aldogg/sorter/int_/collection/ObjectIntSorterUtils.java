@@ -77,11 +77,6 @@ public class ObjectIntSorterUtils {
         return partitionStable(oArray, array, start, endP1, mask, oAux, aux);
     }
 
-    /**
-     * stable partition with aux memory, only copies right to aux for better performance
-     * CPU: 2*N*K (K=1 for 1 bit) //review
-     * MEM: N //review
-     */
     public static int partitionStable(final Object[] oArray, final int[] array, final int start, final int endP1, final int mask,
                                       final Object[] oAux, final int[] aux) {
         int left = start;
@@ -135,10 +130,6 @@ public class ObjectIntSorterUtils {
         return left;
     }
 
-    /**
-     * CPU: 3*N + 2^K
-     * MEM: N + 2*2^K
-     */
     public static int[] partitionStableLastBits(final Object[] oArray, final int[] array, final int start, final Section section,
                                                 final Object[] oAux, final int[] aux, final int startAux, final int n) {
         int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
@@ -177,10 +168,6 @@ public class ObjectIntSorterUtils {
         return count;
     }
 
-    /**
-     * CPU: 3*N + 2^K
-     * MEM: N + 2*2^K
-     */
     public static int[] partitionStableGroupBits(final Object[] oArray, final int[] array, final int start, final Section section,
                                                  final Object[] oAux, final int[] aux, final int startAux, final int n) {
         int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);

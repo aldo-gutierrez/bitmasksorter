@@ -17,10 +17,6 @@ public class DestructiveCountSortInt {
         countSort(array, start, endP1, sortMask, sections, kRange);
     }
 
-    /**
-     * CPU: N + MAX(2^K, N)
-     * MEM: 2 * (2^K)
-     */
     public static void countSort(final int[] array, final int start, final int endP1, int mask, Section[] sections, int kRange) {
         int[] count = new int[kRange];
         int[] number = null;

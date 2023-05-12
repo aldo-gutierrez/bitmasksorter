@@ -76,8 +76,8 @@ public class MaskInfoLong {
     public static long getMaskLastBits(final int[] bList, final int bListStart) {
         long mask = 0;
         for (int i = bListStart; i < bList.length; i++) {
-            int k = bList[i];
-            mask = mask | 1L << k;
+            int bIndex = bList[i];
+            mask = mask | 1L << bIndex;
         }
         return mask;
     }

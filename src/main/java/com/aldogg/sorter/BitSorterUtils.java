@@ -97,25 +97,25 @@ public class BitSorterUtils {
         return finalSectionList.toArray(new Section[0]);
     }
 
-    public static int logBase2(int bits) // returns 0 for bits=0
+    public static int logBase2(int n) // returns 0 for bits=0
     {
         int log = 0;
-        if ((bits & 0xffff0000) != 0) {
-            bits >>>= 16;
+        if ((n & 0xffff0000) != 0) {
+            n >>>= 16;
             log = 16;
         }
-        if (bits >= 256) {
-            bits >>>= 8;
+        if (n >= 256) {
+            n >>>= 8;
             log += 8;
         }
-        if (bits >= 16) {
-            bits >>>= 4;
+        if (n >= 16) {
+            n >>>= 4;
             log += 4;
         }
-        if (bits >= 4) {
-            bits >>>= 2;
+        if (n >= 4) {
+            n >>>= 2;
             log += 2;
         }
-        return log + (bits >>> 1);
+        return log + (n >>> 1);
     }
 }

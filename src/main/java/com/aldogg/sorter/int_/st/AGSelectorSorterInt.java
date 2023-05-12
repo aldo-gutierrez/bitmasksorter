@@ -8,7 +8,7 @@ import static com.aldogg.sorter.BitSorterUtils.logBase2;
 
 /*
 Algorithm Selector Sorter
-It chooses the best algorithm to use depending on N and K
+It chooses the best algorithm to use depending on N and K (K=2**b) (b = log2(K))
 SorterTest2.speedTestPositiveIntSTBase2 generates this logic
  */
 public class AGSelectorSorterInt extends IntBitMaskSorter {
@@ -47,8 +47,8 @@ public class AGSelectorSorterInt extends IntBitMaskSorter {
     @Override
     public void sort(int[] array, int start, int endP1, int[] bList, Object multiThreadParams) {
         int n = endP1 - start;
-        int k = bList.length;
-        int km1 = k - 1; //K
+        int bLength = bList.length;
+        int bLengthM1 = bLength - 1; //Log2(K)
         int log2Nm1 = logBase2(n) - 1; //Log2(N)
         if (n < 2) {
             return;
@@ -56,12 +56,12 @@ public class AGSelectorSorterInt extends IntBitMaskSorter {
         if (log2Nm1 > 27) {
             log2Nm1 = 27;
         }
-        if (km1 > 27) {
-            km1 = 27;
+        if (bLengthM1 > 27) {
+            bLengthM1 = 27;
         }
         IntSorter sorter;
         try {
-            sorter = ((Class<IntSorter>) sorterClasses[km1][log2Nm1]).newInstance();
+            sorter = ((Class<IntSorter>) sorterClasses[bLengthM1][log2Nm1]).newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

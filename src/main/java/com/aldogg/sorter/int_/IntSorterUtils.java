@@ -565,12 +565,12 @@ public class IntSorterUtils {
 
 
     public static void sortShortK(final int[] array, final int start, final int endP1, final int[] bList, final int kIndex) {
-        int km1 = (bList.length - kIndex) - 1; //K
+        int bLengthM1 = (bList.length - kIndex) - 1; //Log2(K)
         int log2Nm1 = BitSorterUtils.logBase2(endP1 - start) - 1; //Log2(N)
         ShortSorter sorter;
-        if (log2Nm1 <= 15 && km1 <= 15) {
-            sorter = shortSorters[km1][log2Nm1];
-        } else if (km1 <= 15) {
+        if (log2Nm1 <= 15 && bLengthM1 <= 15) {
+            sorter = shortSorters[bLengthM1][log2Nm1];
+        } else if (bLengthM1 <= 15) {
             sorter = CountSort;
         } else {
             sorter = StableByte;
