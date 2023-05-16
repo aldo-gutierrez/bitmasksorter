@@ -72,7 +72,7 @@ public class GetBitMaskTestPTest {
             maskInfo = MaskInfoInt.calculateMask(a, 0, a.length);
             int mask = maskInfo.getMask();
             int[] bList = MaskInfoInt.getMaskAsArray(mask);
-            Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, 0, bList.length - 1);
+            Section[] finalSectionList = BitSorterUtils.getProcessedSections(bList, 0, bList.length - 1, 11);
             int[] aux = new int[arraySize];
             long start = System.nanoTime();
             partitionStableLastBits(a, 0, finalSectionList[0], aux, 0, arraySize);
@@ -93,7 +93,7 @@ public class GetBitMaskTestPTest {
             maskInfo = MaskInfoInt.calculateMask(a, 0, a.length);
             int mask = maskInfo.getMask();
             int[] bList = MaskInfoInt.getMaskAsArray(mask);
-            Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, 0, bList.length - 1);
+            Section[] finalSectionList = BitSorterUtils.getProcessedSections(bList, 0, bList.length - 1, 11);
             int[] aux = new int[arraySize];
             long start = System.nanoTime();
             partitionStableLastBitsParallel(a, 0, finalSectionList[0], aux, arraySize);

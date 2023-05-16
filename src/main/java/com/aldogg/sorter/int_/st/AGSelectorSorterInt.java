@@ -8,7 +8,7 @@ import static com.aldogg.sorter.BitSorterUtils.logBase2;
 
 /*
 Algorithm Selector Sorter
-It chooses the best algorithm to use depending on N and K (K=2**b) (b = log2(K))
+It chooses the best algorithm to use depending on N and r (range = 2^m)
 SorterTest2.speedTestPositiveIntSTBase2 generates this logic
  */
 public class AGSelectorSorterInt extends IntBitMaskSorter {

@@ -16,7 +16,7 @@ For implementations in other languages, see:
 
 A Bitmask is used as a way to reduce the necessary calculations on the numbers to be sorted.
 
-For example, suppose the list of integers contains numbers from 0 to 127, so the bitmask is 1111111.
+For example, suppose a list of integers contains numbers from 0 to 127, so the bitmask is 1111111.
 
 |                 | Number |             Bits | 
 |-----------------|-------:|-----------------:|
@@ -49,6 +49,18 @@ only the bits that change are part of the mask, in this case only 3 bits
 
 For this case you can do a Count Sort for only the 3 bits that are part of the mask, 2^3 = 8, with a modified Count Sort that counts 8 values from  000(0) to 111(7)
 
+Variables defined in a radix sorter
+
+r = range, for example for unsigned integers is 2^32
+d = length of word or digit in bits, typical value is 8 bits (a byte)
+k = number of words/digits, for an integer this is 4 (32/8)
+
+For BitMask sorters 
+m = length in bits of the bitmask, in integers from 1 to 32
+r = range, that is calculated as 2^m or 2 ^(d1+d2..dn)
+d = length of word or digit in bits, it can be from 1..16 bits depending on configuration and bitmask
+k = number of word/digits, it could be 3 or 4 depending on detected cpu and configured RADIX_SORTER_MASK_BITS that returns 11 in modern processors
+
 Algorithm to obtain the BitMask:
 
 ```
@@ -64,17 +76,6 @@ Algorithm to obtain the BitMask:
     }
 ```
 
-TimSort uses merge sort for big lists and insertion sort for small lists, so it depends on the size of the array (N)
-TimSort is a hybrid algorithm. 
-
-We can use the bitmask to create a hybrid algorithm that takes into account not only N but also r (the range).
-where r = 2^(k*d) or  r = 2^(k1*d1 + k2*d2 ....) 
-
-r = range for example 2^32 if all the range of numbers is used on a unsigned integer.
-k = number of words/digits
-d = length of word or digit in bits, could be from 1 to 16, typical value is 8 (8 bits)
-m = mask length in bits, m = d * k
-
 The best case is that if all the numbers are equal, the bitmask is 0, so no further calculations are needed;
 
 There are some bad cases to be aware of, and when the bitmask needs to be recalculated, for example:
@@ -87,6 +88,15 @@ go to one partition and then after recalculating the mask as all the numbers are
 Example 2: If a list contains positive and negative numbers then the mask will probably be -1 of 0xFFFFFFFF or 1111111111111111111111111111111.
 Then after partitioning the numbers in two, positives to one side, negatives to the other is better to recalculate the mask for each part
 This is done by all algorithms that use the BitMask QuickBitSort, RadixBitSort and others.
+
+
+TimSort uses merge sort for big lists and insertion sort for small lists, so it depends on the size of the array (N).
+TimSort is a hybrid algorithm.
+
+We can use the bitmask to create a hybrid algorithm that takes into account not only N but also r (the range).
+where r = 2^(k*d) or  r = 2^(d1 + d2 ....).
+
+AGSelectorSorterInt is an example of that hybrid algorithm that choose between different algorithms (QuickBitSorter, RadixBitSorter and RadixByteSorter )
 
 ## QuickBitSorter
 
@@ -334,7 +344,7 @@ TODO Needs to be evaluated in detail
 https://en.wikipedia.org/wiki/Sorting_algorithm
 
 - n = number of elements
-- r = range (2^(k*d)) or (2^(k1*d1+k2*d2...kn/dn) or (2^m) 
+- r = range (2^(k*d)) or (2^(d1+d2...dn) or (2^m) 
 - m = number of bits on mask
 - k = number of digits/words
 - d = length of a digit/word in bits (tipically 8 bits)
