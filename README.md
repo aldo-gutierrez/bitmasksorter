@@ -296,7 +296,7 @@ Object Sort using the Interface IntComparator
             }
         };
 
-        Object[] list = ...;
+        EntityInt1[] list = ...;
         ObjectSorter sorter = new RadixBitSorterObjectInt();
         sorter.sort(list, comparator);
 ```
