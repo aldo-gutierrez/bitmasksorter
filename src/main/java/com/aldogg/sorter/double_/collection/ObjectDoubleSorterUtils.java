@@ -124,7 +124,7 @@ public class ObjectDoubleSorterUtils {
                                                final Object[] oAux, final double[] aux, int startAux, final int n) {
         long mask = MaskInfoLong.getMaskRangeBits(section.start, section.shift);
         int endP1 = start + n;
-        int[] count = new int[1 << section.length];
+        int[] count = new int[1 << section.bits];
         for (int i = start; i < endP1; i++) {
             count[(int) (Double.doubleToRawLongBits(array[i]) & mask)]++;
         }
@@ -152,7 +152,7 @@ public class ObjectDoubleSorterUtils {
         long mask = MaskInfoLong.getMaskRangeBits(section.start, section.shift);
         int shiftRight = section.shift;
         int endP1 = start + n;
-        int[] count = new int[1 << section.length];
+        int[] count = new int[1 << section.bits];
         for (int i = start; i < endP1; i++) {
             count[(int) ((Double.doubleToRawLongBits(array[i]) & mask) >>> shiftRight)]++;
         }

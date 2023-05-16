@@ -82,7 +82,7 @@ public class DoubleSorterUtils {
     public static void partitionStableLastBits(final double[] array, final int start, final Section section, final double[] aux, int startAux, int n) {
         final long mask = MaskInfoLong.getMaskRangeBits(section.start, section.shift);
         final int endP1 = start + n;
-        final int countLength = 1 << section.length;
+        final int countLength = 1 << section.bits;
         final int[] count = new int[countLength];
         for (int i = start; i < endP1; ++i) {
             count[(int) ((Double.doubleToRawLongBits(array[i]) & mask))]++;
@@ -111,7 +111,7 @@ public class DoubleSorterUtils {
         final long mask = MaskInfoLong.getMaskRangeBits(section.start, section.shift);
         final int shiftRight = section.shift;
         final int endP1 = start + n;
-        final int countLength = 1 << section.length;
+        final int countLength = 1 << section.bits;
         final int[] count = new int[countLength];
         for (int i = start; i < endP1; ++i) {
             count[(int) ((Double.doubleToRawLongBits(array[i]) & mask) >>> shiftRight)]++;

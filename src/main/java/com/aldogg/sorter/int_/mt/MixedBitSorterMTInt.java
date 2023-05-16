@@ -73,7 +73,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
         int[] aux = new int[n];
         int[] bListAux = MaskInfoInt.getMaskAsArray(sortMask);
         int bits = bListAux.length;
-        int kRange = 1 << bits;
+        int dRange = 1 << bits;
         Section[] sections = getMaskAsSections(bListAux, 0, bListAux.length - 1);
         int[] leftX;
 
@@ -94,7 +94,7 @@ public class MixedBitSorterMTInt extends IntBitMaskSorterMT {
 
         if (kIndex > 0) {
             final int[] bListCountS = Arrays.copyOfRange(bList, kIndex, bList.length);
-            for (int i = 0; i < kRange; i++) {
+            for (int i = 0; i < dRange; i++) {
                 int startI = i > 0 ? leftX[i - 1] : 0;
                 int endI = leftX[i];
                 if (endI - startI > 1) {

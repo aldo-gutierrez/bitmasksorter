@@ -14,7 +14,7 @@ public class BitSorterUtils {
             Section section = sections[i];
             int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
             int bits = (element & mask) >> section.shift;
-            result = result << section.length | bits;
+            result = result << section.bits | bits;
         }
         return result;
     }
@@ -41,8 +41,8 @@ public class BitSorterUtils {
         for (Map.Entry<Integer, Integer> entry : sectionsMap.entrySet()) {
             Section section = new Section();
             section.start = entry.getKey();
-            section.length = entry.getValue();
-            section.shift = section.start - section.length + 1;
+            section.bits = entry.getValue();
+            section.shift = section.start - section.bits + 1;
             sections[i] = section;
             i++;
         }
@@ -50,32 +50,32 @@ public class BitSorterUtils {
     }
 
     public static Section[] splitSection(Section section) {
-        if (section.length <= BitSorterMTParams.MAX_BITS_RADIX_SORT) {
+        if (section.bits <= BitSorterMTParams.RADIX_SORT_MAX_BITS) {
             return new Section[]{section};
         } else {
             List<Section> sections = new ArrayList<>();
             int sectionQuantity;
-            int sectionSize = BitSorterMTParams.MAX_BITS_RADIX_SORT;
-            int divisor = section.length / BitSorterMTParams.MAX_BITS_RADIX_SORT;
-            if (section.length % BitSorterMTParams.MAX_BITS_RADIX_SORT == 0) {
+            int sectionSize = BitSorterMTParams.RADIX_SORT_MAX_BITS;
+            int divisor = section.bits / BitSorterMTParams.RADIX_SORT_MAX_BITS;
+            if (section.bits % BitSorterMTParams.RADIX_SORT_MAX_BITS == 0) {
                 sectionQuantity = divisor;
             } else {
                 sectionQuantity = divisor + 1;
-                if (section.length % BitSorterMTParams.MAX_BITS_RADIX_SORT <= 2) {
-                    sectionSize = BitSorterMTParams.MAX_BITS_RADIX_SORT - 1;
+                if (section.bits % BitSorterMTParams.RADIX_SORT_MAX_BITS <= 2) {
+                    sectionSize = BitSorterMTParams.RADIX_SORT_MAX_BITS - 1;
                 }
             }
             int sizeAux = 0;
             for (int i = 0; i < sectionQuantity; i++) {
                 Section sectionAux = new Section();
-                sectionAux.length = (i == 0) ? section.length - (sectionSize * (sectionQuantity - 1)) : sectionSize;
+                sectionAux.bits = (i == 0) ? section.bits - (sectionSize * (sectionQuantity - 1)) : sectionSize;
                 sectionAux.start = section.start - sizeAux;
-                sizeAux += sectionAux.length;
+                sizeAux += sectionAux.bits;
                 sections.add(sectionAux);
             }
             for (int i = sectionQuantity - 1; i >= 0; i--) {
                 Section sectionAux = sections.get(i);
-                sectionAux.shift = (i == sectionQuantity - 1) ? section.shift : sections.get(i + 1).shift + sections.get(i + 1).length;
+                sectionAux.shift = (i == sectionQuantity - 1) ? section.shift : sections.get(i + 1).shift + sections.get(i + 1).bits;
                 //sectionAux.mask = MaskInfoInt.getMaskRangeBits(sectionAux.start, sectionAux.start - sectionAux.length + 1);
             }
             return sections.toArray(new Section[]{});
@@ -84,8 +84,7 @@ public class BitSorterUtils {
 
     public static Section[] getOrderedSections(int[] bList, int bListStart, int bListEnd) {
         List<Section> finalSectionList = new ArrayList<>();
-        Section[] sectionsInfos = BitSorterUtils.getMaskAsSections(bList, bListStart, bListEnd);
-        Section[] sections = sectionsInfos;
+        Section[] sections = BitSorterUtils.getMaskAsSections(bList, bListStart, bListEnd);
         for (int i = sections.length - 1; i >= 0; i--) {
             Section section = sections[i];
             Section[] sSections = BitSorterUtils.splitSection(section);

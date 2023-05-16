@@ -83,7 +83,7 @@ public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
     public static void radixSort(Object[] oArray, float[] array, int start, int end, int[] bList, int bListStart, int bListEnd, Object[] oAux, float[] aux) {
         Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
 
-        if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
+        if (finalSectionList.length == 1 && finalSectionList[0].bits == 1) {
             Section section = finalSectionList[0];
             int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
             partitionStable(oArray, array, start, end, mask, oAux, aux);

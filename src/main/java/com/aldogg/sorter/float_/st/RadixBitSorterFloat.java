@@ -46,7 +46,7 @@ public class RadixBitSorterFloat extends FloatBitMaskSorter {
     public static void radixSort(float[] array, int start, int endP1, int[] bList, int bListStart, int bListEnd, float[] aux) {
         Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
 
-        if (finalSectionList.length == 1 && finalSectionList[0].length == 1) {
+        if (finalSectionList.length == 1 && finalSectionList[0].bits == 1) {
             Section section = finalSectionList[0];
             int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
             partitionStable(array, start, endP1, mask, aux);

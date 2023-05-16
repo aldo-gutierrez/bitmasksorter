@@ -255,7 +255,7 @@ public class IntSorterUtils {
     public static int[] partitionStableLastBits(final int[] array, final int start, final Section section, final int[] aux, final int startAux, final int n) {
         final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         final int endP1 = start + n;
-        final int countLength = 1 << section.length;
+        final int countLength = 1 << section.bits;
         final int[] count = new int[countLength];
         for (int i = start; i < endP1; ++i) {
             count[array[i] & mask]++;
@@ -282,7 +282,7 @@ public class IntSorterUtils {
     public static int[] partitionStableLastBitsParallel(final int[] array, final int start, final Section section, final int[] aux, final int n) {
         final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         final int endP1 = start + n;
-        final int countLength = 1 << section.length;
+        final int countLength = 1 << section.bits;
         int[] count = ArrayParallelRunner.runInParallel(array, start, endP1, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS, new ArrayRunnable<int[]>() {
             @Override
             public int[] map(final Object arrayX, final int start, final int endP1, final int index, final AtomicBoolean stop) {
@@ -331,7 +331,7 @@ public class IntSorterUtils {
         final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         final int shiftRight = section.shift;
         final int endP1 = start + n;
-        final int countLength = 1 << section.length;
+        final int countLength = 1 << section.bits;
         final int[] count = new int[countLength];
         for (int i = start; i < endP1; ++i) {
             count[(array[i] & mask) >>> shiftRight]++;
@@ -359,7 +359,7 @@ public class IntSorterUtils {
         final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         final int shiftRight = section.shift;
         final int endP1 = start + n;
-        final int countLength = 1 << section.length;
+        final int countLength = 1 << section.bits;
         final int[] count = ArrayParallelRunner.runInParallel(array, start, endP1, ArrayParallelRunner.APR_PARAMETERS_TWO_THREADS, new ArrayRunnable<int[]>() {
             @Override
             public int[] map(final Object arrayX, final int start, final int endP1, final int index, final AtomicBoolean stop) {
@@ -408,7 +408,7 @@ public class IntSorterUtils {
         final int endP1 = start + n;
         int totalLength = 0;
         for (Section section : sections) {
-            totalLength += section.length;
+            totalLength += section.bits;
         }
         final int countLength = 1 << totalLength;
         final int[] count = new int[countLength];

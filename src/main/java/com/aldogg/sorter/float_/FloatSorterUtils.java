@@ -83,7 +83,7 @@ public class FloatSorterUtils {
     public static void partitionStableLastBits(final float[] array, final int start, final Section section, final float[] aux, int startAux, int n) {
         final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         final int endP1 = start + n;
-        final int countLength = 1 << section.length;
+        final int countLength = 1 << section.bits;
         final int[] count = new int[countLength];
         for (int i = start; i < endP1; ++i) {
             count[Float.floatToRawIntBits(array[i]) & mask]++;
@@ -112,7 +112,7 @@ public class FloatSorterUtils {
         final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         final int shiftRight = section.shift;
         final int endP1 = start + n;
-        final int countLength = 1 << section.length;
+        final int countLength = 1 << section.bits;
         final int[] count = new int[countLength];
         for (int i = start; i < endP1; ++i) {
             count[(Float.floatToRawIntBits(array[i]) & mask) >>> shiftRight]++;

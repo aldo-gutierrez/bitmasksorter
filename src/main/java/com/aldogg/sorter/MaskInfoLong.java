@@ -83,7 +83,7 @@ public class MaskInfoLong {
     }
 
     public static long getMaskRangeBits(final int bStart, final int bEnd) {
-        return ((1L << bStart + 1 - bEnd) - 1) << bEnd;
+        return ((1L << bStart + 1 - bEnd) - 1L) << bEnd;
     }
 
     public long getMask() {

@@ -124,7 +124,7 @@ public class ObjectFloatSorterUtils {
                                                final Object[] oAux, final float[] aux, int startAux, final int n) {
         int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         int endP1 = start + n;
-        int[] count = new int[1 << section.length];
+        int[] count = new int[1 << section.bits];
         for (int i = start; i < endP1; i++) {
             count[Float.floatToRawIntBits(array[i]) & mask]++;
         }
@@ -152,7 +152,7 @@ public class ObjectFloatSorterUtils {
         int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         int shiftRight = section.shift;
         int endP1 = start + n;
-        int[] count = new int[1 << section.length];
+        int[] count = new int[1 << section.bits];
         for (int i = start; i < endP1; i++) {
             count[(Float.floatToRawIntBits(array[i]) & mask) >>> shiftRight]++;
         }

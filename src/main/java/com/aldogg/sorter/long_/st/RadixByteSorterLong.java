@@ -81,7 +81,7 @@ public class RadixByteSorterLong extends LongBitMaskSorter {
     private void sortBytes(long[] array, int start, int endP1, long[] aux, long mask) {
         int n = endP1 - start;
         Section section = new Section();
-        section.length = 8;
+        section.bits = 8;
         int ops = 0;
         long[] arrayOrig = array;
         int startOrig = start;

@@ -85,7 +85,7 @@ public class RadixByteSorterInt extends IntBitMaskSorter {
         boolean s24 = (mask & 0xFF000000) != 0;
         int n = endP1 - start;
         Section section = new Section();
-        section.length = 8;
+        section.bits = 8;
         int ops = 0;
         int[] arrayOrig = array;
         int startOrig = start;

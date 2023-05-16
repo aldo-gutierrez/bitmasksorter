@@ -1,6 +1,5 @@
 package com.aldogg.sorter.long_.collection;
 
-import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.MaskInfoLong;
 import com.aldogg.sorter.ObjectSorterUtils;
 import com.aldogg.sorter.Section;
@@ -123,7 +122,7 @@ public class ObjectLongSorterUtils {
                                                final Object[] oAux, final long[] aux, int startAux, final int n) {
         long mask = MaskInfoLong.getMaskRangeBits(section.start, section.shift);
         int endP1 = start + n;
-        int[] count = new int[1 << section.length];
+        int[] count = new int[1 << section.bits];
         for (int i = start; i < endP1; i++) {
             count[(int) (array[i] & mask)]++;
         }
@@ -150,7 +149,7 @@ public class ObjectLongSorterUtils {
         long mask = MaskInfoLong.getMaskRangeBits(section.start, section.shift);
         int shiftRight = section.shift;
         int endP1 = start + n;
-        int[] count = new int[1 << section.length];
+        int[] count = new int[1 << section.bits];
         for (int i = start; i < endP1; i++) {
             count[(int) ((array[i] & mask) >>> shiftRight)]++;
         }

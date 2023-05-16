@@ -10,18 +10,18 @@ import static com.aldogg.sorter.BitSorterUtils.*;
 public class DestructiveCountSortInt {
 
     public static void countSort(final int[] array, final int start, final int endP1, int[] bList, int bListStart) {
-        int kRange = 1 << (bList.length - bListStart);
+        int dRange = 1 << (bList.length - bListStart);
         int[] bListNew = Arrays.copyOfRange(bList, bListStart, bList.length);
         Section[] sections = getMaskAsSections(bList, 0, bList.length - 1);
         int sortMask = MaskInfoInt.getMaskLastBits(bListNew, 0);
-        countSort(array, start, endP1, sortMask, sections, kRange);
+        countSort(array, start, endP1, sortMask, sections, dRange);
     }
 
-    public static void countSort(final int[] array, final int start, final int endP1, int mask, Section[] sections, int kRange) {
-        int[] count = new int[kRange];
+    public static void countSort(final int[] array, final int start, final int endP1, int mask, Section[] sections, int dRange) {
+        int[] count = new int[dRange];
         int[] number = null;
         if (sections.length != 1 || !sections[0].isSectionAtEnd()) {
-            number = new int[kRange];
+            number = new int[dRange];
         }
 
         if (sections.length == 1 && sections[0].isSectionAtEnd()) {

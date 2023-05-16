@@ -134,7 +134,7 @@ public class ObjectIntSorterUtils {
                                                 final Object[] oAux, final int[] aux, final int startAux, final int n) {
         int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         int endP1 = start + n;
-        int[] count = new int[1 << section.length];
+        int[] count = new int[1 << section.bits];
         for (int i = start; i < endP1; i++) {
             count[array[i] & mask]++;
         }
@@ -173,7 +173,7 @@ public class ObjectIntSorterUtils {
         int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         int shiftRight = section.shift;
         int endP1 = start + n;
-        int[] count = new int[1 << section.length];
+        int[] count = new int[1 << section.bits];
         for (int i = start; i < endP1; i++) {
             count[(array[i] & mask) >>> shiftRight]++;
         }
