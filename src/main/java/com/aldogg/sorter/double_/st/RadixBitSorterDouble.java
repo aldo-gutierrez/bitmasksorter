@@ -5,6 +5,7 @@ import com.aldogg.sorter.MaskInfoLong;
 import com.aldogg.sorter.Section;
 import com.aldogg.sorter.double_.DoubleBitMaskSorter;
 
+import static com.aldogg.sorter.BitSorterParams.RADIX_SORT_MAX_BITS;
 import static com.aldogg.sorter.double_.DoubleSorterUtils.*;
 import static com.aldogg.sorter.MaskInfoLong.UPPER_BIT;
 
@@ -43,7 +44,7 @@ public class RadixBitSorterDouble extends DoubleBitMaskSorter {
     }
 
     public static void radixSort(double[] array, int start, int endP1, int[] bList, int bListStart, int bListEnd, double[] aux) {
-        Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
+        Section[] finalSectionList = BitSorterUtils.getProcessedSections(bList, bListStart, bListEnd, RADIX_SORT_MAX_BITS);
 
         if (finalSectionList.length == 1 && finalSectionList[0].bits == 1) {
             Section section = finalSectionList[0];

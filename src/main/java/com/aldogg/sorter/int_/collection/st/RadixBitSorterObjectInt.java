@@ -5,6 +5,7 @@ import com.aldogg.sorter.int_.IntSorterUtils;
 import com.aldogg.sorter.int_.collection.IntComparator;
 import com.aldogg.sorter.int_.collection.ObjectIntSorter;
 
+import static com.aldogg.sorter.BitSorterParams.RADIX_SORT_MAX_BITS;
 import static com.aldogg.sorter.MaskInfoInt.UPPER_BIT;
 import static com.aldogg.sorter.int_.IntSorterUtils.listIsOrderedSigned;
 import static com.aldogg.sorter.int_.IntSorterUtils.listIsOrderedUnSigned;
@@ -103,7 +104,7 @@ public class RadixBitSorterObjectInt implements ObjectIntSorter {
      * 1000000,"0:10000000","RadixBitSorterObjectInt",47->63
      */
     public static void radixSort(Object[] oArray, int[] array, int start, int endP1, int[] bList, int bListStart, int bListEnd, Object[] oAux, int[] aux, int startAux) {
-        Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
+        Section[] finalSectionList = BitSorterUtils.getProcessedSections(bList, bListStart, bListEnd, RADIX_SORT_MAX_BITS);
 
         if (finalSectionList.length == 1 && finalSectionList[0].bits == 1) {
             Section section = finalSectionList[0];

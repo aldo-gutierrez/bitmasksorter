@@ -5,6 +5,7 @@ import com.aldogg.sorter.float_.FloatSorterUtils;
 import com.aldogg.sorter.float_.collection.FloatComparator;
 import com.aldogg.sorter.float_.collection.ObjectFloatSorter;
 
+import static com.aldogg.sorter.BitSorterParams.RADIX_SORT_MAX_BITS;
 import static com.aldogg.sorter.float_.FloatSorterUtils.listIsOrderedSigned;
 import static com.aldogg.sorter.float_.collection.ObjectFloatSorterUtils.*;
 import static com.aldogg.sorter.MaskInfoInt.UPPER_BIT;
@@ -81,7 +82,7 @@ public class RadixBitSorterObjectFloat implements ObjectFloatSorter {
     }
 
     public static void radixSort(Object[] oArray, float[] array, int start, int end, int[] bList, int bListStart, int bListEnd, Object[] oAux, float[] aux) {
-        Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
+        Section[] finalSectionList = BitSorterUtils.getProcessedSections(bList, bListStart, bListEnd, RADIX_SORT_MAX_BITS);
 
         if (finalSectionList.length == 1 && finalSectionList[0].bits == 1) {
             Section section = finalSectionList[0];

@@ -4,6 +4,8 @@ import com.aldogg.sorter.BitSorterUtils;
 import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.Section;
 import com.aldogg.sorter.int_.IntBitMaskSorter;
+
+import static com.aldogg.sorter.BitSorterParams.RADIX_SORT_MAX_BITS;
 import static com.aldogg.sorter.int_.IntSorterUtils.*;
 
 public class RadixBitSorterInt extends IntBitMaskSorter {
@@ -19,7 +21,7 @@ public class RadixBitSorterInt extends IntBitMaskSorter {
     }
 
     public static void radixSort(int[] array, int start, int endP1, int[] bList, int bListStart, int bListEnd, int[] aux, int startAux) {
-        Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
+        Section[] finalSectionList = BitSorterUtils.getProcessedSections(bList, bListStart, bListEnd, RADIX_SORT_MAX_BITS);
 
         if (finalSectionList.length == 1 && finalSectionList[0].bits == 1) {
             Section section = finalSectionList[0];

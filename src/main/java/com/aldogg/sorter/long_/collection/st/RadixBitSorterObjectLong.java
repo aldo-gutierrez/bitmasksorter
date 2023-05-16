@@ -5,6 +5,7 @@ import com.aldogg.sorter.long_.LongSorterUtils;
 import com.aldogg.sorter.long_.collection.LongComparator;
 import com.aldogg.sorter.long_.collection.ObjectLongSorter;
 
+import static com.aldogg.sorter.BitSorterParams.RADIX_SORT_MAX_BITS;
 import static com.aldogg.sorter.MaskInfoInt.UPPER_BIT;
 import static com.aldogg.sorter.long_.LongSorterUtils.listIsOrderedSigned;
 import static com.aldogg.sorter.long_.LongSorterUtils.listIsOrderedUnSigned;
@@ -96,7 +97,7 @@ public class RadixBitSorterObjectLong implements ObjectLongSorter {
     }
 
     public static void radixSort(Object[] oArray, long[] array, int start, int endP1, int[] bList, int bListStart, int bListEnd, Object[] oAux, long[] aux) {
-        Section[] finalSectionList = BitSorterUtils.getOrderedSections(bList, bListStart, bListEnd);
+        Section[] finalSectionList = BitSorterUtils.getProcessedSections(bList, bListStart, bListEnd, RADIX_SORT_MAX_BITS);
 
         if (finalSectionList.length == 1 && finalSectionList[0].bits == 1) {
             Section section = finalSectionList[0];

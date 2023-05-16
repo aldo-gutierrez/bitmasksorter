@@ -1,9 +1,8 @@
 package com.aldogg.sorter;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import com.aldogg.sorter.int_.IntSorterUtils;
+
+import java.util.*;
 
 public class BitSorterUtils {
 
@@ -49,51 +48,31 @@ public class BitSorterUtils {
         return sections;
     }
 
-    public static Section[] splitSection(Section section) {
-        if (section.bits <= BitSorterMTParams.RADIX_SORT_MAX_BITS) {
-            return new Section[]{section};
-        } else {
-            List<Section> sections = new ArrayList<>();
-            int sectionQuantity;
-            int sectionSize = BitSorterMTParams.RADIX_SORT_MAX_BITS;
-            int divisor = section.bits / BitSorterMTParams.RADIX_SORT_MAX_BITS;
-            if (section.bits % BitSorterMTParams.RADIX_SORT_MAX_BITS == 0) {
-                sectionQuantity = divisor;
+    public static Section[] getProcessedSections(int[] bListParam, int bListStart, int bListEnd, int maxBitsDigit) {
+        int[] bList = Arrays.copyOfRange(bListParam, bListStart, bListEnd + 1);
+        IntSorterUtils.reverse(bList, 0, bList.length);
+        List<Section> sections = new ArrayList<>();
+        Section section = new Section();
+        section.shift = bList[0];
+        section.bits = 1;
+        int b = 1;
+        while (b < bList.length) {
+            int bitIndex = bList[b];
+            if (bitIndex <= section.shift + maxBitsDigit - 1) {
+                section.bits = (bitIndex - section.shift + 1);
             } else {
-                sectionQuantity = divisor + 1;
-                if (section.bits % BitSorterMTParams.RADIX_SORT_MAX_BITS <= 2) {
-                    sectionSize = BitSorterMTParams.RADIX_SORT_MAX_BITS - 1;
-                }
+                sections.add(section);
+                section = new Section();
+                section.shift = bitIndex;
+                section.bits = 1;
             }
-            int sizeAux = 0;
-            for (int i = 0; i < sectionQuantity; i++) {
-                Section sectionAux = new Section();
-                sectionAux.bits = (i == 0) ? section.bits - (sectionSize * (sectionQuantity - 1)) : sectionSize;
-                sectionAux.start = section.start - sizeAux;
-                sizeAux += sectionAux.bits;
-                sections.add(sectionAux);
-            }
-            for (int i = sectionQuantity - 1; i >= 0; i--) {
-                Section sectionAux = sections.get(i);
-                sectionAux.shift = (i == sectionQuantity - 1) ? section.shift : sections.get(i + 1).shift + sections.get(i + 1).bits;
-                //sectionAux.mask = MaskInfoInt.getMaskRangeBits(sectionAux.start, sectionAux.start - sectionAux.length + 1);
-            }
-            return sections.toArray(new Section[]{});
+            b++;
         }
-    }
-
-    public static Section[] getOrderedSections(int[] bList, int bListStart, int bListEnd) {
-        List<Section> finalSectionList = new ArrayList<>();
-        Section[] sections = BitSorterUtils.getMaskAsSections(bList, bListStart, bListEnd);
-        for (int i = sections.length - 1; i >= 0; i--) {
-            Section section = sections[i];
-            Section[] sSections = BitSorterUtils.splitSection(section);
-            for (int j = sSections.length - 1; j >= 0; j--) {
-                Section sSection = sSections[j];
-                finalSectionList.add(sSection);
-            }
+        sections.add(section);
+        for (Section sectionX : sections) {
+            sectionX.start = sectionX.shift + sectionX.bits - 1;
         }
-        return finalSectionList.toArray(new Section[0]);
+        return sections.toArray(new Section[]{});
     }
 
     public static int logBase2(int n) // returns 0 for bits=0
