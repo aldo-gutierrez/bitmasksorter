@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import static com.aldogg.sorter.MaskInfoInt.calculateMaskInParallel;
-import static com.aldogg.sorter.int_.IntSorterUtils.*;
+import static com.aldogg.sorter.int_.SorterUtilsInt.*;
 
 public class GetBitMaskTestPTest {
 

@@ -1,10 +1,10 @@
 package com.aldogg.sorter.int_.mt;
 
-import com.aldogg.sorter.int_.IntSorter;
+import com.aldogg.sorter.int_.SorterInt;
 
 import java.util.Arrays;
 
-public class JavaSorterMTInt implements IntSorter {
+public class JavaSorterMTInt implements SorterInt {
 
     @Override
     public void sort(int[] array, int start, int endP1) {

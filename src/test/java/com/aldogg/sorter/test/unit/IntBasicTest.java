@@ -1,6 +1,6 @@
 package com.aldogg.sorter.test.unit;
 
-import com.aldogg.sorter.int_.IntSorter;
+import com.aldogg.sorter.int_.SorterInt;
 import com.aldogg.sorter.int_.mt.JavaSorterMTInt;
 import com.aldogg.sorter.int_.mt.MixedBitSorterMTInt;
 import com.aldogg.sorter.int_.mt.QuickBitSorterMTInt;
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 public class IntBasicTest extends BaseTest {
     @Test
     public void basicTests() {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new MixedBitSorterMTInt(), new QuickBitSorterInt(), new QuickBitSorterMTInt(), new RadixBitSorterInt(), new RadixBitSorterMTInt(), new RadixByteSorterInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new MixedBitSorterMTInt(), new QuickBitSorterInt(), new QuickBitSorterMTInt(), new RadixBitSorterInt(), new RadixBitSorterMTInt(), new RadixByteSorterInt()};
         TestAlgorithms sorterTests = new TestAlgorithms(sorters);
         testSort(new int[]{}, sorterTests);
         testSort(new int[]{1}, sorterTests);
@@ -38,7 +38,7 @@ public class IntBasicTest extends BaseTest {
 
     @Test
     public void testNegativeNumbers() {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         TestAlgorithms testSorter = new TestAlgorithms(sorters);
         testSort(new int[]{}, testSorter);
         testSort(new int[]{1}, testSorter);
@@ -54,7 +54,7 @@ public class IntBasicTest extends BaseTest {
 
     @Test
     public void testBooleans() {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt()};
         TestAlgorithms sorter = new TestAlgorithms(sorters);
         testSort(new int[]{33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0, 33554431, 0}, sorter);
     }

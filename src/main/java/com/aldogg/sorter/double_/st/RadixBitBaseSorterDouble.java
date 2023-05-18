@@ -1,12 +1,12 @@
 package com.aldogg.sorter.double_.st;
 
 import com.aldogg.sorter.MaskInfoLong;
-import com.aldogg.sorter.double_.DoubleBitMaskSorter;
+import com.aldogg.sorter.double_.BitMaskSorterDouble;
 
-import static com.aldogg.sorter.double_.DoubleSorterUtils.*;
+import static com.aldogg.sorter.double_.SorterUtilsDouble.*;
 import static com.aldogg.sorter.MaskInfoLong.UPPER_BIT;
 
-public class RadixBitBaseSorterDouble extends DoubleBitMaskSorter {
+public class RadixBitBaseSorterDouble extends BitMaskSorterDouble {
 
     @Override
     public void sort(double[] array, int start, int endP1, int[] bList) {

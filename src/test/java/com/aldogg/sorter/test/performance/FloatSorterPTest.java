@@ -1,6 +1,6 @@
 package com.aldogg.sorter.test.performance;
 
-import com.aldogg.sorter.float_.FloatSorter;
+import com.aldogg.sorter.float_.SorterFloat;
 import com.aldogg.sorter.float_.st.JavaSorterFloat;
 import com.aldogg.sorter.float_.st.RadixBitBaseSorterFloat;
 import com.aldogg.sorter.float_.st.RadixBitSorterFloat;
@@ -25,7 +25,7 @@ public class FloatSorterPTest extends IntBasicTest {
 
     @Test
     public void speedTestPositiveFloatST() throws IOException {
-        FloatSorter[] sorters = new FloatSorter[]{new JavaSorterFloat(), new RadixBitBaseSorterFloat(), new RadixBitSorterFloat()};
+        SorterFloat[] sorters = new SorterFloat[]{new JavaSorterFloat(), new RadixBitBaseSorterFloat(), new RadixBitSorterFloat()};
         BufferedWriter writer = getWriter("test-results/speed_positiveFloat_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
@@ -76,7 +76,7 @@ public class FloatSorterPTest extends IntBasicTest {
 
     @Test
     public void speedTestSignedFloatST() throws IOException {
-        FloatSorter[] sorters = new FloatSorter[]{new JavaSorterFloat(), new RadixBitBaseSorterFloat(), new RadixBitSorterFloat()};
+        SorterFloat[] sorters = new SorterFloat[]{new JavaSorterFloat(), new RadixBitBaseSorterFloat(), new RadixBitSorterFloat()};
         BufferedWriter writer = getWriter("test-results/speed_signedFloat_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
@@ -128,7 +128,7 @@ public class FloatSorterPTest extends IntBasicTest {
 
     @Test
     public void speedTestRealFloatST() throws IOException {
-        FloatSorter[] sorters = new FloatSorter[]{new JavaSorterFloat(), new RadixBitBaseSorterFloat(), new RadixBitSorterFloat()};
+        SorterFloat[] sorters = new SorterFloat[]{new JavaSorterFloat(), new RadixBitBaseSorterFloat(), new RadixBitSorterFloat()};
         BufferedWriter writer = getWriter("test-results/speed_realFloat_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
@@ -178,11 +178,11 @@ public class FloatSorterPTest extends IntBasicTest {
         writer.close();
     }
 
-    public void testSort(float[] list, TestAlgorithms<FloatSorter> testAlgorithms) {
+    public void testSort(float[] list, TestAlgorithms<SorterFloat> testAlgorithms) {
         float[] baseListSorted = null;
-        FloatSorter[] sorters = testAlgorithms.getAlgorithms();
+        SorterFloat[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
-            FloatSorter sorter = sorters[i];
+            SorterFloat sorter = sorters[i];
             float[] listAux = Arrays.copyOf(list, list.length);
             try {
                 long start = System.nanoTime();

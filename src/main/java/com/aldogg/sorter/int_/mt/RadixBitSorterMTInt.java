@@ -2,20 +2,20 @@ package com.aldogg.sorter.int_.mt;
 
 import com.aldogg.parallel.ParallelRunner;
 import com.aldogg.sorter.*;
-import com.aldogg.sorter.int_.IntBitMaskSorter;
-import com.aldogg.sorter.int_.IntBitMaskSorterMT;
-import com.aldogg.sorter.int_.IntSorterUtils;
+import com.aldogg.sorter.int_.BitMaskSorterInt;
+import com.aldogg.sorter.int_.BitMaskSorterMTInt;
+import com.aldogg.sorter.int_.SorterUtilsInt;
 import com.aldogg.sorter.int_.st.RadixBitSorterInt;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
-import static com.aldogg.sorter.int_.IntSorterUtils.sortShortK;
+import static com.aldogg.sorter.int_.SorterUtilsInt.sortShortK;
 
-public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
+public class RadixBitSorterMTInt extends BitMaskSorterMTInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, int[] bList, Object multiThreadParams) {
+    public void sort(int[] array, int start, int endP1, int[] bList, Object params) {
         int kDiff = bList.length;
-        if (kDiff <= params.getShortKBits()) {
+        if (kDiff <= this.params.getShortKBits()) {
             if (kDiff < 1) {
                 return;
             }
@@ -24,13 +24,13 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
         }
 
 
-        int maxThreads = (Integer) multiThreadParams;
+        int maxThreads = (Integer) params;
         int tBits = BitSorterUtils.logBase2(maxThreads);
         if (!(1 << tBits == maxThreads)) {
             tBits += 1;
         }
         int threadBits = Math.min(tBits, bList.length);
-        int sortMask = IntSorterUtils.getIntMask(bList, 0, threadBits - 1);
+        int sortMask = SorterUtilsInt.getIntMask(bList, 0, threadBits - 1);
 
         partitionStableNonConsecutiveBitsAndRadixSort(array, start, endP1, sortMask, threadBits, bList);
     }
@@ -50,22 +50,22 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
             Section section = sections[0];
             if (section.isSectionAtEnd()) {
                 if (n > 2000000) {
-                    leftX = IntSorterUtils.partitionStableLastBitsParallel(array, start, section, aux, n);
+                    leftX = SorterUtilsInt.partitionStableLastBitsParallel(array, start, section, aux, n);
                 } else {
-                    leftX = IntSorterUtils.partitionStableLastBits(array, start, section, aux, 0, n);
+                    leftX = SorterUtilsInt.partitionStableLastBits(array, start, section, aux, 0, n);
                 }
                 System.arraycopy(aux, 0, array, start, n);
             } else {
                 if (n > 2000000) {
-                    leftX = IntSorterUtils.partitionStableOneGroupBitsParallel(array, start, section, aux, n);
+                    leftX = SorterUtilsInt.partitionStableOneGroupBitsParallel(array, start, section, aux, n);
                 } else {
-                    leftX = IntSorterUtils.partitionStableOneGroupBits(array, start, section, aux, 0, n);
+                    leftX = SorterUtilsInt.partitionStableOneGroupBits(array, start, section, aux, 0, n);
                 }
                 System.arraycopy(aux, 0, array, start, n);
             }
         } else {
             //TODO code never reaches this path in test, add more tests
-            leftX = IntSorterUtils.partitionStableNGroupBits(array, start, sections, aux, 0, n);
+            leftX = SorterUtilsInt.partitionStableNGroupBits(array, start, sections, aux, 0, n);
             System.arraycopy(aux, 0, array, start, n);
         }
 
@@ -97,7 +97,7 @@ public class RadixBitSorterMTInt extends IntBitMaskSorterMT {
     }
 
     @Override
-    public IntBitMaskSorter getSTIntSorter() {
+    public BitMaskSorterInt getSTIntSorter() {
         RadixBitSorterInt sorter = new RadixBitSorterInt();
         sorter.setUnsigned(isUnsigned());
         sorter.setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);

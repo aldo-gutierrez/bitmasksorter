@@ -2,12 +2,12 @@ package com.aldogg.sorter.float_.st;
 
 import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.MaskInfoLong;
-import com.aldogg.sorter.float_.FloatBitMaskSorter;
+import com.aldogg.sorter.float_.BitMaskSorterFloat;
 
-import static com.aldogg.sorter.float_.FloatSorterUtils.*;
+import static com.aldogg.sorter.float_.SorterUtilsFloat.*;
 import static com.aldogg.sorter.MaskInfoInt.UPPER_BIT;
 
-public class RadixBitBaseSorterFloat extends FloatBitMaskSorter {
+public class RadixBitBaseSorterFloat extends BitMaskSorterFloat {
 
     @Override
     public void sort(float[] array, int start, int endP1, int[] bList) {

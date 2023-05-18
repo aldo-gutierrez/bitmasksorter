@@ -1,11 +1,11 @@
 package com.aldogg.sorter.long_.st;
 
 import com.aldogg.sorter.MaskInfoLong;
-import com.aldogg.sorter.long_.LongBitMaskSorter;
+import com.aldogg.sorter.long_.BitMaskSorterLong;
 
-import static com.aldogg.sorter.long_.LongSorterUtils.*;
+import static com.aldogg.sorter.long_.SorterUtilsLong.*;
 
-public class RadixBitBaseSorterLong extends LongBitMaskSorter {
+public class RadixBitBaseSorterLong extends BitMaskSorterLong {
 
     @Override
     public void sort(long[] array, int start, int endP1, int[] bList) {

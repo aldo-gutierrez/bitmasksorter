@@ -4,8 +4,8 @@ import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.int_.DestructiveCountSortInt;
-import com.aldogg.sorter.int_.IntSorter;
-import com.aldogg.sorter.int_.IntSorterUtils;
+import com.aldogg.sorter.int_.SorterInt;
+import com.aldogg.sorter.int_.SorterUtilsInt;
 import com.aldogg.sorter.int_.mt.JavaSorterMTInt;
 import com.aldogg.sorter.int_.mt.MixedBitSorterMTInt;
 import com.aldogg.sorter.int_.mt.QuickBitSorterMTInt;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static com.aldogg.sorter.int_.IntSorterUtils.ShortSorter.*;
+import static com.aldogg.sorter.int_.SorterUtilsInt.ShortSorter.*;
 import static com.aldogg.sorter.int_.st.RadixBitSorterInt.radixSort;
 
 public class GeneratorPTest extends BaseTest {
@@ -33,7 +33,7 @@ public class GeneratorPTest extends BaseTest {
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
         BufferedWriter writer2 = getWriter("smallJava.txt");
 
-        IntSorter[] sorters = new IntSorter[]{new IntSorter() {
+        SorterInt[] sorters = new SorterInt[]{new SorterInt() {
             @Override
             public void sort(int[] array, int start, int endP1) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
@@ -49,7 +49,7 @@ public class GeneratorPTest extends BaseTest {
                 return StableByte.name();
             }
 
-        }, new IntSorter() {
+        }, new SorterInt() {
             @Override
             public void sort(int[] array, int start, int endP1) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
@@ -58,7 +58,7 @@ public class GeneratorPTest extends BaseTest {
                 int[] aux = new int[endP1 - start];
                 for (int i = bList.length - 1; i >= 0; i--) {
                     int sortMask = 1 << bList[i];
-                    IntSorterUtils.partitionStable(array, start, endP1, sortMask, aux);
+                    SorterUtilsInt.partitionStable(array, start, endP1, sortMask, aux);
                 }
             }
 
@@ -67,7 +67,7 @@ public class GeneratorPTest extends BaseTest {
                 return StableBit.name();
             }
 
-        }, new IntSorter() {
+        }, new SorterInt() {
             @Override
             public void sort(int[] array, int start, int endP1) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
@@ -83,7 +83,7 @@ public class GeneratorPTest extends BaseTest {
 
         }};
 //        }, new JavaSorterInt()};
-        TestAlgorithms<IntSorter> testAlgorithms;
+        TestAlgorithms<SorterInt> testAlgorithms;
 
         int[] twoPowersHeat = {16, 256, 4096, 65536};
         int[] twoPowers = {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536};
@@ -130,13 +130,13 @@ public class GeneratorPTest extends BaseTest {
 
     @Test
     public void speedTestPositiveIntSTBase2() throws IOException {
-        IntSorter[] sorters = new IntSorter[]{new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+        SorterInt[] sorters = new SorterInt[]{new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
 
         BufferedWriter writer = getWriter("test-results/speed_positiveInt_st_base2.csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
         BufferedWriter writer2 = getWriter("test-results/speed_positiveInt_st_base2.txt");
 
-        TestAlgorithms<IntSorter> testAlgorithms;
+        TestAlgorithms<SorterInt> testAlgorithms;
 
         //heat up
         testAlgorithms = new TestAlgorithms<>(sorters);
@@ -176,11 +176,11 @@ public class GeneratorPTest extends BaseTest {
 
     @Test
     public void speedTestPositiveIntMTBase2() throws IOException {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         BufferedWriter writer = getWriter("test-results/speed_positiveInt_mt_base2.csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
-        TestAlgorithms<IntSorter> testAlgorithms;
+        TestAlgorithms<SorterInt> testAlgorithms;
 
         //heat up
         testAlgorithms = new TestAlgorithms<>(sorters);

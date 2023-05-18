@@ -1,9 +1,9 @@
 package com.aldogg.sorter.test.performance;
 
-import com.aldogg.sorter.double_.DoubleSorter;
-import com.aldogg.sorter.double_.collection.DoubleComparator;
-import com.aldogg.sorter.double_.collection.ObjectDoubleSorter;
-import com.aldogg.sorter.double_.collection.st.RadixBitSorterObjectDouble;
+import com.aldogg.sorter.double_.SorterDouble;
+import com.aldogg.sorter.double_.object.DoubleMapper;
+import com.aldogg.sorter.double_.object.SorterObjectDouble;
+import com.aldogg.sorter.double_.object.st.RadixBitSorterObjectDouble;
 import com.aldogg.sorter.double_.st.*;
 import com.aldogg.sorter.generators.DoubleGenerator;
 import com.aldogg.sorter.generators.GeneratorFunctions;
@@ -27,7 +27,7 @@ public class DoubleSorterPTest extends IntBasicTest {
 
     @Test
     public void speedTestPositiveDoubleST() throws IOException {
-        DoubleSorter[] sorters = new DoubleSorter[]{new JavaSorterDouble(), new RadixBitBaseSorterDouble(), new RadixBitSorterDouble()};
+        SorterDouble[] sorters = new SorterDouble[]{new JavaSorterDouble(), new RadixBitBaseSorterDouble(), new RadixBitSorterDouble()};
         BufferedWriter writer = getWriter("test-results/speed_positiveDouble_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
@@ -78,7 +78,7 @@ public class DoubleSorterPTest extends IntBasicTest {
 
     @Test
     public void speedTestSignedDoubleST() throws IOException {
-        DoubleSorter[] sorters = new DoubleSorter[]{new JavaSorterDouble(), new RadixBitSorterDouble(), new RadixBitBaseSorterDouble()};
+        SorterDouble[] sorters = new SorterDouble[]{new JavaSorterDouble(), new RadixBitSorterDouble(), new RadixBitBaseSorterDouble()};
         BufferedWriter writer = getWriter("test-results/speed_signedDouble_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
@@ -130,7 +130,7 @@ public class DoubleSorterPTest extends IntBasicTest {
 
     @Test
     public void speedTestRealDoubleST() throws IOException {
-        DoubleSorter[] sorters = new DoubleSorter[]{new JavaSorterDouble(), new RadixBitSorterDouble(), new RadixBitBaseSorterDouble()};
+        SorterDouble[] sorters = new SorterDouble[]{new JavaSorterDouble(), new RadixBitSorterDouble(), new RadixBitBaseSorterDouble()};
         BufferedWriter writer = getWriter("test-results/speed_realDouble_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
@@ -186,20 +186,10 @@ public class DoubleSorterPTest extends IntBasicTest {
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
 
-        ObjectDoubleSorter[] sorters = new ObjectDoubleSorter[]{new JavaSorterObjectDouble(), new RadixBitSorterObjectDouble()};
+        SorterObjectDouble[] sorters = new SorterObjectDouble[]{new JavaSorterObjectDouble(), new RadixBitSorterObjectDouble()};
         TestAlgorithms testAlgorithms;
 
-        DoubleComparator<EntityDouble1> comparator = new DoubleComparator<EntityDouble1>() {
-            @Override
-            public double value(EntityDouble1 o) {
-                return o.getId();
-            }
-
-            @Override
-            public int compare(EntityDouble1 entity1, EntityDouble1 t1) {
-                return Double.compare(entity1.getId(), t1.getId());
-            }
-        };
+        DoubleMapper<EntityDouble1> mapper = o -> o.getId();
 
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(SEED);
@@ -210,7 +200,7 @@ public class DoubleSorterPTest extends IntBasicTest {
 
         //heat up
         testAlgorithms = new TestAlgorithms(sorters);
-        testSpeedObject(comparator, HEAT_ITERATIONS, params, testAlgorithms, null);
+        testSpeedObject(mapper, HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         params.random = new Random(SEED);
@@ -220,19 +210,19 @@ public class DoubleSorterPTest extends IntBasicTest {
             testAlgorithms = new TestAlgorithms(sorters);
             params.limitHigh = limitH;
             params.size = 10000;
-            testSpeedObject(comparator, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedObject(mapper, ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 100000;
-            testSpeedObject(comparator, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedObject(mapper, ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 1000000;
-            testSpeedObject(comparator, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedObject(mapper, ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
-            testSpeedObject(comparator, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedObject(mapper, ITERATIONS, params, testAlgorithms, writer);
 
             System.out.println("----------------------");
         }
@@ -240,7 +230,7 @@ public class DoubleSorterPTest extends IntBasicTest {
         writer.close();
     }
 
-    private void testSpeedObject(DoubleComparator comparator, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
+    private void testSpeedObject(DoubleMapper mapper, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
         Function<GeneratorParams, double[]> function = DoubleGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             double[] listInt = function.apply(params);
@@ -249,27 +239,27 @@ public class DoubleSorterPTest extends IntBasicTest {
                 double randomNumber = listInt[i];
                 list[i] = new EntityDouble1(randomNumber, randomNumber + "");
             }
-            testObjectDoubleSort(list, comparator, testAlgorithms);
+            testObjectDoubleSort(list, mapper, testAlgorithms);
         }
         testAlgorithms.printTestSpeed(params, writer);
     }
 
-    private void testObjectDoubleSort(Object[] list, DoubleComparator comparator, TestAlgorithms<ObjectDoubleSorter> testAlgorithms) {
+    private void testObjectDoubleSort(Object[] list, DoubleMapper mapper, TestAlgorithms<SorterObjectDouble> testAlgorithms) {
         Object[] baseListSorted = null;
-        ObjectDoubleSorter[] sorters = testAlgorithms.getAlgorithms();
+        SorterObjectDouble[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
-            ObjectDoubleSorter sorter = sorters[i];
+            SorterObjectDouble sorter = sorters[i];
             Object[] listAux = Arrays.copyOf(list, list.length);
             try {
                 long start = System.nanoTime();
-                sorter.sort(listAux, comparator);
+                sorter.sort(listAux, mapper);
                 long elapsed = System.nanoTime() - start;
                 if (i == 0) {
                     baseListSorted = listAux;
                 } else {
                     if (validateResult) {
                         for (int j = 0; j < listAux.length; j++) {
-                            assertEquals(comparator.value(baseListSorted[j]), comparator.value(listAux[j]));
+                            assertEquals(mapper.value(baseListSorted[j]), mapper.value(listAux[j]));
                         }
 //                        assertArrayEquals(baseListSorted, listAux);
                     }
@@ -294,11 +284,11 @@ public class DoubleSorterPTest extends IntBasicTest {
         }
     }
 
-    public void testSort(double[] list, TestAlgorithms<DoubleSorter> testAlgorithms) {
+    public void testSort(double[] list, TestAlgorithms<SorterDouble> testAlgorithms) {
         double[] baseListSorted = null;
-        DoubleSorter[] sorters = testAlgorithms.getAlgorithms();
+        SorterDouble[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
-            DoubleSorter sorter = sorters[i];
+            SorterDouble sorter = sorters[i];
             double[] listAux = Arrays.copyOf(list, list.length);
             try {
                 long start = System.nanoTime();

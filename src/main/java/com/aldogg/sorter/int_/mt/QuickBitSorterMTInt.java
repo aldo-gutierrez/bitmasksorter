@@ -3,21 +3,21 @@ package com.aldogg.sorter.int_.mt;
 import com.aldogg.parallel.ParallelRunner;
 import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.SortingNetworks;
-import com.aldogg.sorter.int_.IntBitMaskSorter;
-import com.aldogg.sorter.int_.IntBitMaskSorterMT;
-import com.aldogg.sorter.int_.IntSorterUtils;
+import com.aldogg.sorter.int_.BitMaskSorterInt;
+import com.aldogg.sorter.int_.BitMaskSorterMTInt;
+import com.aldogg.sorter.int_.SorterUtilsInt;
 import com.aldogg.sorter.int_.st.QuickBitSorterInt;
 
 import static com.aldogg.parallel.ArrayParallelRunner.splitWork;
 import static com.aldogg.sorter.MaskInfoInt.getMaskAsArray;
-import static com.aldogg.sorter.int_.IntSorterUtils.sortShortK;
+import static com.aldogg.sorter.int_.SorterUtilsInt.sortShortK;
 
-public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
+public class QuickBitSorterMTInt extends BitMaskSorterMTInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, int[] bList, Object multiThreadParams) {
+    public void sort(int[] array, int start, int endP1, int[] bList, Object params) {
         //Number of Threads was multiplied by two to get back performance TODO investigate
-        sortMT(array, start, endP1, bList, 0, false, ((Integer) multiThreadParams) * 2);
+        sortMT(array, start, endP1, bList, 0, false, ((Integer) params) * 2);
     }
 
     public void sortMT(final int[] array, final int start, final int endP1, int[] bList, int kIndex, boolean recalculate, int maxThreads) {
@@ -45,7 +45,7 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
         }
 
         int sortMask = 1 << bList[kIndex];
-        int finalLeft = IntSorterUtils.partitionNotStable(array, start, endP1, sortMask);
+        int finalLeft = SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask);
         final boolean recalculateBitMask = (finalLeft == start || finalLeft == endP1);
 
         int[] finalbList = bList;
@@ -64,7 +64,7 @@ public class QuickBitSorterMTInt extends IntBitMaskSorterMT {
     }
 
     @Override
-    public IntBitMaskSorter getSTIntSorter() {
+    public BitMaskSorterInt getSTIntSorter() {
         QuickBitSorterInt sorter = new QuickBitSorterInt();
         sorter.setUnsigned(isUnsigned());
         sorter.setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);

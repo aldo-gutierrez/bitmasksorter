@@ -1,12 +1,12 @@
 package com.aldogg.sorter.float_.st;
 
-import com.aldogg.sorter.float_.FloatSorter;
+import com.aldogg.sorter.float_.SorterFloat;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class JavaSorterFloat implements FloatSorter {
+public class JavaSorterFloat implements SorterFloat {
 
     @Override
     public void sort(float[] array, int start, int endP1) {

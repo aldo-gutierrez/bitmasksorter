@@ -4,12 +4,12 @@ import com.aldogg.sorter.Sorter;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.generators.LongGenerator;
-import com.aldogg.sorter.long_.LongSorter;
-import com.aldogg.sorter.long_.collection.EntityLong1;
-import com.aldogg.sorter.long_.collection.JavaSorterObjectLong;
-import com.aldogg.sorter.long_.collection.LongComparator;
-import com.aldogg.sorter.long_.collection.ObjectLongSorter;
-import com.aldogg.sorter.long_.collection.st.RadixBitSorterObjectLong;
+import com.aldogg.sorter.long_.SorterLong;
+import com.aldogg.sorter.long_.object.EntityLong1;
+import com.aldogg.sorter.long_.object.JavaSorterObjectLong;
+import com.aldogg.sorter.long_.object.LongMapper;
+import com.aldogg.sorter.long_.object.SorterObjectLong;
+import com.aldogg.sorter.long_.object.st.RadixBitSorterObjectLong;
 import com.aldogg.sorter.long_.st.JavaSorterLong;
 import com.aldogg.sorter.long_.st.RadixBitBaseSorterLong;
 import com.aldogg.sorter.long_.st.RadixBitSorterLong;
@@ -33,7 +33,7 @@ public class LongSorterPTest extends IntBasicTest {
 
     @Test
     public void speedTestPositiveLongST() throws IOException {
-        LongSorter[] sorters = new LongSorter[]{new JavaSorterLong(), new RadixBitBaseSorterLong(), new RadixBitSorterLong(), new RadixByteSorterLong()};
+        SorterLong[] sorters = new SorterLong[]{new JavaSorterLong(), new RadixBitBaseSorterLong(), new RadixBitSorterLong(), new RadixByteSorterLong()};
         BufferedWriter writer = getWriter("test-results/speed_positiveLong_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
@@ -84,7 +84,7 @@ public class LongSorterPTest extends IntBasicTest {
 
     @Test
     public void speedTestSignedLongST() throws IOException {
-        LongSorter[] sorters = new LongSorter[]{new JavaSorterLong(), new RadixBitBaseSorterLong(), new RadixBitSorterLong(), new RadixByteSorterLong()};
+        SorterLong[] sorters = new SorterLong[]{new JavaSorterLong(), new RadixBitBaseSorterLong(), new RadixBitSorterLong(), new RadixByteSorterLong()};
         BufferedWriter writer = getWriter("test-results/speed_signedLong_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
@@ -140,20 +140,10 @@ public class LongSorterPTest extends IntBasicTest {
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
 
-        ObjectLongSorter[] sorters = new ObjectLongSorter[]{new JavaSorterObjectLong(), new RadixBitSorterObjectLong()};
+        SorterObjectLong[] sorters = new SorterObjectLong[]{new JavaSorterObjectLong(), new RadixBitSorterObjectLong()};
         TestAlgorithms testAlgorithms;
 
-        LongComparator<EntityLong1> comparator = new LongComparator<EntityLong1>() {
-            @Override
-            public long value(EntityLong1 o) {
-                return o.getId();
-            }
-
-            @Override
-            public int compare(EntityLong1 entity1, EntityLong1 t1) {
-                return Double.compare(entity1.getId(), t1.getId());
-            }
-        };
+        LongMapper<EntityLong1> mapper = o -> o.getId();
 
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(SEED);
@@ -164,7 +154,7 @@ public class LongSorterPTest extends IntBasicTest {
 
         //heat up
         testAlgorithms = new TestAlgorithms(sorters);
-        testSpeedObject(comparator, HEAT_ITERATIONS, params, testAlgorithms, null);
+        testSpeedObject(mapper, HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         params.random = new Random(SEED);
@@ -174,19 +164,19 @@ public class LongSorterPTest extends IntBasicTest {
             testAlgorithms = new TestAlgorithms(sorters);
             params.limitHigh = limitH;
             params.size = 10000;
-            testSpeedObject(comparator, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedObject(mapper, ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 100000;
-            testSpeedObject(comparator, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedObject(mapper, ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 1000000;
-            testSpeedObject(comparator, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedObject(mapper, ITERATIONS, params, testAlgorithms, writer);
 
             testAlgorithms = new TestAlgorithms(sorters);
             params.size = 10000000;
-            testSpeedObject(comparator, ITERATIONS, params, testAlgorithms, writer);
+            testSpeedObject(mapper, ITERATIONS, params, testAlgorithms, writer);
 
             System.out.println("----------------------");
         }
@@ -198,7 +188,7 @@ public class LongSorterPTest extends IntBasicTest {
     public void speedTestUnsigned() throws IOException {
         BufferedWriter writer = getWriter("test-results/speed_unsignedLong_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
-        LongSorter[] sorters = new LongSorter[]{new RadixByteSorterLong(), new RadixBitBaseSorterLong(), new RadixBitSorterLong()};
+        SorterLong[] sorters = new SorterLong[]{new RadixByteSorterLong(), new RadixBitBaseSorterLong(), new RadixBitSorterLong()};
 
         for (Sorter sorter : sorters) {
             sorter.setUnsigned(true);
@@ -246,7 +236,7 @@ public class LongSorterPTest extends IntBasicTest {
         writer.close();
     }
 
-    private void testSpeedObject(LongComparator comparator, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
+    private void testSpeedObject(LongMapper mapper, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, Writer writer) throws IOException {
         Function<GeneratorParams, long[]> function = LongGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             long[] listInt = function.apply(params);
@@ -255,27 +245,27 @@ public class LongSorterPTest extends IntBasicTest {
                 long randomNumber = listInt[i];
                 list[i] = new EntityLong1(randomNumber, randomNumber + "");
             }
-            testObjectLongSort(list, comparator, testAlgorithms);
+            testObjectLongSort(list, mapper, testAlgorithms);
         }
         testAlgorithms.printTestSpeed(params, writer);
     }
 
-    private void testObjectLongSort(Object[] list, LongComparator comparator, TestAlgorithms<ObjectLongSorter> testAlgorithms) {
+    private void testObjectLongSort(Object[] list, LongMapper mapper, TestAlgorithms<SorterObjectLong> testAlgorithms) {
         Object[] baseListSorted = null;
-        ObjectLongSorter[] sorters = testAlgorithms.getAlgorithms();
+        SorterObjectLong[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
-            ObjectLongSorter sorter = sorters[i];
+            SorterObjectLong sorter = sorters[i];
             Object[] listAux = Arrays.copyOf(list, list.length);
             try {
                 long start = System.nanoTime();
-                sorter.sort(listAux, comparator);
+                sorter.sort(listAux, mapper);
                 long elapsed = System.nanoTime() - start;
                 if (i == 0) {
                     baseListSorted = listAux;
                 } else {
                     if (validateResult) {
                         for (int j = 0; j < listAux.length; j++) {
-                            assertEquals(comparator.value(baseListSorted[j]), comparator.value(listAux[j]));
+                            assertEquals(mapper.value(baseListSorted[j]), mapper.value(listAux[j]));
                         }
 //                        assertArrayEquals(baseListSorted, listAux);
                     }
@@ -300,11 +290,11 @@ public class LongSorterPTest extends IntBasicTest {
         }
     }
 
-    public void testSort(long[] list, TestAlgorithms<LongSorter> testAlgorithms) {
+    public void testSort(long[] list, TestAlgorithms<SorterLong> testAlgorithms) {
         long[] baseListSorted = null;
-        LongSorter[] sorters = testAlgorithms.getAlgorithms();
+        SorterLong[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
-            LongSorter sorter = sorters[i];
+            SorterLong sorter = sorters[i];
             long[] listAux = Arrays.copyOf(list, list.length);
             try {
                 long start = System.nanoTime();

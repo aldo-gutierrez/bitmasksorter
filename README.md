@@ -129,21 +129,21 @@ Usage:
 
 ```
 //Sorting int numbers 
-IntSorter sorter = new QuickBitSorterInt();
+SorterInt sorter = new QuickBitSorterInt();
 int[] list = ....
 sorter.sort(list);
 ```
 
 ```
 //Parallel sorting int numbers 
-IntSorter sorter = new QuickBitSorterMTInt();
+SorterInt sorter = new QuickBitSorterMTInt();
 int[] list = ....
 sorter.sort(list);
 ```
 
 ```
 //Sorting unsinged int numbers 
-IntSorter sorter = new QuickBitSorterInt();
+SorterInt sorter = new QuickBitSorterInt();
 sorter.setUnsigned(true);
 int[] list = ....
 sorter.sort(list);
@@ -276,7 +276,7 @@ Comparison for sorting 40 Million int elements with range from 0 to 1000000000 i
 
 ![Graph2](test-results/MT_Int_AMD4800H_40M_randomRange_0_1000M.png?raw=true "Graph2")
 
-Object Sort using the Interface IntComparator
+Object Sort using the Interface Intmapper
 
 ```
         public class Entity1 {
@@ -284,7 +284,7 @@ Object Sort using the Interface IntComparator
             String name;
         }
 
-        IntComparator<Entity1> comparator = new IntComparator<Entity1>() {
+        Intmapper<Entity1> mapper = new Intmapper<Entity1>() {
             @Override
             public int intValue(Entity1 o) {
                 return o.getId();
@@ -298,7 +298,7 @@ Object Sort using the Interface IntComparator
 
         EntityInt1[] list = ...;
         ObjectSorter sorter = new RadixBitSorterObjectInt();
-        sorter.sort(list, comparator);
+        sorter.sort(list, mapper);
 ```
 
 ###Example 4:

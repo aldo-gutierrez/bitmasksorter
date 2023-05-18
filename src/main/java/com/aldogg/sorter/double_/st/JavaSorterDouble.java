@@ -1,12 +1,12 @@
 package com.aldogg.sorter.double_.st;
 
-import com.aldogg.sorter.double_.DoubleSorter;
+import com.aldogg.sorter.double_.SorterDouble;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class JavaSorterDouble implements DoubleSorter {
+public class JavaSorterDouble implements SorterDouble {
 
     @Override
     public void sort(double[] array, int start, int endP1) {

@@ -2,15 +2,26 @@ package com.aldogg.sorter;
 
 import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.parallel.ArrayRunnable;
+import com.aldogg.sorter.long_.object.LongMapper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.aldogg.sorter.Constants.CALCULATE_MASK_BATCH_SIZE;
+
 public class MaskInfoLong {
     public static final int UPPER_BIT = 63;
     long pMask;
     long iMask;
+
+    public MaskInfoLong() {
+    }
+
+    public MaskInfoLong(long pMask, long iMask) {
+        this.pMask = pMask;
+        this.iMask = iMask;
+    }
 
     public static MaskInfoLong calculateMask(final long[] array, final int start, final int endP1) {
         long pMask = 0x0000000000000000;
@@ -20,10 +31,7 @@ public class MaskInfoLong {
             pMask = pMask | e;
             iMask = iMask | ~e;
         }
-        MaskInfoLong m = new MaskInfoLong();
-        m.pMask = pMask;
-        m.iMask = iMask;
-        return m;
+        return new MaskInfoLong(pMask, iMask);
     }
 
     public static MaskInfoLong calculateMask(final double[] array, final int start, final int endP1) {
@@ -34,13 +42,50 @@ public class MaskInfoLong {
             pMask = pMask | e;
             iMask = iMask | ~e;
         }
-        MaskInfoLong m = new MaskInfoLong();
-        m.pMask = pMask;
-        m.iMask = iMask;
-        return m;
+        return new MaskInfoLong(pMask, iMask);
     }
 
+    public static MaskInfoLong calculateMask(final Object[] array, final int start, final int endP1, LongMapper mapper) {
+        long pMask = 0x0000000000000000;
+        long iMask = 0x0000000000000000;
+        for (int i = start; i < endP1; i++) {
+            long e = mapper.value(array[i]);
+            pMask = pMask | e;
+            iMask = iMask | ~e;
+        }
+        return new MaskInfoLong(pMask, iMask);
+    }
 
+    public static <T> MaskInfoLong calculateMaskBreakIfUpperBit(final T[] array, final int start, final int endP1, AtomicBoolean stop, LongMapper<T> mapper) {
+        long pMask = 0x0000000000000000;
+        long iMask = 0x0000000000000000;
+        for (int i = start; i < endP1; i += CALCULATE_MASK_BATCH_SIZE) {
+            if (pMask < 0) {
+                if (iMask < 0) {
+                    if (stop != null) {
+                        stop.set(true);
+                    }
+                    return new MaskInfoLong(pMask, iMask);
+                }
+            }
+            if (stop != null) {
+                if (stop.get()) {
+                    return null;
+                }
+            }
+            int startBatch = i;
+            int j = Math.min(i + CALCULATE_MASK_BATCH_SIZE, endP1);
+            for (; i < j; i++) {
+                long e = mapper.value(array[i]);
+                pMask = pMask | e;
+                iMask = iMask | ~e;
+            }
+            i = startBatch;
+        }
+        return new MaskInfoLong(pMask, iMask);
+    }
+
+    
     public static MaskInfoLong calculateMaskInParallel(final long[] array, final int start, final int endP1, final ArrayParallelRunner.APRParameters parameters) {
         return ArrayParallelRunner.runInParallel(array, start, endP1, parameters, new ArrayRunnable<MaskInfoLong>() {
 
@@ -90,4 +135,8 @@ public class MaskInfoLong {
         return pMask & iMask;
     }
 
+    public boolean isUpperBitMaskSet() {
+        return (getMask() & 0x80000000_00000000L) != 0L;
+    }
+    
 }

@@ -3,14 +3,14 @@ package com.aldogg.sorter.float_.st;
 import com.aldogg.sorter.BitSorterUtils;
 import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.Section;
-import com.aldogg.sorter.float_.FloatBitMaskSorter;
+import com.aldogg.sorter.float_.BitMaskSorterFloat;
 
 import static com.aldogg.sorter.BitSorterParams.RADIX_SORT_MAX_BITS;
-import static com.aldogg.sorter.float_.FloatSorterUtils.*;
+import static com.aldogg.sorter.float_.SorterUtilsFloat.*;
 import static com.aldogg.sorter.MaskInfoInt.UPPER_BIT;
 
 
-public class RadixBitSorterFloat extends FloatBitMaskSorter {
+public class RadixBitSorterFloat extends BitMaskSorterFloat {
 
     @Override
     public void sort(float[] array, int start, int endP1, int[] bList) {

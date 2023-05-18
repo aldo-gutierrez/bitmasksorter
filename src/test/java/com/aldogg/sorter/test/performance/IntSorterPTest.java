@@ -3,14 +3,15 @@ package com.aldogg.sorter.test.performance;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.generators.IntGenerator;
-import com.aldogg.sorter.int_.IntSorter;
-import com.aldogg.sorter.int_.collection.EntityInt1;
-import com.aldogg.sorter.int_.collection.IntComparator;
-import com.aldogg.sorter.int_.collection.ObjectIntSorter;
-import com.aldogg.sorter.int_.collection.mt.JavaSorterMTObjectInt;
-import com.aldogg.sorter.int_.collection.mt.RadixBitSorterMTObjectInt;
-import com.aldogg.sorter.int_.collection.st.JavaSorterObjectInt;
-import com.aldogg.sorter.int_.collection.st.RadixBitSorterObjectInt;
+import com.aldogg.sorter.generic.RadixBitSorterGenericInt;
+import com.aldogg.sorter.generic.SorterGenericInt;
+import com.aldogg.sorter.int_.SorterInt;
+import com.aldogg.sorter.int_.object.EntityInt1;
+import com.aldogg.sorter.int_.object.IntMapper;
+import com.aldogg.sorter.int_.object.mt.JavaSorterMTObjectInt;
+import com.aldogg.sorter.int_.object.mt.RadixBitSorterMTObjectInt;
+import com.aldogg.sorter.int_.object.st.JavaSorterObjectInt;
+import com.aldogg.sorter.int_.object.st.RadixBitSorterObjectInt;
 import com.aldogg.sorter.int_.mt.JavaSorterMTInt;
 import com.aldogg.sorter.int_.mt.MixedBitSorterMTInt;
 import com.aldogg.sorter.int_.mt.QuickBitSorterMTInt;
@@ -35,11 +36,11 @@ public class IntSorterPTest extends BaseTest {
 
     @Test
     public void speedTestPositiveIntST() throws IOException {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
         BufferedWriter writer = getWriter("test-results/speed_positiveInt_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
-        TestAlgorithms<IntSorter> testAlgorithms;
+        TestAlgorithms<SorterInt> testAlgorithms;
 
         //heatup
         testAlgorithms = new TestAlgorithms<>(sorters);
@@ -72,12 +73,12 @@ public class IntSorterPTest extends BaseTest {
 
     @Test
     public void speedTestSignedIntSt() throws IOException {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
 
         BufferedWriter writer = getWriter("test-results/speed_signedInt_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
-        TestAlgorithms<IntSorter> testAlgorithms;
+        TestAlgorithms<SorterInt> testAlgorithms;
 
         //heatup
         testAlgorithms = new TestAlgorithms<>(sorters);
@@ -115,11 +116,11 @@ public class IntSorterPTest extends BaseTest {
 
     @Test
     public void speedTestPositiveIntMT() throws IOException {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         BufferedWriter writer = getWriter("test-results/speed_positiveInt_mt_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
-        TestAlgorithms<IntSorter> testAlgorithms;
+        TestAlgorithms<SorterInt> testAlgorithms;
 
         //heatup
         testAlgorithms = new TestAlgorithms<>(sorters);
@@ -159,20 +160,10 @@ public class IntSorterPTest extends BaseTest {
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
 
-        ObjectIntSorter[] sorters = new ObjectIntSorter[]{new JavaSorterObjectInt(), new JavaSorterMTObjectInt(), new RadixBitSorterObjectInt(), new RadixBitSorterMTObjectInt()};
-        TestAlgorithms<ObjectIntSorter> testAlgorithms;
+        SorterGenericInt[] sorters = new SorterGenericInt[]{new JavaSorterObjectInt(), new JavaSorterMTObjectInt(), new RadixBitSorterObjectInt(), new RadixBitSorterMTObjectInt(), new RadixBitSorterGenericInt()};
+        TestAlgorithms<SorterGenericInt> testAlgorithms;
 
-        IntComparator<EntityInt1> comparator = new IntComparator<EntityInt1>() {
-            @Override
-            public int value(EntityInt1 o) {
-                return o.getId();
-            }
-
-            @Override
-            public int compare(EntityInt1 entity1, EntityInt1 t1) {
-                return Integer.compare(entity1.getId(), t1.getId());
-            }
-        };
+        IntMapper<EntityInt1> mapper = o -> o.getId();
 
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(SEED);
@@ -183,7 +174,7 @@ public class IntSorterPTest extends BaseTest {
 
         //heatup
         testAlgorithms = new TestAlgorithms<>(sorters);
-        testSpeedObjectInt(comparator, HEAT_ITERATIONS, params, testAlgorithms);
+        testSpeedObjectInt(mapper, HEAT_ITERATIONS, params, testAlgorithms);
         testAlgorithms.printTestSpeed(params, null);
         System.out.println("----------------------");
 
@@ -195,7 +186,7 @@ public class IntSorterPTest extends BaseTest {
             for (int size : new int[]{10000, 100000, 1000000, 10000000}) {
                 testAlgorithms = new TestAlgorithms<>(sorters);
                 params.size = size;
-                testSpeedObjectInt(comparator, ITERATIONS, params, testAlgorithms);
+                testSpeedObjectInt(mapper, ITERATIONS, params, testAlgorithms);
                 testAlgorithms.printTestSpeed(params, writer);
             }
             System.out.println("----------------------");
@@ -207,12 +198,12 @@ public class IntSorterPTest extends BaseTest {
 
     @Test
     public void speedTestSignedIntMt() throws IOException {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
         BufferedWriter writer = getWriter("test-results/speed_signedInt_mt_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
-        TestAlgorithms<IntSorter> testAlgorithms;
+        TestAlgorithms<SorterInt> testAlgorithms;
 
         //heatup
         testAlgorithms = new TestAlgorithms<>(sorters);
@@ -252,13 +243,13 @@ public class IntSorterPTest extends BaseTest {
     public void speedTestUnsigned() throws IOException {
         BufferedWriter writer = getWriter("test-results/speed_unsignedInt_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
-        IntSorter[] sorters = new IntSorter[]{new RadixByteSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        SorterInt[] sorters = new SorterInt[]{new RadixByteSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
-        for (IntSorter sorter : sorters) {
+        for (SorterInt sorter : sorters) {
             sorter.setUnsigned(true);
         }
 
-        TestAlgorithms<IntSorter> testAlgorithms;
+        TestAlgorithms<SorterInt> testAlgorithms;
 
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(SEED);
@@ -289,7 +280,7 @@ public class IntSorterPTest extends BaseTest {
 
     @Test
     public void speedTestIncDec() throws IOException {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new JavaSorterMTInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
         BufferedWriter writer = getWriter("speed_sorted_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
@@ -334,7 +325,7 @@ public class IntSorterPTest extends BaseTest {
     }
 
 
-    private void testSpeedObjectInt(IntComparator comparator, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms) {
+    private void testSpeedObjectInt(IntMapper mapper, int iterations, GeneratorParams params, TestAlgorithms testAlgorithms) {
         Function<GeneratorParams, int[]> function = IntGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             int[] listInt = function.apply(params);
@@ -343,26 +334,26 @@ public class IntSorterPTest extends BaseTest {
                 int randomInt = listInt[i];
                 list[i] = new EntityInt1(randomInt, randomInt + "");
             }
-            testObjectIntSort(list, comparator, testAlgorithms);
+            testObjectIntSort(list, mapper, testAlgorithms);
         }
     }
 
-    public void testObjectIntSort(Object[] list, IntComparator comparator, TestAlgorithms<ObjectIntSorter> testAlgorithms) {
+    public void testObjectIntSort(Object[] list, IntMapper mapper, TestAlgorithms<SorterGenericInt> testAlgorithms) {
         Object[] baseListSorted = null;
-        ObjectIntSorter[] sorters = testAlgorithms.getAlgorithms();
+        SorterGenericInt[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
-            ObjectIntSorter sorter = sorters[i];
+            SorterGenericInt sorter = sorters[i];
             Object[] listAux = Arrays.copyOf(list, list.length);
             try {
                 long start = System.nanoTime();
-                sorter.sort(listAux, comparator);
+                sorter.sort(listAux, mapper);
                 long elapsed = System.nanoTime() - start;
                 if (i == 0) {
                     baseListSorted = listAux;
                 } else {
                     if (validateResult) {
                         for (int j = 0; j < listAux.length; j++) {
-                            assertEquals(comparator.value(baseListSorted[j]), comparator.value(listAux[j]));
+                            assertEquals(mapper.value(baseListSorted[j]), mapper.value(listAux[j]));
                         }
 //                        assertArrayEquals(baseListSorted, listAux);
                     }

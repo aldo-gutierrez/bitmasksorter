@@ -1,23 +1,23 @@
 package com.aldogg.sorter.int_.st;
 
 import com.aldogg.sorter.MaskInfoInt;
-import com.aldogg.sorter.int_.IntBitMaskSorter;
-import com.aldogg.sorter.int_.IntSorterUtils;
+import com.aldogg.sorter.int_.BitMaskSorterInt;
+import com.aldogg.sorter.int_.SorterUtilsInt;
 
 /**
  * Basic XXXSorter
  * It doesn't include a count sort
- * It doesn't include a comparator sort for small lists
+ * It doesn't include a mapper sort for small lists
  */
-public class QuickBitBaseSorterInt extends IntBitMaskSorter {
+public class QuickBitBaseSorterInt extends BitMaskSorterInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, int[] bList, Object multiThreadParams) {
+    public void sort(int[] array, int start, int endP1, int[] bList, Object params) {
         if (bList[0] == MaskInfoInt.UPPER_BIT) { //there are negative numbers
             int sortMask = 1 << bList[0];
             int finalLeft = isUnsigned()
-                    ? IntSorterUtils.partitionNotStable(array, start, endP1, sortMask)
-                    : IntSorterUtils.partitionReverseNotStable(array, start, endP1, sortMask);
+                    ? SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask)
+                    : SorterUtilsInt.partitionReverseNotStable(array, start, endP1, sortMask);
             MaskInfoInt maskInfo;
             int mask;
             if (finalLeft - start > 1) {
@@ -43,7 +43,7 @@ public class QuickBitBaseSorterInt extends IntBitMaskSorter {
             return;
         }
         int sortMask = 1 << bList[kIndex];
-        int finalLeft = IntSorterUtils.partitionNotStable(array, start, endP1, sortMask);
+        int finalLeft = SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask);
         if (finalLeft - start > 1) {
             sort(array, start, finalLeft, bList, kIndex + 1);
         }

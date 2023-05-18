@@ -1,17 +1,17 @@
 package com.aldogg.sorter.int_.st;
 
 import com.aldogg.sorter.MaskInfoInt;
-import com.aldogg.sorter.int_.IntBitMaskSorter;
-import com.aldogg.sorter.int_.IntSorterUtils;
+import com.aldogg.sorter.int_.BitMaskSorterInt;
+import com.aldogg.sorter.int_.SorterUtilsInt;
 
 
 import static com.aldogg.sorter.BitSorterParams.*;
-import static com.aldogg.sorter.int_.IntSorterUtils.sortShortK;
+import static com.aldogg.sorter.int_.SorterUtilsInt.sortShortK;
 
-public class QuickBitSorterInt extends IntBitMaskSorter {
+public class QuickBitSorterInt extends BitMaskSorterInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, int[] bList, Object multiThreadParams) {
+    public void sort(int[] array, int start, int endP1, int[] bList, Object params) {
         sort(array, start, endP1, bList, 0, false);
     }
 
@@ -39,7 +39,7 @@ public class QuickBitSorterInt extends IntBitMaskSorter {
         }
 
         int sortMask = 1 << bList[kIndex];
-        int finalLeft = IntSorterUtils.partitionNotStable(array, start, endP1, sortMask);
+        int finalLeft = SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask);
         if (recalculate) {
             if (finalLeft - start > 1) {
                 sort(array, start, finalLeft, bList, kIndex + 1);
@@ -76,7 +76,7 @@ public class QuickBitSorterInt extends IntBitMaskSorter {
         }
 
         int sortMask = 1 << bList[kIndex];
-        int finalLeft = IntSorterUtils.partitionNotStable(array, start, endP1, sortMask);
+        int finalLeft = SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask);
 
         if (finalLeft - start > 1) {
             sort(array, start, finalLeft, bList, kIndex + 1);

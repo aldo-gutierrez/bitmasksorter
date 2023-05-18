@@ -1,6 +1,6 @@
 package com.aldogg.sorter;
 
-import com.aldogg.sorter.int_.IntSorterUtils;
+import com.aldogg.sorter.int_.SorterUtilsInt;
 
 import java.util.*;
 
@@ -50,7 +50,7 @@ public class BitSorterUtils {
 
     public static Section[] getProcessedSections(int[] bListParam, int bListStart, int bListEnd, int maxBitsDigit) {
         int[] bList = Arrays.copyOfRange(bListParam, bListStart, bListEnd + 1);
-        IntSorterUtils.reverse(bList, 0, bList.length);
+        SorterUtilsInt.reverse(bList, 0, bList.length);
         List<Section> sections = new ArrayList<>();
         Section section = new Section();
         section.shift = bList[0];

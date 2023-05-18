@@ -2,7 +2,7 @@ package com.aldogg.sorter.test;
 
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
-import com.aldogg.sorter.int_.IntSorter;
+import com.aldogg.sorter.int_.SorterInt;
 import com.aldogg.sorter.int_.st.JavaSorterInt;
 import com.aldogg.sorter.int_.st.QuickBitSorterInt;
 import com.aldogg.sorter.int_.st.RadixBitSorterInt;
@@ -16,7 +16,7 @@ import java.util.Random;
 public class SorterSecondTest extends BaseTest {
     @Test
     public void testFunctionsSingleThread() throws IOException {
-        IntSorter[] sorters = new IntSorter[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
 
         GeneratorParams params = new GeneratorParams();
         params.random = new Random();
@@ -31,7 +31,7 @@ public class SorterSecondTest extends BaseTest {
         for (GeneratorFunctions a : values) {
             if (!a.equals(GeneratorFunctions.RANDOM_REAL_RANGE)) {
                 params.function = a;
-                TestAlgorithms<IntSorter> testAlgorithms = new TestAlgorithms<>(sorters);
+                TestAlgorithms<SorterInt> testAlgorithms = new TestAlgorithms<>(sorters);
                 testSpeedInt(ITERATIONS, params, testAlgorithms);
                 testAlgorithms.printTestSpeed(params, writer);
             }

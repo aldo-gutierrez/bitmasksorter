@@ -1,12 +1,12 @@
 package com.aldogg.sorter.int_.st;
 
 import com.aldogg.sorter.MaskInfoInt;
-import com.aldogg.sorter.int_.IntSorter;
-import com.aldogg.sorter.int_.IntSorterUtils;
+import com.aldogg.sorter.int_.SorterInt;
+import com.aldogg.sorter.int_.SorterUtilsInt;
 
-import static com.aldogg.sorter.int_.IntSorterUtils.partitionStable;
+import static com.aldogg.sorter.int_.SorterUtilsInt.partitionStable;
 
-public class RadixBitBaseSorterInt implements IntSorter {
+public class RadixBitBaseSorterInt implements SorterInt {
 
     protected boolean unsigned = false;
 
@@ -29,7 +29,7 @@ public class RadixBitBaseSorterInt implements IntSorter {
         }
         if (bList[0] == MaskInfoInt.UPPER_BIT) { //there are negative numbers and positive numbers
             int sortMask = 1 << bList[0];
-            int finalLeft = isUnsigned() ? IntSorterUtils.partitionNotStable(array, start, endP1, sortMask) : IntSorterUtils.partitionReverseNotStable(array, start, endP1, sortMask);
+            int finalLeft = isUnsigned() ? SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask) : SorterUtilsInt.partitionReverseNotStable(array, start, endP1, sortMask);
             if (finalLeft - start > 1) { //sort negative numbers
                 int[] aux = new int[finalLeft - start];
                 maskInfo = MaskInfoInt.calculateMask(array, start, finalLeft);

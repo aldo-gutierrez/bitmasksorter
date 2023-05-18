@@ -1,7 +1,7 @@
 package com.aldogg.sorter.test;
 
 import com.aldogg.sorter.generators.*;
-import com.aldogg.sorter.int_.IntSorter;
+import com.aldogg.sorter.int_.SorterInt;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.*;
@@ -33,11 +33,11 @@ public class BaseTest {
         }
     }
 
-    public void testSort(int[] list, TestAlgorithms<IntSorter> testAlgorithms) {
+    public void testSort(int[] list, TestAlgorithms<SorterInt> testAlgorithms) {
         int[] baseListSorted = null;
-        IntSorter[] sorters = testAlgorithms.getAlgorithms();
+        SorterInt[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
-            IntSorter sorter = sorters[i];
+            SorterInt sorter = sorters[i];
             int[] listAux = Arrays.copyOf(list, list.length);
             try {
                 long start = System.nanoTime();
