@@ -110,7 +110,7 @@ public class RadixBitSorterObjectLong implements SorterObjectLong {
         int startAux = 0;
 
         for (Section section : finalSectionList) {
-            if (!section.isSectionAtEnd()) {
+            if (!(section.shift == 0)) {
                 partitionStableGroupBits(oArray, array, start, section, oAux, aux, startAux, n);
             } else {
                 partitionStableLastBits(oArray, array, start, section, oAux, aux, startAux, n);

@@ -48,7 +48,7 @@ public class RadixBitSorterMTInt extends BitMaskSorterMTInt {
 
         if (sections.length == 1) {
             Section section = sections[0];
-            if (section.isSectionAtEnd()) {
+            if (section.shift == 0) {
                 if (n > 2000000) {
                     leftX = SorterUtilsInt.partitionStableLastBitsParallel(array, start, section, aux, n);
                 } else {

@@ -149,7 +149,7 @@ public class RadixBitSorterMTObjectInt implements SorterGenericInt {
 
         if (sections.length == 1) {
             Section section = sections[0];
-            if (!section.isSectionAtEnd()) {
+            if (!(section.shift == 0)) {
                 leftX = partitionStableGroupBits(oArray, array, start, section, oAux, aux, 0, n);
             } else {
                 leftX = partitionStableLastBits(oArray, array, start, section, oAux, aux, 0, n);

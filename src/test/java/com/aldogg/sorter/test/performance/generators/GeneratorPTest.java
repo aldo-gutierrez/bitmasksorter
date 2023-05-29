@@ -3,7 +3,7 @@ package com.aldogg.sorter.test.performance.generators;
 import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
-import com.aldogg.sorter.int_.DestructiveCountSortInt;
+import com.aldogg.sorter.int_.CountSortInt;
 import com.aldogg.sorter.int_.SorterInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 import com.aldogg.sorter.int_.mt.JavaSorterMTInt;
@@ -73,7 +73,7 @@ public class GeneratorPTest extends BaseTest {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
                 int mask = maskInfo.getMask();
                 int[] bList = MaskInfoInt.getMaskAsArray(mask);
-                DestructiveCountSortInt.countSort(array, start, endP1, bList, 0);
+                CountSortInt.countSort(array, start, endP1, bList, 0);
             }
 
             @Override

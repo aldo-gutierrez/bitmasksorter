@@ -397,11 +397,12 @@ public class SorterUtilsInt {
 
     public static int[] partitionStableNGroupBits(final int[] array, final int start, Section[] sections, final int[] aux, final int startAux, final int n) {
         final int endP1 = start + n;
-        int totalLength = 0;
+        int bits = 0;
         for (Section section : sections) {
-            totalLength += section.bits;
+            bits += section.bits;
+            section.calculateIntMask();
         }
-        final int countLength = 1 << totalLength;
+        final int countLength = 1 << bits;
         final int[] count = new int[countLength];
         for (int i = start; i < endP1; ++i) {
             int element = array[i];
@@ -572,7 +573,7 @@ public class SorterUtilsInt {
     private static void executeSorter(int[] array, int start, int endP1, int[] bList, int kIndex, ShortSorter sorter) {
         int n = endP1 - start;
         if (sorter.equals(CountSort)) {
-            DestructiveCountSortInt.countSort(array, start, endP1, bList, kIndex);
+            CountSortInt.countSort(array, start, endP1, bList, kIndex);
         } else if (sorter.equals(StableByte)) {
             int[] aux = new int[n];
             radixSort(array, start, endP1, bList, kIndex, bList.length - 1, aux, 0);

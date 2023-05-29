@@ -31,7 +31,7 @@ public class RadixBitSorterInt extends BitMaskSorterInt {
         int[] arrayOrig = array;
         int startOrig = start;
         for (Section section : finalSectionList) {
-            if (!section.isSectionAtEnd()) {
+            if (!(section.shift == 0)) {
                 partitionStableOneGroupBits(array, start, section, aux, startAux, n);
             } else {
                 partitionStableLastBits(array, start, section, aux, startAux, n);

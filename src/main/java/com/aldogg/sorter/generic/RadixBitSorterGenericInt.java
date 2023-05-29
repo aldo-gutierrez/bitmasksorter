@@ -33,7 +33,7 @@ public class RadixBitSorterGenericInt<T> extends BitMaskSorterGenericInt<T> {
         T[] arrayOrig = array;
         int startOrig = start;
         for (Section section : finalSectionList) {
-            if (!section.isSectionAtEnd()) {
+            if (!(section.shift == 0)) {
                 partitionStableOneGroupBits(array, start, section, aux, startAux, n, mapper);
             } else {
                 partitionStableLastBits(array, start, section, aux, startAux, n, mapper);

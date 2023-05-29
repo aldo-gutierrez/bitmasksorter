@@ -79,7 +79,7 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
 
         if (sections.length == 1) {
             Section section = sections[0];
-            if (section.isSectionAtEnd()) {
+            if (section.shift == 0) {
                 leftX = SorterUtilsInt.partitionStableLastBits(array, start, section, aux, 0, n);
                 System.arraycopy(aux, 0, array, start, n);
             } else {

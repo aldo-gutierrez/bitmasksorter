@@ -11,7 +11,7 @@ public class BitSorterUtils {
         int result = 0;
         for (int i = 0; i < sections.length; i++) {
             Section section = sections[i];
-            int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
+            int mask = section.getIntMask();
             int bits = (element & mask) >> section.shift;
             result = result << section.bits | bits;
         }
@@ -52,26 +52,21 @@ public class BitSorterUtils {
         int[] bList = Arrays.copyOfRange(bListParam, bListStart, bListEnd + 1);
         SorterUtilsInt.reverse(bList, 0, bList.length);
         List<Section> sections = new ArrayList<>();
-        Section section = new Section();
-        section.shift = bList[0];
-        section.bits = 1;
+        int shift = bList[0];
+        int bits = 1;
         int b = 1;
         while (b < bList.length) {
             int bitIndex = bList[b];
-            if (bitIndex <= section.shift + maxBitsDigit - 1) {
-                section.bits = (bitIndex - section.shift + 1);
+            if (bitIndex <= shift + maxBitsDigit - 1) {
+                bits = (bitIndex - shift + 1);
             } else {
-                sections.add(section);
-                section = new Section();
-                section.shift = bitIndex;
-                section.bits = 1;
+                sections.add(new Section(bits, shift));
+                shift = bitIndex;
+                bits = 1;
             }
             b++;
         }
-        sections.add(section);
-        for (Section sectionX : sections) {
-            sectionX.start = sectionX.shift + sectionX.bits - 1;
-        }
+        sections.add(new Section(bits, shift));
         return sections.toArray(new Section[]{});
     }
 
