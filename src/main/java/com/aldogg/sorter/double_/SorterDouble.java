@@ -3,6 +3,7 @@ package com.aldogg.sorter.double_;
 import com.aldogg.sorter.Sorter;
 
 import java.util.List;
+import java.util.ListIterator;
 
 public interface SorterDouble extends Sorter {
 
@@ -24,13 +25,18 @@ public interface SorterDouble extends Sorter {
         int n = endP1 - start;
         double[] a = new double[n];
         int j = 0;
-        for (int i = start; i < endP1; i++, j++) {
-            a[j] = list.get(i);
+        List<Double> subList = start == 0 && endP1 == list.size() ? list : list.subList(start, endP1);
+        for (Double value : subList) {
+            a[j] = value;
+            j++;
         }
         sort(a, 0, n);
         j = 0;
-        for (int i = start; i < endP1; i++, j++) {
-            list.set(i, a[j]);
+        ListIterator<Double> iterator = subList.listIterator();
+        while (iterator.hasNext()) {
+            iterator.next();
+            iterator.set(a[j]);
+            j++;
         }
     }
 

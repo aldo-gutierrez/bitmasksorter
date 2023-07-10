@@ -3,6 +3,7 @@ package com.aldogg.sorter.long_;
 import com.aldogg.sorter.Sorter;
 
 import java.util.List;
+import java.util.ListIterator;
 
 public interface SorterLong extends Sorter {
 
@@ -24,13 +25,18 @@ public interface SorterLong extends Sorter {
         int n = endP1 - start;
         long[] a = new long[n];
         int j = 0;
-        for (int i = start; i < endP1; i++, j++) {
-            a[j] = list.get(i);
+        List<Long> subList = start == 0 && endP1 == list.size() ? list : list.subList(start, endP1);
+        for (Long value : subList) {
+            a[j] = value;
+            j++;
         }
         sort(a, 0, n);
         j = 0;
-        for (int i = start; i < endP1; i++, j++) {
-            list.set(i, a[j]);
+        ListIterator<Long> iterator = subList.listIterator();
+        while (iterator.hasNext()) {
+            iterator.next();
+            iterator.set(a[j]);
+            j++;
         }
     }
 

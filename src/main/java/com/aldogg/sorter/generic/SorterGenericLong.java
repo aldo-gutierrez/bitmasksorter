@@ -4,6 +4,7 @@ import com.aldogg.sorter.Sorter;
 import com.aldogg.sorter.long_.object.LongMapper;
 
 import java.util.List;
+import java.util.ListIterator;
 
 public interface SorterGenericLong<T> extends Sorter {
     default boolean isIee754() {
@@ -28,13 +29,18 @@ public interface SorterGenericLong<T> extends Sorter {
         int n = endP1 - start;
         T[] a = (T[]) new Object[n];
         int j = 0;
-        for (int i = start; i < endP1; i++, j++) {
-            a[j] = list.get(i);
+        List<T> subList = start == 0 && endP1 == list.size() ? list : list.subList(start, endP1);
+        for (T value : subList) {
+            a[j] = value;
+            j++;
         }
         sort(a, 0, n, mapper);
         j = 0;
-        for (int i = start; i < endP1; i++, j++) {
-            list.set(i, a[j]);
+        ListIterator<T> iterator = subList.listIterator();
+        while (iterator.hasNext()) {
+            iterator.next();
+            iterator.set(a[j]);
+            j++;
         }
     }
 
