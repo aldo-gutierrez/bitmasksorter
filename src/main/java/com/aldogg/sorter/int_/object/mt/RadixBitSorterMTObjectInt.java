@@ -3,7 +3,7 @@ package com.aldogg.sorter.int_.object.mt;
 import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.parallel.ParallelRunner;
 import com.aldogg.sorter.*;
-import com.aldogg.sorter.generic.SorterGenericInt;
+import com.aldogg.sorter.generic.SorterObjectInt;
 import com.aldogg.sorter.generic.SorterUtilsGeneric;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 import com.aldogg.sorter.int_.object.IntMapper;
@@ -16,7 +16,7 @@ import static com.aldogg.sorter.int_.SorterUtilsInt.*;
 import static com.aldogg.sorter.int_.object.SorterUtilsObjectInt.*;
 import static com.aldogg.sorter.int_.object.SorterUtilsObjectInt.partitionReverseNotStable;
 
-public class RadixBitSorterMTObjectInt implements SorterGenericInt {
+public class RadixBitSorterMTObjectInt implements SorterObjectInt {
 
     protected final BitSorterMTParams params = BitSorterMTParams.getMTParams();
 
@@ -43,7 +43,7 @@ public class RadixBitSorterMTObjectInt implements SorterGenericInt {
     }
 
     @Override
-    public void sort(Object[] oArray, int start, int endP1, IntMapper mapper) {
+    public void sort(Object[] oArray, IntMapper mapper, int start, int endP1) {
         int n = endP1 - start;
         if (n < 2) {
             return;
@@ -52,7 +52,7 @@ public class RadixBitSorterMTObjectInt implements SorterGenericInt {
         if (n <= params.getDataSizeForThreads() || maxThreads <= 1) {
             RadixBitSorterObjectInt stSorter = new RadixBitSorterObjectInt();
             stSorter.setUnsigned(isUnsigned());
-            stSorter.sort(oArray, start, endP1, mapper);
+            stSorter.sort(oArray, mapper, start, endP1);
             return;
         }
 

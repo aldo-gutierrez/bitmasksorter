@@ -6,7 +6,7 @@ import com.aldogg.sorter.long_.object.LongMapper;
 import static com.aldogg.sorter.generic.SorterUtilsGenericLong.partitionNotStableUpperBit;
 import static com.aldogg.sorter.generic.SorterUtilsGenericLong.partitionReverseNotStableUpperBit;
 
-public class BitMaskSorterGenericLong<T> implements SorterGenericLong<T> {
+public class BitMaskSorterGenericLong<T> implements SorterObjectLong<T> {
 
     protected boolean unsigned = false;
 
@@ -16,7 +16,7 @@ public class BitMaskSorterGenericLong<T> implements SorterGenericLong<T> {
     }
 
     @Override
-    public void sort(T[] array, int start, int endP1, LongMapper<T> mapper) {
+    public void sort(T[] array, LongMapper<T> mapper, int start, int endP1) {
         int n = endP1 - start;
         if (n < 2) {
             return;

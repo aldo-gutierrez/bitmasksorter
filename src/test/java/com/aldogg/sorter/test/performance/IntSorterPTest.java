@@ -4,7 +4,7 @@ import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.generators.IntGenerator;
 import com.aldogg.sorter.generic.RadixBitSorterGenericInt;
-import com.aldogg.sorter.generic.SorterGenericInt;
+import com.aldogg.sorter.generic.SorterObjectInt;
 import com.aldogg.sorter.int_.SorterInt;
 import com.aldogg.sorter.int_.object.EntityInt1;
 import com.aldogg.sorter.int_.object.IntMapper;
@@ -160,8 +160,8 @@ public class IntSorterPTest extends BaseTest {
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
 
-        SorterGenericInt[] sorters = new SorterGenericInt[]{new JavaSorterObjectInt(), new JavaSorterMTObjectInt(), new RadixBitSorterObjectInt(), new RadixBitSorterMTObjectInt(), new RadixBitSorterGenericInt()};
-        TestAlgorithms<SorterGenericInt> testAlgorithms;
+        SorterObjectInt[] sorters = new SorterObjectInt[]{new JavaSorterObjectInt(), new JavaSorterMTObjectInt(), new RadixBitSorterObjectInt(), new RadixBitSorterMTObjectInt(), new RadixBitSorterGenericInt()};
+        TestAlgorithms<SorterObjectInt> testAlgorithms;
 
         IntMapper<EntityInt1> mapper = o -> o.getId();
 
@@ -338,11 +338,11 @@ public class IntSorterPTest extends BaseTest {
         }
     }
 
-    public void testObjectIntSort(Object[] list, IntMapper mapper, TestAlgorithms<SorterGenericInt> testAlgorithms) {
+    public void testObjectIntSort(Object[] list, IntMapper mapper, TestAlgorithms<SorterObjectInt> testAlgorithms) {
         Object[] baseListSorted = null;
-        SorterGenericInt[] sorters = testAlgorithms.getAlgorithms();
+        SorterObjectInt[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
-            SorterGenericInt sorter = sorters[i];
+            SorterObjectInt sorter = sorters[i];
             Object[] listAux = Arrays.copyOf(list, list.length);
             try {
                 long start = System.nanoTime();

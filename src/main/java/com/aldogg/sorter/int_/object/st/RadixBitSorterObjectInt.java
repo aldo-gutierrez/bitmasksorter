@@ -1,7 +1,7 @@
 package com.aldogg.sorter.int_.object.st;
 
 import com.aldogg.sorter.*;
-import com.aldogg.sorter.generic.SorterGenericInt;
+import com.aldogg.sorter.generic.SorterObjectInt;
 import com.aldogg.sorter.generic.SorterUtilsGeneric;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 import com.aldogg.sorter.int_.object.IntMapper;
@@ -12,7 +12,7 @@ import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedSigned;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedUnSigned;
 import static com.aldogg.sorter.int_.object.SorterUtilsObjectInt.*;
 
-public class RadixBitSorterObjectInt implements SorterGenericInt {
+public class RadixBitSorterObjectInt implements SorterObjectInt {
 
     boolean unsigned = false;
     boolean stable = false;
@@ -37,7 +37,7 @@ public class RadixBitSorterObjectInt implements SorterGenericInt {
     }
 
     @Override
-    public void sort(Object[] oArray, int start, int endP1, IntMapper mapper) {
+    public void sort(Object[] oArray, IntMapper mapper, int start, int endP1) {
         int n = endP1 - start;
         if (n < 2) {
             return;
