@@ -530,7 +530,7 @@ public class SorterUtilsInt {
     }
 
 
-    public enum ShortSorter {StableByte, StableBit, CountSort}
+    public enum ShortSorter {StableByte, StableBit, PCountSort}
 
     /**
      * Based on BasicTest.smallListAlgorithmSpeedTest
@@ -538,21 +538,21 @@ public class SorterUtilsInt {
     static final ShortSorter[][] shortSorters = new ShortSorter[][]
             {
                     {StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableByte, StableBit, StableByte, StableBit,},
-                    {StableBit, StableBit, StableBit, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort, CountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, CountSort,},
+                    {StableBit, StableBit, StableBit, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
+                    {StableBit, StableBit, StableBit, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
+                    {StableBit, StableBit, StableBit, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
+                    {StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
+                    {StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
+                    {StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
+                    {StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
+                    {StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort,},
+                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort,},
             };
 
 
@@ -563,7 +563,7 @@ public class SorterUtilsInt {
         if (log2Nm1 <= 15 && bLengthM1 <= 15) {
             sorter = shortSorters[bLengthM1][log2Nm1];
         } else if (bLengthM1 <= 15) {
-            sorter = CountSort;
+            sorter = PCountSort;
         } else {
             sorter = StableByte;
         }
@@ -572,8 +572,8 @@ public class SorterUtilsInt {
 
     private static void executeSorter(int[] array, int start, int endP1, int[] bList, int kIndex, ShortSorter sorter) {
         int n = endP1 - start;
-        if (sorter.equals(CountSort)) {
-            CountSortInt.countSort(array, start, endP1, bList, kIndex);
+        if (sorter.equals(PCountSort)) {
+            PCountSortInt.countSort(array, start, endP1, bList, kIndex);
         } else if (sorter.equals(StableByte)) {
             int[] aux = new int[n];
             radixSort(array, start, endP1, bList, kIndex, bList.length - 1, aux, 0);

@@ -31,11 +31,13 @@ public class BitSorterParams {
         return shortKBits;
     }
 
-    public void setShortKBits(int countingSortBits) {
-        if (countingSortBits < 4) {
-            throw new InvalidParameterException("maxBitsForCountingSort needs to be >=4");
+    public void setShortKBits(int shortKBits) {
+        if (shortKBits < 4) {
+            throw new InvalidParameterException("shortKBits needs to be >=4");
+        } else if (shortKBits > 24) {
+            throw new InvalidParameterException("shortKBits needs to be <=24");
         }
-        this.shortKBits = countingSortBits;
+        this.shortKBits = shortKBits;
     }
 
     public BitSorterParams() {
