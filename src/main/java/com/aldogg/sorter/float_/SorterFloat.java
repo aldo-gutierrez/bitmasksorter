@@ -13,10 +13,6 @@ public interface SorterFloat extends Sorter {
 
     void sort(float[] array, int start, int endP1);
 
-    default void sort(float[] array, int start, int endP1, int[] bList) {
-        throw new UnsupportedOperationException();
-    }
-
     default void sort(List<Float> list) {
         sort(list, 0, list.size());
     }

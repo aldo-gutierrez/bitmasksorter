@@ -7,7 +7,7 @@ import com.aldogg.sorter.MaskInfoLong;
 import static com.aldogg.sorter.double_.SorterUtilsDouble.listIsOrderedSigned;
 import static com.aldogg.sorter.double_.SorterUtilsDouble.reverse;
 
-public class BitMaskSorterDouble implements SorterDouble {
+public abstract class BitMaskSorterDouble implements SorterDouble {
 
     protected BitSorterParams params = BitSorterParams.getSTParams();
 
@@ -15,6 +15,7 @@ public class BitMaskSorterDouble implements SorterDouble {
         this.params = params;
     }
 
+    abstract public void sort(double[] array, int start, int endP1, int[] bList);
     @Override
     public void sort(double[] array, int start, int endP1) {
         int n = endP1 - start;

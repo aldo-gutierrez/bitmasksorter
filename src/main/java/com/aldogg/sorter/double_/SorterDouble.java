@@ -13,10 +13,6 @@ public interface SorterDouble extends Sorter {
 
     void sort(double[] array, int start, int endP1);
 
-    default void sort(double[] array, int start, int endP1, int[] bList) {
-        throw new UnsupportedOperationException();
-    }
-
     default void sort(List<Double> list) {
         sort(list, 0, list.size());
     }

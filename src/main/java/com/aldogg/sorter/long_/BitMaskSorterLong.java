@@ -26,6 +26,8 @@ public abstract class BitMaskSorterLong implements SorterLong {
         this.unsigned = unsigned;
     }
 
+    abstract public void sort(long[] array, int start, int endP1, int[] bList);
+
     @Override
     public void sort(long[] array, int start, int endP1) {
         int n = endP1 - start;

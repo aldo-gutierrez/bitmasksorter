@@ -18,10 +18,6 @@ public interface SorterGenericInt<T> extends Sorter {
 
     void sort(T[] array, int start, int endP1, IntMapper<T> mapper);
 
-    default void sort(T[] array, int start, int endP1, int[] bList, Object params) {
-        throw new UnsupportedOperationException();
-    }
-
     default void sort(List<T> list, IntMapper<T> mapper) {
         sort(list, 0, list.size(), mapper);
     }

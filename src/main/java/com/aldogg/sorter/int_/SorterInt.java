@@ -11,10 +11,6 @@ public interface SorterInt extends Sorter {
 
     void sort(int[] array, int start, int endP1);
 
-    default void sort(int[] array, int start, int endP1, int[] bList, Object params) {
-        throw new UnsupportedOperationException();
-    }
-
     default void sort(List<Integer> list) {
         sort(list, 0, list.size());
     }

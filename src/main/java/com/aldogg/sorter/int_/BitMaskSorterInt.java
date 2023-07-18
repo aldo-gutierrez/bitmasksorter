@@ -35,6 +35,7 @@ public abstract class BitMaskSorterInt implements SorterInt {
         this.unsigned = unsigned;
     }
 
+    public abstract void sort(int[] array, int start, int endP1, int[] bList, Object params);
     @Override
     public void sort(int[] array, int start, int endP1) {
         int n = endP1 - start;

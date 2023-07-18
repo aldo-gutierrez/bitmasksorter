@@ -13,10 +13,6 @@ public interface SorterLong extends Sorter {
 
     void sort(long[] array, int start, int endP1);
 
-    default void sort(long[] array, int start, int endP1, int[] bList) {
-        throw new UnsupportedOperationException();
-    }
-
     default void sort(List<Long> list) {
         sort(list, 0, list.size());
     }

@@ -7,13 +7,15 @@ import com.aldogg.sorter.MaskInfoInt;
 import static com.aldogg.sorter.MaskInfoInt.getMaskAsArray;
 import static com.aldogg.sorter.float_.SorterUtilsFloat.*;
 
-public class BitMaskSorterFloat implements SorterFloat {
+public abstract class BitMaskSorterFloat implements SorterFloat {
 
     protected BitSorterParams params = BitSorterParams.getSTParams();
 
     public void setParams(BitSorterParams params) {
         this.params = params;
     }
+
+    abstract public void sort(float[] array, int start, int endP1, int[] bList);
 
     @Override
     public void sort(float[] array, int start, int endP1) {

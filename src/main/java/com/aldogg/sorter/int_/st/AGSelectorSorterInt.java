@@ -59,9 +59,9 @@ public class AGSelectorSorterInt extends BitMaskSorterInt {
         if (bLengthM1 > 27) {
             bLengthM1 = 27;
         }
-        SorterInt sorter;
+        BitMaskSorterInt sorter;
         try {
-            sorter = ((Class<SorterInt>) sorterClasses[bLengthM1][log2Nm1]).newInstance();
+            sorter = ((Class<BitMaskSorterInt>) sorterClasses[bLengthM1][log2Nm1]).newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

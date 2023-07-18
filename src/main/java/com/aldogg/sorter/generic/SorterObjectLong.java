@@ -17,10 +17,6 @@ public interface SorterObjectLong<T> extends Sorter {
 
     void sort(T[] array, LongMapper<T> mapper, int start, int endP1);
 
-    default void sort(T[] array, int start, int endP1, int[] bList, Object params) {
-        throw new UnsupportedOperationException();
-    }
-
     default void sort(List<T> list, LongMapper<T> mapper) {
         sort(list, mapper, 0, list.size());
     }

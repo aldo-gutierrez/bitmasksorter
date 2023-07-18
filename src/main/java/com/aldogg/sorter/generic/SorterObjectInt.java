@@ -18,10 +18,6 @@ public interface SorterObjectInt<T> extends Sorter {
 
     void sort(T[] array, IntMapper<T> mapper, int start, int endP1);
 
-    default void sort(T[] array, int start, int endP1, int[] bList, Object params) {
-        throw new UnsupportedOperationException();
-    }
-
     default void sort(List<T> list, IntMapper<T> mapper) {
         sort(list, mapper, 0, list.size());
     }

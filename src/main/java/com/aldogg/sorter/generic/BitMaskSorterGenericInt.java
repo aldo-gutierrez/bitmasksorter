@@ -15,6 +15,8 @@ public abstract class BitMaskSorterGenericInt<T> implements SorterObjectInt<T> {
         return unsigned;
     }
 
+    abstract public void sort(T[] array, int start, int endP1, int[] bList, Object params);
+
     @Override
     public void sort(T[] array, IntMapper<T> mapper, int start, int endP1) {
         int n = endP1 - start;
