@@ -32,4 +32,7 @@ public class Section {
         mask = MaskInfoLong.getMaskRangeBits(start, shift);
     }
 
+    public static void main(String[] args) {
+        FieldSorterOptions a = new FieldSorterOptions() {};
+    }
 }

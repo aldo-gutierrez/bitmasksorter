@@ -14,30 +14,11 @@ import static com.aldogg.sorter.int_.object.SorterUtilsObjectInt.*;
 
 public class RadixBitSorterObjectInt implements SorterObjectInt {
 
-    boolean unsigned = false;
-    boolean stable = false;
-
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
-
-    @Override
-    public boolean isStable() {
-        return stable;
-    }
-
-    @Override
-    public void setStable(boolean stable) {
-        this.stable = stable;
-    }
+    FieldSorterOptions options;
 
     @Override
     public void sort(Object[] oArray, IntMapper mapper, int start, int endP1) {
+        options = mapper;
         int n = endP1 - start;
         if (n < 2) {
             return;
@@ -46,7 +27,7 @@ public class RadixBitSorterObjectInt implements SorterObjectInt {
         for (int i = 0; i < array.length; i++) {
             array[i] = mapper.value(oArray[i]);
         }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == AnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, start, endP1);
             SorterUtilsGeneric.reverse(oArray, start, endP1);
@@ -67,11 +48,11 @@ public class RadixBitSorterObjectInt implements SorterObjectInt {
             MaskInfoInt maskInfo;
             int mask;
             int sortMask = 1 << bList[0];
-            int finalLeft = isStable()
-                    ? (isUnsigned()
+            int finalLeft = options.isStable()
+                    ? (options.isUnsigned()
                     ? partitionStable(oArray, array, start, endP1, sortMask)
                     : partitionReverseStable(oArray, array, start, endP1, sortMask))
-                    : (isUnsigned()
+                    : (options.isUnsigned()
                     ? partitionNotStable(oArray, array, start, endP1, sortMask)
                     : partitionReverseNotStable(oArray, array, start, endP1, sortMask));
             int n1 = finalLeft - start;

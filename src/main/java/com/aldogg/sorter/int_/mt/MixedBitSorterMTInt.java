@@ -119,8 +119,9 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
     @Override
     public BitMaskSorterInt getSTIntSorter() {
         QuickBitSorterInt sorter = new QuickBitSorterInt();
-        sorter.setUnsigned(isUnsigned());
-        sorter.setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
+        FieldSorterOptions options = getFieldSorterOptions();
+        sorter.setFieldSorterOptions(options);
+        sorter.setSNFunctions(options.isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
         return sorter;
     }
 }

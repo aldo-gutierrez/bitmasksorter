@@ -1,18 +1,14 @@
 package com.aldogg.sorter.int_;
 
-import com.aldogg.sorter.AnalysisResult;
-import com.aldogg.sorter.BitSorterParams;
-import com.aldogg.sorter.MaskInfoInt;
-import com.aldogg.sorter.SortingNetworks;
+import com.aldogg.sorter.*;
 
+import java.lang.reflect.Field;
 import java.util.function.BiConsumer;
 
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedSigned;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedUnSigned;
 
 public abstract class BitMaskSorterInt implements SorterInt {
-
-    protected boolean unsigned = false;
 
     protected BiConsumer<int[], Integer>[] snFunctions;
 
@@ -26,15 +22,6 @@ public abstract class BitMaskSorterInt implements SorterInt {
         this.snFunctions = snFunctions;
     }
 
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
-
     public abstract void sort(int[] array, int start, int endP1, int[] bList, Object params);
     @Override
     public void sort(int[] array, int start, int endP1) {
@@ -42,17 +29,18 @@ public abstract class BitMaskSorterInt implements SorterInt {
         if (n < 2) {
             return;
         }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        FieldSorterOptions options = getFieldSorterOptions();
+        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == AnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, start, endP1);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
+        setSNFunctions(options.isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
 
         MaskInfoInt maskInfo = MaskInfoInt.calculateMaskBreakIfUpperBit(array, start, endP1, null);
         if (maskInfo.isUpperBitMaskSet()) { //the sign bit is set
-            int finalLeft = isUnsigned()
+            int finalLeft = options.isUnsigned()
                     ? SorterUtilsInt.partitionNotStableUpperBit(array, start, endP1)
                     : SorterUtilsInt.partitionReverseNotStableUpperBit(array, start, endP1);
             int n1 = finalLeft - start;

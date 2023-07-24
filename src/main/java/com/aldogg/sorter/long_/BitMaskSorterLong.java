@@ -2,6 +2,7 @@ package com.aldogg.sorter.long_;
 
 import com.aldogg.sorter.AnalysisResult;
 import com.aldogg.sorter.BitSorterParams;
+import com.aldogg.sorter.FieldSorterOptions;
 import com.aldogg.sorter.MaskInfoLong;
 
 import static com.aldogg.sorter.MaskInfoLong.getMaskAsArray;
@@ -9,7 +10,6 @@ import static com.aldogg.sorter.long_.SorterUtilsLong.*;
 
 public abstract class BitMaskSorterLong implements SorterLong {
 
-    protected boolean unsigned = false;
 
     protected BitSorterParams params = BitSorterParams.getSTParams();
 
@@ -17,24 +17,16 @@ public abstract class BitMaskSorterLong implements SorterLong {
         this.params = params;
     }
 
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
-
     abstract public void sort(long[] array, int start, int endP1, int[] bList);
 
     @Override
     public void sort(long[] array, int start, int endP1) {
+        FieldSorterOptions options = getFieldSorterOptions();
         int n = endP1 - start;
         if (n < 2) {
             return;
         }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == AnalysisResult.DESCENDING) {
             reverse(array, start, endP1);
         }

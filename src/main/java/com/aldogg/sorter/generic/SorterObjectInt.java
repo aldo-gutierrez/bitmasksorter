@@ -8,10 +8,6 @@ import java.util.ListIterator;
 
 public interface SorterObjectInt<T> extends Sorter {
 
-    default boolean isIee754() {
-        return false;
-    }
-
     default void sort(T[] array, IntMapper<T> mapper) {
         sort(array, mapper, 0, array.length);
     }

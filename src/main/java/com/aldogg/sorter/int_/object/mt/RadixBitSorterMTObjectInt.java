@@ -20,39 +20,21 @@ public class RadixBitSorterMTObjectInt implements SorterObjectInt {
 
     protected final BitSorterMTParams params = BitSorterMTParams.getMTParams();
 
-    boolean unsigned = false;
-    boolean stable = false;
-
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
-
-    @Override
-    public boolean isStable() {
-        return stable;
-    }
-
-    @Override
-    public void setStable(boolean stable) {
-        this.stable = stable;
-    }
+    FieldSorterOptions options;
 
     @Override
     public void sort(Object[] oArray, IntMapper mapper, int start, int endP1) {
+        options = mapper;
         int n = endP1 - start;
         if (n < 2) {
             return;
         }
         int maxThreads = params.getMaxThreads();
         if (n <= params.getDataSizeForThreads() || maxThreads <= 1) {
-            RadixBitSorterObjectInt stSorter = new RadixBitSorterObjectInt();
-            stSorter.setUnsigned(isUnsigned());
-            stSorter.sort(oArray, mapper, start, endP1);
+            RadixBitSorterObjectInt sorter = new RadixBitSorterObjectInt();
+            FieldSorterOptions options = getFieldSorterOptions();
+            sorter.setFieldSorterOptions(options);
+            sorter.sort(oArray, mapper, start, endP1);
             return;
         }
 
@@ -61,7 +43,7 @@ public class RadixBitSorterMTObjectInt implements SorterObjectInt {
             array[i] = mapper.value(oArray[i]);
         }
 
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == AnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, start, endP1);
             SorterUtilsGeneric.reverse(oArray, start, endP1);
@@ -77,11 +59,11 @@ public class RadixBitSorterMTObjectInt implements SorterObjectInt {
 
         if (maskInfo.isUpperBitMaskSet()) { //there are negative numbers and positive numbers
             int sortMask = 1 << MaskInfoInt.UPPER_BIT;
-            int finalLeft = isStable()
-                    ? (isUnsigned()
+            int finalLeft = options.isStable()
+                    ? (options.isUnsigned()
                     ? partitionStable(oArray, array, start, endP1, sortMask)
                     : partitionReverseStable(oArray, array, start, endP1, sortMask))
-                    : (isUnsigned()
+                    : (options.isUnsigned()
                     ? partitionNotStable(oArray, array, start, endP1, sortMask)
                     : partitionReverseNotStable(oArray, array, start, endP1, sortMask));
 

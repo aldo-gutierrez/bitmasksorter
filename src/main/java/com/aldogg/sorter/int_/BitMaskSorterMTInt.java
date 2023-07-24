@@ -2,10 +2,7 @@ package com.aldogg.sorter.int_;
 
 import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.parallel.ParallelRunner;
-import com.aldogg.sorter.AnalysisResult;
-import com.aldogg.sorter.BitSorterMTParams;
-import com.aldogg.sorter.MaskInfoInt;
-import com.aldogg.sorter.SortingNetworks;
+import com.aldogg.sorter.*;
 
 import static com.aldogg.parallel.ArrayParallelRunner.splitWork;
 import static com.aldogg.sorter.MaskInfoInt.*;
@@ -19,6 +16,7 @@ public abstract class BitMaskSorterMTInt extends BitMaskSorterInt {
 
     @Override
     public void sort(int[] array, int start, int endP1) {
+        FieldSorterOptions options = getFieldSorterOptions();
         int n = endP1 - start;
         if (n < 2) {
             return;
@@ -28,13 +26,13 @@ public abstract class BitMaskSorterMTInt extends BitMaskSorterInt {
             getSTIntSorter().sort(array, start, endP1);
             return;
         }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == AnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, start, endP1);
         }
         if (ordered != AnalysisResult.UNORDERED) return;
 
-        setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
+        setSNFunctions(options.isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
 
         MaskInfoInt maskInfo;
         if (n >= SIZE_FOR_PARALLEL_BIT_MASK) {
@@ -44,7 +42,7 @@ public abstract class BitMaskSorterMTInt extends BitMaskSorterInt {
         }
 
         if (maskInfo.isUpperBitMaskSet()) { //there are negative numbers and positive numbers
-            int finalLeft = isUnsigned()
+            int finalLeft = options.isUnsigned()
                     ? SorterUtilsInt.partitionNotStableUpperBit(array, start, endP1)
                     : SorterUtilsInt.partitionReverseNotStableUpperBit(array, start, endP1);
             int n1 = finalLeft - start;

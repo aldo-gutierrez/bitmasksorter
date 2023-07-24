@@ -99,8 +99,9 @@ public class RadixBitSorterMTInt extends BitMaskSorterMTInt {
     @Override
     public BitMaskSorterInt getSTIntSorter() {
         RadixBitSorterInt sorter = new RadixBitSorterInt();
-        sorter.setUnsigned(isUnsigned());
-        sorter.setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
+        FieldSorterOptions options = getFieldSorterOptions();
+        sorter.setFieldSorterOptions(options);
+        sorter.setSNFunctions(options.isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
         return sorter;
     }
 }

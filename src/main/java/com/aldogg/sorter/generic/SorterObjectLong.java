@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.ListIterator;
 
 public interface SorterObjectLong<T> extends Sorter {
-    default boolean isIee754() {
-        return false;
-    }
 
     default void sort(T[] array, LongMapper<T> mapper) {
         sort(array, mapper, 0, array.length);

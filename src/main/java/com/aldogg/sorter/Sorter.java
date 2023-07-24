@@ -1,20 +1,27 @@
 package com.aldogg.sorter;
 
 public interface Sorter extends Named {
-    default boolean isUnsigned() {
-        return false;
+    default FieldSorterOptions getFieldSorterOptions() {
+        return new FieldSorterOptions() {
+        };
     }
 
-    default void setUnsigned(boolean unsigned) {
+    default void setFieldSorterOptions(FieldSorterOptions options) {
         throw new UnsupportedOperationException();
     }
 
-    default boolean isStable() {
-        return false;
+    /*
+    default void sort(List<T> list) {
+        sort(list, 0, list.size());
     }
 
-    default void setStable(boolean stable) {
-        throw new UnsupportedOperationException();
+    default void sort(T[] list) {
+        sort(list, 0, list.length);
     }
+
+    void sort(List<T> list, int start, int endP1);
+
+    void sort(T[] list, int start, int endP1);
+    */
 
 }

@@ -65,7 +65,7 @@ public class AGSelectorSorterInt extends BitMaskSorterInt {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        sorter.setUnsigned(unsigned);
+        sorter.setFieldSorterOptions(getFieldSorterOptions());
         sorter.sort(array, start, endP1, bList, params);
     }
 

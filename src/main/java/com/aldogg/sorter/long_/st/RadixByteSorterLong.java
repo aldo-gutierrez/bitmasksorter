@@ -1,6 +1,7 @@
 package com.aldogg.sorter.long_.st;
 
 import com.aldogg.sorter.AnalysisResult;
+import com.aldogg.sorter.FieldSorterOptions;
 import com.aldogg.sorter.MaskInfoLong;
 import com.aldogg.sorter.Section;
 import com.aldogg.sorter.long_.BitMaskSorterLong;
@@ -19,11 +20,12 @@ public class RadixByteSorterLong extends BitMaskSorterLong {
 
     @Override
     public void sort(long[] array, final int start, final int endP1) {
+        FieldSorterOptions options = getFieldSorterOptions();
         int n = endP1 - start;
         if (n < 2) {
             return;
         }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == AnalysisResult.DESCENDING) {
             SorterUtilsLong.reverse(array, start, endP1);
         }
@@ -44,15 +46,16 @@ public class RadixByteSorterLong extends BitMaskSorterLong {
 
     @Override
     public void sort(long[] array, int start, int endP1, int[] bList) {
+        FieldSorterOptions options = getFieldSorterOptions();
         long mask = 0xFFFFFFFFFFFFFFFFL;
         if (calculateBitMaskOptimization) {
             if (bList.length == 0) {
                 return;
             }
             MaskInfoLong maskParts;
-            if (bList[0] == MaskInfoLong.UPPER_BIT && !isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
+            if (bList[0] == MaskInfoLong.UPPER_BIT && !options.isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
                 int sortMask = 1 << bList[0];
-                int finalLeft = isUnsigned()
+                int finalLeft = options.isUnsigned()
                         ? SorterUtilsLong.partitionNotStable(array, start, endP1, sortMask)
                         : SorterUtilsLong.partitionReverseNotStable(array, start, endP1, sortMask);
                 int n1 = finalLeft - start;

@@ -1,6 +1,7 @@
 package com.aldogg.sorter.int_.mt;
 
 import com.aldogg.parallel.ParallelRunner;
+import com.aldogg.sorter.FieldSorterOptions;
 import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.SortingNetworks;
 import com.aldogg.sorter.int_.BitMaskSorterInt;
@@ -66,8 +67,9 @@ public class QuickBitSorterMTInt extends BitMaskSorterMTInt {
     @Override
     public BitMaskSorterInt getSTIntSorter() {
         QuickBitSorterInt sorter = new QuickBitSorterInt();
-        sorter.setUnsigned(isUnsigned());
-        sorter.setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
+        FieldSorterOptions options = getFieldSorterOptions();
+        sorter.setFieldSorterOptions(options);
+        sorter.setSNFunctions(options.isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
         return sorter;
     }
 }
