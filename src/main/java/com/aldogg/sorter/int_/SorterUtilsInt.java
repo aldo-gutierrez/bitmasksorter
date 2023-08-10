@@ -556,8 +556,8 @@ public class SorterUtilsInt {
             };
 
 
-    public static void sortShortK(final int[] array, final int start, final int endP1, final int[] bList, final int kIndex) {
-        int bLengthM1 = (bList.length - kIndex) - 1; //Log2(K)
+    public static void sortShortK(final int[] array, final int start, final int endP1, final int[] bList, final int bListIndex) {
+        int bLengthM1 = (bList.length - bListIndex) - 1; //Log2(K)
         int log2Nm1 = BitSorterUtils.logBase2(endP1 - start) - 1; //Log2(N)
         ShortSorter sorter;
         if (log2Nm1 <= 15 && bLengthM1 <= 15) {
@@ -567,19 +567,19 @@ public class SorterUtilsInt {
         } else {
             sorter = StableByte;
         }
-        executeSorter(array, start, endP1, bList, kIndex, sorter);
+        executeSorter(array, start, endP1, bList, bListIndex, sorter);
     }
 
-    private static void executeSorter(int[] array, int start, int endP1, int[] bList, int kIndex, ShortSorter sorter) {
+    private static void executeSorter(int[] array, int start, int endP1, int[] bList, int bListIndex, ShortSorter sorter) {
         int n = endP1 - start;
         if (sorter.equals(PCountSort)) {
-            PCountSortInt.countSort(array, start, endP1, bList, kIndex);
+            PCountSortInt.pCountSort(array, start, endP1, bList, bListIndex);
         } else if (sorter.equals(StableByte)) {
             int[] aux = new int[n];
-            radixSort(array, start, endP1, bList, kIndex, bList.length - 1, aux, 0);
+            radixSort(array, start, endP1, bList, bListIndex, bList.length - 1, aux, 0);
         } else {
             int[] aux = new int[n];
-            for (int i = bList.length - 1; i >= kIndex; i--) {
+            for (int i = bList.length - 1; i >= bListIndex; i--) {
                 int sortMask = 1 << bList[i];
                 partitionStable(array, start, endP1, sortMask, aux);
             }

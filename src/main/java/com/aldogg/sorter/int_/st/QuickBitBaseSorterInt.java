@@ -41,18 +41,18 @@ public class QuickBitBaseSorterInt extends BitMaskSorterInt {
         }
     }
 
-    public void sort(final int[] array, final int start, final int endP1, final int[] bList, final int kIndex) {
-        int kDiff = bList.length - kIndex;
+    public void sort(final int[] array, final int start, final int endP1, final int[] bList, final int bListIndex) {
+        int kDiff = bList.length - bListIndex;
         if (kDiff < 1) {
             return;
         }
-        int sortMask = 1 << bList[kIndex];
+        int sortMask = 1 << bList[bListIndex];
         int finalLeft = SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask);
         if (finalLeft - start > 1) {
-            sort(array, start, finalLeft, bList, kIndex + 1);
+            sort(array, start, finalLeft, bList, bListIndex + 1);
         }
         if (endP1 - finalLeft > 1) {
-            sort(array, finalLeft, endP1, bList, kIndex + 1);
+            sort(array, finalLeft, endP1, bList, bListIndex + 1);
         }
     }
 

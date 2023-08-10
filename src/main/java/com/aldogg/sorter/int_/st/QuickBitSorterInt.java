@@ -15,74 +15,74 @@ public class QuickBitSorterInt extends BitMaskSorterInt {
         sort(array, start, endP1, bList, 0, false);
     }
 
-    public void sort(final int[] array, final int start, final int endP1, int[] bList, int kIndex, boolean recalculate) {
+    public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, boolean recalculate) {
         final int n = endP1 - start;
         if (n <= VERY_SMALL_N_SIZE) {
             snFunctions[n].accept(array, start);
             return;
         }
 
-        if (recalculate && kIndex < 3) {
+        if (recalculate && bListIndex < 3) {
             MaskInfoInt maskParts = MaskInfoInt.calculateMask(array, start, endP1);
             int mask = maskParts.getMask();
             bList = MaskInfoInt.getMaskAsArray(mask);
-            kIndex = 0;
+            bListIndex = 0;
         }
 
-        int kDiff = bList.length - kIndex;
+        int kDiff = bList.length - bListIndex;
         if (kDiff <= params.getShortKBits()) {
             if (kDiff < 1) {
                 return;
             }
-            sortShortK(array, start, endP1, bList, kIndex);
+            sortShortK(array, start, endP1, bList, bListIndex);
             return;
         }
 
-        int sortMask = 1 << bList[kIndex];
+        int sortMask = 1 << bList[bListIndex];
         int finalLeft = SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask);
         if (recalculate) {
             if (finalLeft - start > 1) {
-                sort(array, start, finalLeft, bList, kIndex + 1);
+                sort(array, start, finalLeft, bList, bListIndex + 1);
             }
             if (endP1 - finalLeft > 1) {
-                sort(array, finalLeft, endP1, bList, kIndex + 1);
+                sort(array, finalLeft, endP1, bList, bListIndex + 1);
             }
         } else {
             boolean recalculateBitMask = (finalLeft == start || finalLeft == endP1);
 
             if (finalLeft - start > 1) {
-                sort(array, start, finalLeft, bList, kIndex + 1, recalculateBitMask);
+                sort(array, start, finalLeft, bList, bListIndex + 1, recalculateBitMask);
             }
             if (endP1 - finalLeft > 1) {
-                sort(array, finalLeft, endP1, bList, kIndex + 1, recalculateBitMask);
+                sort(array, finalLeft, endP1, bList, bListIndex + 1, recalculateBitMask);
             }
         }
     }
 
-    public void sort(final int[] array, final int start, final int endP1, int[] bList, int kIndex) {
+    public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex) {
         final int n = endP1 - start;
         if (n <= VERY_SMALL_N_SIZE) {
             snFunctions[n].accept(array, start);
             return;
         }
 
-        int kDiff = bList.length - kIndex;
+        int kDiff = bList.length - bListIndex;
         if (kDiff <= params.getShortKBits()) {
             if (kDiff < 1) {
                 return;
             }
-            sortShortK(array, start, endP1, bList, kIndex);
+            sortShortK(array, start, endP1, bList, bListIndex);
             return;
         }
 
-        int sortMask = 1 << bList[kIndex];
+        int sortMask = 1 << bList[bListIndex];
         int finalLeft = SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask);
 
         if (finalLeft - start > 1) {
-            sort(array, start, finalLeft, bList, kIndex + 1);
+            sort(array, start, finalLeft, bList, bListIndex + 1);
         }
         if (endP1 - finalLeft > 1) {
-            sort(array, finalLeft, endP1, bList, kIndex + 1);
+            sort(array, finalLeft, endP1, bList, bListIndex + 1);
         }
     }
 

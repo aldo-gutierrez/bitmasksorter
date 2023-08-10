@@ -26,25 +26,25 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
         sort(array, start, endP1, bList, 0, maxThreads);
     }
 
-    public void sort(final int[] array, final int start, final int endP1, int[] bList, int kIndex, int maxThreads) {
+    public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, int maxThreads) {
         final int n = endP1 - start;
         if (n <= VERY_SMALL_N_SIZE) {
             snFunctions[n].accept(array, start);
             return;
         }
-        int kDiff = bList.length - kIndex;
+        int kDiff = bList.length - bListIndex;
         if (kDiff <= params.getShortKBits()) {
             if (kDiff < 1) {
                 return;
             }
-            sortShortK(array, start, endP1, bList, kIndex);
+            sortShortK(array, start, endP1, bList, bListIndex);
             return;
         }
 
         if (maxThreads == 1) {
-            radixCountSort(array, start, endP1, bList, kIndex);
+            radixCountSort(array, start, endP1, bList, bListIndex);
         } else {
-            int sortMask = 1 << bList[kIndex];
+            int sortMask = 1 << bList[bListIndex];
             int finalLeft = SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask);
             int n1 = finalLeft - start;
             int n2 = endP1 - finalLeft;
@@ -52,23 +52,23 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
             ParallelRunner.runTwoRunnable(
                     n1 > 1 ? () -> {
                         int maxThreads1 = threadNumbers[0];
-                        sort(array, start, finalLeft, bList, kIndex + 1, maxThreads1);
+                        sort(array, start, finalLeft, bList, bListIndex + 1, maxThreads1);
                     } : null, n1,
                     n2 > 1 ? () -> {
                         int maxThreads2 = threadNumbers[1];
-                        sort(array, finalLeft, endP1, bList, kIndex + 1, maxThreads2);
+                        sort(array, finalLeft, endP1, bList, bListIndex + 1, maxThreads2);
                     } : null, n2, params.getDataSizeForThreads(), maxThreads);
         }
     }
 
-    protected void radixCountSort(int[] list, int start, int endP1, int[] bList, int kIndexEnd) {
-        int kIndexCountSort = bList.length - params.getShortKBits();
-        int sortMask = SorterUtilsInt.getIntMask(bList, kIndexEnd, kIndexCountSort - 1);
-        partitionStableNonConsecutiveBitsAndCountSort(list, start, endP1, sortMask, bList, kIndexCountSort);
+    protected void radixCountSort(int[] list, int start, int endP1, int[] bList, int bListIndexEnd) {
+        int bListIndexCountSort = bList.length - params.getShortKBits();
+        int sortMask = SorterUtilsInt.getIntMask(bList, bListIndexEnd, bListIndexCountSort - 1);
+        partitionStableNonConsecutiveBitsAndCountSort(list, start, endP1, sortMask, bList, bListIndexCountSort);
     }
 
     //partitionStableLastBits
-    protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] array, final int start, final int endP1, int sortMask, int[] bList, int kIndex) {
+    protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] array, final int start, final int endP1, int sortMask, int[] bList, int bListIndex) {
         int n = endP1 - start;
         int[] aux = new int[n];
         int[] bListAux = MaskInfoInt.getMaskAsArray(sortMask);
@@ -92,8 +92,8 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
             System.arraycopy(aux, 0, array, start, n);
         }
 
-        if (kIndex > 0) {
-            final int[] bListCountS = Arrays.copyOfRange(bList, kIndex, bList.length);
+        if (bListIndex > 0) {
+            final int[] bListCountS = Arrays.copyOfRange(bList, bListIndex, bList.length);
             for (int i = 0; i < dRange; i++) {
                 int startI = i > 0 ? leftX[i - 1] : 0;
                 int endI = leftX[i];

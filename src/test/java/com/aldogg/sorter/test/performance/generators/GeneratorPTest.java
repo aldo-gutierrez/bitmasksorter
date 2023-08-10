@@ -73,7 +73,7 @@ public class GeneratorPTest extends BaseTest {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
                 int mask = maskInfo.getMask();
                 int[] bList = MaskInfoInt.getMaskAsArray(mask);
-                PCountSortInt.countSort(array, start, endP1, bList, 0);
+                PCountSortInt.pCountSort(array, start, endP1, bList, 0);
             }
 
             @Override

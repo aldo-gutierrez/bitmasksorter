@@ -21,46 +21,46 @@ public class QuickBitSorterMTInt extends BitMaskSorterMTInt {
         sortMT(array, start, endP1, bList, 0, false, ((Integer) params) * 2);
     }
 
-    public void sortMT(final int[] array, final int start, final int endP1, int[] bList, int kIndex, boolean recalculate, int maxThreads) {
+    public void sortMT(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, boolean recalculate, int maxThreads) {
         final int n = endP1 - start;
         if (n < params.getDataSizeForThreads() || maxThreads == 1) {
-            ((QuickBitSorterInt) getSTIntSorter()).sort(array, start, endP1, bList, kIndex, recalculate);
+            ((QuickBitSorterInt) getSTIntSorter()).sort(array, start, endP1, bList, bListIndex, recalculate);
             return;
         }
 
-        if (recalculate && kIndex < 3) {
+        if (recalculate && bListIndex < 3) {
             MaskInfoInt maskParts = MaskInfoInt.calculateMask(array, start, endP1);
             int mask = maskParts.getMask();
             bList = getMaskAsArray(mask);
-            kIndex = 0;
+            bListIndex = 0;
 
         }
 
-        int kDiff = bList.length - kIndex;
+        int kDiff = bList.length - bListIndex;
         if (kDiff <= params.getShortKBits()) {
             if (kDiff < 1) {
                 return;
             }
-            sortShortK(array, start, endP1, bList, kIndex);
+            sortShortK(array, start, endP1, bList, bListIndex);
             return;
         }
 
-        int sortMask = 1 << bList[kIndex];
+        int sortMask = 1 << bList[bListIndex];
         int finalLeft = SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask);
         final boolean recalculateBitMask = (finalLeft == start || finalLeft == endP1);
 
         int[] finalbList = bList;
-        int finalKIndex = kIndex;
+        int finalBListIndex = bListIndex;
         int n1 = finalLeft - start;
         int n2 = endP1 - finalLeft;
 
         int[] threadNumbers = splitWork(n1, n2, maxThreads);
         ParallelRunner.runTwoRunnable(
                 n1 > 1 ? () -> {
-                    sortMT(array, start, finalLeft, finalbList, finalKIndex + 1, recalculateBitMask, threadNumbers[0]);
+                    sortMT(array, start, finalLeft, finalbList, finalBListIndex + 1, recalculateBitMask, threadNumbers[0]);
                 } : null, n1,
                 n2 > 1 ? () -> {
-                    sortMT(array, finalLeft, endP1, finalbList, finalKIndex + 1, recalculateBitMask, threadNumbers[1]);
+                    sortMT(array, finalLeft, endP1, finalbList, finalBListIndex + 1, recalculateBitMask, threadNumbers[1]);
                 } : null, n2, params.getDataSizeForThreads(), maxThreads);
     }
 
