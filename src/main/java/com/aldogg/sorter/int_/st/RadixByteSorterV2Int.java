@@ -96,11 +96,15 @@ public class RadixByteSorterV2Int extends BitMaskSorterInt {
         sortBytes(array, start, endP1, aux, mask);
     }
 
-    //TODO needs to support mask that can end in 00 so calculate segments with length 8 sizes
     private void sortBytes(int[] array, int start, int endP1, int[] aux, int mask) {
         int[] bList = MaskInfoInt.getMaskAsArray(mask);
 
         Section[] sections = BitSorterUtils.getProcessedSections(bList, 0, bList.length - 1, 8);
+        int maxBitDigits = (int) Math.ceil(bList.length * 1.0 / sections.length);
+        Section[] sections2 = BitSorterUtils.getProcessedSections(bList, 0, bList.length - 1, maxBitDigits);
+        if (sections2.length == sections.length) {
+            sections = sections2;
+        }
 
         int n = endP1 - start;
         int ops = 0;
@@ -116,17 +120,17 @@ public class RadixByteSorterV2Int extends BitMaskSorterInt {
         final int mask8 = sections.length > 1 ? MaskInfoInt.getMaskRangeBits(sections[1].start, sections[1].shift) : 0;
         final int countLength8 = sections.length > 1 ? 1 << sections[1].bits : 0;
         final int shift8 = sections.length > 1 ? sections[1].shift : 0;
-        final int[] count8 = new int[countLength8];;
+        final int[] count8 = new int[countLength8];
 
         final int mask16 = sections.length > 2 ? MaskInfoInt.getMaskRangeBits(sections[2].start, sections[2].shift) : 0;
         final int countLength16 = sections.length > 2 ? 1 << sections[2].bits : 0;
         final int shift16 = sections.length > 2 ? sections[2].shift : 0;
-        final int[] count16 = new int[countLength16];;
+        final int[] count16 = new int[countLength16];
 
         final int mask24 = sections.length > 3 ? MaskInfoInt.getMaskRangeBits(sections[3].start, sections[3].shift) : 0;
         final int countLength24 = sections.length > 3 ? 1 << sections[3].bits : 0;
         final int shift24 = sections.length > 3 ? sections[3].shift : 0;
-        final int[] count24 = new int[countLength16];;
+        final int[] count24 = new int[countLength16];
 
         if (sections.length == 1) {
             if (shift0 == 0) {
@@ -158,7 +162,7 @@ public class RadixByteSorterV2Int extends BitMaskSorterInt {
             if (shift0 == 0) {
                 for (int i = start; i < endP1; ++i) {
                     int e = array[i];
-                    count0[e & mask0 ]++;
+                    count0[e & mask0]++;
                     count8[(e & mask8) >>> shift8]++;
                     count16[(e & mask16) >>> shift16]++;
                 }
@@ -191,23 +195,13 @@ public class RadixByteSorterV2Int extends BitMaskSorterInt {
         }
 
 
-        for (int i = 0, sum = 0; i < countLength0; ++i) {
-            int countI = count0[i];
-            count0[i] = sum;
-            sum += countI;
-        }
+        calculatePosition(count0, countLength0);
         int end = start + n;
 
         if (shift0 == 0) {
-            for (int i = start; i < end; ++i) {
-                int element = array[i];
-                aux[count0[element & mask0]++] = element;
-            }
+            partitionCountSort(array, start, end, aux, count0, mask0);
         } else {
-            for (int i = start; i < end; ++i) {
-                int element = array[i];
-                aux[count0[(element & mask) >>> shift0]++] = element;
-            }
+            partitionCountSort(array, start, end, aux, count0, mask0, shift0);
         }
 
 
@@ -222,11 +216,7 @@ public class RadixByteSorterV2Int extends BitMaskSorterInt {
         ops++;
 
         if (sections.length > 1) {
-            for (int i = 0, sum = 0; i < countLength8; ++i) {
-                int countI = count8[i];
-                count8[i] = sum;
-                sum += countI;
-            }
+            calculatePosition(count8, countLength8);
             end = start + n;
 
             if (startAux == 0) {
@@ -247,11 +237,7 @@ public class RadixByteSorterV2Int extends BitMaskSorterInt {
 
         }
         if (sections.length > 2) {
-            for (int i = 0, sum = 0; i < countLength16; ++i) {
-                int countI = count16[i];
-                count16[i] = sum;
-                sum += countI;
-            }
+            calculatePosition(count16, countLength16);
             end = start + n;
 
             if (startAux == 0) {
@@ -272,11 +258,7 @@ public class RadixByteSorterV2Int extends BitMaskSorterInt {
 
         }
         if (sections.length > 3) {
-            for (int i = 0, sum = 0; i < countLength24; ++i) {
-                int countI = count24[i];
-                count24[i] = sum;
-                sum += countI;
-            }
+            calculatePosition(count24, countLength24);
             end = start + n;
 
             if (startAux == 0) {
@@ -293,14 +275,29 @@ public class RadixByteSorterV2Int extends BitMaskSorterInt {
         }
     }
 
-    private static void partitionCountSort(int[] array, int start, int end, int[] aux, int[] count, int mask, int shift) {
+    private static void calculatePosition(final int[] count, final int countLength) {
+        for (int i = 0, sum = 0; i < countLength; ++i) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
+        }
+    }
+
+    private static void partitionCountSort(final int[] array, final int start, final int end, final int[] aux, final int[] count, final int mask) {
+        for (int i = start; i < end; ++i) {
+            int element = array[i];
+            aux[count[(element & mask)]++] = element;
+        }
+    }
+
+    private static void partitionCountSort(final int[] array, final int start, final int end, final int[] aux, final int[] count, final int mask, final int shift) {
         for (int i = start; i < end; ++i) {
             int element = array[i];
             aux[count[(element & mask) >>> shift]++] = element;
         }
     }
 
-    private static void partitionCountSort(int[] array, int start, int end, int[] aux, int[] count, int mask, int shift, int startAux) {
+    private static void partitionCountSort(final int[] array, final int start, final int end, final int[] aux, final int[] count, final int mask, final int shift, final int startAux) {
         for (int i = start; i < end; ++i) {
             int element = array[i];
             aux[count[(element & mask) >>> shift]++ + startAux] = element;
