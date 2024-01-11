@@ -1,5 +1,7 @@
 package com.aldogg.sorter;
 
+import com.aldogg.sorter.shared.NullHandling;
+
 public interface FieldSorterOptions {
 
     default boolean isUnsigned() {

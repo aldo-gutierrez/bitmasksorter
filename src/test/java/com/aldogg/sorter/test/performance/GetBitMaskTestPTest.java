@@ -2,15 +2,16 @@ package com.aldogg.sorter.test.performance;
 
 import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.sorter.BitSorterUtils;
-import com.aldogg.sorter.MaskInfoInt;
-import com.aldogg.sorter.Section;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
+import com.aldogg.sorter.shared.Section;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Random;
 
-import static com.aldogg.sorter.MaskInfoInt.calculateMaskInParallel;
+import static com.aldogg.sorter.int_.SorterUtilsIntExt.*;
+import static com.aldogg.sorter.shared.int_mask.MaskInfoInt.calculateMaskInParallel;
 import static com.aldogg.sorter.int_.SorterUtilsInt.*;
 
 public class GetBitMaskTestPTest {

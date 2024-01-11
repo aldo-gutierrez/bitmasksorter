@@ -1,10 +1,10 @@
 package com.aldogg.sorter.double_.st;
 
-import com.aldogg.sorter.MaskInfoLong;
+import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 import com.aldogg.sorter.double_.BitMaskSorterDouble;
 
 import static com.aldogg.sorter.double_.SorterUtilsDouble.*;
-import static com.aldogg.sorter.MaskInfoLong.UPPER_BIT;
+import static com.aldogg.sorter.shared.long_mask.MaskInfoLong.UPPER_BIT;
 
 public class RadixBitBaseSorterDouble extends BitMaskSorterDouble {
 

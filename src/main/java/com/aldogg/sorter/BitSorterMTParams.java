@@ -8,10 +8,6 @@ public class BitSorterMTParams extends BitSorterParams {
         return maxThreads;
     }
 
-    public int getMaxThreadsBits() {
-        return BitSorterUtils.logBase2(maxThreads);
-    }
-
     public int getDataSizeForThreads() {
         return dataSizeForThreads;
     }

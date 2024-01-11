@@ -7,13 +7,15 @@ import com.aldogg.sorter.int_.BitMaskSorterMTInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 import com.aldogg.sorter.int_.st.QuickBitSorterInt;
 import com.aldogg.sorter.int_.st.RadixBitSorterInt;
+import com.aldogg.sorter.shared.Section;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 
 import java.util.Arrays;
 
 import static com.aldogg.parallel.ArrayParallelRunner.splitWork;
 import static com.aldogg.sorter.BitSorterParams.*;
 import static com.aldogg.sorter.BitSorterUtils.*;
-import static com.aldogg.sorter.int_.SorterUtilsInt.sortShortK;
+import static com.aldogg.sorter.int_.SorterUtilsIntExt.sortShortK;
 
 /**
  * Experimental Bit Sorter
@@ -21,7 +23,7 @@ import static com.aldogg.sorter.int_.SorterUtilsInt.sortShortK;
 public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, int[] bList, Object params) {
+    public void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params) {
         Integer maxThreads = (Integer) params;
         sort(array, start, endP1, bList, 0, maxThreads);
     }
@@ -63,7 +65,7 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
 
     protected void radixCountSort(int[] list, int start, int endP1, int[] bList, int bListIndexEnd) {
         int bListIndexCountSort = bList.length - params.getShortKBits();
-        int sortMask = SorterUtilsInt.getIntMask(bList, bListIndexEnd, bListIndexCountSort - 1);
+        int sortMask = MaskInfoInt.getMask(bList, bListIndexEnd, bListIndexCountSort - 1);
         partitionStableNonConsecutiveBitsAndCountSort(list, start, endP1, sortMask, bList, bListIndexCountSort);
     }
 
@@ -118,10 +120,6 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
 
     @Override
     public BitMaskSorterInt getSTIntSorter() {
-        QuickBitSorterInt sorter = new QuickBitSorterInt();
-        FieldSorterOptions options = getFieldSorterOptions();
-        sorter.setFieldSorterOptions(options);
-        sorter.setSNFunctions(options.isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
-        return sorter;
+        return new QuickBitSorterInt();
     }
 }

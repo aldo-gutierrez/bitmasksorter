@@ -1,4 +1,4 @@
-package com.aldogg.sorter;
+package com.aldogg.sorter.shared.long_mask;
 
 import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.parallel.ArrayRunnable;

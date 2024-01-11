@@ -1,6 +1,7 @@
 package com.aldogg.sorter.test.performance.generators;
 
-import com.aldogg.sorter.MaskInfoInt;
+import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.int_.PCountSortInt;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static com.aldogg.sorter.int_.SorterUtilsInt.ShortSorter.*;
+import static com.aldogg.sorter.shared.ShortSorter.*;
 import static com.aldogg.sorter.int_.st.RadixBitSorterInt.radixSort;
 
 public class GeneratorPTest extends BaseTest {
@@ -35,7 +36,7 @@ public class GeneratorPTest extends BaseTest {
 
         SorterInt[] sorters = new SorterInt[]{new SorterInt() {
             @Override
-            public void sort(int[] array, int start, int endP1) {
+            public void sort(int[] array, int start, int endP1, FieldSorterOptions options) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
                 int mask = maskInfo.getMask();
                 int[] bList = MaskInfoInt.getMaskAsArray(mask);
@@ -51,7 +52,7 @@ public class GeneratorPTest extends BaseTest {
 
         }, new SorterInt() {
             @Override
-            public void sort(int[] array, int start, int endP1) {
+            public void sort(int[] array, int start, int endP1, FieldSorterOptions options) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
                 int mask = maskInfo.getMask();
                 int[] bList = MaskInfoInt.getMaskAsArray(mask);
@@ -69,7 +70,7 @@ public class GeneratorPTest extends BaseTest {
 
         }, new SorterInt() {
             @Override
-            public void sort(int[] array, int start, int endP1) {
+            public void sort(int[] array, int start, int endP1, FieldSorterOptions options) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
                 int mask = maskInfo.getMask();
                 int[] bList = MaskInfoInt.getMaskAsArray(mask);

@@ -1,7 +1,8 @@
 package com.aldogg.sorter.int_;
 
-import com.aldogg.sorter.MaskInfoInt;
-import com.aldogg.sorter.Section;
+import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
+import com.aldogg.sorter.shared.Section;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -26,7 +27,7 @@ import static com.aldogg.sorter.BitSorterUtils.*;
 public class PCountSortInt extends BitMaskSorterInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, int[] bList, Object params) {
+    public void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params) {
         pCountSort(array, start, endP1, bList, 0);
     }
 

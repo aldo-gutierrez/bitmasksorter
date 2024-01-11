@@ -1,7 +1,7 @@
 package com.aldogg.sorter.generic;
 
 import com.aldogg.sorter.FieldSorterOptions;
-import com.aldogg.sorter.MaskInfoInt;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 import com.aldogg.sorter.int_.object.IntMapper;
 
 import static com.aldogg.sorter.generic.SorterUtilsGenericInt.partitionNotStableUpperBit;
@@ -14,7 +14,7 @@ public abstract class BitMaskSorterGenericInt<T> implements SorterObjectInt<T> {
     abstract public void sort(T[] array, int start, int endP1, int[] bList, Object params);
 
     @Override
-    public void sort(T[] array, IntMapper<T> mapper, int start, int endP1) {
+    public void sort(T[] array, int start, int endP1, IntMapper<T> mapper) {
         options = mapper;
         int n = endP1 - start;
         if (n < 2) {

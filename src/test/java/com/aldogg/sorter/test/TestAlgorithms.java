@@ -1,6 +1,6 @@
 package com.aldogg.sorter.test;
 
-import com.aldogg.sorter.Named;
+import com.aldogg.sorter.shared.Named;
 import com.aldogg.sorter.generators.GeneratorParams;
 
 import java.io.IOException;

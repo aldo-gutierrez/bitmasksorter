@@ -1,11 +1,9 @@
 package com.aldogg.sorter.int_.st;
 
 import com.aldogg.sorter.FieldSorterOptions;
-import com.aldogg.sorter.MaskInfoInt;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 import com.aldogg.sorter.int_.BitMaskSorterInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
-
-import java.lang.reflect.Field;
 
 /**
  * Basic XXXSorter
@@ -15,8 +13,7 @@ import java.lang.reflect.Field;
 public class QuickBitBaseSorterInt extends BitMaskSorterInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, int[] bList, Object params) {
-        FieldSorterOptions options = getFieldSorterOptions();
+    public void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params) {
         if (bList[0] == MaskInfoInt.UPPER_BIT) { //there are negative numbers
             int sortMask = 1 << bList[0];
             int finalLeft = options.isUnsigned()

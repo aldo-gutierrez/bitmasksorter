@@ -1,6 +1,6 @@
 package com.aldogg.sorter.test.performance;
 
-import com.aldogg.sorter.Sorter;
+import com.aldogg.sorter.shared.Sorter;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.generators.LongGenerator;

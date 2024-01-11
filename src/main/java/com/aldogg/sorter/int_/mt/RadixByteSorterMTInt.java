@@ -14,17 +14,13 @@ import com.aldogg.sorter.int_.st.RadixByteSorterInt;
 public class RadixByteSorterMTInt extends BitMaskSorterMTInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, int[] bList, Object params) {
+    public void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params) {
         //TODO
     }
 
     @Override
     public BitMaskSorterInt getSTIntSorter() {
-        RadixByteSorterInt sorter = new RadixByteSorterInt();
-        FieldSorterOptions options = getFieldSorterOptions();
-        sorter.setFieldSorterOptions(options);
-        sorter.setSNFunctions(options.isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
-        return sorter;
+        return new RadixByteSorterInt();
     }
 
 }

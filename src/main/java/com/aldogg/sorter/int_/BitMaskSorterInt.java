@@ -1,8 +1,9 @@
 package com.aldogg.sorter.int_;
 
 import com.aldogg.sorter.*;
+import com.aldogg.sorter.shared.OrderAnalysisResult;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 
-import java.lang.reflect.Field;
 import java.util.function.BiConsumer;
 
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedSigned;
@@ -22,27 +23,26 @@ public abstract class BitMaskSorterInt implements SorterInt {
         this.snFunctions = snFunctions;
     }
 
-    public abstract void sort(int[] array, int start, int endP1, int[] bList, Object params);
+    public abstract void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params);
     @Override
-    public void sort(int[] array, int start, int endP1) {
+    public void sort(int[] array, int start, int endP1, FieldSorterOptions options) {
         int n = endP1 - start;
         if (n < 2) {
             return;
         }
-        FieldSorterOptions options = getFieldSorterOptions();
         int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
-        if (ordered == AnalysisResult.DESCENDING) {
+        if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, start, endP1);
         }
-        if (ordered != AnalysisResult.UNORDERED) return;
+        if (ordered != OrderAnalysisResult.UNORDERED) return;
 
         setSNFunctions(options.isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
 
         MaskInfoInt maskInfo = MaskInfoInt.calculateMaskBreakIfUpperBit(array, start, endP1, null);
         if (maskInfo.isUpperBitMaskSet()) { //the sign bit is set
             int finalLeft = options.isUnsigned()
-                    ? SorterUtilsInt.partitionNotStableUpperBit(array, start, endP1)
-                    : SorterUtilsInt.partitionReverseNotStableUpperBit(array, start, endP1);
+                    ? SorterUtilsIntExt.partitionNotStableUpperBit(array, start, endP1)
+                    : SorterUtilsIntExt.partitionReverseNotStableUpperBit(array, start, endP1);
             int n1 = finalLeft - start;
             int n2 = endP1 - finalLeft;
             int[] bList1 = null;
@@ -61,10 +61,10 @@ public abstract class BitMaskSorterInt implements SorterInt {
             }
             int[] aux = new int[Math.max(n1, n2)];
             if (n1 > 1) {
-                sort(array, start, finalLeft, bList1, aux);
+                sort(array, start, finalLeft, options, bList1, aux);
             }
             if (n2 > 1) {
-                sort(array, finalLeft, endP1, bList2, aux);
+                sort(array, finalLeft, endP1, options, bList2, aux);
             }
 
         } else {
@@ -72,7 +72,7 @@ public abstract class BitMaskSorterInt implements SorterInt {
             int mask = maskInfo.getMask();
             int[] bList = MaskInfoInt.getMaskAsArray(mask);
             if (bList.length > 0) {
-                sort(array, start, endP1, bList, aux);
+                sort(array, start, endP1, options, bList, aux);
             }
         }
     }

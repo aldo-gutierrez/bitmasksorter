@@ -1,7 +1,7 @@
 package com.aldogg.sorter.long_.st;
 
 import com.aldogg.sorter.FieldSorterOptions;
-import com.aldogg.sorter.MaskInfoLong;
+import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 import com.aldogg.sorter.long_.BitMaskSorterLong;
 
 import static com.aldogg.sorter.long_.SorterUtilsLong.*;
@@ -9,8 +9,7 @@ import static com.aldogg.sorter.long_.SorterUtilsLong.*;
 public class RadixBitBaseSorterLong extends BitMaskSorterLong {
 
     @Override
-    public void sort(long[] array, int start, int endP1, int[] bList) {
-        FieldSorterOptions options = getFieldSorterOptions();
+    public void sort(long[] array, int start, int endP1, FieldSorterOptions options, int[] bList) {
         if (bList.length == 0) {
             return;
         }

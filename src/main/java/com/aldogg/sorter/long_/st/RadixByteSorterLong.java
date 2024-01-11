@@ -1,9 +1,9 @@
 package com.aldogg.sorter.long_.st;
 
-import com.aldogg.sorter.AnalysisResult;
+import com.aldogg.sorter.shared.OrderAnalysisResult;
 import com.aldogg.sorter.FieldSorterOptions;
-import com.aldogg.sorter.MaskInfoLong;
-import com.aldogg.sorter.Section;
+import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
+import com.aldogg.sorter.shared.Section;
 import com.aldogg.sorter.long_.BitMaskSorterLong;
 import com.aldogg.sorter.long_.SorterUtilsLong;
 
@@ -19,17 +19,16 @@ public class RadixByteSorterLong extends BitMaskSorterLong {
     }
 
     @Override
-    public void sort(long[] array, final int start, final int endP1) {
-        FieldSorterOptions options = getFieldSorterOptions();
+    public void sort(long[] array, final int start, final int endP1, FieldSorterOptions options) {
         int n = endP1 - start;
         if (n < 2) {
             return;
         }
         int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
-        if (ordered == AnalysisResult.DESCENDING) {
+        if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsLong.reverse(array, start, endP1);
         }
-        if (ordered != AnalysisResult.UNORDERED) return;
+        if (ordered != OrderAnalysisResult.UNORDERED) return;
 
         int[] bList = null;
 
@@ -41,12 +40,11 @@ public class RadixByteSorterLong extends BitMaskSorterLong {
                 return;
             }
         }
-        sort(array, start, endP1, bList);
+        sort(array, start, endP1, options, bList);
     }
 
     @Override
-    public void sort(long[] array, int start, int endP1, int[] bList) {
-        FieldSorterOptions options = getFieldSorterOptions();
+    public void sort(long[] array, int start, int endP1, FieldSorterOptions options, int[] bList) {
         long mask = 0xFFFFFFFFFFFFFFFFL;
         if (calculateBitMaskOptimization) {
             if (bList.length == 0) {
@@ -54,7 +52,7 @@ public class RadixByteSorterLong extends BitMaskSorterLong {
             }
             MaskInfoLong maskParts;
             if (bList[0] == MaskInfoLong.UPPER_BIT && !options.isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
-                int sortMask = 1 << bList[0];
+                long sortMask = 1L << bList[0];
                 int finalLeft = options.isUnsigned()
                         ? SorterUtilsLong.partitionNotStable(array, start, endP1, sortMask)
                         : SorterUtilsLong.partitionReverseNotStable(array, start, endP1, sortMask);

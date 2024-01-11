@@ -1,7 +1,7 @@
 package com.aldogg.sorter.generic;
 
 import com.aldogg.sorter.FieldSorterOptions;
-import com.aldogg.sorter.MaskInfoLong;
+import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 import com.aldogg.sorter.long_.object.LongMapper;
 
 import static com.aldogg.sorter.generic.SorterUtilsGenericLong.partitionNotStableUpperBit;

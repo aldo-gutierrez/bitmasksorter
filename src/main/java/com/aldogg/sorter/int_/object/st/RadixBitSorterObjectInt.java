@@ -5,20 +5,21 @@ import com.aldogg.sorter.generic.SorterObjectInt;
 import com.aldogg.sorter.generic.SorterUtilsGeneric;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 import com.aldogg.sorter.int_.object.IntMapper;
+import com.aldogg.sorter.shared.OrderAnalysisResult;
+import com.aldogg.sorter.shared.Section;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 
 import static com.aldogg.sorter.BitSorterParams.RADIX_SORT_MAX_BITS;
-import static com.aldogg.sorter.MaskInfoInt.UPPER_BIT;
+import static com.aldogg.sorter.shared.int_mask.MaskInfoInt.UPPER_BIT;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedSigned;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedUnSigned;
 import static com.aldogg.sorter.int_.object.SorterUtilsObjectInt.*;
 
 public class RadixBitSorterObjectInt implements SorterObjectInt {
 
-    FieldSorterOptions options;
-
     @Override
-    public void sort(Object[] oArray, IntMapper mapper, int start, int endP1) {
-        options = mapper;
+    public void sort(Object[] oArray, int start, int endP1, IntMapper mapper) {
+        FieldSorterOptions options = mapper;
         int n = endP1 - start;
         if (n < 2) {
             return;
@@ -28,11 +29,11 @@ public class RadixBitSorterObjectInt implements SorterObjectInt {
             array[i] = mapper.value(oArray[i]);
         }
         int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
-        if (ordered == AnalysisResult.DESCENDING) {
+        if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, start, endP1);
             SorterUtilsGeneric.reverse(oArray, start, endP1);
         }
-        if (ordered != AnalysisResult.UNORDERED) return;
+        if (ordered != OrderAnalysisResult.UNORDERED) return;
 
         MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
         int mask = maskInfo.getMask();
@@ -40,10 +41,10 @@ public class RadixBitSorterObjectInt implements SorterObjectInt {
         if (bList.length == 0) { //all numbers are equal
             return;
         }
-        sort(oArray, array, start, endP1, bList);
+        sort(oArray, array, start, endP1, mapper, bList);
     }
 
-    public void sort(Object[] oArray, int[] array, int start, int endP1, int[] bList) {
+    public void sort(Object[] oArray, int[] array, int start, int endP1, FieldSorterOptions options, int[] bList) {
         if (bList[0] == UPPER_BIT) { //there are negative numbers and positive numbers
             MaskInfoInt maskInfo;
             int mask;
