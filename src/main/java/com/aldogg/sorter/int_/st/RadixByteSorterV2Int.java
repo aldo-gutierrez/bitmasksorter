@@ -16,6 +16,9 @@ import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedUnSigned;
  * inlined some code
  * calculates all counts first to use linear memory
  * Sometimes is faster than V1, sometimes is slower
+ *
+ * TODO
+ *  go backwards for s0, s16 as the data could be already in the cpu cache. this could be faster
  */
 public class RadixByteSorterV2Int extends BitMaskSorterInt {
     boolean calculateBitMaskOptimization = true;
@@ -96,7 +99,7 @@ public class RadixByteSorterV2Int extends BitMaskSorterInt {
         sortBytes(array, start, endP1, aux, mask);
     }
 
-    private void sortBytes(int[] array, int start, int endP1, int[] aux, int mask) {
+    private void sortBytes(int[] array, int start, final int endP1, int[] aux, final int mask) {
         int[] bList = MaskInfoInt.getMaskAsArray(mask);
 
         Section[] sections = BitSorterUtils.getProcessedSections(bList, 0, bList.length - 1, 8);
