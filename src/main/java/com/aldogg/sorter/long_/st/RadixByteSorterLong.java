@@ -51,7 +51,7 @@ public class RadixByteSorterLong extends BitMaskSorterLong {
             }
             MaskInfoLong maskParts;
             if (bList[0] == MaskInfoLong.UPPER_BIT && !isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
-                int sortMask = 1 << bList[0];
+                long sortMask = 1L << bList[0];
                 int finalLeft = isUnsigned()
                         ? SorterUtilsLong.partitionNotStable(array, start, endP1, sortMask)
                         : SorterUtilsLong.partitionReverseNotStable(array, start, endP1, sortMask);
