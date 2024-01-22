@@ -86,7 +86,7 @@ public class TestAlgorithms<T extends Named> {
 
     public void printTestSpeed(GeneratorParams params, Writer writer) throws IOException {
         int size = params.size;
-        int limitLow = params.limitLow;
+        long limitLow = params.limitLow;
         long limitHigh = params.limitHigh;
         Named[] sorters = algorithms;
         for (Named sorter : sorters) {

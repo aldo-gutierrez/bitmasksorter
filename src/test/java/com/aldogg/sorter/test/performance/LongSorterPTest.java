@@ -105,7 +105,7 @@ public class LongSorterPTest extends IntBasicTest {
         long[] limitHigh = new long[]{10, 100000, 1000000000, 10000000000000L};
 
         for (long limitH : limitHigh) {
-            params.limitLow = (int) -limitH;
+            params.limitLow = -limitH;
             params.limitHigh = limitH;
 
             testAlgorithms = new TestAlgorithms(sorters);

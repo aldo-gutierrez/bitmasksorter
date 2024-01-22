@@ -33,7 +33,7 @@ public class DoubleGenerator {
     static double[] random_real_range(GeneratorParams params) {
         int size = params.size;
         double[] v = new double[size];
-        int range = (int) (params.limitHigh - (long) params.limitLow);
+        long range = (params.limitHigh - params.limitLow);
         for (int i = 0; i < size; ++i) {
             v[i] = params.random.nextDouble() * range + params.limitLow;
         }

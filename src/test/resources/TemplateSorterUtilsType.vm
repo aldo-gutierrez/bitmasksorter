@@ -209,8 +209,7 @@ public class SorterUtils${Type}2 {
         if (i == endP1) {
             return OrderAnalysisResult.ALL_EQUAL;
         }
-
-//ascending
+        //ascending
         i1 = array[i];
         if (array[i - 1] < i1) {
             ++i;
@@ -225,7 +224,7 @@ public class SorterUtils${Type}2 {
                 return OrderAnalysisResult.ASCENDING;
             }
         }
-//descending
+        //descending
         else {
             ++i;
             for (; i < endP1; ++i) {
@@ -255,8 +254,7 @@ public class SorterUtils${Type}2 {
         if (i == endP1) {
             return OrderAnalysisResult.ALL_EQUAL;
         }
-
-//ascending
+        //ascending
         i1 = array[i];
         if (array[i - 1] < i1) {
             ++i;
@@ -271,7 +269,7 @@ public class SorterUtils${Type}2 {
                 return OrderAnalysisResult.ASCENDING;
             }
         }
-//descending
+        //descending
         else {
             ++i;
             for (; i < endP1; ++i) {
