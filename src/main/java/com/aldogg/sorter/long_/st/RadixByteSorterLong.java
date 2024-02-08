@@ -80,8 +80,7 @@ public class RadixByteSorterLong extends BitMaskSorterLong {
 
     private void sortBytes(long[] array, int start, int endP1, long[] aux, long mask) {
         int n = endP1 - start;
-        Section section = new Section();
-        section.bits = 8;
+
         int ops = 0;
         long[] arrayOrig = array;
         int startOrig = start;
@@ -92,7 +91,7 @@ public class RadixByteSorterLong extends BitMaskSorterLong {
 
         long sortMask = sortMasks[0];
         if ((mask & sortMask) != 0) {
-            section.start = shiftRights[0] + 7;
+            Section section = new Section(8, shiftRights[0]);
             SorterUtilsLong.partitionStableLastBits(array, start, section, aux, startAux, n);
 
             //System.arraycopy(aux, 0, array, start, n);
@@ -109,8 +108,7 @@ public class RadixByteSorterLong extends BitMaskSorterLong {
         for (int i = 0; i < shiftRights.length; ++i) {
             sortMask = sortMasks[i];
             if ((mask & sortMask) != 0) {
-                section.start = shiftRights[i] + 7;
-                section.shift = shiftRights[i];
+                Section section = new Section(8, shiftRights[i]);
                 SorterUtilsLong.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
                 long[] tempArray = array;
                 array = aux;
@@ -125,8 +123,7 @@ public class RadixByteSorterLong extends BitMaskSorterLong {
 
         sortMask = sortMasks[7];
         if ((mask & sortMask) != 0) {
-            section.start = shiftRights[7] + 7;
-            section.shift = shiftRights[7];
+            Section section = new Section(8, shiftRights[7]);
             SorterUtilsLong.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
             array = aux;
             start = startAux;

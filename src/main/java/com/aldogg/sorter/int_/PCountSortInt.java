@@ -128,7 +128,6 @@ public class PCountSortInt {
     private static void pgCountSortSections(int[] array, int start, int endP1, Section[] sections) {
         int bits = 0;
         for (Section section : sections) {
-            section.calculateIntMask();
             bits += section.bits;
         }
         int range = 1 << bits;

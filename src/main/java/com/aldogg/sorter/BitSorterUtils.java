@@ -38,10 +38,7 @@ public class BitSorterUtils {
         Section[] sections = new Section[sectionsMap.size()];
         int i = 0;
         for (Map.Entry<Integer, Integer> entry : sectionsMap.entrySet()) {
-            Section section = new Section();
-            section.start = entry.getKey();
-            section.bits = entry.getValue();
-            section.shift = section.start - section.bits + 1;
+            Section section = Section.createWithStarAndBits(entry.getKey(), entry.getValue());
             sections[i] = section;
             i++;
         }

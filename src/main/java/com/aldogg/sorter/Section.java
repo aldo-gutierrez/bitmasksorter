@@ -1,35 +1,32 @@
 package com.aldogg.sorter;
 
 public class Section {
-    public int start; //bit Index start; bStart; //section.start = section.shift + section.bits - 1;
-    public int bits; //length of bits
-    public int shift; //shiftRight; bEnd; //section.shift = section.start - section.bits + 1;
-    public Object mask;
+    public final int start; //bit Index start; bStart; //section.start = section.shift + section.bits - 1;
+    public final int bits; //length of bits
+    public final int shift; //shiftRight; bEnd; //section.shift = section.start - section.bits + 1;
+    private final long mask;
+
+    public static Section createWithStarAndBits(int start, int bits) {
+        int shift = start - bits + 1;
+        Section section = new Section(bits, shift);
+        return section;
+    }
 
     public Section(int bits, int shift) {
         this.bits = bits;
         this.shift = shift;
         this.start = shift + bits - 1;
-    }
-
-    public Section() {
-
+        mask = MaskInfoLong.getMaskRangeBits(start, shift);
     }
 
     public int getIntMask() {
-        return (Integer) mask;
+        return (int) mask;
     }
 
-    public void calculateIntMask() {
-        mask = MaskInfoInt.getMaskRangeBits(start, shift);
-    }
 
     public long getLongMask() {
-        return (Long) mask;
+        return mask;
     }
 
-    public void calculateLongMask() {
-        mask = MaskInfoLong.getMaskRangeBits(start, shift);
-    }
 
 }

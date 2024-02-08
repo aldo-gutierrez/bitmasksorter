@@ -1,6 +1,7 @@
 package com.aldogg.sorter.int_.st;
 
 import com.aldogg.sorter.AnalysisResult;
+import com.aldogg.sorter.BitSorterUtils;
 import com.aldogg.sorter.MaskInfoInt;
 import com.aldogg.sorter.Section;
 import com.aldogg.sorter.int_.BitMaskSorterInt;
@@ -9,7 +10,7 @@ import com.aldogg.sorter.int_.SorterUtilsInt;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedSigned;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedUnSigned;
 
-public class RadixByteSorterInt extends BitMaskSorterInt {
+public class RadixByteSorterCInt extends BitMaskSorterInt {
 
     boolean calculateBitMaskOptimization = true;
 
@@ -90,19 +91,24 @@ public class RadixByteSorterInt extends BitMaskSorterInt {
     }
 
     private void sortBytes(int[] array, int start, int endP1, int[] aux, int mask) {
-        boolean s0 = (mask & 0xFF) != 0;
-        boolean s8 = (mask & 0xFF00) != 0;
-        boolean s16 = (mask & 0xFF0000) != 0;
-        boolean s24 = (mask & 0xFF000000) != 0;
+
+        int[] bList = MaskInfoInt.getMaskAsArray(mask);
+
+        Section[] sections = BitSorterUtils.getProcessedSections(bList, 0, bList.length - 1, 8);
+        Section[] sections2 = BitSorterUtils.getProcessedSections(bList, 0, bList.length - 1,
+                (int) Math.ceil(bList.length * 1.0 / sections.length));
+        if (sections2.length == sections.length) {
+            sections = sections2;
+        }
+
         int n = endP1 - start;
         int ops = 0;
         int[] arrayOrig = array;
         int startOrig = start;
         int startAux = 0;
 
-        if (s0) {
-            Section section = new Section(8, 0);
-            SorterUtilsInt.partitionStableLastBits(array, start, section, aux, startAux, n);
+        if (sections.length > 0) {
+            SorterUtilsInt.partitionStableLastBits(array, start, sections[0], aux, startAux, n);
 
             //System.arraycopy(aux, 0, array, start, n);
             //swap array with aux and start with startAux
@@ -115,9 +121,8 @@ public class RadixByteSorterInt extends BitMaskSorterInt {
             ops++;
 
         }
-        if (s8) {
-            Section section = new Section(8, 8);
-            SorterUtilsInt.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
+        if (sections.length > 1) {
+            SorterUtilsInt.partitionStableOneGroupBits(array, start, sections[1], aux, startAux, n);
 
             //System.arraycopy(aux, 0, array, start, n);
             //swap array with aux and start with startAux
@@ -130,9 +135,8 @@ public class RadixByteSorterInt extends BitMaskSorterInt {
             ops++;
 
         }
-        if (s16) {
-            Section section = new Section(8, 16);
-            SorterUtilsInt.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
+        if (sections.length > 2) {
+            SorterUtilsInt.partitionStableOneGroupBits(array, start, sections[2], aux, startAux, n);
 
             //System.arraycopy(aux, 0, array, start, n);
             //swap array with aux and start with startAux
@@ -145,9 +149,8 @@ public class RadixByteSorterInt extends BitMaskSorterInt {
             ops++;
 
         }
-        if (s24) {
-            Section section = new Section(8, 24);
-            SorterUtilsInt.partitionStableOneGroupBits(array, start, section, aux, startAux, n);
+        if (sections.length > 3) {
+            SorterUtilsInt.partitionStableOneGroupBits(array, start, sections[3], aux, startAux, n);
             array = aux;
             start = startAux;
             ops++;

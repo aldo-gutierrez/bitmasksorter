@@ -18,9 +18,6 @@ public class BitMaskTest {
     public void maskTest() {
         int[] bList = new int[]{4, 2, 1, 0};
         Section[] sections = getMaskAsSections(bList, 0, bList.length - 1);
-        for (Section section: sections) {
-            section.calculateIntMask();
-        }
         int key = getKeySN(20, sections);
         assertEquals(12, key);
     }

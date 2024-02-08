@@ -400,7 +400,6 @@ public class SorterUtilsInt {
         int bits = 0;
         for (Section section : sections) {
             bits += section.bits;
-            section.calculateIntMask();
         }
         final int countLength = 1 << bits;
         final int[] count = new int[countLength];
