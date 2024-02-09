@@ -1,6 +1,6 @@
 package com.aldogg.sorter.generic;
 
-import com.aldogg.sorter.Sorter;
+import com.aldogg.sorter.shared.Sorter;
 import com.aldogg.sorter.int_.object.IntMapper;
 
 import java.util.List;

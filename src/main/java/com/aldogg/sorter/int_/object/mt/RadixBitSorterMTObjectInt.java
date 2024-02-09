@@ -8,10 +8,13 @@ import com.aldogg.sorter.generic.SorterUtilsGeneric;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 import com.aldogg.sorter.int_.object.IntMapper;
 import com.aldogg.sorter.int_.object.st.RadixBitSorterObjectInt;
+import com.aldogg.sorter.shared.OrderAnalysisResult;
+import com.aldogg.sorter.shared.Section;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 
 import static com.aldogg.parallel.ArrayParallelRunner.splitWork;
 import static com.aldogg.sorter.BitSorterUtils.getMaskAsSections;
-import static com.aldogg.sorter.MaskInfoInt.SIZE_FOR_PARALLEL_BIT_MASK;
+import static com.aldogg.sorter.shared.int_mask.MaskInfoInt.SIZE_FOR_PARALLEL_BIT_MASK;
 import static com.aldogg.sorter.int_.SorterUtilsInt.*;
 import static com.aldogg.sorter.int_.object.SorterUtilsObjectInt.*;
 import static com.aldogg.sorter.int_.object.SorterUtilsObjectInt.partitionReverseNotStable;
@@ -20,39 +23,16 @@ public class RadixBitSorterMTObjectInt implements SorterObjectInt {
 
     protected final BitSorterMTParams params = BitSorterMTParams.getMTParams();
 
-    boolean unsigned = false;
-    boolean stable = false;
-
     @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
-
-    @Override
-    public boolean isStable() {
-        return stable;
-    }
-
-    @Override
-    public void setStable(boolean stable) {
-        this.stable = stable;
-    }
-
-    @Override
-    public void sort(Object[] oArray, IntMapper mapper, int start, int endP1) {
+    public void sort(Object[] oArray, int start, int endP1, IntMapper mapper) {
         int n = endP1 - start;
         if (n < 2) {
             return;
         }
         int maxThreads = params.getMaxThreads();
         if (n <= params.getDataSizeForThreads() || maxThreads <= 1) {
-            RadixBitSorterObjectInt stSorter = new RadixBitSorterObjectInt();
-            stSorter.setUnsigned(isUnsigned());
-            stSorter.sort(oArray, mapper, start, endP1);
+            RadixBitSorterObjectInt sorter = new RadixBitSorterObjectInt();
+            sorter.sort(oArray, start, endP1, mapper);
             return;
         }
 
@@ -61,12 +41,13 @@ public class RadixBitSorterMTObjectInt implements SorterObjectInt {
             array[i] = mapper.value(oArray[i]);
         }
 
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
-        if (ordered == AnalysisResult.DESCENDING) {
+        FieldSorterOptions options = mapper;
+        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, start, endP1);
             SorterUtilsGeneric.reverse(oArray, start, endP1);
         }
-        if (ordered != AnalysisResult.UNORDERED) return;
+        if (ordered != OrderAnalysisResult.UNORDERED) return;
 
         MaskInfoInt maskInfo;
         if (n >= SIZE_FOR_PARALLEL_BIT_MASK) {
@@ -77,11 +58,11 @@ public class RadixBitSorterMTObjectInt implements SorterObjectInt {
 
         if (maskInfo.isUpperBitMaskSet()) { //there are negative numbers and positive numbers
             int sortMask = 1 << MaskInfoInt.UPPER_BIT;
-            int finalLeft = isStable()
-                    ? (isUnsigned()
+            int finalLeft = options.isStable()
+                    ? (options.isUnsigned()
                     ? partitionStable(oArray, array, start, endP1, sortMask)
                     : partitionReverseStable(oArray, array, start, endP1, sortMask))
-                    : (isUnsigned()
+                    : (options.isUnsigned()
                     ? partitionNotStable(oArray, array, start, endP1, sortMask)
                     : partitionReverseNotStable(oArray, array, start, endP1, sortMask));
 
@@ -130,7 +111,7 @@ public class RadixBitSorterMTObjectInt implements SorterObjectInt {
             tBits += 1;
         }
         int threadBits = Math.min(tBits, bList.length);
-        int sortMask = SorterUtilsInt.getIntMask(bList, 0, threadBits - 1);
+        int sortMask = MaskInfoInt.getMask(bList, 0, threadBits - 1);
         partitionStableNonConsecutiveBitsAndRadixSort(oArray, array, start, endP1, sortMask, threadBits, bList);
     }
 

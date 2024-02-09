@@ -1,7 +1,7 @@
 package com.aldogg.sorter.float_.object;
 
-import com.aldogg.sorter.MaskInfoInt;
-import com.aldogg.sorter.Section;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
+import com.aldogg.sorter.shared.Section;
 import com.aldogg.sorter.float_.SorterUtilsFloat;
 
 import static com.aldogg.sorter.generic.SorterUtilsGeneric.swap;

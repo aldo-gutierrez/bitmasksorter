@@ -1,7 +1,8 @@
 package com.aldogg.sorter.int_;
 
-import com.aldogg.sorter.MaskInfoInt;
-import com.aldogg.sorter.Section;
+import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
+import com.aldogg.sorter.shared.Section;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -23,9 +24,14 @@ import static com.aldogg.sorter.BitSorterUtils.*;
  * 25 bits (99% OF Java) (460% OF RadixBitSorter)
  *   tested with N=2**20
  */
-public class PCountSortInt {
+public class PCountSortInt extends BitMaskSorterInt {
 
-    public static void countSort(final int[] array, final int start, final int endP1, int[] bList, int bListStart) {
+    @Override
+    public void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params) {
+        pCountSort(array, start, endP1, bList, 0);
+    }
+
+    public static void pCountSort(final int[] array, final int start, final int endP1, int[] bList, int bListStart) {
         int[] bListNew = Arrays.copyOfRange(bList, bListStart, bList.length);
         Section[] sections = getMaskAsSections(bListNew, 0, bListNew.length - 1);
         if (sections.length == 1 && sections[0].shift == 0) {
@@ -33,20 +39,20 @@ public class PCountSortInt {
             int elementSample = array[start];
             elementSample = elementSample & ~mask;
             if (elementSample == 0) { //last bits and includes all numbers and all positive numbers
-                pgCountSortPositive(array, start, endP1, 1 << sections[0].bits);
+                pCountSortPositive(array, start, endP1, 1 << sections[0].bits);
             } else { //last bits but there is a mask for a bigger number
-                pgCountSortEndingMask(array, start, endP1, mask, elementSample);
+                pCountSortEndingMask(array, start, endP1, mask, elementSample);
             }
         } else {
             if (sections.length == 1) {
-                pgCountSortSection(array, start, endP1, sections[0]);
+                pCountSortSection(array, start, endP1, sections[0]);
             } else {
-                pgCountSortSections(array, start, endP1, sections);
+                pCountSortSections(array, start, endP1, sections);
             }
         }
     }
 
-    private static void pgCountSortPositive(int[] array, int start, int endP1, int range) {
+    private static void pCountSortPositive(int[] array, int start, int endP1, int range) {
         if (range > (1 << 24)) {
             System.err.println("Pigeonhole Count sort should be used for number range <= 2**24, for optimal performance: range <= 2**20");
         }
@@ -69,7 +75,7 @@ public class PCountSortInt {
         }
     }
 
-    private static void pgCountSortEndingMask(int[] array, int start, int endP1, int mask, int elementSample) {
+    private static void pCountSortEndingMask(int[] array, int start, int endP1, int mask, int elementSample) {
         int range = mask + 1;
         if (range > (1 << 24)) {
             System.err.println("Pigeonhole Count sort should be used for number range <= 2**24, for optimal performance: range <= 2**20");
@@ -94,7 +100,7 @@ public class PCountSortInt {
         }
     }
 
-    private static void pgCountSortSection(int[] array, int start, int endP1, Section section) {
+    private static void pCountSortSection(int[] array, int start, int endP1, Section section) {
         int range = 1 << section.bits;
         if (range > (1 << 24)) {
             System.err.println("Pigeonhole Count sort should be used for number range <= 2**24, for optimal performance: range <= 2**20");
@@ -125,7 +131,7 @@ public class PCountSortInt {
     }
 
     //TODO need test as it not runs in performance benchmarks
-    private static void pgCountSortSections(int[] array, int start, int endP1, Section[] sections) {
+    private static void pCountSortSections(int[] array, int start, int endP1, Section[] sections) {
         int bits = 0;
         for (Section section : sections) {
             bits += section.bits;
@@ -177,7 +183,7 @@ public class PCountSortInt {
             System.arraycopy(array, 0, array1, 0, N);
             System.arraycopy(array, 0, array2, 0, N);
             long start = System.currentTimeMillis();
-            pgCountSortPositive(array1, 0, N, R);
+            pCountSortPositive(array1, 0, N, R);
             time1 += System.currentTimeMillis() - start;
             long start2 = System.currentTimeMillis();
             //RadixBitSorterInt radixBitSorterInt = new RadixBitSorterInt();

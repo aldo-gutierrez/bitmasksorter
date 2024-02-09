@@ -1,8 +1,8 @@
 package com.aldogg.sorter.test.unit;
 
 import com.aldogg.sorter.BitSorterUtils;
-import com.aldogg.sorter.MaskInfoLong;
-import com.aldogg.sorter.Section;
+import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
+import com.aldogg.sorter.shared.Section;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 import org.junit.jupiter.api.Test;
 

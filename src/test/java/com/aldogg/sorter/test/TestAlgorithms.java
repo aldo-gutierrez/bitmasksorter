@@ -1,6 +1,6 @@
 package com.aldogg.sorter.test;
 
-import com.aldogg.sorter.Named;
+import com.aldogg.sorter.shared.Named;
 import com.aldogg.sorter.generators.GeneratorParams;
 
 import java.io.IOException;
@@ -86,7 +86,7 @@ public class TestAlgorithms<T extends Named> {
 
     public void printTestSpeed(GeneratorParams params, Writer writer) throws IOException {
         int size = params.size;
-        int limitLow = params.limitLow;
+        long limitLow = params.limitLow;
         long limitHigh = params.limitHigh;
         Named[] sorters = algorithms;
         for (Named sorter : sorters) {

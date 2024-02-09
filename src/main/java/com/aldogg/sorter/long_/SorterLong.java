@@ -1,6 +1,7 @@
 package com.aldogg.sorter.long_;
 
-import com.aldogg.sorter.Sorter;
+import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.shared.Sorter;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -8,10 +9,11 @@ import java.util.ListIterator;
 public interface SorterLong extends Sorter {
 
     default void sort(long[] array) {
-        sort(array, 0, array.length);
+        sort(array, 0, array.length, new FieldSorterOptions() {
+        });
     }
 
-    void sort(long[] array, int start, int endP1);
+    void sort(long[] array, int start, int endP1, FieldSorterOptions options);
 
     default void sort(List<Long> list) {
         sort(list, 0, list.size());
@@ -26,7 +28,8 @@ public interface SorterLong extends Sorter {
             a[j] = value;
             j++;
         }
-        sort(a, 0, n);
+        sort(a, 0, n, new FieldSorterOptions() {
+        });
         j = 0;
         ListIterator<Long> iterator = subList.listIterator();
         while (iterator.hasNext()) {

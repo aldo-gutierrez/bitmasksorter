@@ -170,7 +170,7 @@ public class IntGenerator {
         } else {
             int range = (int) (params.limitHigh - params.limitLow);
             for (int i = 0; i < size; ++i) {
-                int randomInt = params.random.nextInt(range) + params.limitLow;
+                int randomInt = params.random.nextInt(range) + (int) params.limitLow;
                 v[i] = randomInt;
             }
         }

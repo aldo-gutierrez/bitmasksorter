@@ -5,15 +5,18 @@ import com.aldogg.sorter.*;
 import com.aldogg.sorter.int_.BitMaskSorterInt;
 import com.aldogg.sorter.int_.BitMaskSorterMTInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
+import com.aldogg.sorter.int_.SorterUtilsIntExt;
 import com.aldogg.sorter.int_.st.RadixBitSorterInt;
+import com.aldogg.sorter.shared.Section;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
-import static com.aldogg.sorter.int_.SorterUtilsInt.sortShortK;
+import static com.aldogg.sorter.int_.SorterUtilsIntExt.sortShortK;
 
 public class RadixBitSorterMTInt extends BitMaskSorterMTInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, int[] bList, Object params) {
+    public void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params) {
         int kDiff = bList.length;
         if (kDiff <= this.params.getShortKBits()) {
             if (kDiff < 1) {
@@ -30,7 +33,7 @@ public class RadixBitSorterMTInt extends BitMaskSorterMTInt {
             tBits += 1;
         }
         int threadBits = Math.min(tBits, bList.length);
-        int sortMask = SorterUtilsInt.getIntMask(bList, 0, threadBits - 1);
+        int sortMask = MaskInfoInt.getMask(bList, 0, threadBits - 1);
 
         partitionStableNonConsecutiveBitsAndRadixSort(array, start, endP1, sortMask, threadBits, bList);
     }
@@ -50,14 +53,14 @@ public class RadixBitSorterMTInt extends BitMaskSorterMTInt {
             Section section = sections[0];
             if (section.shift == 0) {
                 if (n > 2000000) {
-                    leftX = SorterUtilsInt.partitionStableLastBitsParallel(array, start, section, aux, n);
+                    leftX = SorterUtilsIntExt.partitionStableLastBitsParallel(array, start, section, aux, n);
                 } else {
                     leftX = SorterUtilsInt.partitionStableLastBits(array, start, section, aux, 0, n);
                 }
                 System.arraycopy(aux, 0, array, start, n);
             } else {
                 if (n > 2000000) {
-                    leftX = SorterUtilsInt.partitionStableOneGroupBitsParallel(array, start, section, aux, n);
+                    leftX = SorterUtilsIntExt.partitionStableOneGroupBitsParallel(array, start, section, aux, n);
                 } else {
                     leftX = SorterUtilsInt.partitionStableOneGroupBits(array, start, section, aux, 0, n);
                 }
@@ -98,9 +101,6 @@ public class RadixBitSorterMTInt extends BitMaskSorterMTInt {
 
     @Override
     public BitMaskSorterInt getSTIntSorter() {
-        RadixBitSorterInt sorter = new RadixBitSorterInt();
-        sorter.setUnsigned(isUnsigned());
-        sorter.setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
-        return sorter;
+        return new RadixBitSorterInt();
     }
 }

@@ -1,7 +1,8 @@
-package com.aldogg.sorter;
+package com.aldogg.sorter.shared.int_mask;
 
 import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.parallel.ArrayRunnable;
+import com.aldogg.sorter.Constants;
 import com.aldogg.sorter.int_.object.IntMapper;
 
 import java.util.ArrayList;
@@ -179,6 +180,14 @@ public class MaskInfoInt {
 
     public static int getMaskRangeBits(final int bStart, final int bEnd) {
         return ((1 << bStart + 1 - bEnd) - 1) << bEnd;
+    }
+
+    public static int getMask(int[] bList, int start, int endP1) {
+        int mask = 0;
+        for (int i = start; i <= endP1; i++) {
+            mask = mask | 1 << bList[i];
+        }
+        return mask;
     }
 
     public int getMask() {

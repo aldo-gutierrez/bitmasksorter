@@ -1,15 +1,15 @@
 package com.aldogg.sorter.long_;
 
-import com.aldogg.sorter.AnalysisResult;
+import com.aldogg.sorter.shared.OrderAnalysisResult;
 import com.aldogg.sorter.BitSorterParams;
-import com.aldogg.sorter.MaskInfoLong;
+import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 
-import static com.aldogg.sorter.MaskInfoLong.getMaskAsArray;
+import static com.aldogg.sorter.shared.long_mask.MaskInfoLong.getMaskAsArray;
 import static com.aldogg.sorter.long_.SorterUtilsLong.*;
 
 public abstract class BitMaskSorterLong implements SorterLong {
 
-    protected boolean unsigned = false;
 
     protected BitSorterParams params = BitSorterParams.getSTParams();
 
@@ -17,28 +17,19 @@ public abstract class BitMaskSorterLong implements SorterLong {
         this.params = params;
     }
 
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
-
-    abstract public void sort(long[] array, int start, int endP1, int[] bList);
+    abstract public void sort(long[] array, int start, int endP1, FieldSorterOptions options, int[] bList);
 
     @Override
-    public void sort(long[] array, int start, int endP1) {
+    public void sort(long[] array, int start, int endP1, FieldSorterOptions options) {
         int n = endP1 - start;
         if (n < 2) {
             return;
         }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
-        if (ordered == AnalysisResult.DESCENDING) {
+        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        if (ordered == OrderAnalysisResult.DESCENDING) {
             reverse(array, start, endP1);
         }
-        if (ordered != AnalysisResult.UNORDERED) return;
+        if (ordered != OrderAnalysisResult.UNORDERED) return;
 
         MaskInfoLong maskInfo = MaskInfoLong.calculateMask(array, start, endP1);
         long mask = maskInfo.getMask();
@@ -47,6 +38,6 @@ public abstract class BitMaskSorterLong implements SorterLong {
             return;
         }
 //        setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
-        sort(array, start, endP1, bList);
+        sort(array, start, endP1, options, bList);
     }
 }

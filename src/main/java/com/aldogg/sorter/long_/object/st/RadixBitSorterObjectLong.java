@@ -5,39 +5,23 @@ import com.aldogg.sorter.generic.SorterUtilsGeneric;
 import com.aldogg.sorter.long_.SorterUtilsLong;
 import com.aldogg.sorter.long_.object.LongMapper;
 import com.aldogg.sorter.long_.object.SorterObjectLong;
+import com.aldogg.sorter.shared.OrderAnalysisResult;
+import com.aldogg.sorter.shared.Section;
+import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 
 import static com.aldogg.sorter.BitSorterParams.RADIX_SORT_MAX_BITS;
-import static com.aldogg.sorter.MaskInfoInt.UPPER_BIT;
+import static com.aldogg.sorter.shared.int_mask.MaskInfoInt.UPPER_BIT;
 import static com.aldogg.sorter.long_.SorterUtilsLong.listIsOrderedSigned;
 import static com.aldogg.sorter.long_.SorterUtilsLong.listIsOrderedUnSigned;
 import static com.aldogg.sorter.long_.object.SorterUtilsObjectLong.*;
 
 public class RadixBitSorterObjectLong implements SorterObjectLong {
 
-    boolean unsigned = false;
-    boolean stable = false;
-
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
-
-    public void setUnsigned(boolean unsigned) {
-        this.unsigned = unsigned;
-    }
-
-    @Override
-    public boolean isStable() {
-        return stable;
-    }
-
-    @Override
-    public void setStable(boolean stable) {
-        this.stable = stable;
-    }
+    FieldSorterOptions options;
 
     @Override
     public void sort(Object[] oArray, int start, int endP1, LongMapper mapper) {
+        options = mapper;
         int n = endP1 - start;
         if (n < 2) {
             return;
@@ -46,12 +30,12 @@ public class RadixBitSorterObjectLong implements SorterObjectLong {
         for (int i = 0; i < array.length; i++) {
             array[i] = mapper.value(oArray[i]);
         }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
-        if (ordered == AnalysisResult.DESCENDING) {
+        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsLong.reverse(array, start, endP1);
             SorterUtilsGeneric.reverse(oArray, start, endP1);
         }
-        if (ordered != AnalysisResult.UNORDERED) return;
+        if (ordered != OrderAnalysisResult.UNORDERED) return;
 
         MaskInfoLong maskInfo = MaskInfoLong.calculateMask(array, start, endP1);
         long mask = maskInfo.getMask();
@@ -67,11 +51,11 @@ public class RadixBitSorterObjectLong implements SorterObjectLong {
             MaskInfoLong maskInfo;
             long mask;
             long sortMask = 1 << bList[0];
-            int finalLeft = isStable()
-                    ? (isUnsigned()
+            int finalLeft = options.isStable()
+                    ? (options.isUnsigned()
                     ? partitionStable(oArray, array, start, endP1, sortMask)
                     : partitionReverseStable(oArray, array, start, endP1, sortMask))
-                    : (isUnsigned()
+                    : (options.isUnsigned()
                     ? partitionNotStable(oArray, array, start, endP1, sortMask)
                     : partitionReverseNotStable(oArray, array, start, endP1, sortMask));
             int n1 = finalLeft - start;

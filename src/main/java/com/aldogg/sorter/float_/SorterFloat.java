@@ -1,6 +1,6 @@
 package com.aldogg.sorter.float_;
 
-import com.aldogg.sorter.Sorter;
+import com.aldogg.sorter.shared.Sorter;
 
 import java.util.List;
 import java.util.ListIterator;

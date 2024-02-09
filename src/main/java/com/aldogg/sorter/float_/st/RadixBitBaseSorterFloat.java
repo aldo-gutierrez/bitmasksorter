@@ -1,11 +1,11 @@
 package com.aldogg.sorter.float_.st;
 
-import com.aldogg.sorter.MaskInfoInt;
-import com.aldogg.sorter.MaskInfoLong;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
+import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 import com.aldogg.sorter.float_.BitMaskSorterFloat;
 
 import static com.aldogg.sorter.float_.SorterUtilsFloat.*;
-import static com.aldogg.sorter.MaskInfoInt.UPPER_BIT;
+import static com.aldogg.sorter.shared.int_mask.MaskInfoInt.UPPER_BIT;
 
 public class RadixBitBaseSorterFloat extends BitMaskSorterFloat {
 

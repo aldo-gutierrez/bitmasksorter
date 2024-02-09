@@ -1,8 +1,8 @@
 package com.aldogg.sorter.float_;
 
-import com.aldogg.sorter.AnalysisResult;
-import com.aldogg.sorter.MaskInfoInt;
-import com.aldogg.sorter.Section;
+import com.aldogg.sorter.shared.OrderAnalysisResult;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
+import com.aldogg.sorter.shared.Section;
 
 public class SorterUtilsFloat {
 
@@ -159,7 +159,7 @@ public class SorterUtilsFloat {
             ++i;
         }
         if (i == endP1) {
-            return AnalysisResult.ALL_EQUAL;
+            return OrderAnalysisResult.ALL_EQUAL;
         }
 
         //ascending
@@ -174,7 +174,7 @@ public class SorterUtilsFloat {
                 i1 = i2;
             }
             if (i == endP1) {
-                return AnalysisResult.ASCENDING;
+                return OrderAnalysisResult.ASCENDING;
             }
         }
         //descending
@@ -188,10 +188,10 @@ public class SorterUtilsFloat {
                 i1 = i2;
             }
             if (i == endP1) {
-                return AnalysisResult.DESCENDING;
+                return OrderAnalysisResult.DESCENDING;
             }
         }
-        return AnalysisResult.UNORDERED;
+        return OrderAnalysisResult.UNORDERED;
     }
 
 }

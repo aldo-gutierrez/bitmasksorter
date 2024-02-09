@@ -1,10 +1,10 @@
 package com.aldogg.sorter.float_;
 
-import com.aldogg.sorter.AnalysisResult;
+import com.aldogg.sorter.shared.OrderAnalysisResult;
 import com.aldogg.sorter.BitSorterParams;
-import com.aldogg.sorter.MaskInfoInt;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 
-import static com.aldogg.sorter.MaskInfoInt.getMaskAsArray;
+import static com.aldogg.sorter.shared.int_mask.MaskInfoInt.getMaskAsArray;
 import static com.aldogg.sorter.float_.SorterUtilsFloat.*;
 
 public abstract class BitMaskSorterFloat implements SorterFloat {
@@ -24,10 +24,10 @@ public abstract class BitMaskSorterFloat implements SorterFloat {
             return;
         }
         int ordered = listIsOrderedSigned(array, start, endP1);
-        if (ordered == AnalysisResult.DESCENDING) {
+        if (ordered == OrderAnalysisResult.DESCENDING) {
             reverse(array, start, endP1);
         }
-        if (ordered != AnalysisResult.UNORDERED) return;
+        if (ordered != OrderAnalysisResult.UNORDERED) return;
 
         MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
         int mask = maskInfo.getMask();

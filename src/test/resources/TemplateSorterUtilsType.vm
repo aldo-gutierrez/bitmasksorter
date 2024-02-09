@@ -1,29 +1,43 @@
-package com.aldogg.sorter.long_;
+package com.aldogg.sorter.${type}_;
 
+import com.aldogg.parallel.ArrayParallelRunner;
+import com.aldogg.parallel.ArrayRunnable;
+import com.aldogg.parallel.ParallelRunner;
+import com.aldogg.sorter.*;
 import com.aldogg.sorter.shared.OrderAnalysisResult;
-import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 import com.aldogg.sorter.shared.Section;
+import com.aldogg.sorter.shared.ShortSorter;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 
-import static java.lang.Long.MIN_VALUE;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SorterUtilsLong {
+import static com.aldogg.sorter.BitSorterUtils.getKeySN;
+import static com.aldogg.sorter.${type}_.st.RadixBitSorter${Type}.radixSort;
+    ${TypeObject}.MIN_VALUE;
 
-    public static void swap(final long[] array, final int left, final int right) {
-        long auxS = array[left];
+
+import static com.aldogg.sorter.shared.ShortSorter.*;
+
+public class SorterUtils${Type}2 {
+
+
+    public static void swap(final ${type}[] array, final int left, final int right) {
+        $type auxS = array[left];
         array[left] = array[right];
         array[right] = auxS;
     }
 
-    public static int partitionNotStable(final long[] array, final int start, final int endP1, final long mask) {
+    public static int partitionNotStable(final ${type}[] array, final int start, final int endP1, final ${typeMask} mask) {
         int left = start;
         int right = endP1 - 1;
+
         while (left <= right) {
-            long element = array[left];
+            ${typeMask} element = ${mapF}(array[left]);
             if ((element & mask) == 0) {
                 left++;
             } else {
                 while (left <= right) {
-                    element = array[right];
+                    element = ${mapF}(array[right]);
                     if ((element & mask) == 0) {
                         swap(array, left, right);
                         left++;
@@ -38,15 +52,15 @@ public class SorterUtilsLong {
         return left;
     }
 
-    public static int partitionReverseNotStable(final long[] array, final int start, final int endP1, final long mask) {
+    public static int partitionReverseNotStable(final ${type}[] array, final int start, final int endP1, final ${typeMask} mask) {
         int left = start;
         int right = endP1 - 1;
 
         while (left <= right) {
-            long element = array[left];
+            ${typeMask} element = ${mapF}(array[left]);
             if ((element & mask) == 0) {
                 while (left <= right) {
-                    element = array[right];
+                    element = ${mapF}(array[right]);
                     if (((element & mask) == 0)) {
                         right--;
                     } else {
@@ -64,11 +78,12 @@ public class SorterUtilsLong {
     }
 
 
-    public static int partitionStable(final long[] array, final int start, final int endP1, final long mask, final long[] aux) {
+
+    public static int partitionStable(final ${type}[] array, final int start, final int endP1, final ${typeMask} mask, final ${type}[] aux) {
         int left = start;
         int right = 0;
         for (int i = start; i < endP1; ++i) {
-            long element = array[i];
+            ${typeMask} element = ${mapF}(array[i]);
             if ((element & mask) == 0) {
                 array[left] = element;
                 left++;
@@ -81,13 +96,14 @@ public class SorterUtilsLong {
         return left;
     }
 
-    public static void partitionStableLastBits(final long[] array, final int start, final Section section, final long[] aux, int startAux, int n) {
-        final long mask = MaskInfoLong.getMaskRangeBits(section.start, section.shift);
+
+    public static int [] partitionStableLastBits(final ${type}[] array, final int start, final Section section, final ${type}[] aux, final int startAux, final int n) {
+        final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         final int endP1 = start + n;
         final int countLength = 1 << section.bits;
         final int[] count = new int[countLength];
         for (int i = start; i < endP1; ++i) {
-            count[(int) (array[i] & mask)]++;
+            count[(int) (${mapF}(array[i]) & mask)]++;
         }
         for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
@@ -96,26 +112,27 @@ public class SorterUtilsLong {
         }
         if (startAux == 0) {
             for (int i = start; i < endP1; ++i) {
-                long element = array[i];
-                aux[count[(int) (element & mask)]++] = element;
+                $type element = array[i];
+                aux[count[(int) (${mapF}(element) & mask)]++] = element;
             }
         } else {
             for (int i = start; i < endP1; ++i) {
-                long element = array[i];
-                aux[count[(int) (element & mask)]++ + startAux] = element;
+                $type element = array[i];
+                aux[count[(int) (${mapF}(element) & mask)]++ + startAux] = element;
             }
         }
+        return count;
     }
 
 
-    public static int[] partitionStableOneGroupBits(final long[] array, final int start, final Section section, final long[] aux, int startAux, int n) {
-        final long mask = MaskInfoLong.getMaskRangeBits(section.start, section.shift);
+    public static int[] partitionStableOneGroupBits(final ${type}[] array, final int start, final Section section, final ${type}[] aux, int startAux, int n) {
+        final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         final int shiftRight = section.shift;
         final int endP1 = start + n;
         final int countLength = 1 << section.bits;
         final int[] count = new int[countLength];
         for (int i = start; i < endP1; ++i) {
-            count[(int) ((array[i] & mask) >>> shiftRight)]++;
+            count[(int) ((${mapF}(array[i]) & mask) >>> shiftRight)]++;
         }
         for (int i = 0, sum = 0; i < countLength; ++i) {
             int countI = count[i];
@@ -124,19 +141,53 @@ public class SorterUtilsLong {
         }
         if (startAux == 0) {
             for (int i = start; i < endP1; ++i) {
-                long element = array[i];
+                $typeMask element = ${mapF}(array[i]);
                 aux[count[(int) ((element & mask) >>> shiftRight)]++] = element;
             }
         } else {
             for (int i = start; i < endP1; ++i) {
-                long element = array[i];
+                $typeMask element = ${mapF}(array[i]);
                 aux[count[(int) ((element & mask) >>> shiftRight)]++ + startAux] = element;
             }
         }
         return count;
     }
 
-    public static void reverse(final long[] array, final int start, final int endP1) {
+
+    public static int[] partitionStableNGroupBits(final ${type}[] array, final int start, Section[] sections, final ${type}[] aux, final int startAux, final int n) {
+        final int endP1 = start + n;
+        int bits = 0;
+        for (Section section : sections) {
+            bits += section.bits;
+            section.calculateIntMask();
+        }
+        final int countLength = 1 << bits;
+        final int[] count = new int[countLength];
+        for (int i = start; i < endP1; ++i) {
+            $type element = array[i];
+            count[getKeySN(element, sections)]++;
+        }
+        for (int i = 0, sum = 0; i < countLength; ++i) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
+        }
+        if (startAux == 0) {
+            for (int i = start; i < endP1; ++i) {
+                $type element = array[i];
+                aux[count[getKeySN(element, sections)]++] = element;
+            }
+        } else {
+            for (int i = start; i < endP1; ++i) {
+                $type element = array[i];
+                aux[count[getKeySN(element, sections)]++ + startAux] = element;
+            }
+        }
+        return count;
+    }
+
+
+    public static void reverse(final ${type}[] array, final int start, final int endP1) {
         int length = endP1 - start;
         int ld2 = length / 2;
         int end = endP1 - 1;
@@ -145,11 +196,11 @@ public class SorterUtilsLong {
         }
     }
 
-    public static int listIsOrderedSigned(final long[] array, final int start, final int endP1) {
-        long i1 = array[start];
+    public static int listIsOrderedSigned(final ${type}[] array, final int start, final int endP1) {
+        ${type} i1 = array[start];
         int i = start + 1;
         while (i < endP1) {
-            long i2 = array[i];
+            ${type} i2 = array[i];
             if (i2 != i1) {
                 break;
             }
@@ -158,13 +209,12 @@ public class SorterUtilsLong {
         if (i == endP1) {
             return OrderAnalysisResult.ALL_EQUAL;
         }
-
         //ascending
         i1 = array[i];
         if (array[i - 1] < i1) {
             ++i;
             for (; i < endP1; ++i) {
-                long i2 = array[i];
+                ${type} i2 = array[i];
                 if (i1 > i2) {
                     break;
                 }
@@ -178,7 +228,7 @@ public class SorterUtilsLong {
         else {
             ++i;
             for (; i < endP1; ++i) {
-                long i2 = array[i];
+                ${type} i2 = array[i];
                 if (i1 < i2) {
                     break;
                 }
@@ -191,11 +241,11 @@ public class SorterUtilsLong {
         return OrderAnalysisResult.UNORDERED;
     }
 
-    public static int listIsOrderedUnSigned(long[] array, int start, int endP1) {
-        long i1 = array[start];
+    public static int listIsOrderedUnSigned(${type}[] array, int start, int endP1) {
+        ${type} i1 = array[start];
         int i = start + 1;
         while (i < endP1) {
-            long i2 = array[i];
+            ${type} i2 = array[i];
             if (i2 != i1) {
                 break;
             }
@@ -204,13 +254,12 @@ public class SorterUtilsLong {
         if (i == endP1) {
             return OrderAnalysisResult.ALL_EQUAL;
         }
-
         //ascending
         i1 = array[i];
         if (array[i - 1] < i1) {
             ++i;
             for (; i < endP1; ++i) {
-                long i2 = array[i];
+                int i2 = array[i];
                 if (i1 + MIN_VALUE > i2 + MIN_VALUE) {
                     break;
                 }
@@ -224,7 +273,7 @@ public class SorterUtilsLong {
         else {
             ++i;
             for (; i < endP1; ++i) {
-                long i2 = array[i];
+                int i2 = array[i];
                 if (i1 + MIN_VALUE < i2 + MIN_VALUE) {
                     break;
                 }
@@ -236,5 +285,7 @@ public class SorterUtilsLong {
         }
         return OrderAnalysisResult.UNORDERED;
     }
+
+
 
 }

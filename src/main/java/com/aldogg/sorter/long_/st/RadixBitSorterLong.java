@@ -1,8 +1,9 @@
 package com.aldogg.sorter.long_.st;
 
 import com.aldogg.sorter.BitSorterUtils;
-import com.aldogg.sorter.MaskInfoLong;
-import com.aldogg.sorter.Section;
+import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
+import com.aldogg.sorter.shared.Section;
 import com.aldogg.sorter.long_.BitMaskSorterLong;
 
 import static com.aldogg.sorter.BitSorterParams.RADIX_SORT_MAX_BITS;
@@ -11,12 +12,12 @@ import static com.aldogg.sorter.long_.SorterUtilsLong.*;
 public class RadixBitSorterLong extends BitMaskSorterLong {
 
     @Override
-    public void sort(long[] array, int start, int endP1, int[] bList) {
+    public void sort(long[] array, int start, int endP1, FieldSorterOptions options, int[] bList) {
         if (bList[0] == MaskInfoLong.UPPER_BIT) { //there are negative numbers and positive numbers
             MaskInfoLong maskInfo;
             long mask;
             long sortMask = 1L << bList[0];
-            int finalLeft = isUnsigned()
+            int finalLeft = options.isUnsigned()
                     ? partitionNotStable(array, start, endP1, sortMask)
                     : partitionReverseNotStable(array, start, endP1, sortMask);
             int n1 = finalLeft - start;

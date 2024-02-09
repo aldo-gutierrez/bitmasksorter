@@ -1,8 +1,9 @@
 package com.aldogg.sorter.int_.st;
 
 import com.aldogg.sorter.BitSorterUtils;
-import com.aldogg.sorter.MaskInfoInt;
-import com.aldogg.sorter.Section;
+import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
+import com.aldogg.sorter.shared.Section;
 import com.aldogg.sorter.int_.BitMaskSorterInt;
 
 import static com.aldogg.sorter.BitSorterParams.RADIX_SORT_MAX_BITS;
@@ -11,7 +12,7 @@ import static com.aldogg.sorter.int_.SorterUtilsInt.*;
 public class RadixBitSorterInt extends BitMaskSorterInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, int[] bList, Object params) {
+    public void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params) {
         int[] aux = (int[]) params;
         radixSort(array, start, endP1, bList, 0, bList.length - 1, aux, 0);
     }

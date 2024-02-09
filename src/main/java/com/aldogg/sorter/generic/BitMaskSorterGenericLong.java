@@ -1,6 +1,7 @@
 package com.aldogg.sorter.generic;
 
-import com.aldogg.sorter.MaskInfoLong;
+import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 import com.aldogg.sorter.long_.object.LongMapper;
 
 import static com.aldogg.sorter.generic.SorterUtilsGenericLong.partitionNotStableUpperBit;
@@ -8,12 +9,7 @@ import static com.aldogg.sorter.generic.SorterUtilsGenericLong.partitionReverseN
 
 public abstract class BitMaskSorterGenericLong<T> implements SorterObjectLong<T> {
 
-    protected boolean unsigned = false;
-
-    @Override
-    public boolean isUnsigned() {
-        return unsigned;
-    }
+    FieldSorterOptions options;
 
     abstract public void sort(T[] array, int start, int endP1, int[] bList, Object params);
 
@@ -25,7 +21,7 @@ public abstract class BitMaskSorterGenericLong<T> implements SorterObjectLong<T>
         }
         MaskInfoLong maskInfo = MaskInfoLong.calculateMaskBreakIfUpperBit(array, start, endP1, null, mapper);
         if (maskInfo.isUpperBitMaskSet()) { //the sign bit is set
-            int finalLeft = isUnsigned()
+            int finalLeft = options.isUnsigned()
                     ? partitionNotStableUpperBit(array, start, endP1, mapper)
                     : partitionReverseNotStableUpperBit(array, start, endP1, mapper);
             int n1 = finalLeft - start;
@@ -47,7 +43,7 @@ public abstract class BitMaskSorterGenericLong<T> implements SorterObjectLong<T>
             T[] aux = (T[]) new Object[Math.max(n1, n2)];
             if (n1 > 1) {
                 sort(array, start, finalLeft, bList1, aux);
-                if (isIee754()) {
+                if (options.isIeee754()) {
                     SorterUtilsGeneric.reverse(array, start, finalLeft);
                 }
             }
@@ -61,7 +57,7 @@ public abstract class BitMaskSorterGenericLong<T> implements SorterObjectLong<T>
             int[] bList = MaskInfoLong.getMaskAsArray(mask);
             if (bList.length > 0) {
                 sort(array, start, endP1, bList, aux);
-                if (isIee754()) {
+                if (options.isIeee754()) {
                     if (mapper.value(array[0]) < 0L) {
                         SorterUtilsGeneric.reverse(array, start, endP1);
                     }

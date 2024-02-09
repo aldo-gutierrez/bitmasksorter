@@ -1,6 +1,7 @@
 package com.aldogg.sorter;
 
 import com.aldogg.sorter.int_.SorterUtilsInt;
+import com.aldogg.sorter.shared.Section;
 
 import java.util.*;
 

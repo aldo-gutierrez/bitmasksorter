@@ -4,29 +4,23 @@ import com.aldogg.sorter.*;
 import com.aldogg.sorter.float_.SorterUtilsFloat;
 import com.aldogg.sorter.float_.object.FloatMapper;
 import com.aldogg.sorter.float_.object.SorterObjectFloat;
+import com.aldogg.sorter.shared.OrderAnalysisResult;
+import com.aldogg.sorter.shared.Section;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 
 import static com.aldogg.sorter.BitSorterParams.RADIX_SORT_MAX_BITS;
 import static com.aldogg.sorter.float_.SorterUtilsFloat.listIsOrderedSigned;
 import static com.aldogg.sorter.float_.object.SorterUtilsObjectFloat.*;
-import static com.aldogg.sorter.MaskInfoInt.UPPER_BIT;
+import static com.aldogg.sorter.shared.int_mask.MaskInfoInt.UPPER_BIT;
 import static com.aldogg.sorter.generic.SorterUtilsGeneric.reverse;
 
 public class RadixBitSorterObjectFloat implements SorterObjectFloat {
 
-    boolean stable = false;
-
-    @Override
-    public boolean isStable() {
-        return stable;
-    }
-
-    @Override
-    public void setStable(boolean stable) {
-        this.stable = stable;
-    }
+    FieldSorterOptions options;
 
     @Override
     public void sort(Object[] oArray, int start, int endP1, FloatMapper mapper) {
+        options = mapper;
         int n = endP1 - start;
         if (n < 2) {
             return;
@@ -36,11 +30,11 @@ public class RadixBitSorterObjectFloat implements SorterObjectFloat {
             array[i] = mapper.value(oArray[i]);
         }
         int ordered = listIsOrderedSigned(array, start, endP1);
-        if (ordered == AnalysisResult.DESCENDING) {
+        if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsFloat.reverse(array, start, endP1);
             reverse(oArray, start, endP1);
         }
-        if (ordered != AnalysisResult.UNORDERED) return;
+        if (ordered != OrderAnalysisResult.UNORDERED) return;
 
         MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
         int mask = maskInfo.getMask();
@@ -56,7 +50,7 @@ public class RadixBitSorterObjectFloat implements SorterObjectFloat {
             MaskInfoInt maskInfo;
             int mask;
             int sortMask = 1 << bList[0];
-            int finalLeft = isStable()
+            int finalLeft = options.isStable()
                     ? (partitionReverseStable(oArray, array, start, end, sortMask))
                     : (partitionReverseNotStable(oArray, array, start, end, sortMask));
             int n1 = finalLeft - start;

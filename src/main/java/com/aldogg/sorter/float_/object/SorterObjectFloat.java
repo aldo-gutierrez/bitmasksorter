@@ -1,6 +1,6 @@
 package com.aldogg.sorter.float_.object;
 
-import com.aldogg.sorter.Sorter;
+import com.aldogg.sorter.shared.Sorter;
 
 public interface SorterObjectFloat extends Sorter {
 
