@@ -1,9 +1,10 @@
 package com.aldogg.sorter.int_.st;
 
-import com.aldogg.sorter.AnalysisResult;
+import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.shared.OrderAnalysisResult;
 import com.aldogg.sorter.BitSorterUtils;
-import com.aldogg.sorter.MaskInfoInt;
-import com.aldogg.sorter.Section;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
+import com.aldogg.sorter.shared.Section;
 import com.aldogg.sorter.int_.BitMaskSorterInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 
@@ -19,16 +20,16 @@ public class RadixByteSorterCInt extends BitMaskSorterInt {
     }
 
     @Override
-    public void sort(int[] array, final int start, final int endP1) {
+    public void sort(int[] array, final int start, final int endP1, FieldSorterOptions options) {
         int n = endP1 - start;
         if (n < 2) {
             return;
         }
-        int ordered = isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
-        if (ordered == AnalysisResult.DESCENDING) {
+        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, start, endP1);
         }
-        if (ordered != AnalysisResult.UNORDERED) return;
+        if (ordered != OrderAnalysisResult.UNORDERED) return;
 
         int[] bList = null;
 
@@ -40,19 +41,19 @@ public class RadixByteSorterCInt extends BitMaskSorterInt {
                 return;
             }
         }
-        sort(array, start, endP1, bList, null);
+        sort(array, start, endP1, options, bList, null);
     }
 
     @Override
-    public void sort(int[] array, int start, int endP1, int[] bList, Object params) {
+    public void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params) {
         int mask = 0xFFFFFFFF;
         if (calculateBitMaskOptimization) {
             if (bList.length == 0) {
                 return;
             }
-            if (bList[0] == MaskInfoInt.UPPER_BIT && !isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
+            if (bList[0] == MaskInfoInt.UPPER_BIT && !options.isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
                 int sortMask = 1 << bList[0];
-                int finalLeft = isUnsigned()
+                int finalLeft = options.isUnsigned()
                         ? SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask)
                         : SorterUtilsInt.partitionReverseNotStable(array, start, endP1, sortMask);
                 int n1 = finalLeft - start;

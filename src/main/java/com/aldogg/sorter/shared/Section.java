@@ -1,4 +1,6 @@
-package com.aldogg.sorter;
+package com.aldogg.sorter.shared;
+
+import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 
 public class Section {
     public final int start; //bit Index start; bStart; //section.start = section.shift + section.bits - 1;
