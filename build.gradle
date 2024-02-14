@@ -24,6 +24,6 @@ test {
     useJUnitPlatform()
     maxHeapSize = '8G'
     filter {
-        excludeTestsMatching "*PTest"
+        //excludeTestsMatching "*PTest"
     }
 }

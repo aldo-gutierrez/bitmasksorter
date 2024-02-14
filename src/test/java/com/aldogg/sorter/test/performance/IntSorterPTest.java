@@ -34,7 +34,7 @@ public class IntSorterPTest extends BaseTest {
 
     @Test
     public void speedTestPositiveIntST() throws IOException {
-        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new AGSelectorSorterInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
         BufferedWriter writer = getWriter("test-results/speed_positiveInt_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
