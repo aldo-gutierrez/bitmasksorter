@@ -25,8 +25,7 @@ public class QuickBitSorterMTInt extends BitMaskSorterMTInt {
         final int n = endP1 - start;
         if (n < params.getDataSizeForThreads() || maxThreads == 1) {
             QuickBitSorterInt stIntSorter = (QuickBitSorterInt) getSTIntSorter();
-            stIntSorter.setSNFunctions(options.isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
-            stIntSorter.sort(array, start, endP1, bList, bListIndex, recalculate);
+            stIntSorter.sort(array, start, endP1, bList, bListIndex, recalculate, options);
             return;
         }
 

@@ -13,15 +13,15 @@ public class QuickBitSorterInt extends BitMaskSorterInt {
 
     @Override
     public void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params) {
-        sort(array, start, endP1, bList, 0, false);
+        sort(array, start, endP1, bList, 0, false, options);
     }
 
-    public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, boolean recalculate) {
+    public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, boolean recalculate, FieldSorterOptions options) {
         final int n = endP1 - start;
-        if (n <= VERY_SMALL_N_SIZE) {
-            snFunctions[n].accept(array, start);
-            return;
-        }
+//        if (n <= VERY_SMALL_N_SIZE) {
+//            new SortingNetworksInt().sort(array, start, endP1, options);
+//            return;
+//        }
 
         if (recalculate && bListIndex < 3) {
             MaskInfoInt maskParts = MaskInfoInt.calculateMask(array, start, endP1);
@@ -43,29 +43,29 @@ public class QuickBitSorterInt extends BitMaskSorterInt {
         int finalLeft = SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask);
         if (recalculate) {
             if (finalLeft - start > 1) {
-                sort(array, start, finalLeft, bList, bListIndex + 1);
+                sort(array, start, finalLeft, bList, bListIndex + 1, options);
             }
             if (endP1 - finalLeft > 1) {
-                sort(array, finalLeft, endP1, bList, bListIndex + 1);
+                sort(array, finalLeft, endP1, bList, bListIndex + 1, options);
             }
         } else {
             boolean recalculateBitMask = (finalLeft == start || finalLeft == endP1);
 
             if (finalLeft - start > 1) {
-                sort(array, start, finalLeft, bList, bListIndex + 1, recalculateBitMask);
+                sort(array, start, finalLeft, bList, bListIndex + 1, recalculateBitMask, options);
             }
             if (endP1 - finalLeft > 1) {
-                sort(array, finalLeft, endP1, bList, bListIndex + 1, recalculateBitMask);
+                sort(array, finalLeft, endP1, bList, bListIndex + 1, recalculateBitMask, options);
             }
         }
     }
 
-    public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex) {
+    public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, FieldSorterOptions options) {
         final int n = endP1 - start;
-        if (n <= VERY_SMALL_N_SIZE) {
-            snFunctions[n].accept(array, start);
-            return;
-        }
+//        if (n <= VERY_SMALL_N_SIZE) {
+//            new SortingNetworksInt().sort(array, start, endP1, options);
+//            return;
+//        }
 
         int kDiff = bList.length - bListIndex;
         if (kDiff <= params.getShortKBits()) {
@@ -80,10 +80,10 @@ public class QuickBitSorterInt extends BitMaskSorterInt {
         int finalLeft = SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask);
 
         if (finalLeft - start > 1) {
-            sort(array, start, finalLeft, bList, bListIndex + 1);
+            sort(array, start, finalLeft, bList, bListIndex + 1, options);
         }
         if (endP1 - finalLeft > 1) {
-            sort(array, finalLeft, endP1, bList, bListIndex + 1);
+            sort(array, finalLeft, endP1, bList, bListIndex + 1,options);
         }
     }
 

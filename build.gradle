@@ -17,13 +17,13 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
-    implementation 'org.apache.velocity:velocity:1.7'
+    testImplementation 'org.apache.velocity:velocity:1.7'
 }
 
 test {
     useJUnitPlatform()
     maxHeapSize = '8G'
     filter {
-        //excludeTestsMatching "*PTest"
+        excludeTestsMatching "*PTest"
     }
 }

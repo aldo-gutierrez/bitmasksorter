@@ -4,8 +4,7 @@ import com.aldogg.sorter.FieldSorterOptions;
 import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 import com.aldogg.sorter.shared.Section;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 import static com.aldogg.sorter.BitSorterUtils.*;
 
@@ -54,7 +53,7 @@ public class PCountSortInt extends BitMaskSorterInt {
 
     private static void pCountSortPositive(int[] array, int start, int endP1, int range) {
         if (range > (1 << 24)) {
-            System.err.println("Pigeonhole Count sort should be used for number range <= 2**24, for optimal performance: range <= 2**20");
+            //System.err.println("Pigeonhole Count sort should be used for number range <= 2**24, for optimal performance: range <= 2**20");
         }
         int[] count = new int[range];
         for (int i = start; i < endP1; i++) {
@@ -78,7 +77,7 @@ public class PCountSortInt extends BitMaskSorterInt {
     private static void pCountSortEndingMask(int[] array, int start, int endP1, int mask, int elementSample) {
         int range = mask + 1;
         if (range > (1 << 24)) {
-            System.err.println("Pigeonhole Count sort should be used for number range <= 2**24, for optimal performance: range <= 2**20");
+            //System.err.println("Pigeonhole Count sort should be used for number range <= 2**24, for optimal performance: range <= 2**20");
         }
         int[] count = new int[range];
         for (int i = start; i < endP1; i++) {
@@ -103,7 +102,7 @@ public class PCountSortInt extends BitMaskSorterInt {
     private static void pCountSortSection(int[] array, int start, int endP1, Section section) {
         int range = 1 << section.bits;
         if (range > (1 << 24)) {
-            System.err.println("Pigeonhole Count sort should be used for number range <= 2**24, for optimal performance: range <= 2**20");
+            //System.err.println("Pigeonhole Count sort should be used for number range <= 2**24, for optimal performance: range <= 2**20");
         }
         int[] count = new int[range];
         int[] number = new int[range];
@@ -138,7 +137,7 @@ public class PCountSortInt extends BitMaskSorterInt {
         }
         int range = 1 << bits;
         if (range > (1 << 24)) {
-            System.err.println("Pigeonhole Count sort should be used for number range <= 2**24, for optimal performance: range <= 2**20");
+            //System.err.println("Pigeonhole Count sort should be used for number range <= 2**24, for optimal performance: range <= 2**20");
         }
         int[] count = new int[range];
         int[] number = new int[range];

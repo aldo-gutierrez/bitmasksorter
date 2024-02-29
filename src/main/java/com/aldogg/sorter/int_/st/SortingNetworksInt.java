@@ -1,0 +1,44 @@
+package com.aldogg.sorter.int_.st;
+
+import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.int_.SorterInt;
+import com.aldogg.sorter.int_.SorterUtilsInt;
+
+import java.util.Arrays;
+
+import static com.aldogg.sorter.BitSorterParams.VERY_SMALL_N_SIZE;
+
+public class SortingNetworksInt implements SorterInt {
+
+    @Override
+    public void sort(int[] array, int start, int endP1, FieldSorterOptions options) {
+        final int n = endP1 - start;
+        if (n < 2) {
+            return;
+        }
+        if (n <= VERY_SMALL_N_SIZE) {
+            int[][] swaps = com.aldogg.sorter.SortingNetworks.swaps[n];
+            if (options.isUnsigned()) {
+                for (int i = 0; i < swaps.length; i++) {
+                    int[] swap = swaps[i];
+                    int e0 = swap[0];
+                    int e1 = swap[1];
+                    if (array[e0] + 0x80000000 > array[e1] + 0x80000000) {
+                        SorterUtilsInt.swap(array, e0, e1);
+                    }
+                }
+            } else {
+                for (int i = 0; i < swaps.length; i++) {
+                    int[] swap = swaps[i];
+                    int e0 = swap[0];
+                    int e1 = swap[1];
+                    if (array[e0] > array[e1]) {
+                        SorterUtilsInt.swap(array, e0, e1);
+                    }
+                }
+            }
+        } else {
+            Arrays.sort(array, start, endP1);
+        }
+    }
+}

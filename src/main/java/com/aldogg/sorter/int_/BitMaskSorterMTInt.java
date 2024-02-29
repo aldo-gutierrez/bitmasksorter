@@ -25,7 +25,6 @@ public abstract class BitMaskSorterMTInt extends BitMaskSorterInt {
         int maxThreads = params.getMaxThreads();
         if (n <= params.getDataSizeForThreads() || maxThreads <= 1) {
             BitMaskSorterInt stIntSorter = getSTIntSorter();
-            stIntSorter.setSNFunctions(options.isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
             stIntSorter.sort(array, start, endP1, options);
             return;
         }
@@ -35,7 +34,6 @@ public abstract class BitMaskSorterMTInt extends BitMaskSorterInt {
         }
         if (ordered != OrderAnalysisResult.UNORDERED) return;
 
-        setSNFunctions(options.isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
 
         MaskInfoInt maskInfo;
         if (n >= SIZE_FOR_PARALLEL_BIT_MASK) {
@@ -56,7 +54,6 @@ public abstract class BitMaskSorterMTInt extends BitMaskSorterInt {
                         int maxThreads1 = threadNumbers[0];
                         if (maxThreads1 <= 1) {
                             BitMaskSorterInt stIntSorter = getSTIntSorter();
-                            stIntSorter.setSNFunctions(options.isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
                             stIntSorter.sort(array, start, endP1, options);
                             return;
                         }
@@ -75,7 +72,6 @@ public abstract class BitMaskSorterMTInt extends BitMaskSorterInt {
                         int maxThreads2 = threadNumbers[1];
                         if (maxThreads2 <= 1) {
                             BitMaskSorterInt stIntSorter = getSTIntSorter();
-                            stIntSorter.setSNFunctions(options.isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
                             stIntSorter.sort(array, start, endP1, options);
                             return;
                         }

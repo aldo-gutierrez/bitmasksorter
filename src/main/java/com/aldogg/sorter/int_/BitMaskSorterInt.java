@@ -11,17 +11,12 @@ import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedUnSigned;
 
 public abstract class BitMaskSorterInt implements SorterInt {
 
-    protected BiConsumer<int[], Integer>[] snFunctions;
-
     protected BitSorterParams params = BitSorterParams.getSTParams();
 
     public void setParams(BitSorterParams params) {
         this.params = params;
     }
 
-    public void setSNFunctions(BiConsumer<int[], Integer>[] snFunctions) {
-        this.snFunctions = snFunctions;
-    }
 
     public abstract void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params);
     @Override
@@ -35,8 +30,6 @@ public abstract class BitMaskSorterInt implements SorterInt {
             SorterUtilsInt.reverse(array, start, endP1);
         }
         if (ordered != OrderAnalysisResult.UNORDERED) return;
-
-        setSNFunctions(options.isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
 
         MaskInfoInt maskInfo = MaskInfoInt.calculateMaskBreakIfUpperBit(array, start, endP1, null);
         if (maskInfo.isUpperBitMaskSet()) { //the sign bit is set

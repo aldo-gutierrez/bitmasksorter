@@ -180,6 +180,52 @@ public class SorterUtilsInt {
         }
     }
 
+    public static void rotateLeft(final int[] array, final int start, final int endP1, int d) {
+        int n = endP1 - start;
+        d = d % n;
+        if (d == 0) {
+            return;
+        }
+        if (n - d < d) {
+            rotateRight(array, start, endP1, n - d);
+            return;
+        }
+        if (d == 1) {
+            int aux = array[start];
+            for (int i = start + 1; i < endP1; i++) {
+                array[i - 1] = array[i];
+            }
+            array[endP1 - 1] = aux;
+        } else {
+            reverse(array, start, start + d);
+            reverse(array, start + d, endP1);
+            reverse(array, start, endP1);
+        }
+    }
+
+    public static void rotateRight(final int[] array, final int start, final int endP1, int d) {
+        int n = endP1 - start;
+        d = d % n;
+        if (d == 0) {
+            return;
+        }
+        if (n - d < d) {
+            rotateLeft(array, start, endP1, n - d);
+            return;
+        }
+        if (d == 1) {
+            int aux = array[endP1 - 1];
+            for (int i = endP1 - 1; i > start; i--) {
+                array[i] = array[i - 1];
+            }
+            array[start] = aux;
+        } else {
+            reverse(array, start, endP1);
+            reverse(array, start, start + d);
+            reverse(array, start + d, endP1);
+        }
+    }
+
     public static int listIsOrderedSigned(final int[] array, final int start, final int endP1) {
         int i1 = array[start];
         int i = start + 1;
