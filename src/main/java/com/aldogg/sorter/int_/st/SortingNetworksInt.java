@@ -8,7 +8,17 @@ import java.util.Arrays;
 
 import static com.aldogg.sorter.BitSorterParams.VERY_SMALL_N_SIZE;
 
-public class SortingNetworksInt implements SorterInt {
+public final class SortingNetworksInt implements SorterInt {
+
+    private static final SortingNetworksInt INSTANCE = new SortingNetworksInt();
+
+    public static SortingNetworksInt getInstance() {
+        return INSTANCE;
+    }
+
+    private SortingNetworksInt() {
+
+    }
 
     @Override
     public void sort(int[] array, int start, int endP1, FieldSorterOptions options) {
@@ -21,8 +31,8 @@ public class SortingNetworksInt implements SorterInt {
             if (options.isUnsigned()) {
                 for (int i = 0; i < swaps.length; i++) {
                     int[] swap = swaps[i];
-                    int e0 = swap[0];
-                    int e1 = swap[1];
+                    int e0 = swap[0] + start;
+                    int e1 = swap[1] + start;
                     if (array[e0] + 0x80000000 > array[e1] + 0x80000000) {
                         SorterUtilsInt.swap(array, e0, e1);
                     }
@@ -30,8 +40,8 @@ public class SortingNetworksInt implements SorterInt {
             } else {
                 for (int i = 0; i < swaps.length; i++) {
                     int[] swap = swaps[i];
-                    int e0 = swap[0];
-                    int e1 = swap[1];
+                    int e0 = swap[0] + start;
+                    int e1 = swap[1] + start;
                     if (array[e0] > array[e1]) {
                         SorterUtilsInt.swap(array, e0, e1);
                     }

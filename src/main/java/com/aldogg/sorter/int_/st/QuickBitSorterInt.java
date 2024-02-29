@@ -18,10 +18,10 @@ public class QuickBitSorterInt extends BitMaskSorterInt {
 
     public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, boolean recalculate, FieldSorterOptions options) {
         final int n = endP1 - start;
-//        if (n <= VERY_SMALL_N_SIZE) {
-//            new SortingNetworksInt().sort(array, start, endP1, options);
-//            return;
-//        }
+        if (n <= VERY_SMALL_N_SIZE) {
+            SortingNetworksInt.getInstance().sort(array, start, endP1, options);
+            return;
+        }
 
         if (recalculate && bListIndex < 3) {
             MaskInfoInt maskParts = MaskInfoInt.calculateMask(array, start, endP1);
@@ -62,10 +62,10 @@ public class QuickBitSorterInt extends BitMaskSorterInt {
 
     public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, FieldSorterOptions options) {
         final int n = endP1 - start;
-//        if (n <= VERY_SMALL_N_SIZE) {
-//            new SortingNetworksInt().sort(array, start, endP1, options);
-//            return;
-//        }
+        if (n <= VERY_SMALL_N_SIZE) {
+            SortingNetworksInt.getInstance().sort(array, start, endP1, options);
+            return;
+        }
 
         int kDiff = bList.length - bListIndex;
         if (kDiff <= params.getShortKBits()) {

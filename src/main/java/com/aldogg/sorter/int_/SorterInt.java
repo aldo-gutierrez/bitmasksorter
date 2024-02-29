@@ -8,40 +8,34 @@ import java.util.*;
 
 public interface SorterInt extends Sorter {
     default void sort(int[] array) {
-        FieldSorterOptions options = new FieldSorterOptions() {
-        };
+        FieldSorterOptions options = new FieldSorterOptions() {};
         sort(array, 0, array.length, options);
     }
 
     void sort(int[] array, int start, int endP1, FieldSorterOptions options);
 
     default void sort(int[] array, int start, int endP1) {
-        FieldSorterOptions options = new FieldSorterOptions() {
-        };
+        FieldSorterOptions options = new FieldSorterOptions() {};
         sort(array, start, endP1, options);
     }
 
     default void sort(List<Integer> list) {
-        FieldSorterOptions options = new FieldSorterOptions() {
-        };
+        FieldSorterOptions options = new FieldSorterOptions() {};
         sort(list, 0, list.size(), options);
     }
 
     default void sort(List<Integer> list, int start, int endP1) {
-        FieldSorterOptions options = new FieldSorterOptions() {
-        };
+        FieldSorterOptions options = new FieldSorterOptions() {};
         sort(list, start, endP1, options);
     }
 
     default void sort(Integer[] list) {
-        FieldSorterOptions options = new FieldSorterOptions() {
-        };
+        FieldSorterOptions options = new FieldSorterOptions() {};
         sort(list, 0, list.length, options);
     }
 
     default void sort(Integer[] list, int start, int endP1) {
-        FieldSorterOptions options = new FieldSorterOptions() {
-        };
+        FieldSorterOptions options = new FieldSorterOptions() {};
         sort(list, start, endP1, options);
     }
 
@@ -149,7 +143,6 @@ public interface SorterInt extends Sorter {
                     nulls--;
                 }
             }
-
         } else {
             for (int i = start, j = 0; j < n; i++, j++) {
                 list[i] = a[j];
