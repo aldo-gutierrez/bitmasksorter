@@ -2,16 +2,15 @@ package com.aldogg.sorter.int_.mt;
 
 import com.aldogg.parallel.ParallelRunner;
 import com.aldogg.sorter.FieldSorterOptions;
-import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
-import com.aldogg.sorter.SortingNetworks;
 import com.aldogg.sorter.int_.BitMaskSorterInt;
 import com.aldogg.sorter.int_.BitMaskSorterMTInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 import com.aldogg.sorter.int_.st.QuickBitSorterInt;
+import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 
 import static com.aldogg.parallel.ArrayParallelRunner.splitWork;
-import static com.aldogg.sorter.shared.int_mask.MaskInfoInt.getMaskAsArray;
 import static com.aldogg.sorter.int_.SorterUtilsIntExt.sortShortK;
+import static com.aldogg.sorter.shared.int_mask.MaskInfoInt.getMaskAsArray;
 
 public class QuickBitSorterMTInt extends BitMaskSorterMTInt {
 
