@@ -7,7 +7,7 @@
             var chart = new CanvasJS.Chart("chartContainer", {
                 animationEnabled: true,
                 title: {
-                    text: "Sorting 40 million ints with range from 0 to 1000 million (Parallel)"
+                    text: "Sorting 10 million ints with range from 0 to 100000 (Parallel)"
                 },
                 axisX: {
                     title: "AMD Ryzen 7 4800H processor Plugged in, High Performance, Windows 10 Java 1.8.0_341"
@@ -32,10 +32,10 @@
                         yValueFormatString: "# ms.",
                         showInLegend: true,
                         dataPoints: [
-                            {label: "JavaSorterMTInt", y: 410},
-                            {label: "QuickBitSorterMTInt", y: 657},
-                            {label: "MixedBitSorterMTInt", y: 664},
-                            {label: "RadixBitSorterMTInt", y: 397}
+                            {label: "JavaSorterMTInt", y: 144},
+                            {label: "QuickBitSorterMTInt", y: 118},
+                            {label: "MixedBitSorterMTInt", y: 98},
+                            {label: "RadixBitSorterMTInt", y: 96}
                         ]
                     },
                     {
@@ -44,10 +44,10 @@
                         yValueFormatString: "# ms.",
                         showInLegend: true,
                         dataPoints: [
-                            {label: "JavaSorterMTInt", y: 406},
-                            {label: "QuickBitSorterMTInt", y: 578},
-                            {label: "MixedBitSorterMTInt", y: 571},
-                            {label: "RadixBitSorterMTInt", y: 372}
+                            {label: "JavaSorterMTInt", y: 93},
+                            {label: "QuickBitSorterMTInt", y: 104},
+                            {label: "MixedBitSorterMTInt", y: 97},
+                            {label: "RadixBitSorterMTInt", y: 84}
                         ]
                     },
                     {
@@ -56,22 +56,10 @@
                         yValueFormatString: "# ms.",
                         showInLegend: true,
                         dataPoints: [
-                            {label: "JavaSorterMTInt", y: 365},
-                            {label: "QuickBitSorterMTInt", y: 589},
-                            {label: "MixedBitSorterMTInt", y: 449},
-                            {label: "RadixBitSorterMTInt", y: 289}
-                        ]
-                    },
-                    {
-                        name: "2023-01",
-                        type: "column",
-                        yValueFormatString: "# ms.",
-                        showInLegend: true,
-                        dataPoints: [
-                            {label: "JavaSorterMTInt", y: 353},
-                            {label: "QuickBitSorterMTInt", y: 583},
-                            {label: "MixedBitSorterMTInt", y: 379},
-                            {label: "RadixBitSorterMTInt", y: 252}
+                            {label: "JavaSorterMTInt", y: 85},
+                            {label: "QuickBitSorterMTInt", y: 103},
+                            {label: "MixedBitSorterMTInt", y: 97},
+                            {label: "RadixBitSorterMTInt", y: 65}
                         ]
                     },
                     {
@@ -80,13 +68,13 @@
                         yValueFormatString: "# ms.",
                         showInLegend: true,
                         dataPoints: [
-                            {label: "JavaSorterMTInt", y: 328},
-                            {label: "QuickBitSorterMTInt", y: 447},
-                            {label: "MixedBitSorterMTInt", y: 408},
-                            {label: "RadixBitSorterMTInt", y: 254}
+                            {label: "JavaSorterMTInt", y: 76},
+                            {label: "QuickBitSorterMTInt", y: 90},
+                            {label: "MixedBitSorterMTInt", y: 98},
+                            {label: "RadixBitSorterMTInt", y: 47}
                         ]
                     }
-                ]
+                    ]
             });
             chart.render();
 
