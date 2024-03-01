@@ -41,49 +41,13 @@ public class QuickBitSorterInt extends BitMaskSorterInt {
 
         int sortMask = 1 << bList[bListIndex];
         int finalLeft = SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask);
-        if (recalculate) {
-            if (finalLeft - start > 1) {
-                sort(array, start, finalLeft, bList, bListIndex + 1, options);
-            }
-            if (endP1 - finalLeft > 1) {
-                sort(array, finalLeft, endP1, bList, bListIndex + 1, options);
-            }
-        } else {
-            boolean recalculateBitMask = (finalLeft == start || finalLeft == endP1);
-
-            if (finalLeft - start > 1) {
-                sort(array, start, finalLeft, bList, bListIndex + 1, recalculateBitMask, options);
-            }
-            if (endP1 - finalLeft > 1) {
-                sort(array, finalLeft, endP1, bList, bListIndex + 1, recalculateBitMask, options);
-            }
-        }
-    }
-
-    public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, FieldSorterOptions options) {
-        final int n = endP1 - start;
-        if (n <= VERY_SMALL_N_SIZE) {
-            SortingNetworksInt.getInstance().sort(array, start, endP1, options);
-            return;
-        }
-
-        int kDiff = bList.length - bListIndex;
-        if (kDiff <= params.getShortKBits()) {
-            if (kDiff < 1) {
-                return;
-            }
-            sortShortK(array, start, endP1, bList, bListIndex);
-            return;
-        }
-
-        int sortMask = 1 << bList[bListIndex];
-        int finalLeft = SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask);
+        boolean recalculateBitMask = (finalLeft - start <= 1  || endP1 - finalLeft <= 1);
 
         if (finalLeft - start > 1) {
-            sort(array, start, finalLeft, bList, bListIndex + 1, options);
+            sort(array, start, finalLeft, bList, bListIndex + 1, recalculateBitMask, options);
         }
         if (endP1 - finalLeft > 1) {
-            sort(array, finalLeft, endP1, bList, bListIndex + 1,options);
+            sort(array, finalLeft, endP1, bList, bListIndex + 1, recalculateBitMask, options);
         }
     }
 
