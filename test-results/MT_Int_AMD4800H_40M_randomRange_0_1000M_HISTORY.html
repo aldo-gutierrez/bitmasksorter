@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <script>
+        window.onload = function () {
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                title: {
+                    text: "Sorting 40 million ints with range from 0 to 1000 million (Parallel)"
+                },
+                axisX: {
+                    title: "AMD Ryzen 7 4800H processor Plugged in, High Performance, Windows 10 Java 1.8.0_341"
+                },
+                axisY: {
+                    title: "Time in ms. lower is better",
+                    suffix: " ms"
+                },
+                legend: {
+                    cursor: "pointer",
+                    fontSize: 16,
+                    itemclick: toggleDataSeries
+                },
+                toolTip: {
+                    shared: true
+                },
+                data: [
+                    {
+                        name: "2022-02",
+                        type: "column",
+                        yValueFormatString: "# ms.",
+                        showInLegend: true,
+                        dataPoints: [
+                            {label: "JavaSorterMTInt", y: 410},
+                            {label: "QuickBitSorterMTInt", y: 657},
+                            {label: "MixedBitSorterMTInt", y: 664},
+                            {label: "RadixBitSorterMTInt", y: 397}
+                        ]
+                    },
+                    {
+                        name: "2022-07",
+                        type: "column",
+                        yValueFormatString: "# ms.",
+                        showInLegend: true,
+                        dataPoints: [
+                            {label: "JavaSorterMTInt", y: 406},
+                            {label: "QuickBitSorterMTInt", y: 578},
+                            {label: "MixedBitSorterMTInt", y: 571},
+                            {label: "RadixBitSorterMTInt", y: 372}
+                        ]
+                    },
+                    {
+                        name: "2022-12",
+                        type: "column",
+                        yValueFormatString: "# ms.",
+                        showInLegend: true,
+                        dataPoints: [
+                            {label: "JavaSorterMTInt", y: 365},
+                            {label: "QuickBitSorterMTInt", y: 589},
+                            {label: "MixedBitSorterMTInt", y: 449},
+                            {label: "RadixBitSorterMTInt", y: 289}
+                        ]
+                    },
+                    {
+                        name: "2023-01",
+                        type: "column",
+                        yValueFormatString: "# ms.",
+                        showInLegend: true,
+                        dataPoints: [
+                            {label: "JavaSorterMTInt", y: 353},
+                            {label: "QuickBitSorterMTInt", y: 583},
+                            {label: "MixedBitSorterMTInt", y: 379},
+                            {label: "RadixBitSorterMTInt", y: 252}
+                        ]
+                    },
+                    {
+                        name: "2024-01",
+                        type: "column",
+                        yValueFormatString: "# ms.",
+                        showInLegend: true,
+                        dataPoints: [
+                            {label: "JavaSorterMTInt", y: 328},
+                            {label: "QuickBitSorterMTInt", y: 447},
+                            {label: "MixedBitSorterMTInt", y: 408},
+                            {label: "RadixBitSorterMTInt", y: 254}
+                        ]
+                    }
+                ]
+            });
+            chart.render();
+
+            function toggleDataSeries(e) {
+                if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                    e.dataSeries.visible = false;
+                } else {
+                    e.dataSeries.visible = true;
+                }
+                chart.render();
+            }
+
+        }
+    </script>
+</head>
+<body>
+<div id="chartContainer" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+</body>
+</html>
