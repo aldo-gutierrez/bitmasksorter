@@ -11,7 +11,7 @@ import static com.aldogg.sorter.generic.SorterUtilsGenericInt.*;
 public class RadixBitSorterGenericInt<T> extends BitMaskSorterGenericInt<T> {
 
     @Override
-    public void sort(T[] array, int start, int endP1, int[] bList, Object params) {
+    public void sortNNA(T[] array, int start, int endP1, int[] bList, Object params) {
         Object[] p = (Object[]) params;
         T[] aux = (T[]) p[0];
         IntMapper mapper = (IntMapper) p[1];

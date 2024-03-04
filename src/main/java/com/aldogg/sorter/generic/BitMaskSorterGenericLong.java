@@ -1,6 +1,6 @@
 package com.aldogg.sorter.generic;
 
-import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.FieldOptions;
 import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 import com.aldogg.sorter.long_.object.LongMapper;
 
@@ -9,7 +9,7 @@ import static com.aldogg.sorter.generic.SorterUtilsGenericLong.partitionReverseN
 
 public abstract class BitMaskSorterGenericLong<T> implements SorterObjectLong<T> {
 
-    FieldSorterOptions options;
+    FieldOptions options;
 
     abstract public void sort(T[] array, int start, int endP1, int[] bList, Object params);
 

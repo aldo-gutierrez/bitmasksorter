@@ -2,51 +2,54 @@ package com.aldogg.sorter.int_;
 
 import com.aldogg.sorter.shared.NullHandling;
 import com.aldogg.sorter.shared.Sorter;
-import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.FieldOptions;
 
 import java.util.*;
 
 public interface SorterInt extends Sorter {
+
+    FieldOptions defaultOptions = new FieldOptions() {
+    };
+
+
+    void sort(int[] array, int start, int endP1, FieldOptions options);
+
     default void sort(int[] array) {
-        FieldSorterOptions options = new FieldSorterOptions() {};
-        sort(array, 0, array.length, options);
+        sort(array, 0, array.length, defaultOptions);
     }
 
-    void sort(int[] array, int start, int endP1, FieldSorterOptions options);
-
     default void sort(int[] array, int start, int endP1) {
-        FieldSorterOptions options = new FieldSorterOptions() {};
-        sort(array, start, endP1, options);
+        sort(array, start, endP1, defaultOptions);
     }
 
     default void sort(List<Integer> list) {
-        FieldSorterOptions options = new FieldSorterOptions() {};
-        sort(list, 0, list.size(), options);
+        sort(list, 0, list.size(), defaultOptions);
     }
 
     default void sort(List<Integer> list, int start, int endP1) {
-        FieldSorterOptions options = new FieldSorterOptions() {};
-        sort(list, start, endP1, options);
+        sort(list, start, endP1, defaultOptions);
     }
 
     default void sort(Integer[] list) {
-        FieldSorterOptions options = new FieldSorterOptions() {};
-        sort(list, 0, list.length, options);
+        sort(list, 0, list.length, defaultOptions);
     }
 
     default void sort(Integer[] list, int start, int endP1) {
-        FieldSorterOptions options = new FieldSorterOptions() {};
-        sort(list, start, endP1, options);
+        sort(list, start, endP1, defaultOptions);
     }
 
-    default void sort(List<Integer> list, int start, int endP1, FieldSorterOptions options) {
+    default void sort(List<Integer> list, int start, int endP1, FieldOptions options) {
         int nulls = 0;
+        boolean throwExceptionIfNull = options.getNullHandling().equals(NullHandling.NULLS_EXCEPTION);
         List<Integer> subList = start == 0 && endP1 == list.size() ? list : list.subList(start, endP1);
         if (!options.getNullHandling().equals(NullHandling.NULLS_EXCEPTION)) {
             for (Integer value : subList) {
-                if (value == null) {
-                    nulls++;
+                if (throwExceptionIfNull) {
+                    if (value == null) {
+                        throw new RuntimeException("Null found in Collection");
+                    }
                 }
+                nulls++;
             }
         }
         int n = endP1 - start - nulls;
@@ -98,31 +101,33 @@ public interface SorterInt extends Sorter {
         }
     }
 
-    default void sort(Integer[] list, int start, int endP1, FieldSorterOptions options) {
+    default void sort(Integer[] list, int start, int endP1, FieldOptions options) {
         int nulls = 0;
-        if (!options.getNullHandling().equals(NullHandling.NULLS_EXCEPTION)) {
-            for (int i = start; i < endP1; i++) {
-                if (list[i] == null) {
-                    nulls++;
+        boolean throwExceptionIfNull = options.getNullHandling().equals(NullHandling.NULLS_EXCEPTION);
+        for (int i = start; i < endP1; i++) {
+            if (list[i] == null) {
+                if (throwExceptionIfNull) {
+                    throw new RuntimeException("Null found in Collection");
                 }
+                nulls++;
             }
         }
         int n = endP1 - start - nulls;
-        int[] a = new int[n];
+        int[] array = new int[n];
         if (nulls > 0) {
             for (int i = start, j = 0; i < endP1; i++) {
                 Integer e = list[i];
                 if (e != null) {
-                    a[j] = e;
+                    array[j] = e;
                     j++;
                 }
             }
         } else {
             for (int i = start, j = 0; i < endP1; i++, j++) {
-                a[j] = list[i];
+                array[j] = list[i];
             }
         }
-        sort(a, 0, n);
+        sort(array, 0, n);
         if (nulls > 0) {
             int i = start;
             int j = 0;
@@ -134,7 +139,7 @@ public interface SorterInt extends Sorter {
                 }
             }
             for (; j < n; i++, j++) {
-                list[i] = a[j];
+                list[i] = array[j];
             }
             if (options.getNullHandling().equals(NullHandling.NULLS_LAST)) {
                 while (nulls > 0) {
@@ -145,7 +150,7 @@ public interface SorterInt extends Sorter {
             }
         } else {
             for (int i = start, j = 0; j < n; i++, j++) {
-                list[i] = a[j];
+                list[i] = array[j];
             }
         }
     }

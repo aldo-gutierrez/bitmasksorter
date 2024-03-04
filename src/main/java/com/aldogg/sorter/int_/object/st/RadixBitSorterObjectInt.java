@@ -15,11 +15,10 @@ import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedSigned;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedUnSigned;
 import static com.aldogg.sorter.int_.object.SorterUtilsObjectInt.*;
 
-public class RadixBitSorterObjectInt implements SorterObjectInt {
+public class RadixBitSorterObjectInt<T> implements SorterObjectInt<T> {
 
     @Override
-    public void sort(Object[] oArray, int start, int endP1, IntMapper mapper) {
-        FieldSorterOptions options = mapper;
+    public void sortNNA(T[] oArray, int start, int endP1, IntMapper<T> mapper) {
         int n = endP1 - start;
         if (n < 2) {
             return;
@@ -28,7 +27,7 @@ public class RadixBitSorterObjectInt implements SorterObjectInt {
         for (int i = 0; i < array.length; i++) {
             array[i] = mapper.value(oArray[i]);
         }
-        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        int ordered = mapper.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, start, endP1);
             SorterUtilsGeneric.reverse(oArray, start, endP1);
@@ -44,7 +43,7 @@ public class RadixBitSorterObjectInt implements SorterObjectInt {
         sort(oArray, array, start, endP1, mapper, bList);
     }
 
-    public void sort(Object[] oArray, int[] array, int start, int endP1, FieldSorterOptions options, int[] bList) {
+    public void sort(Object[] oArray, int[] array, int start, int endP1, FieldOptions options, int[] bList) {
         if (bList[0] == UPPER_BIT) { //there are negative numbers and positive numbers
             MaskInfoInt maskInfo;
             int mask;

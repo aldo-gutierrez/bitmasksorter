@@ -24,12 +24,12 @@ import static com.aldogg.sorter.int_.SorterUtilsIntExt.sortShortK;
 public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params) {
+    public void sort(int[] array, int start, int endP1, FieldOptions options, int[] bList, Object params) {
         Integer maxThreads = (Integer) params;
         sort(array, start, endP1, bList, 0, maxThreads, options);
     }
 
-    public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, int maxThreads, FieldSorterOptions options) {
+    public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, int maxThreads, FieldOptions options) {
         final int n = endP1 - start;
         if (n <= VERY_SMALL_N_SIZE) {
             SortingNetworksInt.getInstance().sort(array, start, endP1, options);
@@ -64,14 +64,14 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
         }
     }
 
-    protected void radixCountSort(int[] list, int start, int endP1, int[] bList, int bListIndexEnd, FieldSorterOptions options) {
+    protected void radixCountSort(int[] list, int start, int endP1, int[] bList, int bListIndexEnd, FieldOptions options) {
         int bListIndexCountSort = bList.length - params.getShortKBits();
         int sortMask = MaskInfoInt.getMask(bList, bListIndexEnd, bListIndexCountSort - 1);
         partitionStableNonConsecutiveBitsAndCountSort(list, start, endP1, sortMask, bList, bListIndexCountSort, options);
     }
 
     //partitionStableLastBits
-    protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] array, final int start, final int endP1, int sortMask, int[] bList, int bListIndex, FieldSorterOptions options) {
+    protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] array, final int start, final int endP1, int sortMask, int[] bList, int bListIndex, FieldOptions options) {
         int n = endP1 - start;
         int[] aux = new int[n];
         int[] bListAux = MaskInfoInt.getMaskAsArray(sortMask);
@@ -108,7 +108,7 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
         System.arraycopy(aux, 0, array, start, n);
     }
 
-    private void smallListUtil(final int[] array, final int start, final int endP1, int[] bList, int[] aux, FieldSorterOptions options) {
+    private void smallListUtil(final int[] array, final int start, final int endP1, int[] bList, int[] aux, FieldOptions options) {
         int n = endP1 - start;
         if (n <= VERY_SMALL_N_SIZE) {
             SortingNetworksInt.getInstance().sort(array, start, endP1, options);

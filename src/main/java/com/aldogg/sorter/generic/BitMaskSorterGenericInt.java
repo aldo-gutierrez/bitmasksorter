@@ -1,6 +1,6 @@
 package com.aldogg.sorter.generic;
 
-import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.FieldOptions;
 import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 import com.aldogg.sorter.int_.object.IntMapper;
 
@@ -9,12 +9,12 @@ import static com.aldogg.sorter.generic.SorterUtilsGenericInt.partitionReverseNo
 
 public abstract class BitMaskSorterGenericInt<T> implements SorterObjectInt<T> {
 
-    FieldSorterOptions options;
+    FieldOptions options;
 
-    abstract public void sort(T[] array, int start, int endP1, int[] bList, Object params);
+    abstract public void sortNNA(T[] array, int start, int endP1, int[] bList, Object params);
 
     @Override
-    public void sort(T[] array, int start, int endP1, IntMapper<T> mapper) {
+    public void sortNNA(T[] array, int start, int endP1, IntMapper<T> mapper) {
         options = mapper;
         int n = endP1 - start;
         if (n < 2) {
@@ -43,13 +43,13 @@ public abstract class BitMaskSorterGenericInt<T> implements SorterObjectInt<T> {
             }
             T[] aux = (T[]) new Object[Math.max(n1, n2)];
             if (n1 > 1) {
-                sort(array, start, finalLeft, bList1, new Object[]{aux, mapper});
+                sortNNA(array, start, finalLeft, bList1, new Object[]{aux, mapper});
                 if (options.isIeee754()) {
                     SorterUtilsGeneric.reverse(array, start, finalLeft);
                 }
             }
             if (n2 > 1) {
-                sort(array, finalLeft, endP1, bList2, new Object[]{aux, mapper});
+                sortNNA(array, finalLeft, endP1, bList2, new Object[]{aux, mapper});
             }
 
         } else {
@@ -57,7 +57,7 @@ public abstract class BitMaskSorterGenericInt<T> implements SorterObjectInt<T> {
             int mask = maskInfo.getMask();
             int[] bList = MaskInfoInt.getMaskAsArray(mask);
             if (bList.length > 0) {
-                sort(array, start, endP1, bList, new Object[]{aux, mapper});
+                sortNNA(array, start, endP1, bList, new Object[]{aux, mapper});
                 if (options.isIeee754()) {
                     if (mapper.value(array[0]) < 0) {
                         SorterUtilsGeneric.reverse(array, start, endP1);

@@ -16,7 +16,7 @@ import static com.aldogg.sorter.generic.SorterUtilsGeneric.reverse;
 
 public class RadixBitSorterObjectDouble implements SorterObjectDouble {
 
-    FieldSorterOptions options;
+    FieldOptions options;
 
     @Override
     public void sort(Object[] oArray, int start, int endP1, DoubleMapper mapper) {

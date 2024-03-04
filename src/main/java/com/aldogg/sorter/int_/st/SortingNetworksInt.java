@@ -1,6 +1,6 @@
 package com.aldogg.sorter.int_.st;
 
-import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.FieldOptions;
 import com.aldogg.sorter.int_.SorterInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 
@@ -21,7 +21,7 @@ public final class SortingNetworksInt implements SorterInt {
     }
 
     @Override
-    public void sort(int[] array, int start, int endP1, FieldSorterOptions options) {
+    public void sort(int[] array, int start, int endP1, FieldOptions options) {
         final int n = endP1 - start;
         if (n < 2) {
             return;

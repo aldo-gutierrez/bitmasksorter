@@ -17,7 +17,7 @@ import static com.aldogg.sorter.long_.object.SorterUtilsObjectLong.*;
 
 public class RadixBitSorterObjectLong implements SorterObjectLong {
 
-    FieldSorterOptions options;
+    FieldOptions options;
 
     @Override
     public void sort(Object[] oArray, int start, int endP1, LongMapper mapper) {

@@ -1,8 +1,7 @@
 package com.aldogg.sorter.int_.st;
 
-import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.FieldOptions;
 import com.aldogg.sorter.int_.BitMaskSorterInt;
-import com.aldogg.sorter.int_.SorterInt;
 
 import static com.aldogg.sorter.BitSorterUtils.logBase2;
 
@@ -46,7 +45,7 @@ public class AGSelectorSorterInt extends BitMaskSorterInt {
     };
 
     @Override
-    public void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params) {
+    public void sort(int[] array, int start, int endP1, FieldOptions options, int[] bList, Object params) {
         int n = endP1 - start;
         int bLength = bList.length;
         int bLengthM1 = bLength - 1; //Log2(K)

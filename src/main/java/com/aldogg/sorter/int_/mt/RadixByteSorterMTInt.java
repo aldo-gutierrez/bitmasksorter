@@ -1,7 +1,6 @@
 package com.aldogg.sorter.int_.mt;
 
-import com.aldogg.sorter.FieldSorterOptions;
-import com.aldogg.sorter.SortingNetworks;
+import com.aldogg.sorter.FieldOptions;
 import com.aldogg.sorter.int_.BitMaskSorterInt;
 import com.aldogg.sorter.int_.BitMaskSorterMTInt;
 import com.aldogg.sorter.int_.st.RadixByteSorterInt;
@@ -14,7 +13,7 @@ import com.aldogg.sorter.int_.st.RadixByteSorterInt;
 public class RadixByteSorterMTInt extends BitMaskSorterMTInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params) {
+    public void sort(int[] array, int start, int endP1, FieldOptions options, int[] bList, Object params) {
         //TODO
     }
 

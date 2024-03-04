@@ -71,7 +71,7 @@ public class IntSorterPTest extends BaseTest {
 
     @Test
     public void speedTestSignedIntSt() throws IOException {
-        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new AGSelectorSorterInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new RadixByteSorterV2Int(), new RadixByteSorterCInt()};
 
         BufferedWriter writer = getWriter("test-results/speed_signedInt_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");

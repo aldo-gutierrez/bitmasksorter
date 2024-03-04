@@ -24,7 +24,7 @@ public class RadixBitSorterMTObjectInt implements SorterObjectInt {
     protected final BitSorterMTParams params = BitSorterMTParams.getMTParams();
 
     @Override
-    public void sort(Object[] oArray, int start, int endP1, IntMapper mapper) {
+    public void sortNNA(Object[] oArray, int start, int endP1, IntMapper mapper) {
         int n = endP1 - start;
         if (n < 2) {
             return;
@@ -32,7 +32,7 @@ public class RadixBitSorterMTObjectInt implements SorterObjectInt {
         int maxThreads = params.getMaxThreads();
         if (n <= params.getDataSizeForThreads() || maxThreads <= 1) {
             RadixBitSorterObjectInt sorter = new RadixBitSorterObjectInt();
-            sorter.sort(oArray, start, endP1, mapper);
+            sorter.sortNNA(oArray, start, endP1, mapper);
             return;
         }
 
@@ -41,7 +41,7 @@ public class RadixBitSorterMTObjectInt implements SorterObjectInt {
             array[i] = mapper.value(oArray[i]);
         }
 
-        FieldSorterOptions options = mapper;
+        FieldOptions options = mapper;
         int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, start, endP1);

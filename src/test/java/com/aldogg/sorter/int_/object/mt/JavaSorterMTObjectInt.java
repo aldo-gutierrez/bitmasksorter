@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class JavaSorterMTObjectInt implements SorterObjectInt {
 
     @Override
-    public void sort(Object[] array, int start, int endP1, IntMapper mapper) {
+    public void sortNNA(Object[] array, int start, int endP1, IntMapper mapper) {
         Arrays.parallelSort(array, start, endP1, (o1, o2) -> Integer.compare(mapper.value(o1), mapper.value(o2)));
     }
 

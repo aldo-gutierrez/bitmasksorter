@@ -2,7 +2,7 @@ package com.aldogg.sorter;
 
 import com.aldogg.sorter.shared.NullHandling;
 
-public interface FieldSorterOptions {
+public interface FieldOptions {
 
     default boolean isUnsigned() {
         return false;

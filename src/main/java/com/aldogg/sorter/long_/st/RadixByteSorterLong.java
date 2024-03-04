@@ -1,7 +1,7 @@
 package com.aldogg.sorter.long_.st;
 
 import com.aldogg.sorter.shared.OrderAnalysisResult;
-import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.FieldOptions;
 import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 import com.aldogg.sorter.shared.Section;
 import com.aldogg.sorter.long_.BitMaskSorterLong;
@@ -19,7 +19,7 @@ public class RadixByteSorterLong extends BitMaskSorterLong {
     }
 
     @Override
-    public void sort(long[] array, final int start, final int endP1, FieldSorterOptions options) {
+    public void sort(long[] array, final int start, final int endP1, FieldOptions options) {
         int n = endP1 - start;
         if (n < 2) {
             return;
@@ -44,7 +44,7 @@ public class RadixByteSorterLong extends BitMaskSorterLong {
     }
 
     @Override
-    public void sort(long[] array, int start, int endP1, FieldSorterOptions options, int[] bList) {
+    public void sort(long[] array, int start, int endP1, FieldOptions options, int[] bList) {
         long mask = 0xFFFFFFFFFFFFFFFFL;
         if (calculateBitMaskOptimization) {
             if (bList.length == 0) {

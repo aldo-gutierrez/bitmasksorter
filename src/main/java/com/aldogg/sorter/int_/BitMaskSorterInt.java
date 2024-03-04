@@ -4,8 +4,6 @@ import com.aldogg.sorter.*;
 import com.aldogg.sorter.shared.OrderAnalysisResult;
 import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 
-import java.util.function.BiConsumer;
-
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedSigned;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedUnSigned;
 
@@ -18,9 +16,9 @@ public abstract class BitMaskSorterInt implements SorterInt {
     }
 
 
-    public abstract void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params);
+    public abstract void sort(int[] array, int start, int endP1, FieldOptions options, int[] bList, Object params);
     @Override
-    public void sort(int[] array, int start, int endP1, FieldSorterOptions options) {
+    public void sort(int[] array, int start, int endP1, FieldOptions options) {
         int n = endP1 - start;
         if (n < 2) {
             return;

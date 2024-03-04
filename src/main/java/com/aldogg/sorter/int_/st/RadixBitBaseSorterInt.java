@@ -1,6 +1,6 @@
 package com.aldogg.sorter.int_.st;
 
-import com.aldogg.sorter.FieldSorterOptions;
+import com.aldogg.sorter.FieldOptions;
 import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 import com.aldogg.sorter.int_.SorterInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
@@ -10,7 +10,7 @@ import static com.aldogg.sorter.int_.SorterUtilsInt.partitionStable;
 public class RadixBitBaseSorterInt implements SorterInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, FieldSorterOptions options) {
+    public void sort(int[] array, int start, int endP1, FieldOptions options) {
         MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
         int mask = maskInfo.getMask();
         int[] bList = MaskInfoInt.getMaskAsArray(mask);

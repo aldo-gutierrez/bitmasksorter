@@ -16,7 +16,7 @@ import static com.aldogg.sorter.int_.SorterUtilsIntExt.sortShortK;
 public class RadixBitSorterMTInt extends BitMaskSorterMTInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, FieldSorterOptions options, int[] bList, Object params) {
+    public void sort(int[] array, int start, int endP1, FieldOptions options, int[] bList, Object params) {
         int kDiff = bList.length;
         if (kDiff <= this.params.getShortKBits()) {
             if (kDiff < 1) {
