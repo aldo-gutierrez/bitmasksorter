@@ -41,7 +41,7 @@ public class CodeGenerator {
         context.put("TypeObject", "Integer");
         context.put("typeMask", "int");
          */
-        context.put("utils", new StringUtils());
+        //context.put("utils", new StringUtils());
 
         // Generate the Java code
         StringWriter writer = new StringWriter();

@@ -1,8 +1,11 @@
 package com.aldogg.sorter.test.performance;
 
 import com.aldogg.sorter.generic.RadixBitSorterGenericInt;
+import com.aldogg.sorter.int_.object.IntMapper;
+import com.aldogg.sorter.int_.object.mt.RadixBitSorterMTObjectInt;
 import com.aldogg.sorter.int_.object.st.RadixBitSorterObjectInt;
 import com.aldogg.sorter.int_.st.RadixBitSorterInt;
+import com.aldogg.sorter.shared.NullHandling;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -176,6 +179,134 @@ public class IntListArrayPTest {
         Assertions.assertTrue(totalElapsed.get(JAVA) > totalElapsed.get(RadixBitSorterGenericInt.class.getSimpleName()));
         Assertions.assertTrue(totalElapsed.get(JAVA) > totalElapsed.get(RadixBitSorterObjectInt.class.getSimpleName()));
         Assertions.assertTrue(totalElapsed.get(JAVA) > totalElapsed.get(RadixBitSorterInt.class.getSimpleName()));
+    }
+
+    @Test
+    public void testPerformanceSortingIntegerArrayWithNull() {
+        Random random = new Random();
+        Supplier<Integer> supplier = () -> random.nextInt() % 2 == 0 ? random.nextInt() :  null;
+        Comparator<Integer> nullsLast2 = (o1, o2) -> {
+            if (o1 == null && o2 == null) {
+                return 0;
+            }
+            if (o1 == null) {
+                return 1;
+            }
+            if (o2 == null) {
+                return -1;
+            }
+            return o1.compareTo(o2);
+        };
+        Comparator<Integer> nullsFirst2 = (o1, o2) -> {
+            if (o1 == null && o2 == null) {
+                return 0;
+            }
+            if (o1 == null) {
+                return -1;
+            }
+            if (o2 == null) {
+                return 1;
+            }
+            return o1.compareTo(o2);
+        };
+        Map<String, Long> totalElapsed = new HashMap<>();
+        int numReps = 10;
+        for (int i = 0; i < numReps; i++) {
+
+            Integer[] arrayOrig = Stream.generate(supplier).skip(0).limit(10000000).toArray(Integer[]::new);
+            //Integer[] arrayOrig = new Integer[] {2085393937, -1504133464, null, -1756884566, null, null, 130786366, null, 1388199496, null};
+            Integer[] arraySorted1;
+            Integer[] arraySorted2;
+            {
+                arraySorted1 = arrayOrig.clone();
+                arraySorted2 = arrayOrig.clone();
+                long startTime = System.nanoTime();
+                Arrays.sort(arraySorted1, nullsFirst2);
+                Arrays.sort(arraySorted2, nullsLast2);
+                totalElapsed.merge(JAVA, System.nanoTime() - startTime, Long::sum);
+            }
+
+            IntMapper<Integer> mapperNF = new IntMapper<Integer>() {
+                @Override
+                public int value(Integer o) {
+                    return o;
+                }
+
+                @Override
+                public NullHandling getNullHandling() {
+                    return NullHandling.NULLS_FIRST;
+                }
+            };
+            IntMapper<Integer> mapperNL = new IntMapper<Integer>() {
+                @Override
+                public int value(Integer o) {
+                    return o;
+                }
+
+                @Override
+                public NullHandling getNullHandling() {
+                    return NullHandling.NULLS_LAST;
+                }
+            };
+
+            {
+                Integer[] arrayAux1 = arrayOrig.clone();
+                Integer[] arrayAux2 = arrayOrig.clone();
+                long startTime = System.nanoTime();
+                new RadixBitSorterGenericInt<Integer>().sort(arrayAux1, mapperNF);
+                new RadixBitSorterGenericInt<Integer>().sort(arrayAux2, mapperNL);
+                totalElapsed.merge(RadixBitSorterGenericInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
+                Assertions.assertArrayEquals(arraySorted1, arrayAux1);
+                Assertions.assertArrayEquals(arraySorted2, arrayAux2);
+            }
+            {
+                Integer[] arrayAux1 = arrayOrig.clone();
+                Integer[] arrayAux2 = arrayOrig.clone();
+                long startTime = System.nanoTime();
+                new RadixBitSorterObjectInt<Integer>().sort(arrayAux1, mapperNF);
+                new RadixBitSorterObjectInt<Integer>().sort(arrayAux2, mapperNL);
+                totalElapsed.merge(RadixBitSorterObjectInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
+                try {
+                    Assertions.assertArrayEquals(arraySorted1, arrayAux1);
+                    Assertions.assertArrayEquals(arraySorted2, arrayAux2);
+                } catch (Throwable ex) {
+                    System.out.println(Arrays.toString(arrayOrig));
+                    System.out.println(Arrays.toString(arraySorted1));
+                    System.out.println(Arrays.toString(arrayAux1));
+                    System.out.println(Arrays.toString(arraySorted2));
+                    System.out.println(Arrays.toString(arrayAux2));
+                    throw ex;
+                }
+            }
+            {
+                Integer[] arrayAux1 = arrayOrig.clone();
+                Integer[] arrayAux2 = arrayOrig.clone();
+                long startTime = System.nanoTime();
+                new RadixBitSorterInt().sort(arrayAux1, 0, arrayAux1.length, mapperNF);
+                new RadixBitSorterInt().sort(arrayAux2, 0, arrayAux1.length, mapperNL);
+                totalElapsed.merge(RadixBitSorterInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
+                Assertions.assertArrayEquals(arraySorted1, arrayAux1);
+                Assertions.assertArrayEquals(arraySorted2, arrayAux2);
+            }
+
+            {
+                Integer[] arrayAux1 = arrayOrig.clone();
+                Integer[] arrayAux2 = arrayOrig.clone();
+                long startTime = System.nanoTime();
+                new RadixBitSorterMTObjectInt().sort(arrayAux1, 0, arrayAux1.length, mapperNF);
+                new RadixBitSorterMTObjectInt().sort(arrayAux2, 0, arrayAux1.length, mapperNL);
+                totalElapsed.merge(RadixBitSorterMTObjectInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
+                Assertions.assertArrayEquals(arraySorted1, arrayAux1);
+                Assertions.assertArrayEquals(arraySorted2, arrayAux2);
+            }
+
+        }
+        totalElapsed.forEach((key, value) -> totalElapsed.put(key, value / 1000000));
+        totalElapsed.forEach((key, value) -> totalElapsed.put(key, value / 2));
+        System.out.println(totalElapsed);
+//        Assertions.assertTrue(totalElapsed.get(JAVA) > totalElapsed.get(RadixBitSorterGenericInt.class.getSimpleName()));
+//        Assertions.assertTrue(totalElapsed.get(RadixBitSorterGenericInt.class.getSimpleName()) > totalElapsed.get(RadixBitSorterObjectInt.class.getSimpleName()));
+//        Assertions.assertTrue(totalElapsed.get(RadixBitSorterObjectInt.class.getSimpleName()) > totalElapsed.get(RadixBitSorterInt.class.getSimpleName()));
     }
 
 }
