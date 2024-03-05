@@ -1,6 +1,6 @@
 package com.aldogg.sorter.generic;
 
-import com.aldogg.sorter.FieldOptions;
+import com.aldogg.sorter.long_.SorterObjectLong;
 import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 import com.aldogg.sorter.long_.object.LongMapper;
 
@@ -9,19 +9,18 @@ import static com.aldogg.sorter.generic.SorterUtilsGenericLong.partitionReverseN
 
 public abstract class BitMaskSorterGenericLong<T> implements SorterObjectLong<T> {
 
-    FieldOptions options;
 
-    abstract public void sort(T[] array, int start, int endP1, int[] bList, Object params);
+    abstract public void sortNNA(T[] array, int start, int endP1, int[] bList, Object params);
 
     @Override
-    public void sort(T[] array, LongMapper<T> mapper, int start, int endP1) {
+    public void sort(T[] array, int start, int endP1, LongMapper<T> mapper) {
         int n = endP1 - start;
         if (n < 2) {
             return;
         }
         MaskInfoLong maskInfo = MaskInfoLong.calculateMaskBreakIfUpperBit(array, start, endP1, null, mapper);
         if (maskInfo.isUpperBitMaskSet()) { //the sign bit is set
-            int finalLeft = options.isUnsigned()
+            int finalLeft = mapper.isUnsigned()
                     ? partitionNotStableUpperBit(array, start, endP1, mapper)
                     : partitionReverseNotStableUpperBit(array, start, endP1, mapper);
             int n1 = finalLeft - start;
@@ -42,13 +41,13 @@ public abstract class BitMaskSorterGenericLong<T> implements SorterObjectLong<T>
             }
             T[] aux = (T[]) new Object[Math.max(n1, n2)];
             if (n1 > 1) {
-                sort(array, start, finalLeft, bList1, aux);
-                if (options.isIeee754()) {
+                sortNNA(array, start, finalLeft, bList1, aux);
+                if (mapper.isIeee754()) {
                     SorterUtilsGeneric.reverse(array, start, finalLeft);
                 }
             }
             if (n2 > 1) {
-                sort(array, finalLeft, endP1, bList2, aux);
+                sortNNA(array, finalLeft, endP1, bList2, aux);
             }
 
         } else {
@@ -56,8 +55,8 @@ public abstract class BitMaskSorterGenericLong<T> implements SorterObjectLong<T>
             long mask = maskInfo.getMask();
             int[] bList = MaskInfoLong.getMaskAsArray(mask);
             if (bList.length > 0) {
-                sort(array, start, endP1, bList, aux);
-                if (options.isIeee754()) {
+                sortNNA(array, start, endP1, bList, aux);
+                if (mapper.isIeee754()) {
                     if (mapper.value(array[0]) < 0L) {
                         SorterUtilsGeneric.reverse(array, start, endP1);
                     }

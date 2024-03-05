@@ -1,24 +1,24 @@
-package com.aldogg.sorter.generic;
+package com.aldogg.sorter.long_;
 
 import com.aldogg.sorter.shared.NullHandling;
 import com.aldogg.sorter.shared.Sorter;
-import com.aldogg.sorter.int_.object.IntMapper;
+import com.aldogg.sorter.long_.object.LongMapper;
 
 import java.util.*;
 
-public interface SorterObjectInt<T> extends Sorter {
+public interface SorterObjectLong<T> extends Sorter {
 
-    void sortNNA(T[] array, int start, int endP1, IntMapper<T> mapper);
+    void sortNNA(T[] array, int start, int endP1, LongMapper<T> mapper);
 
-    default void sort(List<T> list, IntMapper<T> mapper) {
+    default void sort(List<T> list, LongMapper<T> mapper) {
         sort(list, 0, list.size(), mapper);
     }
 
-    default void sort(T[] array, IntMapper<T> mapper) {
+    default void sort(T[] array, LongMapper<T> mapper) {
         sort(array, 0, array.length, mapper);
     }
 
-    default void sort(List<T> list, int start, int endP1, IntMapper<T> mapper) {
+    default void sort(List<T> list, int start, int endP1, LongMapper<T> mapper) {
         int nulls = 0;
         boolean throwExceptionIfNull = mapper.getNullHandling().equals(NullHandling.NULLS_EXCEPTION);
         List<T> subList = start == 0 && endP1 == list.size() ? list : list.subList(start, endP1);
@@ -78,7 +78,7 @@ public interface SorterObjectInt<T> extends Sorter {
         }
     }
 
-    default void sort(T[] list, int start, int endP1, IntMapper<T> mapper) {
+    default void sort(T[] list, int start, int endP1, LongMapper<T> mapper) {
         int nulls = 0;
         if (mapper.getNullHandling() == NullHandling.NULLS_LAST) {
             int j = start;

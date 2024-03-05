@@ -3,7 +3,7 @@ package com.aldogg.sorter.int_.object.mt;
 import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.parallel.ParallelRunner;
 import com.aldogg.sorter.*;
-import com.aldogg.sorter.generic.SorterObjectInt;
+import com.aldogg.sorter.int_.SorterObjectInt;
 import com.aldogg.sorter.generic.SorterUtilsGeneric;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 import com.aldogg.sorter.int_.object.IntMapper;
