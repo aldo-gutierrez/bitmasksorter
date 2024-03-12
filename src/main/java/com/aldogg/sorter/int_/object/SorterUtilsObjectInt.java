@@ -67,15 +67,19 @@ public class SorterUtilsObjectInt {
         if (runtime.aux == null) {
             runtime.oAux = new Object[n];
             runtime.aux = new int[n];
-            return partitionStable(runtime.oArray, oStart, runtime.array, mask, runtime.oAux, runtime.aux, 0, n);
+            return partitionStable(runtime, oStart, mask, 0, n);
         } else {
             System.err.println("not supported code path");
             throw new IllegalStateException("not supported code path");
         }
     }
 
-    public static int partitionStable(final Object[] oArray, int oStart, final int[] array, final int mask,
-                                      final Object[] oAux, final int[] aux, int startAux, int n) {
+    public static int partitionStable(RuntimeOptionsInt runtime, int oStart, final int mask,
+                                      int startAux, int n) {
+        final Object[] oArray = runtime.oArray;
+        final int[] array = runtime.array;
+        final Object[] oAux = runtime.oAux;
+        final int[] aux = runtime.aux;
         int left = startAux;
         int oLeft = oStart;
         int right = startAux;
@@ -104,7 +108,7 @@ public class SorterUtilsObjectInt {
         if (runtime.aux == null) {
             runtime.oAux = new Object[n];
             runtime.aux = new int[n];
-            return partitionReverseStable(runtime.oArray, oStart, mask, runtime.array, runtime.oAux, runtime.aux, 0, n);
+            return partitionReverseStable(runtime, oStart, mask, 0, n);
         } else {
             System.err.println("not supported code path");
             throw new IllegalStateException("not supported code path");
@@ -112,8 +116,13 @@ public class SorterUtilsObjectInt {
     }
 
 
-    public static int partitionReverseStable(final Object[] oArray, final int oStart, final int mask,
-                                             final int[] array, final Object[] oAux, final int[] aux, int startAux, int n) {
+    public static int partitionReverseStable(final RuntimeOptionsInt runtime, final int oStart, final int mask,
+                                             int startAux, int n) {
+        final Object[] oArray = runtime.oArray;
+        final int[] array = runtime.array;
+        final Object[] oAux = runtime.oAux;
+        final int[] aux = runtime.aux;
+
         int left = startAux;
         int oLeft = oStart;
         int right = startAux;
@@ -138,61 +147,69 @@ public class SorterUtilsObjectInt {
         return oLeft;
     }
 
-    public static int[] partitionStableLastBits(final Object[] oArray, final int oStart, final int[] array, int aStart, final Section section,
-                                                final Object[] oAux, final int[] aux, final int startAux, final int n) {
+    public static int[] partitionStableLastBits(RuntimeOptionsInt runtime, final int oStart, int aStart, final Section section,
+                                                final int startAux, final int n) {
+        final Object[] oArray = runtime.oArray;
+        final int[] array = runtime.array;
+        final Object[] oAux = runtime.oAux;
+        final int[] aux = runtime.aux;
         int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
         int endP1 = aStart + n;
         int[] count = new int[1 << section.bits];
-        int countLength = count.length;
         for (int i = aStart; i < endP1; i++) {
             count[array[i] & mask]++;
         }
-        for (int i = 0, sum = 0; i < countLength; i++) {
-            int countI = count[i];
-            count[i] = sum;
-            sum += countI;
-        }
-        int shift = -aStart + oStart;
-        if (startAux == 0) {
-            for (int i = aStart; i < endP1; i++) {
-                int element = array[i];
-                int elementShiftMasked = element & mask;
-                int auxIndex = count[elementShiftMasked];
-                aux[auxIndex] = element;
-                oAux[auxIndex] = oArray[i + shift];
-                count[elementShiftMasked]++;
-            }
-        } else {
-            for (int i = aStart; i < endP1; i++) {
-                int element = array[i];
-                int elementShiftMasked = element & mask;
-                int auxIndex = count[elementShiftMasked] + startAux;
-                aux[auxIndex] = element;
-                oAux[auxIndex] = oArray[i + shift];
-                count[elementShiftMasked]++;
-            }
-        }
-        System.arraycopy(aux, startAux, array, aStart, n);
-        System.arraycopy(oAux, startAux, oArray, oStart, n);
-        return count;
-    }
-
-    public static int[] partitionStableOneGroupBits(final Object[] oArray, final int oStart, final int[] array, int aStart, final Section section,
-                                                    final Object[] oAux, final int[] aux, final int startAux, final int n) {
-        int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
-        int shiftRight = section.shift;
-        int endP1 = aStart + n;
-        int[] count = new int[1 << section.bits];
-        for (int i = aStart; i < endP1; i++) {
-            count[(array[i] & mask) >>> shiftRight]++;
-        }
-        int cLength = count.length;
+        final int cLength = count.length;
         for (int i = 0, sum = 0; i < cLength; i++) {
             int countI = count[i];
             count[i] = sum;
             sum += countI;
         }
-        int shift = -aStart + oStart;
+        final int shift = -aStart + oStart;
+        if (startAux == 0) {
+            for (int i = aStart; i < endP1; i++) {
+                int element = array[i];
+                int elementShiftMasked = element & mask;
+                int auxIndex = count[elementShiftMasked];
+                aux[auxIndex] = element;
+                oAux[auxIndex] = oArray[i + shift];
+                count[elementShiftMasked]++;
+            }
+        } else {
+            for (int i = aStart; i < endP1; i++) {
+                int element = array[i];
+                int elementShiftMasked = element & mask;
+                int auxIndex = count[elementShiftMasked] + startAux;
+                aux[auxIndex] = element;
+                oAux[auxIndex] = oArray[i + shift];
+                count[elementShiftMasked]++;
+            }
+        }
+        System.arraycopy(aux, startAux, array, aStart, n);
+        System.arraycopy(oAux, startAux, oArray, oStart, n);
+        return count;
+    }
+
+    public static int[] partitionStableOneGroupBits(RuntimeOptionsInt runtime, final int oStart, int aStart, final Section section,
+                                                    final int startAux, final int n) {
+        final Object[] oArray = runtime.oArray;
+        final int[] array = runtime.array;
+        final Object[] oAux = runtime.oAux;
+        final int[] aux = runtime.aux;
+        final int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
+        final int shiftRight = section.shift;
+        final int endP1 = aStart + n;
+        final int[] count = new int[1 << section.bits];
+        for (int i = aStart; i < endP1; i++) {
+            count[(array[i] & mask) >>> shiftRight]++;
+        }
+        final int cLength = count.length;
+        for (int i = 0, sum = 0; i < cLength; i++) {
+            int countI = count[i];
+            count[i] = sum;
+            sum += countI;
+        }
+        final int shift = -aStart + oStart;
         if (startAux == 0) {
             for (int i = aStart; i < endP1; i++) {
                 int element = array[i];
@@ -217,4 +234,16 @@ public class SorterUtilsObjectInt {
         return count;
     }
 
+    public static int[] partitionStableNGroupBits(RuntimeOptionsInt runtime, final int oStart, int aStart, final Section[] sections,
+                                                    final int startAux, final int n) {
+        //TODO Is ok to use this code if bits length <= MAX BITS, otherwise think of code
+        Section section = Section.createWithStarAndShift(sections[0].start, sections[sections.length - 1].shift);
+        int[] count;
+        if (!(section.shift == 0)) {
+            count = partitionStableOneGroupBits(runtime, oStart, aStart, section, startAux, n);
+        } else {
+            count = partitionStableLastBits(runtime, oStart, aStart, section, startAux, n);
+        }
+        return count;
+    }
 }

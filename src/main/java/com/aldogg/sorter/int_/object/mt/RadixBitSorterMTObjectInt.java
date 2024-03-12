@@ -134,32 +134,23 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
         int[] count;
 
         int startAux;
-        Object[] oAux;
-        int[] aux;
         if (runtime.aux == null) {
-            oAux = new Object[n];
-            aux = new int[n];
+            runtime.oAux = new Object[n];
+            runtime.aux = new int[n];
             startAux = 0;
         } else {
-            oAux = runtime.oAux;
-            aux = runtime.aux;
             startAux = aStart;
         }
 
         if (sections.length == 1) {
             Section section = sections[0];
             if (!(section.shift == 0)) {
-                count = partitionStableOneGroupBits(runtime.oArray, oStart, runtime.array, aStart, section, oAux, aux, startAux, n);
+                count = partitionStableOneGroupBits(runtime, oStart, aStart, section, startAux, n);
             } else {
-                count = partitionStableLastBits(runtime.oArray, oStart, runtime.array, aStart, section, oAux, aux, startAux, n);
+                count = partitionStableLastBits(runtime, oStart, aStart, section, startAux, n);
             }
         } else {
-            Section section = Section.createWithStarAndShift(sections[0].start, sections[sections.length - 1].shift);
-            if (!(section.shift == 0)) {
-                count = partitionStableOneGroupBits(runtime.oArray, oStart, runtime.array, aStart, section, oAux, aux, startAux, n);
-            } else {
-                count = partitionStableLastBits(runtime.oArray, oStart, runtime.array, aStart, section, oAux, aux, startAux, n);
-            }
+            count = partitionStableNGroupBits(runtime, oStart, aStart, sections, startAux, n);
         }
 
 
@@ -174,7 +165,7 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
                     Runnable r = () -> {
                         int endIBZ = count[finalI];
                         int startIBZ = endIBZ - lengthT; //auxStart is BAD
-                        RadixBitSorterObjectInt.radixSort(runtime.oArray, oStart + startIBZ, runtime.array, aStart + startIBZ, bList, threadBits, oAux, aux, startAux + startIBZ, lengthT);
+                        RadixBitSorterObjectInt.radixSort(runtime, oStart + startIBZ, aStart + startIBZ, bList, threadBits, startAux + startIBZ, lengthT);
                     };
                     runner.preSubmit(r);
                 }

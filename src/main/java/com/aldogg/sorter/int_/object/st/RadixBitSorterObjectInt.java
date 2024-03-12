@@ -67,10 +67,10 @@ public class RadixBitSorterObjectInt<T> implements SorterObjectInt<T> {
                 runtime.oAux = new Object[Math.max(n1, n2)];
             }
             if (n1 > 1) {
-                radixSort(oArray, oStart, array, 0, bList1, 0, runtime.oAux, runtime.aux, 0, n1);
+                radixSort(runtime, oStart, 0, bList1, 0, 0, n1);
             }
             if (n2 > 1) {
-                radixSort(oArray, oFinalLeft, array, n1, bList2, 0, runtime.oAux, runtime.aux, 0, n2);
+                radixSort(runtime, oFinalLeft, n1, bList2, 0, 0, n2);
             }
         } else {
             if (runtime.oAux == null) {
@@ -78,7 +78,7 @@ public class RadixBitSorterObjectInt<T> implements SorterObjectInt<T> {
                 runtime.oAux = new Object[oEndP1 - oStart];
             }
             int[] bList = MaskInfoInt.getMaskAsArray(maskInfo.getMask());
-            radixSort(oArray, oStart, array, 0, bList, 0, runtime.oAux, runtime.aux, 0, n);
+            radixSort(runtime, oStart, 0, bList, 0, 0, n);
         }
     }
 
@@ -89,13 +89,13 @@ public class RadixBitSorterObjectInt<T> implements SorterObjectInt<T> {
      * 10000000,"0:10000000","RadixBitSorterObjectInt",653->873
      * 1000000,"0:10000000","RadixBitSorterObjectInt",47->63
      */
-    public static void radixSort(Object[] oArray, int oStart, int[] array, int aStart, int[] bList, int bListStart, Object[] oAux, int[] aux, int startAux, int n) {
+    public static void radixSort(RuntimeOptionsInt runtime, int oStart, int aStart, int[] bList, int bListStart, int startAux, int n) {
         Section[] finalSectionList = BitSorterUtils.getProcessedSections(bList, bListStart, bList.length - 1, RADIX_SORT_MAX_BITS);
 
         if (finalSectionList.length == 1 && finalSectionList[0].bits == 1) {
             Section section = finalSectionList[0];
             int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
-            partitionStable(oArray, oStart, array, mask, oAux, aux, startAux, n);
+            partitionStable(runtime, oStart, mask, startAux, n);
             return;
         }
 //        int ops = 0;
@@ -105,9 +105,9 @@ public class RadixBitSorterObjectInt<T> implements SorterObjectInt<T> {
 
         for (Section section : finalSectionList) {
             if (!(section.shift == 0)) {
-                partitionStableOneGroupBits(oArray, oStart, array, aStart, section, oAux, aux, startAux, n);
+                partitionStableOneGroupBits(runtime, oStart, aStart, section, startAux, n);
             } else {
-                partitionStableLastBits(oArray, oStart, array, aStart, section, oAux, aux, startAux, n);
+                partitionStableLastBits(runtime, oStart, aStart, section, startAux, n);
             }
 
 //            int[] tempArray = array;
