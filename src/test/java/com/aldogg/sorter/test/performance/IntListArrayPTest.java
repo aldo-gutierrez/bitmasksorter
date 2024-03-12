@@ -61,6 +61,13 @@ public class IntListArrayPTest {
                 totalElapsed.merge(RadixBitSorterInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
                 Assertions.assertArrayEquals(arraySorted, arrayAux);
             }
+            {
+                arrayAux = arrayOrig.clone();
+                long startTime = System.nanoTime();
+                new RadixBitSorterMTObjectInt<Integer>().sort(arrayAux, x -> x);
+                totalElapsed.merge(RadixBitSorterMTObjectInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
+                Assertions.assertArrayEquals(arraySorted, arrayAux);
+            }
         }
         totalElapsed.forEach((key, value) -> totalElapsed.put(key, value / 1000000));
         System.out.println(totalElapsed);
@@ -120,6 +127,13 @@ public class IntListArrayPTest {
                 totalElapsed.merge(RadixBitSorterInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
                 Assertions.assertIterableEquals(arraySorted, arrayAux);
             }
+            {
+                List<Integer> arrayAux = new LinkedList<>(arrayOrig);
+                long startTime = System.nanoTime();
+                new RadixBitSorterMTObjectInt<Integer>().sort(arrayAux, x -> x);
+                totalElapsed.merge(RadixBitSorterMTObjectInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
+                Assertions.assertIterableEquals(arraySorted, arrayAux);
+            }
         }
         totalElapsed.forEach((key, value) -> totalElapsed.put(key, value / 1000000));
         System.out.println(totalElapsed);
@@ -173,6 +187,13 @@ public class IntListArrayPTest {
                 totalElapsed.merge(RadixBitSorterInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
                 Assertions.assertIterableEquals(arraySorted, arrayAux);
             }
+            {
+                List<Integer> arrayAux = new LinkedList<>(arrayOrig);
+                long startTime = System.nanoTime();
+                new RadixBitSorterMTObjectInt<Integer>().sort(arrayAux, x -> x);
+                totalElapsed.merge(RadixBitSorterMTObjectInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
+                Assertions.assertIterableEquals(arraySorted, arrayAux);
+            }
         }
         totalElapsed.forEach((key, value) -> totalElapsed.put(key, value / 1000000));
         System.out.println(totalElapsed);
@@ -214,7 +235,6 @@ public class IntListArrayPTest {
         for (int i = 0; i < numReps; i++) {
 
             Integer[] arrayOrig = Stream.generate(supplier).skip(0).limit(10000000).toArray(Integer[]::new);
-            //Integer[] arrayOrig = new Integer[] {2085393937, -1504133464, null, -1756884566, null, null, 130786366, null, 1388199496, null};
             Integer[] arraySorted1;
             Integer[] arraySorted2;
             {

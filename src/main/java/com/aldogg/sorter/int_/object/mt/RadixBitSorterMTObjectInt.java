@@ -55,15 +55,18 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
             maskInfo = MaskInfoInt.calculateMaskBreakIfUpperBit(array, 0, n, null);
         }
 
+        RuntimeOptionsInt runtime = new RuntimeOptionsInt();
+        runtime.array = array;
+        runtime.oArray = oArray;
         if (maskInfo.isUpperBitMaskSet()) { //there are negative numbers and positive numbers
-            int sortMask = 1 << MaskInfoInt.UPPER_BIT;
-            int oFinalLeft = ((FieldOptions) mapper).isStable()
+            int sortMask = MaskInfoInt.getUpperBitMask();
+            int oFinalLeft = mapper.isStable()
                     ? (mapper.isUnsigned()
-                    ? partitionStable(oArray, oStart, array, sortMask, n)
-                    : partitionReverseStable(oArray, oStart, array, sortMask, n))
+                    ? partitionStable(runtime, oStart, sortMask, n)
+                    : partitionReverseStable(runtime, oStart, sortMask, n))
                     : (mapper.isUnsigned()
-                    ? partitionNotStable(oArray, oStart, array, sortMask, n)
-                    : partitionReverseNotStable(oArray, oStart, array, sortMask, n));
+                    ? partitionNotStable(oArray, oStart, array, 0, sortMask, n)
+                    : partitionReverseNotStable(oArray, oStart, array, 0, sortMask, n));
 
             int n1 = oFinalLeft - oStart;
             int n2 = oEndP1 - oFinalLeft;
@@ -78,8 +81,10 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
                             maskInfo1 = MaskInfoInt.calculateMask(array, 0, oFinalLeft - oStart);
                         }
                         int mask1 = maskInfo1.getMask();
-                        int[] bList1 = MaskInfoInt.getMaskAsArray(mask1);
-                        radixSort(oArray, oStart, array, 0, bList1, n1, maxThreads1);
+                        if (mask1 != 0) {
+                            int[] bList1 = MaskInfoInt.getMaskAsArray(mask1);
+                            radixSort(runtime, oStart, 0, bList1, n1, maxThreads1);
+                        }
                     } : null, n1,
                     n2 > 1 ? () -> { //sort positive numbers
                         int maxThreads2 = threadNumbers[1];
@@ -90,20 +95,26 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
                             maskInfo2 = MaskInfoInt.calculateMask(array, oFinalLeft - oStart, n);
                         }
                         int mask2 = maskInfo2.getMask();
-                        int[] bList2 = MaskInfoInt.getMaskAsArray(mask2);
-                        radixSort(oArray, oFinalLeft, array, n1, bList2, n2, maxThreads2);
+                        if (mask2 != 0) {
+                            int[] bList2 = MaskInfoInt.getMaskAsArray(mask2);
+                            radixSort(runtime, oFinalLeft, n1, bList2, n2, maxThreads2);
+                        }
                     } : null, n2, params.getDataSizeForThreads(), maxThreads);
 
         } else {
             int mask = maskInfo.getMask();
             if (mask != 0) {
+                if (runtime.oAux == null) {
+                    runtime.aux = new int[n];
+                    runtime.oAux = new Object[n];
+                }
                 int[] bList = MaskInfoInt.getMaskAsArray(mask);
-                radixSort(oArray, oStart, array, 0, bList, n, maxThreads);
+                radixSort(runtime, oStart, 0, bList, n, maxThreads);
             }
         }
     }
 
-    private void radixSort(Object[] oArray, int oStart, int[] array, int aStart, int[] bList, int n, Object multiThreadParams) {
+    private void radixSort(RuntimeOptionsInt runtime, int oStart, int aStart, int[] bList, int n, Object multiThreadParams) {
         int maxThreads = (Integer) multiThreadParams;
         int tBits = BitSorterUtils.logBase2(maxThreads);
         if (!(1 << tBits == maxThreads)) {
@@ -111,31 +122,44 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
         }
         int threadBits = Math.min(tBits, bList.length);
         int sortMask = MaskInfoInt.getMask(bList, 0, threadBits - 1);
-        partitionStableNonConsecutiveBitsAndRadixSort(oArray, oStart, array, aStart, sortMask, threadBits, bList, n);
+        partitionStableNonConsecutiveBitsAndRadixSort(runtime, oStart, aStart, sortMask, threadBits, bList, n);
     }
 
-    protected void partitionStableNonConsecutiveBitsAndRadixSort(Object[] oArray, final int oStart, final int[] array, int aStart, int sortMask, int threadBits, int[] bList, final int n) {
-        Object[] oAux = new Object[n];
-        int[] aux = new int[n];
-
+    protected void partitionStableNonConsecutiveBitsAndRadixSort(RuntimeOptionsInt runtime, final int oStart, final int aStart, int sortMask, int threadBits, int[] bList, final int n) {
         int maxProcessNumber = 1 << threadBits;
         int remainingBits = bList.length - threadBits;
 
         int[] bListAux = MaskInfoInt.getMaskAsArray(sortMask);
         Section[] sections = getMaskAsSections(bListAux, 0, bListAux.length - 1);
-
         int[] count;
+
+        int startAux;
+        Object[] oAux;
+        int[] aux;
+        if (runtime.aux == null) {
+            oAux = new Object[n];
+            aux = new int[n];
+            startAux = 0;
+        } else {
+            oAux = runtime.oAux;
+            aux = runtime.aux;
+            startAux = aStart;
+        }
 
         if (sections.length == 1) {
             Section section = sections[0];
             if (!(section.shift == 0)) {
-                count = partitionStableOneGroupBits(oArray, oStart, array, aStart, section, oAux, aux, 0, n);
+                count = partitionStableOneGroupBits(runtime.oArray, oStart, runtime.array, aStart, section, oAux, aux, startAux, n);
             } else {
-                count = partitionStableLastBits(oArray, oStart, array, aStart, section, oAux, aux, 0, n);
+                count = partitionStableLastBits(runtime.oArray, oStart, runtime.array, aStart, section, oAux, aux, startAux, n);
             }
         } else {
-            throw new UnsupportedOperationException("");
-            //leftX = partitionStableNGroupBits(oArray, array, start, sectionsInfo, oAux, aux, 0, n);
+            Section section = Section.createWithStarAndShift(sections[0].start, sections[sections.length - 1].shift);
+            if (!(section.shift == 0)) {
+                count = partitionStableOneGroupBits(runtime.oArray, oStart, runtime.array, aStart, section, oAux, aux, startAux, n);
+            } else {
+                count = partitionStableLastBits(runtime.oArray, oStart, runtime.array, aStart, section, oAux, aux, startAux, n);
+            }
         }
 
 
@@ -149,8 +173,8 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
                 if (lengthT > 1) {
                     Runnable r = () -> {
                         int endIBZ = count[finalI];
-                        int startIBZ = endIBZ - lengthT;
-                        RadixBitSorterObjectInt.radixSort(oArray, oStart + startIBZ, array, aStart + startIBZ, bList, threadBits, bList.length - 1, oAux, aux, startIBZ, lengthT);
+                        int startIBZ = endIBZ - lengthT; //auxStart is BAD
+                        RadixBitSorterObjectInt.radixSort(runtime.oArray, oStart + startIBZ, runtime.array, aStart + startIBZ, bList, threadBits, oAux, aux, startAux + startIBZ, lengthT);
                     };
                     runner.preSubmit(r);
                 }

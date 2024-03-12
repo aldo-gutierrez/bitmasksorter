@@ -79,6 +79,9 @@ public class ArrayParallelRunner {
     public static int[] splitWork(int n1, int n2, int maxThreads) {
         int sum = n1 + n2;
         int nPerThread = sum / maxThreads;
+        if (nPerThread == 0) {
+            nPerThread = 1;
+        }
         if (n1 < n2) {
             if (n1 <= nPerThread) {
                 return new int[]{1, maxThreads - 1};

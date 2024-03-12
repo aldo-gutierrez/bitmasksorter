@@ -24,6 +24,7 @@ public class IntGenerator {
         functions.put(String.valueOf(GeneratorFunctions.ALTERNATING), IntGenerator::alternating_int);
         functions.put(String.valueOf(GeneratorFunctions.ALTERNATING_16_VALUES), IntGenerator::alternating_16_values_int);
         functions.put(String.valueOf(GeneratorFunctions.RANDOM_INTEGER_RANGE), IntGenerator::random_int_range);
+        functions.put(String.valueOf(GeneratorFunctions.HARCODED), IntGenerator::hardcoded);
     }
 
     public static Function<GeneratorParams, int[]> getGFunction(GeneratorFunctions functionName) {
@@ -175,6 +176,10 @@ public class IntGenerator {
             }
         }
         return v;
+    }
+
+    static int[] hardcoded(GeneratorParams params) {
+        return new int[]{2, -2, -10, 9, -9, 6, 9, 3, -4, -3, 1, 3};
     }
 
 

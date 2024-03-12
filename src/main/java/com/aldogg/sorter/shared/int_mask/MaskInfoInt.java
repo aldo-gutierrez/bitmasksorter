@@ -198,5 +198,9 @@ public class MaskInfoInt {
         return (getMask() & 0x80000000) != 0;
     }
 
+    public static int getUpperBitMask() {
+        return 0x80000000;
+    }
+
 
 }

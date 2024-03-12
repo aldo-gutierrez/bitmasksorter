@@ -5,7 +5,7 @@ import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.generators.IntGenerator;
 import com.aldogg.sorter.generic.RadixBitSorterGenericInt;
-import com.aldogg.sorter.generic.SorterObjectInt;
+import com.aldogg.sorter.int_.SorterObjectInt;
 import com.aldogg.sorter.int_.SorterInt;
 import com.aldogg.sorter.int_.object.EntityInt1;
 import com.aldogg.sorter.int_.object.IntMapper;
@@ -71,7 +71,7 @@ public class IntSorterPTest extends BaseTest {
 
     @Test
     public void speedTestSignedIntSt() throws IOException {
-        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new RadixByteSorterV2Int(), new RadixByteSorterCInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new RadixByteSorterV2Int(), new RadixByteSorterV3Int()};
 
         BufferedWriter writer = getWriter("test-results/speed_signedInt_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");

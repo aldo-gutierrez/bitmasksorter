@@ -1,5 +1,6 @@
 package com.aldogg.sorter.int_.object;
 
+import com.aldogg.sorter.RuntimeOptionsInt;
 import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 import com.aldogg.sorter.shared.Section;
 import com.aldogg.sorter.int_.SorterUtilsInt;
@@ -8,15 +9,10 @@ import static com.aldogg.sorter.generic.SorterUtilsGeneric.swap;
 
 public class SorterUtilsObjectInt {
 
-    /**
-     * partition with 0 memory in-place
-     * CPU: N
-     * MEM: 1
-     * not stable?
-     */
-    public static int partitionNotStable(final Object[] oArray, final int start, final int[] array, final int mask, int n) {
-        int left = start;
-        int right = start + n - 1;
+    public static int partitionNotStable(final Object[] oArray, final int oStart, final int[] array, int aStart, final int mask, int n) {
+        int left = aStart;
+        int right = aStart + n - 1;
+        int shift = -aStart + oStart;
 
         while (left <= right) {
             int element = array[left];
@@ -27,7 +23,7 @@ public class SorterUtilsObjectInt {
                     element = array[right];
                     if ((element & mask) == 0) {
                         SorterUtilsInt.swap(array, left, right);
-                        swap(oArray, left, right);
+                        swap(oArray, left + shift, right + shift);
                         left++;
                         right--;
                         break;
@@ -40,15 +36,10 @@ public class SorterUtilsObjectInt {
         return left;
     }
 
-    /**
-     * partition with 0 memory in-place reverse order
-     * CPU: N
-     * MEM: 1
-     * not stable?
-     */
-    public static int partitionReverseNotStable(final Object[] oArray, final int start, final int[] array, final int mask, int n) {
-        int left = start;
-        int right = start + n - 1;
+    public static int partitionReverseNotStable(final Object[] oArray, final int oStart, final int[] array, int aStart, final int mask, int n) {
+        int left = aStart;
+        int right = aStart + n - 1;
+        int shift = -aStart + oStart;
 
         while (left <= right) {
             int element = array[left];
@@ -59,7 +50,7 @@ public class SorterUtilsObjectInt {
                         right--;
                     } else {
                         SorterUtilsInt.swap(array, left, right);
-                        swap(oArray, left, right);
+                        swap(oArray, left + shift, right + shift);
                         left++;
                         right--;
                         break;
@@ -72,10 +63,15 @@ public class SorterUtilsObjectInt {
         return left;
     }
 
-    public static int partitionStable(final Object[] oArray, final int oStart, final int[] array, final int mask, int n) {
-        int[] aux = new int[n];
-        Object[] oAux = new Object[n];
-        return partitionStable(oArray, oStart, array, mask, oAux, aux, 0, n);
+    public static int partitionStable(RuntimeOptionsInt runtime, final int oStart, final int mask, int n) {
+        if (runtime.aux == null) {
+            runtime.oAux = new Object[n];
+            runtime.aux = new int[n];
+            return partitionStable(runtime.oArray, oStart, runtime.array, mask, runtime.oAux, runtime.aux, 0, n);
+        } else {
+            System.err.println("not supported code path");
+            throw new IllegalStateException("not supported code path");
+        }
     }
 
     public static int partitionStable(final Object[] oArray, int oStart, final int[] array, final int mask,
@@ -104,11 +100,15 @@ public class SorterUtilsObjectInt {
         return oLeft;
     }
 
-    public static int partitionReverseStable(final Object[] oArray, final int oStart, final int[] array, final int mask, int n) {
-        int[] aux = new int[n];
-        Object[] oAux = new Object[n];
-        //TODO what about start of Array, is size n, but where it starts
-        return partitionReverseStable(oArray, oStart, mask, array, oAux, aux, 0, n);
+    public static int partitionReverseStable(RuntimeOptionsInt runtime, final int oStart, final int mask, int n) {
+        if (runtime.aux == null) {
+            runtime.oAux = new Object[n];
+            runtime.aux = new int[n];
+            return partitionReverseStable(runtime.oArray, oStart, mask, runtime.array, runtime.oAux, runtime.aux, 0, n);
+        } else {
+            System.err.println("not supported code path");
+            throw new IllegalStateException("not supported code path");
+        }
     }
 
 
@@ -152,13 +152,14 @@ public class SorterUtilsObjectInt {
             count[i] = sum;
             sum += countI;
         }
+        int shift = -aStart + oStart;
         if (startAux == 0) {
             for (int i = aStart; i < endP1; i++) {
                 int element = array[i];
                 int elementShiftMasked = element & mask;
                 int auxIndex = count[elementShiftMasked];
                 aux[auxIndex] = element;
-                oAux[auxIndex] = oArray[oStart + i - aStart];
+                oAux[auxIndex] = oArray[i + shift];
                 count[elementShiftMasked]++;
             }
         } else {
@@ -167,7 +168,7 @@ public class SorterUtilsObjectInt {
                 int elementShiftMasked = element & mask;
                 int auxIndex = count[elementShiftMasked] + startAux;
                 aux[auxIndex] = element;
-                oAux[auxIndex] = oArray[oStart + i - aStart];
+                oAux[auxIndex] = oArray[i + shift];
                 count[elementShiftMasked]++;
             }
         }
@@ -191,13 +192,14 @@ public class SorterUtilsObjectInt {
             count[i] = sum;
             sum += countI;
         }
+        int shift = -aStart + oStart;
         if (startAux == 0) {
             for (int i = aStart; i < endP1; i++) {
                 int element = array[i];
                 int elementShiftMasked = (element & mask) >>> shiftRight;
                 int auxIndex = count[elementShiftMasked];
                 aux[auxIndex] = element;
-                oAux[auxIndex] = oArray[oStart + i - aStart];
+                oAux[auxIndex] = oArray[i + shift];
                 count[elementShiftMasked]++;
             }
         } else {
@@ -206,7 +208,7 @@ public class SorterUtilsObjectInt {
                 int elementShiftMasked = (element & mask) >>> shiftRight;
                 int auxIndex = count[elementShiftMasked] + startAux;
                 aux[auxIndex] = element;
-                oAux[auxIndex] = oArray[oStart + i - aStart];
+                oAux[auxIndex] = oArray[i + shift];
                 count[elementShiftMasked]++;
             }
         }

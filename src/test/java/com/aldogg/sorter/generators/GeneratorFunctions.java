@@ -15,4 +15,5 @@ public enum GeneratorFunctions {
     ALTERNATING_16_VALUES,
     RANDOM_INTEGER_RANGE,
     RANDOM_REAL_RANGE,
+    HARCODED
 }

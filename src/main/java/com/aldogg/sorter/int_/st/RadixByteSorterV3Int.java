@@ -11,7 +11,7 @@ import com.aldogg.sorter.int_.SorterUtilsInt;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedSigned;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedUnSigned;
 
-public class RadixByteSorterCInt extends BitMaskSorterInt {
+public class RadixByteSorterV3Int extends BitMaskSorterInt {
 
     boolean calculateBitMaskOptimization = true;
 

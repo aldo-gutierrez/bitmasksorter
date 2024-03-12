@@ -19,29 +19,41 @@ public class CodeGenerator {
         velocityEngine.init(properties);
 
         // Load the template
-        Template template = velocityEngine.getTemplate("TemplateSorterUtilsType.vm");
+        //Template template = velocityEngine.getTemplate("TemplateSorterUtilsType.vm");
+        //Template template = velocityEngine.getTemplate("TemplateSorterObjectType.vm");
+        Template template = velocityEngine.getTemplate("TemplateSorterType.vm");
+
 
         // Set up the context with our template variables
         VelocityContext context = new VelocityContext();
 
-        context.put("type", "float");
-        context.put("Type", "Float");
-        context.put("TypeObject", "Float");
-        context.put("typeMask", "int");
-        context.put("mapF", "Float.floatToRawIntBits");
+//        context.put("type", "float");
+//        context.put("Type", "Float");
+//        context.put("TypeObject", "Float");
+//        context.put("typeMask", "int");
+//        context.put("mapF", "Float.floatToRawIntBits");
 
 //        context.put("type", "long");
 //        context.put("Type", "Long");
 //        context.put("TypeObject", "Long");
 //        context.put("typeMask", "long");
 
-        /*
-        context.put("type", "int");
-        context.put("Type", "Int");
-        context.put("TypeObject", "Integer");
-        context.put("typeMask", "int");
-         */
+//        context.put("type", "int");
+//        context.put("Type", "Int");
+//        context.put("TypeObject", "Integer");
+//        context.put("typeMask", "int");
+
         //context.put("utils", new StringUtils());
+
+//        context.put("type", "byte");
+//        context.put("Type", "Byte");
+//        context.put("TypeObject", "Byte");
+//        context.put("typeMask", "int");
+
+        context.put("type", "short");
+        context.put("Type", "Short");
+        context.put("TypeObject", "Short");
+        context.put("typeMask", "int");
 
         // Generate the Java code
         StringWriter writer = new StringWriter();
