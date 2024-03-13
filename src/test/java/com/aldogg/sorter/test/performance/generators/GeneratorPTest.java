@@ -42,10 +42,12 @@ public class GeneratorPTest extends BaseTest {
             public void sort(int[] array, int start, int endP1, FieldOptions options) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
                 int mask = maskInfo.getMask();
-                int[] bList = MaskInfoInt.getMaskAsArray(mask);
-                int length = endP1 - start;
-                int[] aux = new int[length];
-                radixSort(array, start, bList, 0,  aux, 0, endP1 - start);
+                if (mask != 0) {
+                    int[] bList = MaskInfoInt.getMaskAsArray(mask);
+                    int length = endP1 - start;
+                    int[] aux = new int[length];
+                    radixSort(array, start, bList, 0, aux, 0, length);
+                }
             }
 
             @Override
@@ -58,11 +60,13 @@ public class GeneratorPTest extends BaseTest {
             public void sort(int[] array, int start, int endP1, FieldOptions options) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
                 int mask = maskInfo.getMask();
-                int[] bList = MaskInfoInt.getMaskAsArray(mask);
-                int[] aux = new int[endP1 - start];
-                for (int i = bList.length - 1; i >= 0; i--) {
-                    int sortMask = 1 << bList[i];
-                    SorterUtilsInt.partitionStable(array, start, endP1, sortMask, aux);
+                if (mask != 0) {
+                    int[] bList = MaskInfoInt.getMaskAsArray(mask);
+                    int[] aux = new int[endP1 - start];
+                    for (int i = bList.length - 1; i >= 0; i--) {
+                        int sortMask = 1 << bList[i];
+                        SorterUtilsInt.partitionStable(array, start, endP1, sortMask, aux);
+                    }
                 }
             }
 
@@ -76,8 +80,10 @@ public class GeneratorPTest extends BaseTest {
             public void sort(int[] array, int start, int endP1, FieldOptions options) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
                 int mask = maskInfo.getMask();
-                int[] bList = MaskInfoInt.getMaskAsArray(mask);
-                PCountSortInt.pCountSort(array, start, endP1, bList, 0);
+                if (mask != 0) {
+                    int[] bList = MaskInfoInt.getMaskAsArray(mask);
+                    PCountSortInt.pCountSort(array, start, endP1, bList, 0);
+                }
             }
 
             @Override
