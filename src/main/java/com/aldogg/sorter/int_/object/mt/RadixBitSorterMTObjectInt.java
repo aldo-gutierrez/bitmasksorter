@@ -82,8 +82,18 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
                         }
                         int mask1 = maskInfo1.getMask();
                         if (mask1 != 0) {
+                            RuntimeOptionsInt runtime1 = new RuntimeOptionsInt();
+                            runtime1.oArray = runtime.oArray;
+                            runtime1.array = runtime.array;
+                            if (runtime.oAux == null) {
+                                runtime1.aux = new int[n1];
+                                runtime1.oAux = new Object[n1];
+                            } else {
+                                runtime1.aux = runtime.aux;
+                                runtime1.oAux = runtime.oAux;
+                            }
                             int[] bList1 = MaskInfoInt.getMaskAsArray(mask1);
-                            radixSort(runtime, oStart, 0, bList1, n1, maxThreads1);
+                            radixSortParallel(runtime1, oStart, 0, bList1, n1, 0, maxThreads1);
                         }
                     } : null, n1,
                     n2 > 1 ? () -> { //sort positive numbers
@@ -96,8 +106,21 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
                         }
                         int mask2 = maskInfo2.getMask();
                         if (mask2 != 0) {
+                            int startAux;
+                            RuntimeOptionsInt runtime2 = new RuntimeOptionsInt();
+                            runtime2.oArray = runtime.oArray;
+                            runtime2.array = runtime.array;
+                            if (runtime.oAux == null) {
+                                runtime2.aux = new int[n2];
+                                runtime2.oAux = new Object[n2];
+                                startAux = 0;
+                            } else {
+                                runtime2.aux = runtime.aux;
+                                runtime2.oAux = runtime.oAux;
+                                startAux = n1;
+                            }
                             int[] bList2 = MaskInfoInt.getMaskAsArray(mask2);
-                            radixSort(runtime, oFinalLeft, n1, bList2, n2, maxThreads2);
+                            radixSortParallel(runtime2, oFinalLeft, n1, bList2, n2, startAux, maxThreads2);
                         }
                     } : null, n2, params.getDataSizeForThreads(), maxThreads);
 
@@ -109,38 +132,24 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
                     runtime.oAux = new Object[n];
                 }
                 int[] bList = MaskInfoInt.getMaskAsArray(mask);
-                radixSort(runtime, oStart, 0, bList, n, maxThreads);
+                radixSortParallel(runtime, oStart, 0, bList, n, 0, maxThreads);
             }
         }
     }
 
-    private void radixSort(RuntimeOptionsInt runtime, int oStart, int aStart, int[] bList, int n, Object multiThreadParams) {
-        int maxThreads = (Integer) multiThreadParams;
+    private void radixSortParallel(RuntimeOptionsInt runtime, int oStart, int aStart, int[] bList, int n, int startAux, int maxThreads) {
         int tBits = BitSorterUtils.logBase2(maxThreads);
         if (!(1 << tBits == maxThreads)) {
             tBits += 1;
         }
         int threadBits = Math.min(tBits, bList.length);
         int sortMask = MaskInfoInt.getMask(bList, 0, threadBits - 1);
-        partitionStableNonConsecutiveBitsAndRadixSort(runtime, oStart, aStart, sortMask, threadBits, bList, n);
-    }
-
-    protected void partitionStableNonConsecutiveBitsAndRadixSort(RuntimeOptionsInt runtime, final int oStart, final int aStart, int sortMask, int threadBits, int[] bList, final int n) {
         int maxProcessNumber = 1 << threadBits;
         int remainingBits = bList.length - threadBits;
 
         int[] bListAux = MaskInfoInt.getMaskAsArray(sortMask);
         Section[] sections = getMaskAsSections(bListAux, 0, bListAux.length - 1);
         int[] count;
-
-        int startAux;
-        if (runtime.aux == null) {
-            runtime.oAux = new Object[n];
-            runtime.aux = new int[n];
-            startAux = 0;
-        } else {
-            startAux = aStart;
-        }
 
         if (sections.length == 1) {
             Section section = sections[0];
@@ -158,7 +167,7 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
             ParallelRunner runner = new ParallelRunner();
             runner.init(maxProcessNumber, 1);
 
-            for (int i = 0; i < maxProcessNumber; i++) {
+            for (int i = 0; i < count.length; i++) {
                 int finalI = i;
                 int lengthT = count[finalI] - (finalI == 0 ? 0 : count[finalI - 1]);
                 if (lengthT > 1) {
