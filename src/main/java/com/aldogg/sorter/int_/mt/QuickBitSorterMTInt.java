@@ -47,9 +47,9 @@ public class QuickBitSorterMTInt extends BitMaskSorterMTInt {
 
         int sortMask = 1 << bList[bListIndex];
         int finalLeft = SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask);
-        final boolean recalculateBitMask = (finalLeft == start || finalLeft == endP1);
+        final boolean recalculateBitMask = (finalLeft - start <= 1  || endP1 - finalLeft <= 1);
 
-        int[] finalbList = bList;
+        int[] finalBList = bList;
         int finalBListIndex = bListIndex;
         int n1 = finalLeft - start;
         int n2 = endP1 - finalLeft;
@@ -57,10 +57,10 @@ public class QuickBitSorterMTInt extends BitMaskSorterMTInt {
         int[] threadNumbers = splitWork(n1, n2, maxThreads);
         ParallelRunner.runTwoRunnable(
                 n1 > 1 ? () -> {
-                    sortMT(array, start, finalLeft, options, finalbList, finalBListIndex + 1, recalculateBitMask, threadNumbers[0]);
+                    sortMT(array, start, finalLeft, options, finalBList, finalBListIndex + 1, recalculateBitMask, threadNumbers[0]);
                 } : null, n1,
                 n2 > 1 ? () -> {
-                    sortMT(array, finalLeft, endP1, options, finalbList, finalBListIndex + 1, recalculateBitMask, threadNumbers[1]);
+                    sortMT(array, finalLeft, endP1, options, finalBList, finalBListIndex + 1, recalculateBitMask, threadNumbers[1]);
                 } : null, n2, params.getDataSizeForThreads(), maxThreads);
     }
 

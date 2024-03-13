@@ -310,7 +310,7 @@ public class SorterUtilsIntExt {
             PCountSortInt.pCountSort(array, start, endP1, bList, bListIndex);
         } else if (sorter.equals(StableByte)) {
             int[] aux = new int[n];
-            radixSort(array, start, endP1, bList, bListIndex, bList.length - 1, aux, 0);
+            radixSort(array, start, bList, bListIndex, aux, 0, n);
         } else {
             int[] aux = new int[n];
             for (int i = bList.length - 1; i >= bListIndex; i--) {

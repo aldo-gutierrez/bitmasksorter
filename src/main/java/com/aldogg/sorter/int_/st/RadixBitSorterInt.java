@@ -14,20 +14,20 @@ public class RadixBitSorterInt extends BitMaskSorterInt {
     @Override
     public void sort(int[] array, int start, int endP1, FieldOptions options, int[] bList, Object params) {
         int[] aux = (int[]) params;
-        radixSort(array, start, endP1, bList, 0, bList.length - 1, aux, 0);
+        radixSort(array, start, bList, 0, aux, 0, endP1 - start);
     }
 
-    public static void radixSort(int[] array, int start, int endP1, int[] bList, int bListStart, int bListEnd, int[] aux, int startAux) {
+    public static void radixSort(int[] array, int start, int[] bList, int bListStart, int[] aux, int startAux, int n) {
+        int bListEnd = bList.length - 1;
         Section[] finalSectionList = BitSorterUtils.getProcessedSections(bList, bListStart, bListEnd, RADIX_SORT_MAX_BITS);
 
         if (finalSectionList.length == 1 && finalSectionList[0].bits == 1) {
             Section section = finalSectionList[0];
             int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
-            partitionStable(array, start, endP1, mask, aux);
+            partitionStable(array, start, start + n, mask, aux);
             return;
         }
 
-        int n = endP1 - start;
         int ops = 0;
         int[] arrayOrig = array;
         int startOrig = start;

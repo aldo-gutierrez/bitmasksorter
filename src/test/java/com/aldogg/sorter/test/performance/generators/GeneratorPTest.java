@@ -27,6 +27,9 @@ import java.util.Random;
 import static com.aldogg.sorter.shared.ShortSorter.*;
 import static com.aldogg.sorter.int_.st.RadixBitSorterInt.radixSort;
 
+/**
+ * TODO CHECK AND FIX
+ */
 public class GeneratorPTest extends BaseTest {
     @Test
     public void smallListAlgorithmSpeedTest() throws IOException {
@@ -42,7 +45,7 @@ public class GeneratorPTest extends BaseTest {
                 int[] bList = MaskInfoInt.getMaskAsArray(mask);
                 int length = endP1 - start;
                 int[] aux = new int[length];
-                radixSort(array, start, endP1, bList, 0, bList.length - 1, aux, 0);
+                radixSort(array, start, bList, 0,  aux, 0, endP1 - start);
             }
 
             @Override

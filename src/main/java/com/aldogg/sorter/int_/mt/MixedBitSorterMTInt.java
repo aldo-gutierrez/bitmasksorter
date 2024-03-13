@@ -116,7 +116,7 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
         } else if (bList.length <= params.getShortKBits()) {
             sortShortK(array, start, endP1, bList, 0);
         } else {
-            RadixBitSorterInt.radixSort(array, start, endP1, bList, 0, bList.length - 1, aux, start);
+            RadixBitSorterInt.radixSort(array, start, bList, 0, aux, start, n);
         }
     }
 

@@ -88,7 +88,7 @@ public class RadixBitSorterMTInt extends BitMaskSorterMTInt {
                         if (remainingBits <= params.getShortKBits()) {
                             sortShortK(array, start + startIBZ, start + endIBZ, bList, threadBits);
                         } else {
-                            RadixBitSorterInt.radixSort(array, start + startIBZ, start + endIBZ, bList, threadBits, bList.length - 1, aux, startIBZ);
+                            RadixBitSorterInt.radixSort(array, start + startIBZ, bList, threadBits, aux, startIBZ, lengthT);
                         }
                     };
                     runner.preSubmit(r);
