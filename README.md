@@ -238,7 +238,7 @@ Comparison for sorting 10 Million int elements with range from 0 to 10 Million i
 
 ![Graph2](test-results/ST_Int_AMD4800H_10M_randomRange_0_10M.png?raw=true "Graph2")
 
-![Graph2](test-results/MT_Int_AMD4800H_10M_randomRange_0_10M.png?raw=true "Graph2")
+<a href="https://raw.githack.com/aldo-gutierrez/bitmasksorter/main/test-results/MT_Int_AMD4800H_10M_randomRange_0_100000_HISTORY.html" target="_blank">Multi thread results.</a>
 
 ### Example 2:
 
