@@ -35,7 +35,6 @@ public abstract class BitMaskSorterFloat implements SorterFloat {
         if (bList.length == 0) {
             return;
         }
-//        setSNFunctions(isUnsigned() ? SortingNetworks.unsignedSNFunctions : SortingNetworks.signedSNFunctions);
         sort(array, start, endP1, bList);
     }
 }
