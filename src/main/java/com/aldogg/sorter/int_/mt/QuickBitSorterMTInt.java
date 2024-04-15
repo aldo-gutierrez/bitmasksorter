@@ -1,6 +1,7 @@
 package com.aldogg.sorter.int_.mt;
 
 import com.aldogg.parallel.ParallelRunner;
+import com.aldogg.sorter.BitSorterParams;
 import com.aldogg.sorter.FieldOptions;
 import com.aldogg.sorter.int_.BitMaskSorterInt;
 import com.aldogg.sorter.int_.BitMaskSorterMTInt;
@@ -37,7 +38,7 @@ public class QuickBitSorterMTInt extends BitMaskSorterMTInt {
         }
 
         int kDiff = bList.length - bListIndex;
-        if (kDiff <= params.getShortKBits()) {
+        if (kDiff <= BitSorterParams.SHORT_K_BITS) {
             if (kDiff < 1) {
                 return;
             }

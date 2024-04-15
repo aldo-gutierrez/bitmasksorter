@@ -1,9 +1,6 @@
 package com.aldogg.sorter;
 
-import java.security.InvalidParameterException;
-
 public class BitSorterParams {
-    public static final int VERY_SMALL_N_SIZE = 16;
 
     public static int RADIX_SORT_MAX_BITS = 8;
 
@@ -25,20 +22,10 @@ public class BitSorterParams {
         }
     }
 
-    private int shortKBits = 16;
+    //NEES TO BE >=4 and <=24
+    public static int SHORT_K_BITS = 20;
 
-    public int getShortKBits() {
-        return shortKBits;
-    }
-
-    public void setShortKBits(int shortKBits) {
-        if (shortKBits < 4) {
-            throw new InvalidParameterException("shortKBits needs to be >=4");
-        } else if (shortKBits > 24) {
-            throw new InvalidParameterException("shortKBits needs to be <=24");
-        }
-        this.shortKBits = shortKBits;
-    }
+    public static int SHORT_N = 262144;
 
     public BitSorterParams() {
 

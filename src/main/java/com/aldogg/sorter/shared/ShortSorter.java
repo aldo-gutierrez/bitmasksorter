@@ -4,5 +4,5 @@ public enum ShortSorter {
     StableByte,
     StableBit,
     PCountSort,
-    Java
+    JavaSorter
 }

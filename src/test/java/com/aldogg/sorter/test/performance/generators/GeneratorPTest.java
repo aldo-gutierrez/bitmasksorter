@@ -1,6 +1,7 @@
 package com.aldogg.sorter.test.performance.generators;
 
 import com.aldogg.sorter.FieldOptions;
+import com.aldogg.sorter.int_.st.*;
 import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
@@ -11,18 +12,13 @@ import com.aldogg.sorter.int_.mt.JavaSorterMTInt;
 import com.aldogg.sorter.int_.mt.MixedBitSorterMTInt;
 import com.aldogg.sorter.int_.mt.QuickBitSorterMTInt;
 import com.aldogg.sorter.int_.mt.RadixBitSorterMTInt;
-import com.aldogg.sorter.int_.st.QuickBitSorterInt;
-import com.aldogg.sorter.int_.st.RadixBitSorterInt;
-import com.aldogg.sorter.int_.st.RadixByteSorterInt;
 import com.aldogg.sorter.test.BaseTest;
 import com.aldogg.sorter.test.TestAlgorithms;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static com.aldogg.sorter.shared.ShortSorter.*;
 import static com.aldogg.sorter.int_.st.RadixBitSorterInt.radixSort;
@@ -91,12 +87,13 @@ public class GeneratorPTest extends BaseTest {
                 return PCountSort.name();
             }
 
-        }};
-//        }, new JavaSorterInt()};
+        },
+                new JavaSorterInt()
+        };
         TestAlgorithms<SorterInt> testAlgorithms;
 
         int[] twoPowersHeat = {16, 256, 4096, 65536};
-        int[] twoPowers = {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536};
+        int[] twoPowers = {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144};
 
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(123456789);

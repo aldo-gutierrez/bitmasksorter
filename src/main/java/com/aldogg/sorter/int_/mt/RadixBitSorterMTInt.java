@@ -18,7 +18,7 @@ public class RadixBitSorterMTInt extends BitMaskSorterMTInt {
     @Override
     public void sort(int[] array, int start, int endP1, FieldOptions options, int[] bList, Object params) {
         int kDiff = bList.length;
-        if (kDiff <= this.params.getShortKBits()) {
+        if (kDiff <= BitSorterParams.SHORT_K_BITS) {
             if (kDiff < 1) {
                 return;
             }
@@ -85,7 +85,7 @@ public class RadixBitSorterMTInt extends BitMaskSorterMTInt {
                     Runnable r = () -> {
                         int endIBZ = leftX[finalI];
                         int startIBZ = endIBZ - lengthT;
-                        if (remainingBits <= params.getShortKBits()) {
+                        if (remainingBits <= BitSorterParams.SHORT_K_BITS) {
                             sortShortK(array, start + startIBZ, start + endIBZ, bList, threadBits);
                         } else {
                             RadixBitSorterInt.radixSort(array, start + startIBZ, bList, threadBits, aux, startIBZ, lengthT);

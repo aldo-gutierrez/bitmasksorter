@@ -4,6 +4,7 @@ import com.aldogg.parallel.ArrayParallelRunner;
 import com.aldogg.parallel.ArrayRunnable;
 import com.aldogg.parallel.ParallelRunner;
 import com.aldogg.sorter.BitSorterUtils;
+import com.aldogg.sorter.int_.st.JavaSorterInt;
 import com.aldogg.sorter.shared.Section;
 import com.aldogg.sorter.shared.ShortSorter;
 import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
@@ -271,22 +272,24 @@ public class SorterUtilsIntExt {
      */
     static final ShortSorter[][] shortSorters = new ShortSorter[][]
             {
-                    {StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableBit, StableByte, StableBit, StableByte, StableBit,},
-                    {StableBit, StableBit, StableBit, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
-                    {StableBit, StableBit, StableBit, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
-                    {StableBit, StableBit, StableBit, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
-                    {StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
-                    {StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
-                    {StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
-                    {StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
-                    {StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort,},
-                    {StableBit, StableBit, StableBit, StableBit, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort,},
+                    {JavaSorter, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, StableBit, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, StableByte, StableByte, StableByte, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, PCountSort, },
+                    {JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, JavaSorter, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, StableByte, },
             };
 
 
@@ -294,12 +297,18 @@ public class SorterUtilsIntExt {
         int bLengthM1 = (bList.length - bListIndex) - 1; //Log2(K)
         int log2Nm1 = BitSorterUtils.logBase2(endP1 - start) - 1; //Log2(N)
         ShortSorter sorter;
-        if (log2Nm1 <= 15 && bLengthM1 <= 15) {
+        if (log2Nm1 <= 17 && bLengthM1 <= 17) {
             sorter = shortSorters[bLengthM1][log2Nm1];
-        } else if (bLengthM1 <= 15) {
-            sorter = PCountSort;
         } else {
-            sorter = StableByte;
+            if (log2Nm1 <=6 ) { //N<=64
+                sorter = JavaSorter;
+            } else {
+                if (bLengthM1 <= 19 && log2Nm1 > bLengthM1) { //count sort needs double N been double of range
+                    sorter = PCountSort;
+                } else {
+                    sorter = StableByte;
+                }
+            }
         }
         executeSorter(array, start, endP1, bList, bListIndex, sorter);
     }
@@ -311,6 +320,8 @@ public class SorterUtilsIntExt {
         } else if (sorter.equals(StableByte)) {
             int[] aux = new int[n];
             radixSort(array, start, bList, bListIndex, aux, 0, n);
+        } else if (sorter.equals(JavaSorter)) {
+            new JavaSorterInt().sort(array, start, endP1);
         } else {
             int[] aux = new int[n];
             for (int i = bList.length - 1; i >= bListIndex; i--) {

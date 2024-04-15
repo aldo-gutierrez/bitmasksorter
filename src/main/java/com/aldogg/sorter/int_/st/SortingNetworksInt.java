@@ -6,8 +6,6 @@ import com.aldogg.sorter.int_.SorterUtilsInt;
 
 import java.util.Arrays;
 
-import static com.aldogg.sorter.BitSorterParams.VERY_SMALL_N_SIZE;
-
 public final class SortingNetworksInt implements SorterInt {
 
     private static final SortingNetworksInt INSTANCE = new SortingNetworksInt();
@@ -26,7 +24,7 @@ public final class SortingNetworksInt implements SorterInt {
         if (n < 2) {
             return;
         }
-        if (n <= VERY_SMALL_N_SIZE) {
+        if (n <= 16) {
             int[][] swaps = com.aldogg.sorter.SortingNetworks.swaps[n];
             if (options.isUnsigned()) {
                 for (int i = 0; i < swaps.length; i++) {

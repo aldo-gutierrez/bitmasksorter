@@ -7,7 +7,6 @@ import com.aldogg.sorter.int_.BitMaskSorterMTInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 import com.aldogg.sorter.int_.st.QuickBitSorterInt;
 import com.aldogg.sorter.int_.st.RadixBitSorterInt;
-import com.aldogg.sorter.int_.st.SortingNetworksInt;
 import com.aldogg.sorter.shared.Section;
 import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 
@@ -31,12 +30,8 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
 
     public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, int maxThreads, FieldOptions options) {
         final int n = endP1 - start;
-        if (n <= VERY_SMALL_N_SIZE) {
-            SortingNetworksInt.getInstance().sort(array, start, endP1, options);
-            return;
-        }
         int kDiff = bList.length - bListIndex;
-        if (kDiff <= params.getShortKBits()) {
+        if (kDiff <= SHORT_K_BITS) {
             if (kDiff < 1) {
                 return;
             }
@@ -65,7 +60,7 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
     }
 
     protected void radixCountSort(int[] list, int start, int endP1, int[] bList, int bListIndexEnd, FieldOptions options) {
-        int bListIndexCountSort = bList.length - params.getShortKBits();
+        int bListIndexCountSort = bList.length - SHORT_K_BITS;
         int sortMask = MaskInfoInt.getMask(bList, bListIndexEnd, bListIndexCountSort - 1);
         partitionStableNonConsecutiveBitsAndCountSort(list, start, endP1, sortMask, bList, bListIndexCountSort, options);
     }
@@ -110,10 +105,7 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
 
     private void smallListUtil(final int[] array, final int start, final int endP1, int[] bList, int[] aux, FieldOptions options) {
         int n = endP1 - start;
-        if (n <= VERY_SMALL_N_SIZE) {
-            SortingNetworksInt.getInstance().sort(array, start, endP1, options);
-            return;
-        } else if (bList.length <= params.getShortKBits()) {
+        if (bList.length <= SHORT_K_BITS) {
             sortShortK(array, start, endP1, bList, 0);
         } else {
             RadixBitSorterInt.radixSort(array, start, bList, 0, aux, start, n);
