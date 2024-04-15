@@ -27,7 +27,7 @@ public class RadixBitBaseSorterInt implements SorterInt {
                 bList = MaskInfoInt.getMaskAsArray(mask);
                 for (int i = bList.length - 1; i >= 0; i--) {
                     int sortMaskI = 1 << bList[i];
-                    partitionStable(array, start, finalLeft, sortMaskI, aux);
+                    partitionStable(array, start, finalLeft, sortMaskI, aux, 0);
                 }
             }
             if (endP1 - finalLeft > 1) { //sort positive numbers
@@ -37,14 +37,14 @@ public class RadixBitBaseSorterInt implements SorterInt {
                 bList = MaskInfoInt.getMaskAsArray(mask);
                 for (int i = bList.length - 1; i >= 0; i--) {
                     int sortMaskI = 1 << bList[i];
-                    partitionStable(array, finalLeft, endP1, sortMaskI, aux);
+                    partitionStable(array, finalLeft, endP1, sortMaskI, aux, 0);
                 }
             }
         } else {
             int[] aux = new int[endP1 - start];
             for (int i = bList.length - 1; i >= 0; i--) {
                 int sortMask = 1 << bList[i];
-                partitionStable(array, start, endP1, sortMask, aux);
+                partitionStable(array, start, endP1, sortMask, aux, 0);
             }
         }
     }

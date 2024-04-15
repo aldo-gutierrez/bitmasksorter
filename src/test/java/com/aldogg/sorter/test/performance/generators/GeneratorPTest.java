@@ -61,7 +61,7 @@ public class GeneratorPTest extends BaseTest {
                     int[] aux = new int[endP1 - start];
                     for (int i = bList.length - 1; i >= 0; i--) {
                         int sortMask = 1 << bList[i];
-                        SorterUtilsInt.partitionStable(array, start, endP1, sortMask, aux);
+                        SorterUtilsInt.partitionStable(array, start, endP1, sortMask, aux, 0);
                     }
                 }
             }

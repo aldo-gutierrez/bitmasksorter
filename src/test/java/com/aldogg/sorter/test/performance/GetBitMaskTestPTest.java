@@ -128,7 +128,7 @@ public class GetBitMaskTestPTest {
 
             int[] aux = new int[arraySize];
             long start1 = System.nanoTime();
-            int left1 = partitionStable(a1, 0, arraySize, 0x80000000, aux);
+            int left1 = partitionStable(a1, 0, arraySize, 0x80000000, aux, 0);
             long elapsed1 = System.nanoTime() - start1;
             total1 += elapsed1;
 
@@ -174,7 +174,7 @@ public class GetBitMaskTestPTest {
 
             int[] aux = new int[arraySize];
             long start1 = System.nanoTime();
-            int left1 = partitionStable(a1, 0, arraySize, 0x80000000, aux);
+            int left1 = partitionStable(a1, 0, arraySize, 0x80000000, aux, 0);
             long elapsed1 = System.nanoTime() - start1;
             total1 += elapsed1;
 

@@ -293,7 +293,7 @@ public class SorterUtilsIntExt {
             };
 
 
-    public static void sortShortK(final int[] array, final int start, final int endP1, final int[] bList, final int bListIndex) {
+    public static void sortShortK(final int[] array, final int start, final int endP1, final int[] bList, final int bListIndex, int[] aux, int startAux) {
         int bLengthM1 = (bList.length - bListIndex) - 1; //Log2(K)
         int log2Nm1 = BitSorterUtils.logBase2(endP1 - start) - 1; //Log2(N)
         ShortSorter sorter;
@@ -310,23 +310,25 @@ public class SorterUtilsIntExt {
                 }
             }
         }
-        executeSorter(array, start, endP1, bList, bListIndex, sorter);
+        executeSorter(array, start, endP1, bList, bListIndex, sorter, aux, startAux);
     }
 
-    private static void executeSorter(int[] array, int start, int endP1, int[] bList, int bListIndex, ShortSorter sorter) {
+    private static void executeSorter(int[] array, int start, int endP1, int[] bList, int bListIndex, ShortSorter sorter, int[] aux, int startAux) {
         int n = endP1 - start;
         if (sorter.equals(PCountSort)) {
             PCountSortInt.pCountSort(array, start, endP1, bList, bListIndex);
         } else if (sorter.equals(StableByte)) {
-            int[] aux = new int[n];
-            radixSort(array, start, bList, bListIndex, aux, 0, n);
+            startAux = aux == null ? 0: startAux;
+            aux = aux == null? new int[n] : aux;
+            radixSort(array, start, bList, bListIndex, aux, startAux, n);
         } else if (sorter.equals(JavaSorter)) {
             new JavaSorterInt().sort(array, start, endP1);
         } else {
-            int[] aux = new int[n];
+            startAux = aux == null ? 0: startAux;
+            aux = aux == null? new int[n] : aux;
             for (int i = bList.length - 1; i >= bListIndex; i--) {
                 int sortMask = 1 << bList[i];
-                partitionStable(array, start, endP1, sortMask, aux);
+                partitionStable(array, start, endP1, sortMask, aux, startAux);
             }
         }
     }

@@ -24,7 +24,7 @@ public class RadixBitSorterInt extends BitMaskSorterInt {
         if (finalSectionList.length == 1 && finalSectionList[0].bits == 1) {
             Section section = finalSectionList[0];
             int mask = MaskInfoInt.getMaskRangeBits(section.start, section.shift);
-            partitionStable(array, start, start + n, mask, aux);
+            partitionStable(array, start, start + n, mask, aux, startAux);
             return;
         }
 

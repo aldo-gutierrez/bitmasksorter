@@ -66,9 +66,9 @@ public class SorterUtilsInt {
     }
 
 
-    public static int partitionStable(final int[] array, final int start, final int endP1, final int mask, final int[] aux) {
+    public static int partitionStable(final int[] array, final int start, final int endP1, final int mask, final int[] aux, int startAux) {
         int left = start;
-        int right = 0;
+        int right = startAux;
         for (int i = start; i < endP1; ++i) {
             int element = array[i];
             if ((element & mask) == 0) {
@@ -79,7 +79,7 @@ public class SorterUtilsInt {
                 right++;
             }
         }
-        System.arraycopy(aux, 0, array, left, right);
+        System.arraycopy(aux, startAux, array, left, right - startAux);
         return left;
     }
 

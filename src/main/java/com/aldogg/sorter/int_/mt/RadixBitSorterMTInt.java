@@ -22,7 +22,7 @@ public class RadixBitSorterMTInt extends BitMaskSorterMTInt {
             if (kDiff < 1) {
                 return;
             }
-            sortShortK(array, start, endP1, bList, 0);
+            sortShortK(array, start, endP1, bList, 0, null, 0);
             return;
         }
 
@@ -86,7 +86,7 @@ public class RadixBitSorterMTInt extends BitMaskSorterMTInt {
                         int endIBZ = leftX[finalI];
                         int startIBZ = endIBZ - lengthT;
                         if (remainingBits <= BitSorterParams.SHORT_K_BITS) {
-                            sortShortK(array, start + startIBZ, start + endIBZ, bList, threadBits);
+                            sortShortK(array, start + startIBZ, start + endIBZ, bList, threadBits, aux, startIBZ);
                         } else {
                             RadixBitSorterInt.radixSort(array, start + startIBZ, bList, threadBits, aux, startIBZ, lengthT);
                         }

@@ -35,7 +35,7 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
             if (kDiff < 1) {
                 return;
             }
-            sortShortK(array, start, endP1, bList, bListIndex);
+            sortShortK(array, start, endP1, bList, bListIndex, null, 0);
             return;
         }
 
@@ -96,19 +96,19 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
                 int startI = i > 0 ? leftX[i - 1] : 0;
                 int endI = leftX[i];
                 if (endI - startI > 1) {
-                    smallListUtil(aux, startI, endI, bListCountS, array, options);
+                    smallListUtil(aux, startI, endI, bListCountS, array, startI + start);
                 }
             }
         }
         System.arraycopy(aux, 0, array, start, n);
     }
 
-    private void smallListUtil(final int[] array, final int start, final int endP1, int[] bList, int[] aux, FieldOptions options) {
+    private void smallListUtil(final int[] array, final int start, final int endP1, int[] bList, int[] aux, int startAux) {
         int n = endP1 - start;
         if (bList.length <= SHORT_K_BITS) {
-            sortShortK(array, start, endP1, bList, 0);
+            sortShortK(array, start, endP1, bList, 0, aux, startAux);
         } else {
-            RadixBitSorterInt.radixSort(array, start, bList, 0, aux, start, n);
+            RadixBitSorterInt.radixSort(array, start, bList, 0, aux, startAux, n);
         }
     }
 

@@ -30,7 +30,7 @@ public class QuickBitSorterInt extends BitMaskSorterInt {
             if (kDiff < 1) {
                 return;
             }
-            sortShortK(array, start, endP1, bList, bListIndex);
+            sortShortK(array, start, endP1, bList, bListIndex, null, 0);
             return;
         }
 
