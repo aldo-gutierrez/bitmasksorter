@@ -1,10 +1,10 @@
 # Bit Mask Sorters
 
-This project tests different ideas for sorting algorithms using a Bitmask.
+This project explores various sorting algorithms employing a BitMask approach.
 
-This repository has the Java implementation.
+The Java implementation can be found in this repository.
 
-For implementations in other languages see the following repositories:
+For implementations in other languages, please refer to the following repositories:
 
 [C# Version] (https://github.com/aldo-gutierrez/bitmasksorterCSharp)
 
@@ -14,58 +14,11 @@ For implementations in other languages see the following repositories:
 
 [Python Version] (https://github.com/aldo-gutierrez/bitmasksorterPython)
 
-A Bitmask is used as a way to reduce the necessary calculations for sorting.
+# BitMask
 
-For example, suppose a list of integers contains numbers from 0 to 127, so the bitmask is 1111111.
+A BitMask can be utilized to reduce the computational overhead required for sorting.
 
-|                 | Number |             Bits | 
-|-----------------|-------:|-----------------:|
-| Min:            |      0 | 0000000000000000 |
-| Max:            |    127 | 0000000001111111 |
-| Average/Median: |     64 | 0000000001000000 |
-| Bits Used (b):  |      7 | 0000000001111111 |
-
-For this example we could do a simple Count Sort with a count array of 128 values:  0 to 127. 
-Just one pass of Count Sort is necessary.
-
-A Radix Sorter for integers (32 bits) could use 8bits (words/digits) and needs 4 steps of Count Sort.
-We call in this project that sorter RadixByteSorter. So we could see that if using the bitmask we could
-reduce the number of Count Sort iterations/steps
-
-If the list contains the numbers 85, 84, 21 and 5 then the mask is 1010001,
-only the bits that change are part of the mask, in this case only 3 bits
-
-|        Number |             Bits |
-|--------------:|-----------------:|
-|            85 | 0000000001010101 | 
-|            84 | 0000000001010100 |
-|            21 | 0000000000010101 |
-|             5 | 0000000000000101 |
-|          MASK | 0000000001010001 |
-
-|                      | Number |             Bits | 
-|----------------------|-------:|-----------------:|
-| Mask Min:            |      4 | 0000000000000100 |
-| Mask Max:            |     85 | 0000000001010101 |
-| Mask Average/Median: |     64 | 0000000001000000 |
-| Mask Bits Used (d):  |      3 | 0000000001010001 |
-
-For this case you can do a modified Count Sort for only the 3 bits that are part of the mask, 2^3 = 8, 
-with Count Sort that counts 8 values from  000(0) to 111(7)
-
-Some variables defined in a radix sorter
-
-r = range, for example for unsigned integers is 2^32
-d = length of word or digit in bits, typical value is 8 bits (a byte)
-k = number of words/digits, for an integer this is 4 (32/8)
-
-For BitMask sorters 
-m = length in bits of the bitmask, in integers from 1 to 32
-r = range, that is calculated as 2^m or 2 ^(d1+d2..dn)
-d = length of word or digit in bits, it can be from 1..16 bits depending on configuration and bitmask
-k = number of word/digits, it could be 3 or 4 depending on detected cpu and configured RADIX_SORTER_MASK_BITS that returns 11 in modern processors
-
-Algorithm to obtain the BitMask:
+The following code demonstrates the calculation of the BitMask:
 
 ```
     public static int calculateBitMask(int[] array, int start, int endP1) {
@@ -80,32 +33,109 @@ Algorithm to obtain the BitMask:
     }
 ```
 
-The best case is that if all the numbers are equal, the bitmask is 0, so no further calculations are needed;
+## Case 1 Simple BitMask
 
-There are some bad cases to be aware of, and when the bitmask needs to be recalculated, for example:
+Some properties of this BitMask are:
+* This BitMask has only the bit that change
+* If the BitMask is 0 it means that all the numbers are equal
 
-Example 1: If a list contains only two types of values 1111111110000000(65408) and 0000000111111111(511). For this case the mask
-is 1111111001111111. For this example QuickBitSort(which we will introduce later) will partition by the first bit
-(1000000000000000) and the numbers will be sorted according to it, in the next recursive partition/iteration it will detect that all numbers
-wer going to just one partition and therefore recalculating the mask is necessary. In this particular case recalculating the mask 
-will produce a bitMask with value 0 and that means that all numbers are equal so the sort is complete. This is done by QuickBitSorter
+First, let's consider an example: suppose we have a list of integers containing numbers from 0 to 127. 
+In this case, the bitmask would be 1111111.
 
-Example 2: If a list contains positive and negative numbers then the mask will probably be -1 of 0xFFFFFFFF or 1111111111111111111111111111111.
-Then after partitioning the numbers in two, positives to one side, negatives to the other is better to recalculate the mask for each part
-This is done by all algorithms that use the BitMask QuickBitSorter, RadixBitSorter and others.
+|                 | Number |             Bits | 
+|-----------------|-------:|-----------------:|
+| Min:            |      0 | 0000000000000000 |
+| Max:            |    127 | 0000000001111111 |
+| Average/Median: |     64 | 0000000001000000 |
+| Bits Used (b):  |      7 | 0000000001111111 |
+
+We can readily identify certain optimizations in algorithms.
+* QuickSort: 
+  - Now is easy to know which pivot use just use the average, in this case 64 (1000000)
+  - Each quick sort call is using a bit of information
+* Radix sort:
+  - A typical LSD Radix sorts for integers (32 bits) uses 4 count sort passes, it could just use one 
+* Count sort/ Pingeon count sort
+  - We have already de Min/Max values in the BitMask
+
+## Case 2 Complex BitMask
+
+Second, let's consider a more complex example: suppose we have a list of integers containing numbers 85, 84, 21 and 5.
+In this case, the bitmask would be 1010001. As only the bits that change are part of the mask, 3 bits in this case.
+
+|        Number |             Bits |
+|--------------:|-----------------:|
+|            85 | 0000000001010101 | 
+|            84 | 0000000001010100 |
+|            21 | 0000000000010101 |
+|             5 | 0000000000000101 |
+|          MASK | 0000000001010001 |
+
+|                      | Number |                   Bits | 
+|----------------------|-------:|-----------------------:|
+| Mask Min:            |      4 | 000000000(0)0(0)010(0) |
+| Mask Max:            |     85 | 000000000(1)0(1)010(1) |
+| Mask Average/Median: |     64 | 000000000(1)0(0)000(0) |
+| Mask Bits Used (d):  |      3 | 000000000(1)0(1)000(1) |
+
+* QuickSort:
+  - Easy to know which pivot use just use the average
+  - Each quick sort call is using a bit of information
+* Radix sort:
+  - We will need a modified Radix Sort that uses only the 3 bits in one pass
+* Count sort/ Pingeon count sort
+  - We have already de Min/Max values in the BitMask
+  - However, we could improve the efficiency by only considering the ones in the mask, 2^3 values, 000(0) to 111(7), 8 values in total 
+
+## Case 3 Bad BitMasks
+
+Third, let's consider some problems with the BitMask 
+
+Example 3A: If a list contains only two numbers, values:  1111111110000000(65408) and 0000000111111111(511). For this case the mask
+is 1111111001111111, instead of just 1 bit, so it doesn't help too much. 
+After some step in the sort algorithm it could be a good idea to recalculate the BitMask maybe is 0 and there is no need to further process 
+
+Example 3B: If a list contains positive and negative numbers then the mask will probably be -1 which is 0xFFFFFFFF or 0b1111111111111111111111111111111.
+Even if the numbers in the list are just 1 and -1, so the mask doesn't help. 
+But if we put the positives to one side, negatives to the other we could recalculate the BitMask and get a more useful BitMask.
+
+Example 3C: If the BitMask is 0xFFFFFFFF (0b1111111111111111111111111111111) because the numbers in the list are using the full range of Integer, 
+then the BitMask doesn't to optimize a sort algorithm.   
 
 
-TimSort uses merge sort for big lists and insertion sort for small lists, so it depends on the size of the array (N).
-TimSort is a hybrid algorithm.
+# Hybrid Approach
 
-I think we can use the bitmask to create a hybrid algorithm that takes into account not only N but also r (the range).
-where r = 2^(k*d) or  r = 2^(d1 + d2 ....).
+There are many algorithms that use a hybrid approach for example TimSort.
 
-AGSelectorSorterInt is an example of that hybrid algorithm that choose between different algorithms (QuickBitSorter, RadixBitSorter and RadixByteSorter )
+TimSort is a hybrid sorting algorithm that employs merge sort for large arrays of objects and insertion sort for small arrays, adjusting its strategy based on the array size (N).
+
+I think we can use the BitMask to create a hybrid algorithm that takes into account not only N but also r (the range). 
+We could use the BitMask for calculating the range, the range could be reduced if we only use the bits set to one as described in previous paragraphs.
+
+AGSelectorSorterInt is an example of that hybrid algorithm that choose between different algorithms that uses BitMasks
+
+
+# Notation
+
+Some variables defined in a radix sorter
+
+r = range, for example for unsigned integers is 2^32
+d = length of word or digit in bits, typical value is 8 bits (a byte)
+k = number of words/digits, for an integer this is 4 (32/8)
+
+with this notation r = 2^(k*d) 
+
+For BitMask sorters 
+
+m = length in bits set to one of the BitMask, for integers numbers it goes from 0 to 32
+r = range, that is calculated as 2^m
+d = length of word or digit in bits, it can be from 1..16 bits, we are using 11 for modern processors and 8 for a dual-core machine or lower
+k = number of word/digits 
+
 
 ## QuickBitSorter
 
-Is similar to QuickSort but for choosing the pivot we use the bit mask. The first one bit of the bitmask is used as pivot
+Is similar to QuickSort but for choosing the pivot it uses the BitMask. The first bit set to one of the BitMask is used as pivot
 In the next recursion the next bit of the bitmask is used.
 This is different to other QuickSort algorithms that normally use the last element as pivot or choose the average of
 three pivots.
@@ -117,13 +147,16 @@ This algorithm is slower than TimSort but faster than a Stack Overflow QuickSort
 However, when the number of bits is low is faster than Java TimSort.
 
 If the bitmask is 11_1111_1111_1111_1111 then the first partition uses the mask 10_0000_0000_0000_0000, then the left and right
-partitions use the mask for the next bit 01_0000_0000_0000_0000, after some iterations and when there is less than a configurable
-number of bits (16), then we switch to a Count Sort Algorithm (Pigeonhole Sort or two types of Radix Sorter with bits)
+partitions use the mask for the next bit 01_0000_0000_0000_0000, after some iterations and when there is less than a number of bits 
+in the remaining BitMask we switch to a Java Sort or to a Count Sort Algorithm (Pigeonhole Sort or two types of Radix Sorter with bits)  
+
+In Example 3A there are only two different numbers in the list but the BitMask (m) is big (1111111001111111), In the first partition we use the first bit(1000000000000000), 
+in the next recursive partition/iteration it will detect that all numbers are going to just one partition, so we recalculate the mask, and in this case it will produce a bitMask with value 0 so the sort is complete.
 
 Optimizations:
 
-- The partition is only done by the bits in the bit mask as described above
-- Optimization for small lists and or for the last bits of the mask to chose between Pigeonhole Count Sort or two types of Radix Sorter with bits
+- The partition is only done by the bits set to one in the BitMask as described above
+- When the remaining bits in the BitMask are small it switches to a Java Sort or to a Count Sort Algorithm (Pigeonhole Sort or two types of Radix Sorter with bits)
 - Multithreading support
 
 See an analysis of the performance in the section Speed and Performance
@@ -154,29 +187,37 @@ sorter.sort(list);
 
 ## RadixBitSorter:
 
-Is similar to the traditional Radix Sorter that use multiple steps of Count Sort, 
-but instead of using a digit  in base 10 it uses a digit which is a base 2 binary number
-Ska Sort as I understand uses base 256, it means a byte, each digit(word) has length of 8 bits.
+RadixBitSorter is a sorter that uses the BitMask to sort with just the bits that need to be sorted. 
+The BitMask is used to reduce the number of count sort iterations.
 
-Similar to the concepts of SkaSort RadixByteSorterInt has been written, you could configure it to use or not the bitmask, if using the bitmask
-it can detect which of the 4 bytes of an integer needs or not to be sorted.
+Some implementations of Radix Sort are very unoptimized stackoverflow, baeldung, hackerearth have a lot of this.
+They use sometimes base 10 and sometimes bucket sort, compared to those RadixBitSorter is way faster.
 
-RadixBitSorterInt uses the bitmask, to sort just the bits that need to be sorted, bits are grouped in digit(words) 
-of dynamic digit sizes from 4-16 bits (configurable), by default a size of 11 bits is used in modern computes and 8 bits in older computers
+Some optimized implementations use base 256 using bit operations. A typical optimized Radix Sorter for integers (32 bits) could use 8bits (words/digits) and needs 4 steps of Count Sort.  
 
-RadixBitSorter is a lot faster than to the typical stackoverflow, baeldung, hackerearth implementations as those sorters
-don't use a digit in base 10, don't use bit operations as ska sort, don't use a bitmask and some don't reuse the aux buffer
+After a lot of testing I found that in my machine (AMD Ryzen 7 4800H) 11bits is the best word size and I also found that in some older computers dual core  8bits is the best size.
+That was found many years ago as I later discovered. So RadixBiSorter change the size of the words according to the number of cores that are somehow correlated with the Cache Sizes.
 
-RadixByteSorterInt when working an all bytes (not using the bitmask) should have the same performance as SkaSort. 
-See the C++ Implementation for more details on SkaSort
+Some other optimizations like swapping the aux buffer with the array buffer are also implemented but with mixed results. 
 
-RadixBitSorter is faster than RadixByteSorter and SkaSort in most of the cases and machines, except when the bitmask is of size 30-32 bits
-then it can have similar or a little lower performance than SkaSort.
+A typical optimized Radix Sorter for integers (32 bits) could use 8bits (words/digits) and needs 4 iterations of Count Sort, with the BitMask we can
+reduce the iterations to 1 in some cases. 
+
+Ska Sort as I understand is an optimized C++ radix sort but is in place. RadixBitSorter is not an in place sorter as it uses and aux buffer.
+
+RadixBitSorter is tipically faster than SkaSort, but when the bitmask is of size 30-32 bits then it can have similar or a little lower performance than SkaSort.
 
 Radix Bit Sorter Optimizations:
 
 - It does not need to sort by all the bits just the ones in the bitmask
 - It sorts by 11 bits at a time as maximum and 4 as minimum (Instead of 8 as SkaSort and RadixByteSorterInt do)
+
+## RadixByteSorter:
+Is a RadixBitSorter but that always uses 8bits with byte boundaries, it can or not use the BitMask to optimize the iterations of count sort
+
+RadixByteSorterInt when working an all bytes (not using the bitmask) should have the same performance as SkaSort and tipical optimized radix sorters
+
+RadixBitSorter is faster than RadixByteSorter and SkaSort in most of the cases and machines i tested.
 
 Radix Byte Sorter Optimizations:
 
@@ -211,8 +252,8 @@ For example if the bitmask is 00000000111111111111111111111110 23 bits, and we h
 - 
 # Stability
 
-int[] sort in java use a not stable algorithm, it doesn't make sense to have a stable algorithm for ints we applied the same philosophy.
-Object[] sort in java is a stable algorithm, so ObjectSorter has the parameter setStable that uses more memory (by default is false)
+int[] sort in java uses a not stable algorithm, we use same philosophy.
+Object[] sort in java is a stable algorithm, we use same philosophy.
 
 # Speed
 
@@ -369,6 +410,7 @@ RadixByteSorterInt with calculateBitMaskOptimization=false looks similar in perf
 
 ## TODO
 
+- Rename code that uses K as range replace it with R
 - Evaluation on complexity
 - More Testing, have 100% code coverage
 - Compare with [Wolf Sort] (https://github.com/scandum/wolfsort)
