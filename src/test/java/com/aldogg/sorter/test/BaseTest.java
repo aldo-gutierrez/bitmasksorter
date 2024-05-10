@@ -1,5 +1,6 @@
 package com.aldogg.sorter.test;
 
+import com.aldogg.sorter.FieldOptions;
 import com.aldogg.sorter.generators.*;
 import com.aldogg.sorter.int_.SorterInt;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +34,7 @@ public class BaseTest {
         }
     }
 
-    public void testSort(int[] list, TestAlgorithms<SorterInt> testAlgorithms) {
+    public void testSort(int[] list, TestAlgorithms<SorterInt> testAlgorithms, FieldOptions options) {
         int[] baseListSorted = null;
         SorterInt[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
@@ -41,7 +42,11 @@ public class BaseTest {
             int[] listAux = Arrays.copyOf(list, list.length);
             try {
                 long start = System.nanoTime();
-                sorter.sort(listAux);
+                if (options == null) {
+                    sorter.sort(listAux, 0, listAux.length);
+                } else {
+                    sorter.sort(listAux, 0, listAux.length, options);
+                }
                 long elapsed = System.nanoTime() - start;
                 if (i == 0) {
                     baseListSorted = listAux;
@@ -53,7 +58,7 @@ public class BaseTest {
                 testAlgorithms.set(sorter.getName(), elapsed);
             } catch (Throwable ex) {
                 testAlgorithms.set(sorter.getName(), 0);
-                if (list.length <= 10000) {
+                if (list.length <= 1024) {
                     System.err.println("Sorter " + sorter.getName());
                     String orig = Arrays.toString(list);
                     System.err.println("List orig: " + orig);
@@ -70,11 +75,11 @@ public class BaseTest {
         }
     }
 
-    public void testSpeedInt(int iterations, GeneratorParams params, TestAlgorithms testAlgorithms) {
+    public void testSpeedInt(int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, FieldOptions options) {
         Function<GeneratorParams, int[]> function = IntGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             int[] list = function.apply(params);
-            testSort(list, testAlgorithms);
+            testSort(list, testAlgorithms, options);
         }
     }
 

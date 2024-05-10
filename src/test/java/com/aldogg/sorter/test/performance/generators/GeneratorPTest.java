@@ -107,7 +107,7 @@ public class GeneratorPTest extends BaseTest {
             for (int size : twoPowersHeat) {
                 testAlgorithms = new TestAlgorithms<>(sorters);
                 params.size = size;
-                testSpeedInt(iterations, params, testAlgorithms);
+                testSpeedInt(iterations, params, testAlgorithms, null);
                 testAlgorithms.printTestSpeed(params, null);
             }
         }
@@ -122,7 +122,7 @@ public class GeneratorPTest extends BaseTest {
             for (int size : twoPowers) {
                 testAlgorithms = new TestAlgorithms<>(sorters);
                 params.size = size;
-                testSpeedInt(iterations, params, testAlgorithms);
+                testSpeedInt(iterations, params, testAlgorithms, null);
                 testAlgorithms.printTestSpeed(params, writer);
                 writer2.write(testAlgorithms.getWinners().get(0)[0] + ", ");
             }
@@ -153,7 +153,7 @@ public class GeneratorPTest extends BaseTest {
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
-        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms);
+        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms, null);
         System.out.println("----------------------");
 
         List<Integer> limitHigh = new ArrayList<>();
@@ -168,7 +168,7 @@ public class GeneratorPTest extends BaseTest {
             for (Integer size : limitHigh) {
                 testAlgorithms = new TestAlgorithms<>(sorters);
                 params.size = size;
-                testSpeedInt(ITERATIONS, params, testAlgorithms);
+                testSpeedInt(ITERATIONS, params, testAlgorithms, null);
                 testAlgorithms.printTestSpeed(params, writer);
                 writer2.write(testAlgorithms.getWinners().get(0)[0] + ".class, ");
             }
@@ -197,7 +197,7 @@ public class GeneratorPTest extends BaseTest {
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
-        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms);
+        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms, null);
         testAlgorithms.printTestSpeed(params, null);
         System.out.println("----------------------");
 
@@ -212,7 +212,7 @@ public class GeneratorPTest extends BaseTest {
             for (Integer size : limitHigh) {
                 testAlgorithms = new TestAlgorithms<>(sorters);
                 params.size = size;
-                testSpeedInt(ITERATIONS, params, testAlgorithms);
+                testSpeedInt(ITERATIONS, params, testAlgorithms, null);
                 testAlgorithms.printTestSpeed(params, null);
             }
 

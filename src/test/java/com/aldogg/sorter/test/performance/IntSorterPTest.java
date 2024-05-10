@@ -1,6 +1,6 @@
 package com.aldogg.sorter.test.performance;
 
-import com.aldogg.sorter.float_.object.FloatToIntMapper;
+import com.aldogg.sorter.FieldOptions;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.generators.IntGenerator;
@@ -18,6 +18,7 @@ import com.aldogg.sorter.int_.mt.MixedBitSorterMTInt;
 import com.aldogg.sorter.int_.mt.QuickBitSorterMTInt;
 import com.aldogg.sorter.int_.mt.RadixBitSorterMTInt;
 import com.aldogg.sorter.int_.st.*;
+import com.aldogg.sorter.shared.NullHandling;
 import com.aldogg.sorter.test.BaseTest;
 import com.aldogg.sorter.test.TestAlgorithms;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,7 @@ public class IntSorterPTest extends BaseTest {
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
-        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms);
+        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms, null);
         testAlgorithms.printTestSpeed(params, null);
         System.out.println("----------------------");
 
@@ -60,7 +61,7 @@ public class IntSorterPTest extends BaseTest {
             for (int size : new int[]{10000, 100000, 1000000, 10000000, 40000000}) {
                 testAlgorithms = new TestAlgorithms<>(sorters);
                 params.size = size;
-                testSpeedInt(ITERATIONS, params, testAlgorithms);
+                testSpeedInt(ITERATIONS, params, testAlgorithms, null);
                 testAlgorithms.printTestSpeed(params, writer);
             }
             System.out.println("----------------------");
@@ -87,7 +88,7 @@ public class IntSorterPTest extends BaseTest {
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
 
-        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms);
+        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms, null);
         testAlgorithms.printTestSpeed(params, null);
 
         params.random = new Random(SEED);
@@ -102,7 +103,7 @@ public class IntSorterPTest extends BaseTest {
             for (int size : new int[]{10000, 100000, 1000000, 10000000, 40000000}) {
                 testAlgorithms = new TestAlgorithms<>(sorters);
                 params.size = size;
-                testSpeedInt(ITERATIONS, params, testAlgorithms);
+                testSpeedInt(ITERATIONS, params, testAlgorithms, null);
                 testAlgorithms.printTestSpeed(params, writer);
             }
             System.out.println("----------------------");
@@ -128,7 +129,7 @@ public class IntSorterPTest extends BaseTest {
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
-        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms);
+        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms, null);
         testAlgorithms.printTestSpeed(params, null);
 
         System.out.println("----------------------");
@@ -142,7 +143,7 @@ public class IntSorterPTest extends BaseTest {
             for (int size : new int[]{10000, 100000, 1000000, 10000000, 40000000}) {
                 testAlgorithms = new TestAlgorithms<>(sorters);
                 params.size = size;
-                testSpeedInt(ITERATIONS, params, testAlgorithms);
+                testSpeedInt(ITERATIONS, params, testAlgorithms, null);
                 testAlgorithms.printTestSpeed(params, writer);
             }
             System.out.println("----------------------");
@@ -212,7 +213,7 @@ public class IntSorterPTest extends BaseTest {
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
 
-        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms);
+        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms, null);
         testAlgorithms.printTestSpeed(params, null);
 
         params.random = new Random(SEED);
@@ -227,7 +228,7 @@ public class IntSorterPTest extends BaseTest {
             for (int size : new int[]{10000, 100000, 1000000, 10000000, 40000000}) {
                 testAlgorithms = new TestAlgorithms<>(sorters);
                 params.size = size;
-                testSpeedInt(ITERATIONS, params, testAlgorithms);
+                testSpeedInt(ITERATIONS, params, testAlgorithms, null);
                 testAlgorithms.printTestSpeed(params, writer);
             }
             System.out.println("----------------------");
@@ -243,10 +244,12 @@ public class IntSorterPTest extends BaseTest {
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
         SorterInt[] sorters = new SorterInt[]{new RadixByteSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
-        for (SorterInt sorter : sorters) {
-            //TODO FIX
-            //sorter.setUnsigned(true);
-        }
+        FieldOptions options = new FieldOptions() {
+            @Override
+            public boolean isUnsigned() {
+                return true;
+            }
+        };
 
         TestAlgorithms<SorterInt> testAlgorithms;
 
@@ -259,7 +262,7 @@ public class IntSorterPTest extends BaseTest {
 
         //heatup
         testAlgorithms = new TestAlgorithms<>(sorters);
-        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms);
+        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms, options);
         testAlgorithms.printTestSpeed(params, null);
 
         params.random = new Random(SEED);
@@ -268,7 +271,7 @@ public class IntSorterPTest extends BaseTest {
             for (int size : new int[]{10000, 100000, 1000000, 10000000, 40000000}) {
                 testAlgorithms = new TestAlgorithms<>(sorters);
                 params.size = size;
-                testSpeedInt(ITERATIONS, params, testAlgorithms);
+                testSpeedInt(ITERATIONS, params, testAlgorithms, options);
                 testAlgorithms.printTestSpeed(params, writer);
             }
             System.out.println("----------------------");
@@ -319,7 +322,7 @@ public class IntSorterPTest extends BaseTest {
             Function<GeneratorParams, int[]> gFunction = IntGenerator.getGFunction(functionEnum);
             params.function = functionEnum;
             int[] list = gFunction.apply(params);
-            testSort(list, testAlgorithms);
+            testSort(list, testAlgorithms, null);
         }
     }
 

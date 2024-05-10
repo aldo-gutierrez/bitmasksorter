@@ -32,7 +32,7 @@ public class SorterSecondTest extends BaseTest {
             if (!a.equals(GeneratorFunctions.RANDOM_REAL_RANGE)) {
                 params.function = a;
                 TestAlgorithms<SorterInt> testAlgorithms = new TestAlgorithms<>(sorters);
-                testSpeedInt(ITERATIONS, params, testAlgorithms);
+                testSpeedInt(ITERATIONS, params, testAlgorithms, null);
                 testAlgorithms.printTestSpeed(params, writer);
             }
         }
