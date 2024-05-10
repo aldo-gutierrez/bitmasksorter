@@ -1,6 +1,7 @@
 package com.aldogg.sorter.int_.st;
 
 import com.aldogg.sorter.FieldOptions;
+import com.aldogg.sorter.generic.SortingNetworks;
 import com.aldogg.sorter.int_.SorterInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 
@@ -25,7 +26,7 @@ public final class SortingNetworksInt implements SorterInt {
             return;
         }
         if (n <= 16) {
-            int[][] swaps = com.aldogg.sorter.SortingNetworks.swaps[n];
+            int[][] swaps = SortingNetworks.swaps[n];
             if (options.isUnsigned()) {
                 for (int i = 0; i < swaps.length; i++) {
                     int[] swap = swaps[i];

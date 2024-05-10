@@ -20,7 +20,7 @@ A BitMask can be utilized to reduce the computational overhead required for sort
 
 The following code demonstrates the calculation of the BitMask:
 
-```
+``` java
     public static int calculateBitMask(int[] array, int start, int endP1) {
         int mask = 0x00000000;
         int inv_mask = 0x00000000;
@@ -120,7 +120,9 @@ AGSelectorSorterInt is an example of that hybrid algorithm that choose between d
 Some variables defined in a radix sorter
 
 r = range, for example for unsigned integers is 2^32
+
 d = length of word or digit in bits, typical value is 8 bits (a byte)
+
 k = number of words/digits, for an integer this is 4 (32/8)
 
 with this notation r = 2^(k*d) 
@@ -128,8 +130,11 @@ with this notation r = 2^(k*d)
 For BitMask sorters 
 
 m = length in bits set to one of the BitMask, for integers numbers it goes from 0 to 32
+
 r = range, that is calculated as 2^m
+
 d = length of word or digit in bits, it can be from 1..16 bits, we are using 11 for modern processors and 8 for a dual-core machine or lower
+
 k = number of word/digits 
 
 
@@ -406,7 +411,6 @@ See the repository (https://github.com/aldo-gutierrez/bitmasksorterCpp) where a 
 In summary RadixBitSorterInt is faster than SkaSort when the mask has 30 bits or lower, m<=30, r<=2^30, 
 with 31, 32 bits it could be slower, of similar performance or faster (faster when using a digit/word of 9 bits or larger when detected a modern processor)
 
-RadixByteSorterInt with calculateBitMaskOptimization=false looks similar in performance than SkaSort
 
 ## TODO
 

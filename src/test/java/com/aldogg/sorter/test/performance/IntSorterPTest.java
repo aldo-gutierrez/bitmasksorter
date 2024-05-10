@@ -242,7 +242,7 @@ public class IntSorterPTest extends BaseTest {
     public void speedTestUnsigned() throws IOException {
         BufferedWriter writer = getWriter("test-results/speed_unsignedInt_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
-        SorterInt[] sorters = new SorterInt[]{new RadixByteSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt(), new JavaSorterInt(), new JavaSorterMTInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new JavaSorterMTInt(), new RadixByteSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
         FieldOptions options = new FieldOptions() {
             @Override

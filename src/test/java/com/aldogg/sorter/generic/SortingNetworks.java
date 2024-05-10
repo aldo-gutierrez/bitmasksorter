@@ -1,6 +1,4 @@
-package com.aldogg.sorter;
-
-import java.util.function.BiConsumer;
+package com.aldogg.sorter.generic;
 
 //http://users.telenet.be/bertdobbelaere/SorterHunter/sorting_networks.html
 public class SortingNetworks {
