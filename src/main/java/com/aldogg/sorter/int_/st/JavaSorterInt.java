@@ -3,34 +3,80 @@ package com.aldogg.sorter.int_.st;
 import com.aldogg.sorter.FieldOptions;
 import com.aldogg.sorter.int_.SorterInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
+import com.aldogg.sorter.shared.NullHandling;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class JavaSorterInt implements SorterInt {
 
     @Override
     public void sort(Integer[] list, int start, int endP1, FieldOptions options) {
-        if (options.isUnsigned()) {
-            Arrays.sort(list, start, endP1, Integer::compareUnsigned);
+        if (options.getNullHandling().equals(NullHandling.NULLS_LAST)) {
+            if (options.isUnsigned()) {
+                Arrays.sort(list, start, endP1, Comparator.nullsLast(Integer::compareUnsigned));
+            } else {
+                Arrays.sort(list, start, endP1, Comparator.nullsLast(Comparator.naturalOrder()));
+            }
+        } else if (options.getNullHandling().equals(NullHandling.NULLS_FIRST)) {
+            if (options.isUnsigned()) {
+                Arrays.sort(list, start, endP1, Comparator.nullsFirst(Integer::compareUnsigned));
+            } else {
+                Arrays.sort(list, start, endP1, Comparator.nullsFirst(Comparator.naturalOrder()));
+            }
         } else {
-            Arrays.sort(list, start, endP1);
+            if (options.isUnsigned()) {
+                Arrays.sort(list, start, endP1, Integer::compareUnsigned);
+            } else {
+                Arrays.sort(list, start, endP1);
+            }
         }
     }
 
     @Override
     public void sort(List<Integer> list, int start, int endP1, FieldOptions options) {
-        if (options.isUnsigned()) {
-            if (start == 0 && endP1 == list.size()) {
-                list.sort(Integer::compareUnsigned);
+        if (options.getNullHandling().equals(NullHandling.NULLS_LAST)) {
+            if (options.isUnsigned()) {
+                if (start == 0 && endP1 == list.size()) {
+                    list.sort(Comparator.nullsLast(Integer::compareUnsigned));
+                } else {
+                    list.subList(start, endP1).sort(Comparator.nullsLast(Integer::compareUnsigned));
+                }
             } else {
-                list.subList(start, endP1).sort(Integer::compareUnsigned);
+                if (start == 0 && endP1 == list.size()) {
+                    list.sort(Comparator.nullsLast(Comparator.naturalOrder()));
+                } else {
+                    list.subList(start, endP1).sort(Comparator.nullsLast(Comparator.naturalOrder()));
+                }
+            }
+        } else if (options.getNullHandling().equals(NullHandling.NULLS_FIRST)) {
+            if (options.isUnsigned()) {
+                if (start == 0 && endP1 == list.size()) {
+                    list.sort(Comparator.nullsFirst(Integer::compareUnsigned));
+                } else {
+                    list.subList(start, endP1).sort(Comparator.nullsFirst(Integer::compareUnsigned));
+                }
+            } else {
+                if (start == 0 && endP1 == list.size()) {
+                    list.sort(Comparator.nullsFirst(Comparator.naturalOrder()));
+                } else {
+                    list.subList(start, endP1).sort(Comparator.nullsFirst(Comparator.naturalOrder()));
+                }
             }
         } else {
-            if (start == 0 && endP1 == list.size()) {
-                list.sort(null);
+            if (options.isUnsigned()) {
+                if (start == 0 && endP1 == list.size()) {
+                    list.sort(Integer::compareUnsigned);
+                } else {
+                    list.subList(start, endP1).sort(Integer::compareUnsigned);
+                }
             } else {
-                list.subList(start, endP1).sort(null);
+                if (start == 0 && endP1 == list.size()) {
+                    list.sort(null);
+                } else {
+                    list.subList(start, endP1).sort(null);
+                }
             }
         }
     }
@@ -39,7 +85,7 @@ public class JavaSorterInt implements SorterInt {
     public void sort(int[] array, int start, int endP1, FieldOptions options) {
         if (options.isUnsigned()) {
             Arrays.sort(array, start, endP1);
-            int indexPositive = binarySearchPositive(array, start, endP1);
+            int indexPositive = binarySearchIndexOfPositive(array, start, endP1);
             if (indexPositive > 0) {
                 SorterUtilsInt.rotateLeft(array, start, endP1, indexPositive);
             }
@@ -48,53 +94,43 @@ public class JavaSorterInt implements SorterInt {
         }
     }
 
-    /**
-     * -5 -4 -3 -2 -1 1 2 3 4 5 6 7 8 9 0
-     * -5 -4 -3 -2 -1 1
-     * -2 -1 1
-     * 1
-     * @param a
-     * @param fromIndex
-     * @param toIndex
-     * @return
-     */
-
-    private static int binarySearchPositive(int[] a, int fromIndex, int toIndex) {
+    public static int binarySearchIndexOfPositive(int[] a, int fromIndex, int toIndex) {
         int low = fromIndex;
         int high = toIndex - 1;
 
         while (low <= high) {
             int mid = (low + high) >>> 1;
-
             int midVal = a[mid];
-
-            if (midVal < 0)
+            if (midVal < 0) {
                 low = mid + 1;
-            else if (midVal > 0)
+            } else if (midVal > 0) {
                 high = mid - 1;
-            else
+            } else {
+                while (mid - 1 >= fromIndex && a[mid - 1] >= 0) {
+                    mid--;
+                }
                 return mid; // key found
+            }
         }
         if (low < toIndex) {
             return low;
-        } else  {
-            return  -1;
+        } else {
+            return -1;
         }
     }
 
     public static void main(String[] args) {
         int[] a = {-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        int res = binarySearchPositive(a, 0, a.length);
-        System.out.println("res = " + res );
+        int res = binarySearchIndexOfPositive(a, 0, a.length);
+        System.out.println("res = " + res);
 
         int[] b = {-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, -1, -1};
-        int res2 = binarySearchPositive(b, 0, b.length);
+        int res2 = binarySearchIndexOfPositive(b, 0, b.length);
         System.out.println("res = " + res2);
 
         int[] c = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
-        int res3 = binarySearchPositive(c, 0, c.length);
+        int res3 = binarySearchIndexOfPositive(c, 0, c.length);
         System.out.println("res = " + res3);
-
     }
 
 }
