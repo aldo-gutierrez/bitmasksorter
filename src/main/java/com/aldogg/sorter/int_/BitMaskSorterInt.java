@@ -1,6 +1,7 @@
 package com.aldogg.sorter.int_;
 
 import com.aldogg.sorter.*;
+import com.aldogg.sorter.shared.FieldType;
 import com.aldogg.sorter.shared.OrderAnalysisResult;
 import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 
@@ -23,7 +24,7 @@ public abstract class BitMaskSorterInt implements SorterInt {
         if (n < 2) {
             return;
         }
-        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        int ordered = options.getFieldType().equals(FieldType.UNSIGNED_INTEGER) ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, start, endP1);
         }
@@ -31,7 +32,7 @@ public abstract class BitMaskSorterInt implements SorterInt {
 
         MaskInfoInt maskInfo = MaskInfoInt.calculateMaskBreakIfUpperBit(array, start, endP1, null);
         if (maskInfo.isUpperBitMaskSet()) { //the sign bit is set
-            int finalLeft = options.isUnsigned()
+            int finalLeft = options.getFieldType().equals(FieldType.UNSIGNED_INTEGER)
                     ? SorterUtilsIntExt.partitionNotStableUpperBit(array, start, endP1)
                     : SorterUtilsIntExt.partitionReverseNotStableUpperBit(array, start, endP1);
             int n1 = finalLeft - start;

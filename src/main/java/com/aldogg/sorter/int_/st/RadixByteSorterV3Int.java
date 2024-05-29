@@ -10,6 +10,7 @@ import com.aldogg.sorter.int_.SorterUtilsInt;
 
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedSigned;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedUnSigned;
+import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
 
 public class RadixByteSorterV3Int extends BitMaskSorterInt {
 
@@ -25,7 +26,7 @@ public class RadixByteSorterV3Int extends BitMaskSorterInt {
         if (n < 2) {
             return;
         }
-        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        int ordered = options.getFieldType().equals(UNSIGNED_INTEGER) ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, start, endP1);
         }
@@ -51,9 +52,9 @@ public class RadixByteSorterV3Int extends BitMaskSorterInt {
             if (bList.length == 0) {
                 return;
             }
-            if (bList[0] == MaskInfoInt.UPPER_BIT && !options.isUnsigned()) { //sign bit is set and there are negative numbers and positive numbers
+            if (bList[0] == MaskInfoInt.UPPER_BIT && !options.getFieldType().equals(UNSIGNED_INTEGER)) { //sign bit is set and there are negative numbers and positive numbers
                 int sortMask = 1 << bList[0];
-                int finalLeft = options.isUnsigned()
+                int finalLeft = options.getFieldType().equals(UNSIGNED_INTEGER)
                         ? SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask)
                         : SorterUtilsInt.partitionReverseNotStable(array, start, endP1, sortMask);
                 int n1 = finalLeft - start;

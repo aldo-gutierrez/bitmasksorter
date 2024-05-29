@@ -7,6 +7,7 @@ import com.aldogg.sorter.shared.OrderAnalysisResult;
 import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 
 import static com.aldogg.parallel.ArrayParallelRunner.splitWork;
+import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
 import static com.aldogg.sorter.shared.int_mask.MaskInfoInt.*;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedSigned;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedUnSigned;
@@ -28,7 +29,7 @@ public abstract class BitMaskSorterMTInt extends BitMaskSorterInt {
             stIntSorter.sort(array, start, endP1, options);
             return;
         }
-        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        int ordered = options.getFieldType().equals(UNSIGNED_INTEGER) ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, start, endP1);
         }
@@ -43,7 +44,7 @@ public abstract class BitMaskSorterMTInt extends BitMaskSorterInt {
         }
 
         if (maskInfo.isUpperBitMaskSet()) { //there are negative numbers and positive numbers
-            int finalLeft = options.isUnsigned()
+            int finalLeft = options.getFieldType().equals(UNSIGNED_INTEGER)
                     ? SorterUtilsIntExt.partitionNotStableUpperBit(array, start, endP1)
                     : SorterUtilsIntExt.partitionReverseNotStableUpperBit(array, start, endP1);
             int n1 = finalLeft - start;

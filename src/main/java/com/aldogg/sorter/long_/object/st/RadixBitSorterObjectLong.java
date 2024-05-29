@@ -10,6 +10,7 @@ import com.aldogg.sorter.shared.Section;
 import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 
 import static com.aldogg.sorter.BitSorterParams.RADIX_SORT_MAX_BITS;
+import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
 import static com.aldogg.sorter.shared.int_mask.MaskInfoInt.UPPER_BIT;
 import static com.aldogg.sorter.long_.SorterUtilsLong.listIsOrderedSigned;
 import static com.aldogg.sorter.long_.SorterUtilsLong.listIsOrderedUnSigned;
@@ -30,7 +31,7 @@ public class RadixBitSorterObjectLong implements SorterObjectLong {
         for (int i = 0; i < array.length; i++) {
             array[i] = mapper.value(oArray[i]);
         }
-        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        int ordered = options.getFieldType().equals(UNSIGNED_INTEGER) ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsLong.reverse(array, start, endP1);
             SorterUtilsGeneric.reverse(oArray, start, endP1);
@@ -52,10 +53,10 @@ public class RadixBitSorterObjectLong implements SorterObjectLong {
             long mask;
             long sortMask = 1 << bList[0];
             int finalLeft = options.isStable()
-                    ? (options.isUnsigned()
+                    ? (options.getFieldType().equals(UNSIGNED_INTEGER)
                     ? partitionStable(oArray, array, start, endP1, sortMask)
                     : partitionReverseStable(oArray, array, start, endP1, sortMask))
-                    : (options.isUnsigned()
+                    : (options.getFieldType().equals(UNSIGNED_INTEGER)
                     ? partitionNotStable(oArray, array, start, endP1, sortMask)
                     : partitionReverseNotStable(oArray, array, start, endP1, sortMask));
             int n1 = finalLeft - start;

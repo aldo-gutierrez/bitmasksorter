@@ -6,6 +6,7 @@ import com.aldogg.sorter.int_.SorterInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 
 import static com.aldogg.sorter.int_.SorterUtilsInt.partitionStable;
+import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
 
 public class RadixBitBaseSorterInt implements SorterInt {
 
@@ -19,7 +20,7 @@ public class RadixBitBaseSorterInt implements SorterInt {
         }
         if (bList[0] == MaskInfoInt.UPPER_BIT) { //there are negative numbers and positive numbers
             int sortMask = 1 << bList[0];
-            int finalLeft = options.isUnsigned() ? SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask) : SorterUtilsInt.partitionReverseNotStable(array, start, endP1, sortMask);
+            int finalLeft = options.getFieldType().equals(UNSIGNED_INTEGER) ? SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask) : SorterUtilsInt.partitionReverseNotStable(array, start, endP1, sortMask);
             if (finalLeft - start > 1) { //sort negative numbers
                 int[] aux = new int[finalLeft - start];
                 maskInfo = MaskInfoInt.calculateMask(array, start, finalLeft);

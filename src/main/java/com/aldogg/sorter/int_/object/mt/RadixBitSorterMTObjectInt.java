@@ -14,6 +14,7 @@ import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 
 import static com.aldogg.parallel.ArrayParallelRunner.splitWork;
 import static com.aldogg.sorter.BitSorterUtils.getMaskAsSections;
+import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
 import static com.aldogg.sorter.shared.int_mask.MaskInfoInt.SIZE_FOR_PARALLEL_BIT_MASK;
 import static com.aldogg.sorter.int_.SorterUtilsInt.*;
 import static com.aldogg.sorter.int_.object.SorterUtilsObjectInt.*;
@@ -41,7 +42,7 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
             array[i] = mapper.value(oArray[oStart + i]);
         }
 
-        int ordered = mapper.isUnsigned() ? listIsOrderedUnSigned(array, oStart, oEndP1) : listIsOrderedSigned(array, oStart, oEndP1);
+        int ordered = mapper.getFieldType().equals(UNSIGNED_INTEGER) ? listIsOrderedUnSigned(array, oStart, oEndP1) : listIsOrderedSigned(array, oStart, oEndP1);
         if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, 0, n);
             SorterUtilsGeneric.reverse(oArray, oStart, oEndP1);
@@ -61,10 +62,10 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
         if (maskInfo.isUpperBitMaskSet()) { //there are negative numbers and positive numbers
             int sortMask = MaskInfoInt.getUpperBitMask();
             int oFinalLeft = mapper.isStable()
-                    ? (mapper.isUnsigned()
+                    ? (mapper.getFieldType().equals(UNSIGNED_INTEGER)
                     ? partitionStable(runtime, oStart, sortMask, n)
                     : partitionReverseStable(runtime, oStart, sortMask, n))
-                    : (mapper.isUnsigned()
+                    : (mapper.getFieldType().equals(UNSIGNED_INTEGER)
                     ? partitionNotStable(oArray, oStart, array, 0, sortMask, n)
                     : partitionReverseNotStable(oArray, oStart, array, 0, sortMask, n));
 

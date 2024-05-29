@@ -13,6 +13,7 @@ import static com.aldogg.sorter.BitSorterParams.RADIX_SORT_MAX_BITS;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedSigned;
 import static com.aldogg.sorter.int_.SorterUtilsInt.listIsOrderedUnSigned;
 import static com.aldogg.sorter.int_.object.SorterUtilsObjectInt.*;
+import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
 
 public class RadixBitSorterObjectInt<T> implements SorterObjectInt<T> {
 
@@ -26,7 +27,7 @@ public class RadixBitSorterObjectInt<T> implements SorterObjectInt<T> {
         for (int i = 0; i < array.length; i++) {
             array[i] = mapper.value(oArray[oStart + i]);
         }
-        int ordered = mapper.isUnsigned() ? listIsOrderedUnSigned(array, 0, n) : listIsOrderedSigned(array, 0, n);
+        int ordered = mapper.getFieldType().equals(UNSIGNED_INTEGER) ? listIsOrderedUnSigned(array, 0, n) : listIsOrderedSigned(array, 0, n);
         if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, 0, n);
             SorterUtilsGeneric.reverse(oArray, oStart, oEndP1);
@@ -40,10 +41,10 @@ public class RadixBitSorterObjectInt<T> implements SorterObjectInt<T> {
         if (maskInfo.isUpperBitMaskSet()) { //the sign bit is set
             int sortMask = MaskInfoInt.getUpperBitMask();
             int oFinalLeft = mapper.isStable()
-                    ? (mapper.isUnsigned()
+                    ? (mapper.getFieldType().equals(UNSIGNED_INTEGER)
                     ? partitionStable(runtime, oStart, sortMask, n)
                     : partitionReverseStable(runtime, oStart, sortMask, n))
-                    : (mapper.isUnsigned()
+                    : (mapper.getFieldType().equals(UNSIGNED_INTEGER)
                     ? partitionNotStable(oArray, oStart, array, 0, sortMask, n)
                     : partitionReverseNotStable(oArray, oStart, array, 0, sortMask, n));
             int n1 = oFinalLeft - oStart;

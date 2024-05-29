@@ -1,6 +1,7 @@
 package com.aldogg.sorter.float_.object;
 
 import com.aldogg.sorter.int_.object.IntMapper;
+import com.aldogg.sorter.shared.FieldType;
 
 public interface FloatToIntMapper<T> extends IntMapper<T> {
 
@@ -11,7 +12,7 @@ public interface FloatToIntMapper<T> extends IntMapper<T> {
     }
 
     @Override
-    default boolean isIeee754() {
-        return true;
+    default FieldType getFieldType() {
+        return FieldType.IEEE764_FLOAT;
     }
 }

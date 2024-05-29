@@ -8,6 +8,7 @@ import com.aldogg.sorter.double_.st.*;
 import com.aldogg.sorter.generators.DoubleGenerator;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
+import com.aldogg.sorter.generic.RadixBitSorterGenericInt;
 import com.aldogg.sorter.test.unit.IntBasicTest;
 import com.aldogg.sorter.test.TestAlgorithms;
 import org.junit.jupiter.api.Test;

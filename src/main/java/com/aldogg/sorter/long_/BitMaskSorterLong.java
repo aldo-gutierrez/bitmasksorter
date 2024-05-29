@@ -5,6 +5,7 @@ import com.aldogg.sorter.BitSorterParams;
 import com.aldogg.sorter.FieldOptions;
 import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 
+import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
 import static com.aldogg.sorter.shared.long_mask.MaskInfoLong.getMaskAsArray;
 import static com.aldogg.sorter.long_.SorterUtilsLong.*;
 
@@ -25,7 +26,7 @@ public abstract class BitMaskSorterLong implements SorterLong {
         if (n < 2) {
             return;
         }
-        int ordered = options.isUnsigned() ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        int ordered = options.getFieldType().equals(UNSIGNED_INTEGER) ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == OrderAnalysisResult.DESCENDING) {
             reverse(array, start, endP1);
         }

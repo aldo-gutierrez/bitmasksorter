@@ -1,16 +1,11 @@
 package com.aldogg.sorter;
 
+import com.aldogg.sorter.shared.FieldType;
 import com.aldogg.sorter.shared.NullHandling;
 
 public interface FieldOptions {
 
-    default boolean isUnsigned() {
-        return false;
-    }
-
-    default boolean isIeee754() {
-        return false;
-    }
+    default FieldType getFieldType() { return FieldType.SIGNED_INTEGER;}
 
     default boolean isStable() {
         return false;

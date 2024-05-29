@@ -9,6 +9,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 
+import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
+
 public class JavaSorterMTObjectInt implements SorterObjectInt {
 
     @Override
@@ -19,19 +21,19 @@ public class JavaSorterMTObjectInt implements SorterObjectInt {
     @Override
     public void sort(Object[] array, int start, int endP1, IntMapper options) {
         if (options.getNullHandling().equals(NullHandling.NULLS_LAST)) {
-            if (options.isUnsigned()) {
+            if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 Arrays.parallelSort(array, start, endP1, Comparator.nullsLast((o1, o2) -> Integer.compareUnsigned(options.value(o1), options.value(o2))));
             } else {
                 Arrays.parallelSort(array, start, endP1, Comparator.nullsLast(Comparator.comparingInt(o -> options.value(o))));
             }
         } else if (options.getNullHandling().equals(NullHandling.NULLS_FIRST)) {
-            if (options.isUnsigned()) {
+            if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 Arrays.parallelSort(array, start, endP1, Comparator.nullsFirst((o1, o2) -> Integer.compareUnsigned(options.value(o1), options.value(o2))));
             } else {
                 Arrays.parallelSort(array, start, endP1, Comparator.nullsFirst(Comparator.comparingInt(o -> options.value(o))));
             }
         } else {
-            if (options.isUnsigned()) {
+            if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 Arrays.parallelSort(array, start, endP1, (o1, o2) -> Integer.compareUnsigned(options.value(o1), options.value(o2)));
             } else {
                 Arrays.parallelSort(array, start, endP1, Comparator.comparingInt(o -> options.value(o)));

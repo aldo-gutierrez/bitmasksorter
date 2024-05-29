@@ -8,25 +8,26 @@ import com.aldogg.sorter.shared.NullHandling;
 import java.util.*;
 
 import static com.aldogg.sorter.int_.st.JavaSorterInt.binarySearchIndexOfPositive;
+import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
 
 public class JavaSorterMTInt implements SorterInt {
 
     @Override
     public void sort(Integer[] list, int start, int endP1, FieldOptions options) {
         if (options.getNullHandling().equals(NullHandling.NULLS_LAST)) {
-            if (options.isUnsigned()) {
+            if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 Arrays.parallelSort(list, start, endP1, Comparator.nullsLast(Integer::compareUnsigned));
             } else {
                 Arrays.parallelSort(list, start, endP1, Comparator.nullsLast(Comparator.naturalOrder()));
             }
         } else if (options.getNullHandling().equals(NullHandling.NULLS_FIRST)) {
-            if (options.isUnsigned()) {
+            if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 Arrays.parallelSort(list, start, endP1, Comparator.nullsFirst(Integer::compareUnsigned));
             } else {
                 Arrays.parallelSort(list, start, endP1, Comparator.nullsFirst(Comparator.naturalOrder()));
             }
         } else {
-            if (options.isUnsigned()) {
+            if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 Arrays.parallelSort(list, start, endP1, Integer::compareUnsigned);
             } else {
                 Arrays.parallelSort(list, start, endP1);
@@ -47,7 +48,7 @@ public class JavaSorterMTInt implements SorterInt {
 
     @Override
     public void sort(int[] array, int start, int endP1, FieldOptions options) {
-        if (options.isUnsigned()) {
+        if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
             Arrays.parallelSort(array, start, endP1);
             int indexPositive = binarySearchIndexOfPositive(array, start, endP1);
             if (indexPositive > 0) {

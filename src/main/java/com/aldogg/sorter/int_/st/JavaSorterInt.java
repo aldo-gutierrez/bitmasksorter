@@ -9,24 +9,26 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
+
 public class JavaSorterInt implements SorterInt {
 
     @Override
     public void sort(Integer[] list, int start, int endP1, FieldOptions options) {
         if (options.getNullHandling().equals(NullHandling.NULLS_LAST)) {
-            if (options.isUnsigned()) {
+            if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 Arrays.sort(list, start, endP1, Comparator.nullsLast(Integer::compareUnsigned));
             } else {
                 Arrays.sort(list, start, endP1, Comparator.nullsLast(Comparator.naturalOrder()));
             }
         } else if (options.getNullHandling().equals(NullHandling.NULLS_FIRST)) {
-            if (options.isUnsigned()) {
+            if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 Arrays.sort(list, start, endP1, Comparator.nullsFirst(Integer::compareUnsigned));
             } else {
                 Arrays.sort(list, start, endP1, Comparator.nullsFirst(Comparator.naturalOrder()));
             }
         } else {
-            if (options.isUnsigned()) {
+            if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 Arrays.sort(list, start, endP1, Integer::compareUnsigned);
             } else {
                 Arrays.sort(list, start, endP1);
@@ -37,7 +39,7 @@ public class JavaSorterInt implements SorterInt {
     @Override
     public void sort(List<Integer> list, int start, int endP1, FieldOptions options) {
         if (options.getNullHandling().equals(NullHandling.NULLS_LAST)) {
-            if (options.isUnsigned()) {
+            if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 if (start == 0 && endP1 == list.size()) {
                     list.sort(Comparator.nullsLast(Integer::compareUnsigned));
                 } else {
@@ -51,7 +53,7 @@ public class JavaSorterInt implements SorterInt {
                 }
             }
         } else if (options.getNullHandling().equals(NullHandling.NULLS_FIRST)) {
-            if (options.isUnsigned()) {
+            if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 if (start == 0 && endP1 == list.size()) {
                     list.sort(Comparator.nullsFirst(Integer::compareUnsigned));
                 } else {
@@ -65,7 +67,7 @@ public class JavaSorterInt implements SorterInt {
                 }
             }
         } else {
-            if (options.isUnsigned()) {
+            if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 if (start == 0 && endP1 == list.size()) {
                     list.sort(Integer::compareUnsigned);
                 } else {
@@ -83,7 +85,7 @@ public class JavaSorterInt implements SorterInt {
 
     @Override
     public void sort(int[] array, int start, int endP1, FieldOptions options) {
-        if (options.isUnsigned()) {
+        if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
             Arrays.sort(array, start, endP1);
             int indexPositive = binarySearchIndexOfPositive(array, start, endP1);
             if (indexPositive > 0) {

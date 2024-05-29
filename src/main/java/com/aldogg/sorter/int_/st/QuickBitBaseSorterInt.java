@@ -5,6 +5,8 @@ import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 import com.aldogg.sorter.int_.BitMaskSorterInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 
+import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
+
 /**
  * Basic XXXSorter
  * It doesn't include a count sort
@@ -16,7 +18,7 @@ public class QuickBitBaseSorterInt extends BitMaskSorterInt {
     public void sort(int[] array, int start, int endP1, FieldOptions options, int[] bList, Object params) {
         if (bList[0] == MaskInfoInt.UPPER_BIT) { //there are negative numbers
             int sortMask = 1 << bList[0];
-            int finalLeft = options.isUnsigned()
+            int finalLeft = options.getFieldType().equals(UNSIGNED_INTEGER)
                     ? SorterUtilsInt.partitionNotStable(array, start, endP1, sortMask)
                     : SorterUtilsInt.partitionReverseNotStable(array, start, endP1, sortMask);
             MaskInfoInt maskInfo;

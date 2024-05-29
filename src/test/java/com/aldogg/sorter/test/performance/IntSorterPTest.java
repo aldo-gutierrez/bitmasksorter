@@ -7,17 +7,15 @@ import com.aldogg.sorter.generators.IntGenerator;
 import com.aldogg.sorter.generic.RadixBitSorterGenericInt;
 import com.aldogg.sorter.int_.SorterObjectInt;
 import com.aldogg.sorter.int_.SorterInt;
+import com.aldogg.sorter.int_.mt.*;
 import com.aldogg.sorter.int_.object.EntityInt1;
 import com.aldogg.sorter.int_.object.IntMapper;
 import com.aldogg.sorter.int_.object.mt.JavaSorterMTObjectInt;
 import com.aldogg.sorter.int_.object.mt.RadixBitSorterMTObjectInt;
 import com.aldogg.sorter.int_.object.st.JavaSorterObjectInt;
 import com.aldogg.sorter.int_.object.st.RadixBitSorterObjectInt;
-import com.aldogg.sorter.int_.mt.JavaSorterMTInt;
-import com.aldogg.sorter.int_.mt.MixedBitSorterMTInt;
-import com.aldogg.sorter.int_.mt.QuickBitSorterMTInt;
-import com.aldogg.sorter.int_.mt.RadixBitSorterMTInt;
 import com.aldogg.sorter.int_.st.*;
+import com.aldogg.sorter.shared.FieldType;
 import com.aldogg.sorter.shared.NullHandling;
 import com.aldogg.sorter.test.BaseTest;
 import com.aldogg.sorter.test.TestAlgorithms;
@@ -246,8 +244,8 @@ public class IntSorterPTest extends BaseTest {
 
         FieldOptions options = new FieldOptions() {
             @Override
-            public boolean isUnsigned() {
-                return true;
+            public FieldType getFieldType() {
+                return FieldType.UNSIGNED_INTEGER;
             }
         };
 

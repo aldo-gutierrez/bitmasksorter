@@ -7,6 +7,8 @@ import com.aldogg.sorter.int_.SorterUtilsInt;
 
 import java.util.Arrays;
 
+import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
+
 public final class SortingNetworksInt implements SorterInt {
 
     private static final SortingNetworksInt INSTANCE = new SortingNetworksInt();
@@ -27,7 +29,7 @@ public final class SortingNetworksInt implements SorterInt {
         }
         if (n <= 16) {
             int[][] swaps = SortingNetworks.swaps[n];
-            if (options.isUnsigned()) {
+            if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 for (int i = 0; i < swaps.length; i++) {
                     int[] swap = swaps[i];
                     int e0 = swap[0] + start;

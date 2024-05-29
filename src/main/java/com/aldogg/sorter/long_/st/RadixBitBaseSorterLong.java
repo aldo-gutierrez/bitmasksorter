@@ -5,6 +5,7 @@ import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 import com.aldogg.sorter.long_.BitMaskSorterLong;
 
 import static com.aldogg.sorter.long_.SorterUtilsLong.*;
+import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
 
 public class RadixBitBaseSorterLong extends BitMaskSorterLong {
 
@@ -17,7 +18,7 @@ public class RadixBitBaseSorterLong extends BitMaskSorterLong {
             MaskInfoLong maskInfo;
             long mask;
             long sortMask = 1L << bList[0];
-            int finalLeft = options.isUnsigned()
+            int finalLeft = options.getFieldType().equals(UNSIGNED_INTEGER)
                     ? partitionNotStable(array, start, endP1, sortMask)
                     : partitionReverseNotStable(array, start, endP1, sortMask);
             if (finalLeft - start > 1) { //sort negative numbers
