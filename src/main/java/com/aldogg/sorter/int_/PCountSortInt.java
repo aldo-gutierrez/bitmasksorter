@@ -88,7 +88,7 @@ public class PCountSortInt extends BitMaskSorterInt {
             int countJ = count[j];
             if (countJ > 0) {
                 int value = j | elementSample;
-                for (int k = 0; k < countJ; k++) {
+                for (int c = 0; c < countJ; c++) {
                     array[i] = value;
                     i++;
                 }
@@ -118,7 +118,7 @@ public class PCountSortInt extends BitMaskSorterInt {
             int countJ = count[j];
             if (countJ > 0) {
                 int value = number[j];
-                for (int k = 0; k < countJ; k++) {
+                for (int c = 0; c < countJ; c++) {
                     array[i] = value;
                     i++;
                 }
@@ -152,7 +152,7 @@ public class PCountSortInt extends BitMaskSorterInt {
             int countJ = count[j];
             if (countJ > 0) {
                 int value = number[j];
-                for (int k = 0; k < countJ; k++) {
+                for (int c = 0; c < countJ; c++) {
                     array[i] = value;
                     i++;
                 }
