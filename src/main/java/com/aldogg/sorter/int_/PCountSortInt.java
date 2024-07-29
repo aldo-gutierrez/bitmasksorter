@@ -33,21 +33,22 @@ public class PCountSortInt extends BitMaskSorterInt {
     public static void pCountSort(final int[] array, final int start, final int endP1, int[] bList, int bListStart) {
         int[] bListNew = Arrays.copyOfRange(bList, bListStart, bList.length);
         Section[] sections = getMaskAsSections(bListNew, 0, bListNew.length - 1);
-        if (sections.length == 1 && sections[0].shift == 0) {
-            int mask = MaskInfoInt.getMaskLastBits(bListNew, 0);
-            int elementSample = array[start];
-            elementSample = elementSample & ~mask;
-            if (elementSample == 0) { //last bits and includes all numbers and all positive numbers
-                pCountSortPositive(array, start, endP1, 1 << sections[0].bits);
-            } else { //last bits but there is a mask for a bigger number
-                pCountSortEndingMask(array, start, endP1, mask, elementSample);
-            }
-        } else {
-            if (sections.length == 1) {
-                pCountSortSection(array, start, endP1, sections[0]);
+        if (sections.length == 1) {
+            Section section = sections[0];
+            if (section.shift == 0) {
+                int mask = MaskInfoInt.getMaskLastBits(bListNew, 0);
+                int elementSample = array[start];
+                elementSample = elementSample & ~mask;
+                if (elementSample == 0) { //last bits and includes all numbers and all positive numbers
+                    pCountSortPositive(array, start, endP1, 1 << section.bits);
+                } else { //last bits but there is a mask for a bigger number
+                    pCountSortEndingMask(array, start, endP1, mask, elementSample);
+                }
             } else {
-                pCountSortSections(array, start, endP1, sections);
+                pCountSortSection(array, start, endP1, section);
             }
+        } else if (sections.length > 1) {
+            pCountSortSections(array, start, endP1, sections);
         }
     }
 
