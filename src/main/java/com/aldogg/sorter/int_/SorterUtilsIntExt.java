@@ -115,7 +115,6 @@ public class SorterUtilsIntExt {
     }
 
     public static int partitionStableParallel2(final int[] array, final int start, final int endP1, final int mask, final int[] aux) {
-        int n = endP1 - start;
         int maxThreads = 2; //best number is 5,7 then 4 then 3 then 6,8 then 2
         ArrayParallelRunner.APRParameters parameters = new ArrayParallelRunner.APRParameters(maxThreads);
         final int[][] indexes = new int[maxThreads][];
@@ -142,7 +141,7 @@ public class SorterUtilsIntExt {
 
             @Override
             public int[] reduce(int[] result, int[] partialResult) {
-                return null;
+                return new int[0];
             }
         });
         int totalZeroLength = 0;

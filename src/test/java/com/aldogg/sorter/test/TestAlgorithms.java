@@ -88,11 +88,12 @@ public class TestAlgorithms<T extends Named> {
         long limitHigh = params.limitHigh;
         Named[] sorters = algorithms;
         for (Named sorter : sorters) {
-            if (writer != null)
+            if (writer != null) {
                 writer.write(size + ",\"" + limitLow + ":" + limitHigh + "\",\"" + sorter.getName() + "\"," + getAVG(sorter.getName()) / 1000000 + "," + getPercentage(sorter.getName()) + "\n");
-            if (writer != null) writer.flush();
+                writer.flush();
+            }
         }
-        System.out.printf("%,13d %18s %25s", size, limitLow + ":" + limitHigh, params.function.toString());
+        System.out.printf("%,11d %18s %25s", size, limitLow + ":" + limitHigh, params.function.toString());
         for (Named sorter : sorters) {
             System.out.printf("%21s %,13d ", sorter.getName(), getAVG(sorter.getName()));
         }

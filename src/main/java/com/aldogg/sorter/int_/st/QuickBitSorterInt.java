@@ -17,7 +17,6 @@ public class QuickBitSorterInt extends BitMaskSorterInt {
     }
 
     public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, boolean recalculate, FieldOptions options) {
-        final int n = endP1 - start;
         if (recalculate && bListIndex < 3) {
             MaskInfoInt maskParts = MaskInfoInt.calculateMask(array, start, endP1);
             int mask = maskParts.getMask();

@@ -16,9 +16,10 @@ import static com.aldogg.sorter.int_.SorterUtilsInt.*;
 
 public class GetBitMaskTestPTest {
 
+    private final Random random = new Random();
+
     @Test
     public void testGetMaskBitParallel() {
-        Random random = new Random();
         int arraySize = 6000000;
         int iterations = 100;
         long total = 0;
@@ -59,7 +60,6 @@ public class GetBitMaskTestPTest {
 
     @Test
     public void testPartitionStableLastBitsParallel() {
-        Random random = new Random();
         int arraySize = 20000000;
         int iterations = 100;
         long total = 0;
@@ -111,7 +111,6 @@ public class GetBitMaskTestPTest {
 
     @Test
     public void testPartitionStableParallel() {
-        Random random = new Random();
         int arraySize = 1000000;
         int iterations = 100;
         MaskInfoInt maskInfo = null;
@@ -157,7 +156,6 @@ public class GetBitMaskTestPTest {
 
     @Test
     public void testPartitionStableParallel2() {
-        Random random = new Random();
         int arraySize = 1000000;
         int iterations = 100;
         MaskInfoInt maskInfo = null;
@@ -204,7 +202,6 @@ public class GetBitMaskTestPTest {
     @Test
     public void testPartitionStableParallel2b() {
         //partitionStableParallel  is faster than partitionStableParallel2 when using two threads only
-        Random random = new Random();
         int arraySize = 1000000;
         int iterations = 100;
         MaskInfoInt maskInfo = null;

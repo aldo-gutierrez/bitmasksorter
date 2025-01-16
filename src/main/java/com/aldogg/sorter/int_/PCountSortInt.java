@@ -164,13 +164,14 @@ public class PCountSortInt extends BitMaskSorterInt {
         }
     }
 
+    private static final Random random = new Random(1234);
+
     public static void main(String[] args) {
         int N = (int) Math.pow(2, 20);
         int C = 100;
         int R2 = 19;
         int R = (int) Math.pow(2, R2);
         System.out.println(" R " +R+ " " + (1<<R2));
-        Random random = new Random(1234);
         long time1 = 0;
         long time2 = 0;
         for (int c = 0; c < C; c++) {

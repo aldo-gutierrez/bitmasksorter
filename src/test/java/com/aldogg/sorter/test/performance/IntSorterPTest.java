@@ -313,9 +313,8 @@ public class IntSorterPTest extends BaseTest {
 
 
     public void testSpeedIncDec(int iterations, GeneratorParams params, TestAlgorithms testAlgorithms) throws IOException {
-        Random random = new Random(SEED);
         for (int iter = 0; iter < iterations; iter++) {
-            int type = random.nextInt(3);
+            int type = params.random.nextInt(3);
             GeneratorFunctions functionEnum = type == 0 ? GeneratorFunctions.ALL_EQUAL : (type == 1 ? GeneratorFunctions.ASCENDING : GeneratorFunctions.DESCENDING);
             Function<GeneratorParams, int[]> gFunction = IntGenerator.getGFunction(functionEnum);
             params.function = functionEnum;

@@ -2,7 +2,7 @@ package com.aldogg.sorter;
 
 public class BitSorterParams {
 
-    public static int RADIX_SORT_MAX_BITS = 8;
+    public static final int RADIX_SORT_MAX_BITS;
 
     static {
         //looks like MAX_BITS_RADIX_SORT depends on cache size, an approximation is to use the number of cores
@@ -23,7 +23,7 @@ public class BitSorterParams {
     }
 
     //NEES TO BE >=4 and <=24
-    public static int SHORT_K_BITS = 20;
+    public static final int SHORT_K_BITS = 20;
 
     public static int SHORT_N = 262144;
 

@@ -1,9 +1,12 @@
 plugins {
     id 'java'
+    id("com.github.spotbugs") version "6.1.0"
+    id 'pmd'
+    id 'jacoco'
 }
 
-group 'com.aldogg.sorter'
-version '1.0-SNAPSHOT'
+group = 'com.aldogg.sorter'
+version = '1.0-SNAPSHOT'
 
 compileJava {
     sourceCompatibility = '1.8'
@@ -24,6 +27,39 @@ test {
     useJUnitPlatform()
     maxHeapSize = '8G'
     filter {
+        // Exclude tests that only test Performance
         excludeTestsMatching "*PTest"
     }
+}
+
+pmd {
+    rulesMinimumPriority = 2
+}
+
+spotbugs {
+    reportLevel = com.github.spotbugs.snom.Confidence.values()[3]
+}
+
+spotbugsMain {
+    reports {
+        html {
+            required = true
+            outputLocation = file("$layout.buildDirectory/reports/spotbugs/main/spotbugs.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
+    }
+}
+
+spotbugsTest {
+    reports {
+        html {
+            required = true
+            outputLocation = file("$layout.buildDirectory/reports/spotbugs/test/spotbugs.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
+    }
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
 }
