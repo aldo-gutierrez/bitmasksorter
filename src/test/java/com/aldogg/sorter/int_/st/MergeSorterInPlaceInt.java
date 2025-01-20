@@ -75,9 +75,12 @@ public class MergeSorterInPlaceInt implements SorterInt {
                             start2 = -1;
                         }
                     } else {
-                        SorterUtilsInt.rotateLeft(array, start, midIndex, start2 - start);
+                        SorterUtilsInt.swap(array, start, start2);
+                        SorterUtilsInt.rotateLeft(array, start2, midIndex, 1);
                         start++;
-                        start2 = -1;
+                        if (start == start2) {
+                            start2 = -1;
+                        }
                     }
                 } else {
                     SorterUtilsInt.swap(array, start, midIndex);
