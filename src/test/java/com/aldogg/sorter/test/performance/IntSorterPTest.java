@@ -1,6 +1,6 @@
 package com.aldogg.sorter.test.performance;
 
-import com.aldogg.sorter.FieldOptions;
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.generators.GeneratorFunctions;
 import com.aldogg.sorter.generators.GeneratorParams;
 import com.aldogg.sorter.generators.IntGenerator;
@@ -16,7 +16,6 @@ import com.aldogg.sorter.int_.object.st.JavaSorterObjectInt;
 import com.aldogg.sorter.int_.object.st.RadixBitSorterObjectInt;
 import com.aldogg.sorter.int_.st.*;
 import com.aldogg.sorter.shared.FieldType;
-import com.aldogg.sorter.shared.NullHandling;
 import com.aldogg.sorter.test.BaseTest;
 import com.aldogg.sorter.test.TestAlgorithms;
 import org.junit.jupiter.api.Test;
@@ -33,7 +32,7 @@ public class IntSorterPTest extends BaseTest {
 
     @Test
     public void speedTestPositiveIntST() throws IOException {
-        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new RadixByteSorterV2Int(), new RadixByteSorterV3Int()};
         BufferedWriter writer = getWriter("test-results/speed_positiveInt_st_" + branch + ".csv");
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
 
@@ -43,7 +42,7 @@ public class IntSorterPTest extends BaseTest {
         testAlgorithms = new TestAlgorithms<>(sorters);
         GeneratorParams params = new GeneratorParams();
         params.random = new Random(SEED);
-        params.size = 80000;
+        params.size = 400;
         params.limitLow = 0;
         params.limitHigh = 80000;
         params.function = GeneratorFunctions.RANDOM_INTEGER_RANGE;
@@ -52,7 +51,7 @@ public class IntSorterPTest extends BaseTest {
         System.out.println("----------------------");
 
         params.random = new Random(SEED);
-        int[] limitHigh = new int[]{10, 1000, 100000, 10000000, 1000000000};
+        int[] limitHigh = new int[]{1000000000};
 
         for (int limitH : limitHigh) {
             params.limitHigh = limitH;
@@ -242,12 +241,9 @@ public class IntSorterPTest extends BaseTest {
         writer.write("\"Size\"" + "," + "\"Range\"" + "," + "\"Sorter\"" + "," + "\"Time\"" + "\n");
         SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new JavaSorterMTInt(), new RadixByteSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new QuickBitSorterMTInt(), new MixedBitSorterMTInt(), new RadixBitSorterMTInt()};
 
-        FieldOptions options = new FieldOptions() {
-            @Override
-            public FieldType getFieldType() {
-                return FieldType.UNSIGNED_INTEGER;
-            }
-        };
+        FieldSortOptions fieldSortOptions = new FieldSortOptions();
+        fieldSortOptions.setStable(false);
+        fieldSortOptions.setFieldType(FieldType.UNSIGNED_INTEGER);
 
         TestAlgorithms<SorterInt> testAlgorithms;
 
@@ -260,7 +256,7 @@ public class IntSorterPTest extends BaseTest {
 
         //heatup
         testAlgorithms = new TestAlgorithms<>(sorters);
-        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms, options);
+        testSpeedInt(HEAT_ITERATIONS, params, testAlgorithms, fieldSortOptions);
         testAlgorithms.printTestSpeed(params, null);
 
         params.random = new Random(SEED);
@@ -269,7 +265,7 @@ public class IntSorterPTest extends BaseTest {
             for (int size : new int[]{10000, 100000, 1000000, 10000000, 40000000}) {
                 testAlgorithms = new TestAlgorithms<>(sorters);
                 params.size = size;
-                testSpeedInt(ITERATIONS, params, testAlgorithms, options);
+                testSpeedInt(ITERATIONS, params, testAlgorithms, fieldSortOptions);
                 testAlgorithms.printTestSpeed(params, writer);
             }
             System.out.println("----------------------");

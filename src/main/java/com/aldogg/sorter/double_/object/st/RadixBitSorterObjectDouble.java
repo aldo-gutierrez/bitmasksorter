@@ -16,11 +16,9 @@ import static com.aldogg.sorter.generic.SorterUtilsGeneric.reverse;
 
 public class RadixBitSorterObjectDouble implements SorterObjectDouble {
 
-    FieldOptions options;
 
     @Override
     public void sort(Object[] oArray, int start, int endP1, DoubleMapper mapper) {
-        options = mapper;
         int n = endP1 - start;
         if (n < 2) {
             return;
@@ -46,11 +44,12 @@ public class RadixBitSorterObjectDouble implements SorterObjectDouble {
     }
 
     public void sort(Object[] oArray, double[] array, int start, int endP1, int[] bList) {
+        FieldSortOptions fieldSorterOptions = getDefaultFieldSortOptions();
         if (bList[0] == UPPER_BIT) { //there are negative numbers and positive numbers
             MaskInfoLong maskInfo;
             long mask;
             long sortMask = 1 << bList[0];
-            int finalLeft = options.isStable()
+            int finalLeft = fieldSorterOptions.isStable()
                     ? (partitionReverseStable(oArray, array, start, endP1, sortMask))
                     : (partitionReverseNotStable(oArray, array, start, endP1, sortMask));
             int n1 = finalLeft - start;

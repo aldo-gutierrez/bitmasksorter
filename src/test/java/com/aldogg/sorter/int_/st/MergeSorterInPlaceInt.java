@@ -1,6 +1,6 @@
 package com.aldogg.sorter.int_.st;
 
-import com.aldogg.sorter.FieldOptions;
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.int_.SorterInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 
@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class MergeSorterInPlaceInt implements SorterInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, FieldOptions options) {
+    public void sort(int[] array, int start, int endP1, FieldSortOptions options) {
         mergeSort(array, start, endP1);
     }
 
@@ -68,19 +68,13 @@ public class MergeSorterInPlaceInt implements SorterInt {
             if (start2 > -1) {
                 if (array[start2] <= array[midIndex]) {
                     int diff = midIndex - start2;
-                    if (diff == 1) {
-                        SorterUtilsInt.swap(array, start, start2);
-                        start++;
-                        if (start == start2) {
-                            start2 = -1;
-                        }
-                    } else {
-                        SorterUtilsInt.swap(array, start, start2);
+                    SorterUtilsInt.swap(array, start, start2);
+                    if (diff != 1) {
                         SorterUtilsInt.rotateLeft(array, start2, midIndex, 1);
-                        start++;
-                        if (start == start2) {
-                            start2 = -1;
-                        }
+                    }
+                    start++;
+                    if (start == start2) {
+                        start2 = -1;
                     }
                 } else {
                     SorterUtilsInt.swap(array, start, midIndex);

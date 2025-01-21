@@ -1,26 +1,29 @@
 package com.aldogg.sorter.long_;
 
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.shared.NullHandling;
-import com.aldogg.sorter.shared.Sorter;
 import com.aldogg.sorter.long_.object.LongMapper;
+import com.aldogg.sorter.shared.SorterPrimitive;
 
 import java.util.*;
 
-public interface SorterObjectLong<T> extends Sorter {
+public interface SorterObjectLong<T> extends SorterPrimitive<Long> {
+
 
     void sortNNA(T[] array, int start, int endP1, LongMapper<T> mapper);
 
     default void sort(List<T> list, LongMapper<T> mapper) {
-        sort(list, 0, list.size(), mapper);
+        sort(list, mapper, 0, list.size());
     }
 
     default void sort(T[] array, LongMapper<T> mapper) {
         sort(array, 0, array.length, mapper);
     }
 
-    default void sort(List<T> list, int start, int endP1, LongMapper<T> mapper) {
+    default void sort(List<T> list, LongMapper<T> mapper, int start, int endP1) {
         int nulls = 0;
-        boolean throwExceptionIfNull = mapper.getNullHandling().equals(NullHandling.NULLS_EXCEPTION);
+        FieldSortOptions fieldSorterOptions = getDefaultFieldSortOptions();
+        boolean throwExceptionIfNull = fieldSorterOptions.getNullHandling().equals(NullHandling.NO_HANDLING);
         List<T> subList = start == 0 && endP1 == list.size() ? list : list.subList(start, endP1);
         for (T value : subList) {
             if (value == null) {
@@ -50,7 +53,7 @@ public interface SorterObjectLong<T> extends Sorter {
         j = 0;
         ListIterator<T> iterator = subList.listIterator();
         if (nulls > 0) {
-            if (mapper.getNullHandling().equals(NullHandling.NULLS_FIRST)) {
+            if (fieldSorterOptions.getNullHandling().equals(NullHandling.NULLS_FIRST)) {
                 while (nulls > 0) {
                     iterator.next();
                     iterator.set(null);
@@ -62,7 +65,7 @@ public interface SorterObjectLong<T> extends Sorter {
                 iterator.set(array[j]);
                 j++;
             }
-            if (mapper.getNullHandling().equals(NullHandling.NULLS_LAST)) {
+            if (fieldSorterOptions.getNullHandling().equals(NullHandling.NULLS_LAST)) {
                 while (nulls > 0) {
                     iterator.next();
                     iterator.set(null);
@@ -79,8 +82,9 @@ public interface SorterObjectLong<T> extends Sorter {
     }
 
     default void sort(T[] list, int start, int endP1, LongMapper<T> mapper) {
+        FieldSortOptions fieldSorterOptions = getDefaultFieldSortOptions();
         int nulls = 0;
-        if (mapper.getNullHandling() == NullHandling.NULLS_LAST) {
+        if (fieldSorterOptions.getNullHandling() == NullHandling.NULLS_LAST) {
             int j = start;
             for (int i = start; i < endP1; i++) {
                 T value = list[i];
@@ -95,7 +99,7 @@ public interface SorterObjectLong<T> extends Sorter {
                 list[j] = null;
             }
             sortNNA(list, 0, endP1 - nulls, mapper);
-        } else if (mapper.getNullHandling() == NullHandling.NULLS_FIRST) {
+        } else if (fieldSorterOptions.getNullHandling() == NullHandling.NULLS_FIRST) {
             int j = endP1 - 1;
             for (int i = endP1 - 1; i >= start; i--) {
                 T value = list[i];

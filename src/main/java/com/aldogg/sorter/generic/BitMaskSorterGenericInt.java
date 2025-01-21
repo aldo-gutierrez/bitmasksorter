@@ -1,5 +1,6 @@
 package com.aldogg.sorter.generic;
 
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.int_.SorterObjectInt;
 import com.aldogg.sorter.shared.FieldType;
 import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
@@ -14,14 +15,14 @@ public abstract class BitMaskSorterGenericInt<T> implements SorterObjectInt<T> {
     abstract public void sortNNA(T[] array, int start, int endP1, int[] bList, Object params);
 
     @Override
-    public void sortNNA(T[] array, int start, int endP1, IntMapper<T> mapper) {
+    public void sortNNA(T[] array, IntMapper<T> mapper, int start, int endP1, FieldSortOptions fieldSortOptions) {
         int n = endP1 - start;
         if (n < 2) {
             return;
         }
         MaskInfoInt maskInfo = MaskInfoInt.calculateMaskBreakIfUpperBit(array, start, endP1, null, mapper);
         if (maskInfo.isUpperBitMaskSet()) { //the sign bit is set
-            int finalLeft = mapper.getFieldType().equals(FieldType.UNSIGNED_INTEGER)
+            int finalLeft = fieldSortOptions.getFieldType().equals(FieldType.UNSIGNED_INTEGER)
                     ? partitionNotStableUpperBit(array, start, endP1, mapper)
                     : partitionReverseNotStableUpperBit(array, start, endP1, mapper);
             int n1 = finalLeft - start;
@@ -43,7 +44,7 @@ public abstract class BitMaskSorterGenericInt<T> implements SorterObjectInt<T> {
             T[] aux = (T[]) new Object[Math.max(n1, n2)];
             if (n1 > 1) {
                 sortNNA(array, start, finalLeft, bList1, new Object[]{aux, mapper});
-                if (mapper.getFieldType().equals(FieldType.IEEE764_FLOAT)) {
+                if (fieldSortOptions.getFieldType().equals(FieldType.IEEE764_FLOAT)) {
                     SorterUtilsGeneric.reverse(array, start, finalLeft);
                 }
             }
@@ -57,7 +58,7 @@ public abstract class BitMaskSorterGenericInt<T> implements SorterObjectInt<T> {
             int[] bList = MaskInfoInt.getMaskAsArray(mask);
             if (bList.length > 0) {
                 sortNNA(array, start, endP1, bList, new Object[]{aux, mapper});
-                if (mapper.getFieldType().equals(FieldType.IEEE764_FLOAT)) {
+                if (fieldSortOptions.getFieldType().equals(FieldType.IEEE764_FLOAT)) {
                     if (mapper.value(array[0]) < 0) {
                         SorterUtilsGeneric.reverse(array, start, endP1);
                     }

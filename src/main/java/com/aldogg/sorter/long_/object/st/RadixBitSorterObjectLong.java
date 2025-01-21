@@ -18,11 +18,9 @@ import static com.aldogg.sorter.long_.object.SorterUtilsObjectLong.*;
 
 public class RadixBitSorterObjectLong implements SorterObjectLong {
 
-    FieldOptions options;
-
     @Override
     public void sort(Object[] oArray, int start, int endP1, LongMapper mapper) {
-        options = mapper;
+        FieldSortOptions fieldSortOptions = getDefaultFieldSortOptions();
         int n = endP1 - start;
         if (n < 2) {
             return;
@@ -31,7 +29,7 @@ public class RadixBitSorterObjectLong implements SorterObjectLong {
         for (int i = 0; i < array.length; i++) {
             array[i] = mapper.value(oArray[i]);
         }
-        int ordered = options.getFieldType().equals(UNSIGNED_INTEGER) ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
+        int ordered = fieldSortOptions.getFieldType().equals(UNSIGNED_INTEGER) ? listIsOrderedUnSigned(array, start, endP1) : listIsOrderedSigned(array, start, endP1);
         if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsLong.reverse(array, start, endP1);
             SorterUtilsGeneric.reverse(oArray, start, endP1);
@@ -48,15 +46,16 @@ public class RadixBitSorterObjectLong implements SorterObjectLong {
     }
 
     public void sort(Object[] oArray, long[] array, int start, int endP1, int[] bList) {
+        FieldSortOptions fieldSortOptions = getDefaultFieldSortOptions();
         if (bList[0] == UPPER_BIT) { //there are negative numbers and positive numbers
             MaskInfoLong maskInfo;
             long mask;
             long sortMask = 1 << bList[0];
-            int finalLeft = options.isStable()
-                    ? (options.getFieldType().equals(UNSIGNED_INTEGER)
+            int finalLeft = fieldSortOptions.isStable()
+                    ? (fieldSortOptions.getFieldType().equals(UNSIGNED_INTEGER)
                     ? partitionStable(oArray, array, start, endP1, sortMask)
                     : partitionReverseStable(oArray, array, start, endP1, sortMask))
-                    : (options.getFieldType().equals(UNSIGNED_INTEGER)
+                    : (fieldSortOptions.getFieldType().equals(UNSIGNED_INTEGER)
                     ? partitionNotStable(oArray, array, start, endP1, sortMask)
                     : partitionReverseNotStable(oArray, array, start, endP1, sortMask));
             int n1 = finalLeft - start;

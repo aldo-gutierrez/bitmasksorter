@@ -1,6 +1,6 @@
 package com.aldogg.sorter.int_.st;
 
-import com.aldogg.sorter.FieldOptions;
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.int_.SorterInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 
@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class MergeSorterInt implements SorterInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, FieldOptions options) {
+    public void sort(int[] array, int start, int endP1, FieldSortOptions options) {
         int n = endP1 - start;
         int[] aux = new int[n];
         mergeSort(array, start, endP1, aux, 0);

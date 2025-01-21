@@ -1,8 +1,8 @@
 package com.aldogg.sorter.long_;
 
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.shared.OrderAnalysisResult;
 import com.aldogg.sorter.BitSorterParams;
-import com.aldogg.sorter.FieldOptions;
 import com.aldogg.sorter.shared.long_mask.MaskInfoLong;
 
 import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
@@ -18,10 +18,10 @@ public abstract class BitMaskSorterLong implements SorterLong {
         this.params = params;
     }
 
-    abstract public void sort(long[] array, int start, int endP1, FieldOptions options, int[] bList);
+    abstract public void sort(long[] array, int start, int endP1, FieldSortOptions options, int[] bList);
 
     @Override
-    public void sort(long[] array, int start, int endP1, FieldOptions options) {
+    public void sort(long[] array, int start, int endP1, FieldSortOptions options) {
         int n = endP1 - start;
         if (n < 2) {
             return;

@@ -1,5 +1,6 @@
 package com.aldogg.sorter.test.performance;
 
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.generic.RadixBitSorterGenericInt;
 import com.aldogg.sorter.int_.object.IntMapper;
 import com.aldogg.sorter.int_.object.mt.RadixBitSorterMTObjectInt;
@@ -251,35 +252,21 @@ public class IntListArrayPTest {
                 totalElapsed.merge(JAVA, System.nanoTime() - startTime, Long::sum);
             }
 
-            IntMapper<Integer> mapperNF = new IntMapper<Integer>() {
-                @Override
-                public int value(Integer o) {
-                    return o;
-                }
+            IntMapper<Integer> mapper = o -> o;
 
-                @Override
-                public NullHandling getNullHandling() {
-                    return NullHandling.NULLS_FIRST;
-                }
-            };
-            IntMapper<Integer> mapperNL = new IntMapper<Integer>() {
-                @Override
-                public int value(Integer o) {
-                    return o;
-                }
+            FieldSortOptions fieldSortOptionsNF = new FieldSortOptions();
+            fieldSortOptionsNF.setNullHandling(NullHandling.NULLS_FIRST);
 
-                @Override
-                public NullHandling getNullHandling() {
-                    return NullHandling.NULLS_LAST;
-                }
-            };
+            FieldSortOptions fieldSortOptionsNL = new FieldSortOptions();
+            fieldSortOptionsNL.setNullHandling(NullHandling.NULLS_LAST);
+
 
             {
                 Integer[] arrayAux1 = arrayOrig.clone();
                 Integer[] arrayAux2 = arrayOrig.clone();
                 long startTime = System.nanoTime();
-                new RadixBitSorterGenericInt<Integer>().sort(arrayAux1, mapperNF);
-                new RadixBitSorterGenericInt<Integer>().sort(arrayAux2, mapperNL);
+                new RadixBitSorterGenericInt<Integer>().sort(arrayAux1, mapper, 0, arrayAux1.length, fieldSortOptionsNF);
+                new RadixBitSorterGenericInt<Integer>().sort(arrayAux2, mapper, 0 , arrayAux2.length, fieldSortOptionsNL);
                 totalElapsed.merge(RadixBitSorterGenericInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
                 Assertions.assertArrayEquals(arraySorted1, arrayAux1);
                 Assertions.assertArrayEquals(arraySorted2, arrayAux2);
@@ -288,8 +275,8 @@ public class IntListArrayPTest {
                 Integer[] arrayAux1 = arrayOrig.clone();
                 Integer[] arrayAux2 = arrayOrig.clone();
                 long startTime = System.nanoTime();
-                new RadixBitSorterObjectInt<Integer>().sort(arrayAux1, mapperNF);
-                new RadixBitSorterObjectInt<Integer>().sort(arrayAux2, mapperNL);
+                new RadixBitSorterObjectInt<Integer>().sort(arrayAux1, mapper, 0, arrayAux1.length, fieldSortOptionsNF);
+                new RadixBitSorterObjectInt<Integer>().sort(arrayAux2, mapper, 0 , arrayAux2.length, fieldSortOptionsNL);
                 totalElapsed.merge(RadixBitSorterObjectInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
                 try {
                     Assertions.assertArrayEquals(arraySorted1, arrayAux1);
@@ -307,8 +294,8 @@ public class IntListArrayPTest {
                 Integer[] arrayAux1 = arrayOrig.clone();
                 Integer[] arrayAux2 = arrayOrig.clone();
                 long startTime = System.nanoTime();
-                new RadixBitSorterInt().sort(arrayAux1, 0, arrayAux1.length, mapperNF);
-                new RadixBitSorterInt().sort(arrayAux2, 0, arrayAux1.length, mapperNL);
+                new RadixBitSorterInt().sort(arrayAux1, 0, arrayAux1.length, fieldSortOptionsNF);
+                new RadixBitSorterInt().sort(arrayAux2, 0, arrayAux2.length, fieldSortOptionsNL);
                 totalElapsed.merge(RadixBitSorterInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
                 Assertions.assertArrayEquals(arraySorted1, arrayAux1);
                 Assertions.assertArrayEquals(arraySorted2, arrayAux2);
@@ -318,8 +305,8 @@ public class IntListArrayPTest {
                 Integer[] arrayAux1 = arrayOrig.clone();
                 Integer[] arrayAux2 = arrayOrig.clone();
                 long startTime = System.nanoTime();
-                new RadixBitSorterMTObjectInt().sort(arrayAux1, 0, arrayAux1.length, mapperNF);
-                new RadixBitSorterMTObjectInt().sort(arrayAux2, 0, arrayAux1.length, mapperNL);
+                new RadixBitSorterMTObjectInt().sort(arrayAux1, mapper, 0, arrayAux1.length, fieldSortOptionsNF);
+                new RadixBitSorterMTObjectInt().sort(arrayAux2, mapper, 0, arrayAux1.length, fieldSortOptionsNL);
                 totalElapsed.merge(RadixBitSorterMTObjectInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
                 Assertions.assertArrayEquals(arraySorted1, arrayAux1);
                 Assertions.assertArrayEquals(arraySorted2, arrayAux2);

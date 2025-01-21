@@ -1,6 +1,6 @@
 package com.aldogg.sorter.test.performance.problems;
 
-import com.aldogg.sorter.int_.object.IntMapper;
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.int_.object.st.RadixBitSorterObjectInt;
 import com.aldogg.sorter.int_.st.RadixBitSorterInt;
 import com.aldogg.sorter.shared.NullHandling;
@@ -85,17 +85,10 @@ public class PairwiseSumsXPlusYTest {
         System.out.println(list.length);
 
         // max O((N^2)*D)  //4 digits for  32 bit integer
-        new RadixBitSorterObjectInt<PW>().sort(list, new IntMapper<PW>() {
-            @Override
-            public int value(PW o) {
-                return o.sum;
-            }
-
-            @Override
-            public NullHandling getNullHandling() {
-                return NullHandling.NULLS_LAST;
-            }
-        });
+        FieldSortOptions fieldSortOptions = new FieldSortOptions();
+        fieldSortOptions.setStable(true);
+        fieldSortOptions.setNullHandling(NullHandling.NULLS_LAST);
+        new RadixBitSorterObjectInt<PW>().sort(list, o -> o.sum, 0, list.length, fieldSortOptions);
         //TOTAL O(N^2) if N is big and D is small otherwise is O(N^2*LogN) as D = (log K)/8 and K could be N
         totalElapsed.merge(this.getClass().getSimpleName(), System.nanoTime() - startTime, Long::sum);
         totalElapsed.forEach((key, value) -> totalElapsed.put(key, value / 1000000));

@@ -1,26 +1,27 @@
 package com.aldogg.sorter.int_;
 
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.shared.NullHandling;
-import com.aldogg.sorter.shared.Sorter;
 import com.aldogg.sorter.int_.object.IntMapper;
+import com.aldogg.sorter.shared.SorterObjectType;
 
 import java.util.*;
 
-public interface SorterObjectInt<T> extends Sorter {
+public interface SorterObjectInt<T> extends SorterObjectType<T, Integer> {
 
-    void sortNNA(T[] array, int start, int endP1, IntMapper<T> mapper);
+    void sortNNA(T[] array, IntMapper<T> mapper, int start, int endP1, FieldSortOptions fieldSortOptions);
 
     default void sort(List<T> list, IntMapper<T> mapper) {
-        sort(list, 0, list.size(), mapper);
+        sort(list, mapper, 0, list.size(), getDefaultFieldSortOptions());
     }
 
     default void sort(T[] array, IntMapper<T> mapper) {
-        sort(array, 0, array.length, mapper);
+        sort(array, mapper, 0, array.length, getDefaultFieldSortOptions());
     }
 
-    default void sort(List<T> list, int start, int endP1, IntMapper<T> mapper) {
+    default void sort(List<T> list, IntMapper<T> mapper, int start, int endP1, FieldSortOptions fieldSortOptions) {
         int nulls = 0;
-        boolean throwExceptionIfNull = mapper.getNullHandling().equals(NullHandling.NULLS_EXCEPTION);
+        boolean throwExceptionIfNull = fieldSortOptions.getNullHandling().equals(NullHandling.NO_HANDLING);
         List<T> subList = start == 0 && endP1 == list.size() ? list : list.subList(start, endP1);
         for (T value : subList) {
             if (value == null) {
@@ -46,11 +47,11 @@ public interface SorterObjectInt<T> extends Sorter {
                 j++;
             }
         }
-        sortNNA(array, 0, n, mapper);
+        sortNNA(array, mapper, 0, n, fieldSortOptions);
         j = 0;
         ListIterator<T> iterator = subList.listIterator();
         if (nulls > 0) {
-            if (mapper.getNullHandling().equals(NullHandling.NULLS_FIRST)) {
+            if (fieldSortOptions.getNullHandling().equals(NullHandling.NULLS_FIRST)) {
                 while (nulls > 0) {
                     iterator.next();
                     iterator.set(null);
@@ -62,7 +63,7 @@ public interface SorterObjectInt<T> extends Sorter {
                 iterator.set(array[j]);
                 j++;
             }
-            if (mapper.getNullHandling().equals(NullHandling.NULLS_LAST)) {
+            if (fieldSortOptions.getNullHandling().equals(NullHandling.NULLS_LAST)) {
                 while (nulls > 0) {
                     iterator.next();
                     iterator.set(null);
@@ -78,9 +79,9 @@ public interface SorterObjectInt<T> extends Sorter {
         }
     }
 
-    default void sort(T[] list, int start, int endP1, IntMapper<T> mapper) {
+    default void sort(T[] list, IntMapper<T> mapper, int start, int endP1, FieldSortOptions fieldSortOptions) {
         int nulls = 0;
-        if (mapper.getNullHandling() == NullHandling.NULLS_LAST) {
+        if (fieldSortOptions.getNullHandling() == NullHandling.NULLS_LAST) {
             int j = start;
             for (int i = start; i < endP1; i++) {
                 T value = list[i];
@@ -94,8 +95,8 @@ public interface SorterObjectInt<T> extends Sorter {
             for (; j < endP1; j++) {
                 list[j] = null;
             }
-            sortNNA(list, 0, endP1 - nulls, mapper);
-        } else if (mapper.getNullHandling() == NullHandling.NULLS_FIRST) {
+            sortNNA(list, mapper, 0, endP1 - nulls, fieldSortOptions);
+        } else if (fieldSortOptions.getNullHandling() == NullHandling.NULLS_FIRST) {
             int j = endP1 - 1;
             for (int i = endP1 - 1; i >= start; i--) {
                 T value = list[i];
@@ -109,7 +110,7 @@ public interface SorterObjectInt<T> extends Sorter {
             for (; j >= start; j--) {
                 list[j] = null;
             }
-            sortNNA(list, start + nulls, endP1, mapper);
+            sortNNA(list, mapper, start + nulls, endP1, fieldSortOptions);
         } else {
             for (int i = start; i < endP1; i++) {
                 T value = list[i];
@@ -117,7 +118,7 @@ public interface SorterObjectInt<T> extends Sorter {
                     throw new RuntimeException("Null found in Collection");
                 }
             }
-            sortNNA(list, 0, endP1, mapper);
+            sortNNA(list, mapper, 0, endP1, fieldSortOptions);
         }
     }
 

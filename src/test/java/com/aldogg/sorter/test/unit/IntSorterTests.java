@@ -11,7 +11,7 @@ public class IntSorterTests {
 
     @Test
     public void testListPositive() {
-        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new QuickBitSorterInt(), new RadixBitSorterInt(), new RadixByteSorterInt(), new RadixByteSorterV2Int(), new RadixByteSorterV3Int()};
+        SorterInt[] sorters = new SorterInt[]{new JavaSorterInt(), new MergeSorterInt(), new MergeSorterInPlaceInt()};
 
     }
 

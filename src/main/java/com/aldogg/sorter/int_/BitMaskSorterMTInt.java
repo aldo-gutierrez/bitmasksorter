@@ -18,7 +18,7 @@ public abstract class BitMaskSorterMTInt extends BitMaskSorterInt {
     public abstract BitMaskSorterInt getSTIntSorter();
 
     @Override
-    public void sort(int[] array, int start, int endP1, FieldOptions options) {
+    public void sort(int[] array, int start, int endP1, FieldSortOptions options) {
         int n = endP1 - start;
         if (n < 2) {
             return;

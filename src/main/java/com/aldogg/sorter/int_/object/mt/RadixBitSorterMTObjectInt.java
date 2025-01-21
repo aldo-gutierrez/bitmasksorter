@@ -25,7 +25,7 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
     protected final BitSorterMTParams params = BitSorterMTParams.getMTParams();
 
     @Override
-    public void sortNNA(T[] oArray, int oStart, int oEndP1, IntMapper<T> mapper) {
+    public void sortNNA(T[] oArray, IntMapper<T> mapper, int oStart, int oEndP1, FieldSortOptions fieldSortOptions) {
         int n = oEndP1 - oStart;
         if (n < 2) {
             return;
@@ -33,7 +33,7 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
         int maxThreads = params.getMaxThreads();
         if (n <= params.getDataSizeForThreads() || maxThreads <= 1) {
             RadixBitSorterObjectInt sorter = new RadixBitSorterObjectInt();
-            sorter.sortNNA(oArray, oStart, oEndP1, mapper);
+            sorter.sortNNA(oArray, mapper, oStart, oEndP1, fieldSortOptions);
             return;
         }
 
@@ -42,7 +42,7 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
             array[i] = mapper.value(oArray[oStart + i]);
         }
 
-        int ordered = mapper.getFieldType().equals(UNSIGNED_INTEGER) ? listIsOrderedUnSigned(array, oStart, oEndP1) : listIsOrderedSigned(array, oStart, oEndP1);
+        int ordered = fieldSortOptions.getFieldType().equals(UNSIGNED_INTEGER) ? listIsOrderedUnSigned(array, oStart, oEndP1) : listIsOrderedSigned(array, oStart, oEndP1);
         if (ordered == OrderAnalysisResult.DESCENDING) {
             SorterUtilsInt.reverse(array, 0, n);
             SorterUtilsGeneric.reverse(oArray, oStart, oEndP1);
@@ -61,11 +61,11 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
         runtime.oArray = oArray;
         if (maskInfo.isUpperBitMaskSet()) { //there are negative numbers and positive numbers
             int sortMask = MaskInfoInt.getUpperBitMask();
-            int oFinalLeft = mapper.isStable()
-                    ? (mapper.getFieldType().equals(UNSIGNED_INTEGER)
+            int oFinalLeft = fieldSortOptions.isStable()
+                    ? (fieldSortOptions.getFieldType().equals(UNSIGNED_INTEGER)
                     ? partitionStable(runtime, oStart, sortMask, n)
                     : partitionReverseStable(runtime, oStart, sortMask, n))
-                    : (mapper.getFieldType().equals(UNSIGNED_INTEGER)
+                    : (fieldSortOptions.getFieldType().equals(UNSIGNED_INTEGER)
                     ? partitionNotStable(oArray, oStart, array, 0, sortMask, n)
                     : partitionReverseNotStable(oArray, oStart, array, 0, sortMask, n));
 

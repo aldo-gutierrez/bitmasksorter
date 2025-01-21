@@ -23,12 +23,12 @@ import static com.aldogg.sorter.int_.SorterUtilsIntExt.sortShortK;
 public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, FieldOptions options, int[] bList, Object params) {
+    public void sort(int[] array, int start, int endP1, FieldSortOptions options, int[] bList, Object params) {
         Integer maxThreads = (Integer) params;
         sort(array, start, endP1, bList, 0, maxThreads, options);
     }
 
-    public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, int maxThreads, FieldOptions options) {
+    public void sort(final int[] array, final int start, final int endP1, int[] bList, int bListIndex, int maxThreads, FieldSortOptions options) {
         final int n = endP1 - start;
         int kDiff = bList.length - bListIndex;
         if (kDiff <= SHORT_K_BITS) {
@@ -59,14 +59,14 @@ public class MixedBitSorterMTInt extends BitMaskSorterMTInt {
         }
     }
 
-    protected void radixCountSort(int[] list, int start, int endP1, int[] bList, int bListIndexEnd, FieldOptions options) {
+    protected void radixCountSort(int[] list, int start, int endP1, int[] bList, int bListIndexEnd, FieldSortOptions options) {
         int bListIndexCountSort = bList.length - SHORT_K_BITS;
         int sortMask = MaskInfoInt.getMask(bList, bListIndexEnd, bListIndexCountSort - 1);
         partitionStableNonConsecutiveBitsAndCountSort(list, start, endP1, sortMask, bList, bListIndexCountSort, options);
     }
 
     //partitionStableLastBits
-    protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] array, final int start, final int endP1, int sortMask, int[] bList, int bListIndex, FieldOptions options) {
+    protected void partitionStableNonConsecutiveBitsAndCountSort(final int[] array, final int start, final int endP1, int sortMask, int[] bList, int bListIndex, FieldSortOptions options) {
         int n = endP1 - start;
         int[] aux = new int[n];
         int[] bListAux = MaskInfoInt.getMaskAsArray(sortMask);

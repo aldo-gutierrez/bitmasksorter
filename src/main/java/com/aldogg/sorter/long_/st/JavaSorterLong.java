@@ -1,6 +1,6 @@
 package com.aldogg.sorter.long_.st;
 
-import com.aldogg.sorter.FieldOptions;
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.long_.SorterLong;
 
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import java.util.List;
 public class JavaSorterLong implements SorterLong {
 
     @Override
-    public void sort(long[] array, int start, int endP1, FieldOptions options) {
+    public void sort(long[] array, int start, int endP1, FieldSortOptions options) {
         Arrays.sort(array, start, endP1);
     }
 

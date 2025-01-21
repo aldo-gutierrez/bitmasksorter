@@ -16,11 +16,9 @@ import static com.aldogg.sorter.generic.SorterUtilsGeneric.reverse;
 
 public class RadixBitSorterObjectFloat implements SorterObjectFloat {
 
-    FieldOptions options;
 
     @Override
     public void sort(Object[] oArray, int start, int endP1, FloatMapper mapper) {
-        options = mapper;
         int n = endP1 - start;
         if (n < 2) {
             return;
@@ -46,11 +44,12 @@ public class RadixBitSorterObjectFloat implements SorterObjectFloat {
     }
 
     public void sort(Object[] oArray, float[] array, int start, int end, int[] bList) {
+        FieldSortOptions fieldSorterOptions = getDefaultFieldSortOptions();
         if (bList[0] == UPPER_BIT) { //there are negative numbers and positive numbers
             MaskInfoInt maskInfo;
             int mask;
             int sortMask = 1 << bList[0];
-            int finalLeft = options.isStable()
+            int finalLeft = fieldSorterOptions.isStable()
                     ? (partitionReverseStable(oArray, array, start, end, sortMask))
                     : (partitionReverseNotStable(oArray, array, start, end, sortMask));
             int n1 = finalLeft - start;

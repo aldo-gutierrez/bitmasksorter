@@ -1,6 +1,6 @@
 package com.aldogg.sorter.test;
 
-import com.aldogg.sorter.FieldOptions;
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.generators.*;
 import com.aldogg.sorter.int_.SorterInt;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +34,7 @@ public class BaseTest {
         }
     }
 
-    public void testSort(int[] list, TestAlgorithms<SorterInt> testAlgorithms, FieldOptions options) {
+    public void testSort(int[] list, TestAlgorithms<SorterInt> testAlgorithms, FieldSortOptions options) {
         int[] baseListSorted = null;
         SorterInt[] sorters = testAlgorithms.getAlgorithms();
         for (int i = 0; i < sorters.length; i++) {
@@ -75,7 +75,7 @@ public class BaseTest {
         }
     }
 
-    public void testSpeedInt(int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, FieldOptions options) {
+    public void testSpeedInt(int iterations, GeneratorParams params, TestAlgorithms testAlgorithms, FieldSortOptions options) {
         Function<GeneratorParams, int[]> function = IntGenerator.getGFunction(params.function);
         for (int iter = 0; iter < iterations; iter++) {
             int[] list = function.apply(params);

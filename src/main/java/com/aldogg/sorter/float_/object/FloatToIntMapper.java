@@ -3,7 +3,7 @@ package com.aldogg.sorter.float_.object;
 import com.aldogg.sorter.int_.object.IntMapper;
 import com.aldogg.sorter.shared.FieldType;
 
-public interface FloatToIntMapper<T> extends IntMapper<T> {
+public interface FloatToIntMapper<T>  {
 
     float valueFloat(T o);
 
@@ -11,8 +11,4 @@ public interface FloatToIntMapper<T> extends IntMapper<T> {
         return Float.floatToRawIntBits(valueFloat(o));
     }
 
-    @Override
-    default FieldType getFieldType() {
-        return FieldType.IEEE764_FLOAT;
-    }
 }

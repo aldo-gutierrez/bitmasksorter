@@ -2,7 +2,7 @@ package com.aldogg.sorter.int_.mt;
 
 import com.aldogg.parallel.ParallelRunner;
 import com.aldogg.sorter.BitSorterParams;
-import com.aldogg.sorter.FieldOptions;
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.int_.BitMaskSorterInt;
 import com.aldogg.sorter.int_.BitMaskSorterMTInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
@@ -16,12 +16,12 @@ import static com.aldogg.sorter.shared.int_mask.MaskInfoInt.getMaskAsArray;
 public class QuickBitSorterMTInt extends BitMaskSorterMTInt {
 
     @Override
-    public void sort(int[] array, int start, int endP1, FieldOptions options, int[] bList, Object params) {
+    public void sort(int[] array, int start, int endP1, FieldSortOptions options, int[] bList, Object params) {
         //Number of Threads was multiplied by two to get back performance TODO investigate
         sortMT(array, start, endP1, options, bList, 0, false, ((Integer) params) * 2);
     }
 
-    public void sortMT(final int[] array, final int start, final int endP1, FieldOptions options, int[] bList, int bListIndex, boolean recalculate, int maxThreads) {
+    public void sortMT(final int[] array, final int start, final int endP1, FieldSortOptions options, int[] bList, int bListIndex, boolean recalculate, int maxThreads) {
         final int n = endP1 - start;
         if (n < params.getDataSizeForThreads() || maxThreads == 1) {
             QuickBitSorterInt stIntSorter = (QuickBitSorterInt) getSTIntSorter();

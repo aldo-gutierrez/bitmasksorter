@@ -1,8 +1,8 @@
 package com.aldogg.sorter.double_.object;
 
-import com.aldogg.sorter.shared.Sorter;
+import com.aldogg.sorter.shared.SorterObjectType;
 
-public interface SorterObjectDouble extends Sorter {
+public interface SorterObjectDouble<T> extends SorterObjectType<T, Double> {
 
     default void sort(Object[] arrayObject, DoubleMapper mapper) {
         sort(arrayObject, 0, arrayObject.length, mapper);

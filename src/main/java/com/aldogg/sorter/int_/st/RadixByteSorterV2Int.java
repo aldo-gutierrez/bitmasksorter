@@ -1,6 +1,6 @@
 package com.aldogg.sorter.int_.st;
 
-import com.aldogg.sorter.FieldOptions;
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.shared.OrderAnalysisResult;
 import com.aldogg.sorter.BitSorterUtils;
 import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
@@ -30,7 +30,7 @@ public class RadixByteSorterV2Int extends BitMaskSorterInt {
     }
 
     @Override
-    public void sort(int[] array, int start, int endP1, FieldOptions options) {
+    public void sort(int[] array, int start, int endP1, FieldSortOptions options) {
         int n = endP1 - start;
         if (n < 2) {
             return;
@@ -55,7 +55,7 @@ public class RadixByteSorterV2Int extends BitMaskSorterInt {
     }
 
     @Override
-    public void sort(int[] array, int start, int endP1, FieldOptions options, int[] bList, Object params) {
+    public void sort(int[] array, int start, int endP1, FieldSortOptions options, int[] bList, Object params) {
         int mask = 0xFFFFFFFF;
         if (calculateBitMaskOptimization) {
             if (bList.length == 0) {

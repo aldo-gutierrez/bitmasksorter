@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'maven-publish'
     id("com.github.spotbugs") version "6.1.0"
     id 'pmd'
     id 'jacoco'
@@ -44,7 +45,7 @@ spotbugsMain {
     reports {
         html {
             required = true
-            outputLocation = file("$layout.buildDirectory/reports/spotbugs/main/spotbugs.html")
+            outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.html")
             stylesheet = 'fancy-hist.xsl'
         }
     }
@@ -54,7 +55,7 @@ spotbugsTest {
     reports {
         html {
             required = true
-            outputLocation = file("$layout.buildDirectory/reports/spotbugs/test/spotbugs.html")
+            outputLocation = file("$buildDir/reports/spotbugs/test/spotbugs.html")
             stylesheet = 'fancy-hist.xsl'
         }
     }

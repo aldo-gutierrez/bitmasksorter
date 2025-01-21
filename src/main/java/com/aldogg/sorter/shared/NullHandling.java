@@ -1,7 +1,7 @@
 package com.aldogg.sorter.shared;
 
 public enum NullHandling {
-    NULLS_EXCEPTION,
+    NO_HANDLING,
     NULLS_FIRST,
     NULLS_LAST
 }

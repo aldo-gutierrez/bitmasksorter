@@ -17,9 +17,9 @@ public abstract class BitMaskSorterInt implements SorterInt {
     }
 
 
-    public abstract void sort(int[] array, int start, int endP1, FieldOptions options, int[] bList, Object params);
+    public abstract void sort(int[] array, int start, int endP1, FieldSortOptions options, int[] bList, Object params);
     @Override
-    public void sort(int[] array, int start, int endP1, FieldOptions options) {
+    public void sort(int[] array, int start, int endP1, FieldSortOptions options) {
         int n = endP1 - start;
         if (n < 2) {
             return;

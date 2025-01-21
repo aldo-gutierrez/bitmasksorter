@@ -1,48 +1,28 @@
 package com.aldogg.sorter.int_;
 
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.shared.NullHandling;
-import com.aldogg.sorter.shared.Sorter;
-import com.aldogg.sorter.FieldOptions;
+import com.aldogg.sorter.shared.SorterPrimitive;
 
 import java.util.*;
 
-public interface SorterInt extends Sorter {
+public interface SorterInt extends SorterPrimitive<Integer> {
 
-    FieldOptions defaultOptions = new FieldOptions() {
-    };
-
-
-    void sort(int[] array, int start, int endP1, FieldOptions options);
+    void sort(int[] array, int start, int endP1, FieldSortOptions options);
 
     default void sort(int[] array) {
-        sort(array, 0, array.length, defaultOptions);
+        sort(array, 0, array.length, getDefaultFieldSortOptions());
     }
 
     default void sort(int[] array, int start, int endP1) {
-        sort(array, start, endP1, defaultOptions);
+        sort(array, start, endP1, getDefaultFieldSortOptions());
     }
 
-    default void sort(List<Integer> list) {
-        sort(list, 0, list.size(), defaultOptions);
-    }
-
-    default void sort(List<Integer> list, int start, int endP1) {
-        sort(list, start, endP1, defaultOptions);
-    }
-
-    default void sort(Integer[] list) {
-        sort(list, 0, list.length, defaultOptions);
-    }
-
-    default void sort(Integer[] list, int start, int endP1) {
-        sort(list, start, endP1, defaultOptions);
-    }
-
-    default void sort(List<Integer> list, int start, int endP1, FieldOptions options) {
+    default void sort(List<Integer> list, int start, int endP1, FieldSortOptions options) {
         int nulls = 0;
-        boolean throwExceptionIfNull = options.getNullHandling().equals(NullHandling.NULLS_EXCEPTION);
+        boolean throwExceptionIfNull = options.getNullHandling().equals(NullHandling.NO_HANDLING);
         List<Integer> subList = start == 0 && endP1 == list.size() ? list : list.subList(start, endP1);
-        if (!options.getNullHandling().equals(NullHandling.NULLS_EXCEPTION)) {
+        if (!options.getNullHandling().equals(NullHandling.NO_HANDLING)) {
             for (Integer value : subList) {
                 if (throwExceptionIfNull) {
                     if (value == null) {
@@ -101,9 +81,9 @@ public interface SorterInt extends Sorter {
         }
     }
 
-    default void sort(Integer[] list, int start, int endP1, FieldOptions options) {
+    default void sort(Integer[] list, int start, int endP1, FieldSortOptions options) {
         int nulls = 0;
-        boolean throwExceptionIfNull = options.getNullHandling().equals(NullHandling.NULLS_EXCEPTION);
+        boolean throwExceptionIfNull = options.getNullHandling().equals(NullHandling.NO_HANDLING);
         for (int i = start; i < endP1; i++) {
             if (list[i] == null) {
                 if (throwExceptionIfNull) {

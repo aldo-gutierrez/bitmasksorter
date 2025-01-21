@@ -1,6 +1,6 @@
 package com.aldogg.sorter.int_.st;
 
-import com.aldogg.sorter.FieldOptions;
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.int_.SorterInt;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 import com.aldogg.sorter.shared.NullHandling;
@@ -14,7 +14,7 @@ import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
 public class JavaSorterInt implements SorterInt {
 
     @Override
-    public void sort(Integer[] list, int start, int endP1, FieldOptions options) {
+    public void sort(Integer[] list, int start, int endP1, FieldSortOptions options) {
         if (options.getNullHandling().equals(NullHandling.NULLS_LAST)) {
             if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 Arrays.sort(list, start, endP1, Comparator.nullsLast(Integer::compareUnsigned));
@@ -37,7 +37,7 @@ public class JavaSorterInt implements SorterInt {
     }
 
     @Override
-    public void sort(List<Integer> list, int start, int endP1, FieldOptions options) {
+    public void sort(List<Integer> list, int start, int endP1, FieldSortOptions options) {
         if (options.getNullHandling().equals(NullHandling.NULLS_LAST)) {
             if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 if (start == 0 && endP1 == list.size()) {
@@ -84,7 +84,7 @@ public class JavaSorterInt implements SorterInt {
     }
 
     @Override
-    public void sort(int[] array, int start, int endP1, FieldOptions options) {
+    public void sort(int[] array, int start, int endP1, FieldSortOptions options) {
         if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
             Arrays.sort(array, start, endP1);
             int indexPositive = binarySearchIndexOfPositive(array, start, endP1);

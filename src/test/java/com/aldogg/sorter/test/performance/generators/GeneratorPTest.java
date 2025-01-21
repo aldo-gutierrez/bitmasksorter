@@ -1,6 +1,6 @@
 package com.aldogg.sorter.test.performance.generators;
 
-import com.aldogg.sorter.FieldOptions;
+import com.aldogg.sorter.FieldSortOptions;
 import com.aldogg.sorter.int_.st.*;
 import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 import com.aldogg.sorter.generators.GeneratorFunctions;
@@ -35,7 +35,7 @@ public class GeneratorPTest extends BaseTest {
 
         SorterInt[] sorters = new SorterInt[]{new SorterInt() {
             @Override
-            public void sort(int[] array, int start, int endP1, FieldOptions options) {
+            public void sort(int[] array, int start, int endP1, FieldSortOptions options) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
                 int mask = maskInfo.getMask();
                 if (mask != 0) {
@@ -53,7 +53,7 @@ public class GeneratorPTest extends BaseTest {
 
         }, new SorterInt() {
             @Override
-            public void sort(int[] array, int start, int endP1, FieldOptions options) {
+            public void sort(int[] array, int start, int endP1, FieldSortOptions options) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
                 int mask = maskInfo.getMask();
                 if (mask != 0) {
@@ -73,7 +73,7 @@ public class GeneratorPTest extends BaseTest {
 
         }, new SorterInt() {
             @Override
-            public void sort(int[] array, int start, int endP1, FieldOptions options) {
+            public void sort(int[] array, int start, int endP1, FieldSortOptions options) {
                 MaskInfoInt maskInfo = MaskInfoInt.calculateMask(array, start, endP1);
                 int mask = maskInfo.getMask();
                 if (mask != 0) {
