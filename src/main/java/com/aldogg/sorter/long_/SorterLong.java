@@ -21,9 +21,9 @@ public interface SorterLong extends SorterPrimitive<Long> {
 
     default void sort(List<Long> list, int start, int endP1, FieldSortOptions options) {
         int nulls = 0;
-        boolean throwExceptionIfNull = options.getNullHandling().equals(NullHandling.NO_HANDLING);
+        boolean throwExceptionIfNull = options.getNullHandling().equals(NullHandling.UNKNOWN);
         List<Long> subList = start == 0 && endP1 == list.size() ? list : list.subList(start, endP1);
-        if (!options.getNullHandling().equals(NullHandling.NO_HANDLING)) {
+        if (!options.getNullHandling().equals(NullHandling.UNKNOWN)) {
             for (Long value : subList) {
                 if (throwExceptionIfNull) {
                     if (value == null) {
@@ -84,7 +84,7 @@ public interface SorterLong extends SorterPrimitive<Long> {
 
     default void sort(Long[] list, int start, int endP1, FieldSortOptions options) {
         int nulls = 0;
-        boolean throwExceptionIfNull = options.getNullHandling().equals(NullHandling.NO_HANDLING);
+        boolean throwExceptionIfNull = options.getNullHandling().equals(NullHandling.UNKNOWN);
         for (int i = start; i < endP1; i++) {
             if (list[i] == null) {
                 if (throwExceptionIfNull) {

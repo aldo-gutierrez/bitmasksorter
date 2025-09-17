@@ -1,10 +1,11 @@
 package com.aldogg.sorter.int_;
 
 import com.aldogg.sorter.FieldSortOptions;
-import com.aldogg.sorter.shared.NullHandling;
 import com.aldogg.sorter.shared.SorterPrimitive;
 
 import java.util.*;
+
+import static com.aldogg.sorter.shared.NullHandling.*;
 
 public interface SorterInt extends SorterPrimitive<Integer> {
 
@@ -20,17 +21,14 @@ public interface SorterInt extends SorterPrimitive<Integer> {
 
     default void sort(List<Integer> list, int start, int endP1, FieldSortOptions options) {
         int nulls = 0;
-        boolean throwExceptionIfNull = options.getNullHandling().equals(NullHandling.NO_HANDLING);
         List<Integer> subList = start == 0 && endP1 == list.size() ? list : list.subList(start, endP1);
-        if (!options.getNullHandling().equals(NullHandling.NO_HANDLING)) {
-            for (Integer value : subList) {
-                if (throwExceptionIfNull) {
-                    if (value == null) {
-                        throw new RuntimeException("Null found in Collection");
-                    }
-                }
+        for (Integer value : subList) {
+            if (value == null) {
                 nulls++;
             }
+        }
+        if (UNKNOWN.equals(options.getNullHandling()) && nulls > 0) {
+            throw new NullPointerException("Null found in Collection please specify option NullHandling.NULLS_FIRST or NullHandling.NULLS_LAST");
         }
         int n = endP1 - start - nulls;
         int[] a = new int[n];
@@ -48,11 +46,11 @@ public interface SorterInt extends SorterPrimitive<Integer> {
                 j++;
             }
         }
-        sort(a, 0, n);
+        sort(a, 0, n, options);
         j = 0;
         ListIterator<Integer> iterator = subList.listIterator();
         if (nulls > 0) {
-            if (options.getNullHandling().equals(NullHandling.NULLS_FIRST)) {
+            if (NULLS_FIRST.equals(options.getNullHandling())) {
                 while (nulls > 0) {
                     iterator.next();
                     iterator.set(null);
@@ -64,7 +62,7 @@ public interface SorterInt extends SorterPrimitive<Integer> {
                 iterator.set(a[j]);
                 j++;
             }
-            if (options.getNullHandling().equals(NullHandling.NULLS_LAST)) {
+            if (NULLS_LAST.equals(options.getNullHandling())) {
                 while (nulls > 0) {
                     iterator.next();
                     iterator.set(null);
@@ -83,14 +81,13 @@ public interface SorterInt extends SorterPrimitive<Integer> {
 
     default void sort(Integer[] list, int start, int endP1, FieldSortOptions options) {
         int nulls = 0;
-        boolean throwExceptionIfNull = options.getNullHandling().equals(NullHandling.NO_HANDLING);
         for (int i = start; i < endP1; i++) {
             if (list[i] == null) {
-                if (throwExceptionIfNull) {
-                    throw new RuntimeException("Null found in Collection");
-                }
                 nulls++;
             }
+        }
+        if (UNKNOWN.equals(options.getNullHandling()) && nulls > 0) {
+            throw new NullPointerException("Null found in Collection please specify option NullHandling.NULLS_FIRST or NullHandling.NULLS_LAST");
         }
         int n = endP1 - start - nulls;
         int[] array = new int[n];
@@ -107,11 +104,11 @@ public interface SorterInt extends SorterPrimitive<Integer> {
                 array[j] = list[i];
             }
         }
-        sort(array, 0, n);
+        sort(array, 0, n, options);
         if (nulls > 0) {
             int i = start;
             int j = 0;
-            if (options.getNullHandling().equals(NullHandling.NULLS_FIRST)) {
+            if (NULLS_FIRST.equals(options.getNullHandling())) {
                 while (nulls > 0) {
                     list[i] = null;
                     i++;
@@ -121,7 +118,7 @@ public interface SorterInt extends SorterPrimitive<Integer> {
             for (; j < n; i++, j++) {
                 list[i] = array[j];
             }
-            if (options.getNullHandling().equals(NullHandling.NULLS_LAST)) {
+            if (NULLS_LAST.equals(options.getNullHandling())) {
                 while (nulls > 0) {
                     list[i] = null;
                     i++;

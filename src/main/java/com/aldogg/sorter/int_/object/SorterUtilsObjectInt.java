@@ -1,10 +1,16 @@
 package com.aldogg.sorter.int_.object;
 
+import com.aldogg.sorter.MemoryBalance;
 import com.aldogg.sorter.RuntimeOptionsInt;
 import com.aldogg.sorter.shared.int_mask.MaskInfoInt;
 import com.aldogg.sorter.shared.Section;
 import com.aldogg.sorter.int_.SorterUtilsInt;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+
+import static com.aldogg.sorter.MemoryBalance.BALANCED_MEMORY_CPU;
 import static com.aldogg.sorter.generic.SorterUtilsGeneric.swap;
 
 public class SorterUtilsObjectInt {
@@ -245,5 +251,89 @@ public class SorterUtilsObjectInt {
             count = partitionStableLastBits(runtime, oStart, aStart, section, startAux, n);
         }
         return count;
+    }
+
+    public static <T> int fieldNullLast(T[] list, IntegerMapper mapper, int start, int endP1, MemoryBalance memoryBalance, boolean stable) {
+        int nullFields = 0;
+        if (!stable) {
+            int left = partitionNotStable(list, (o) -> mapper.valueOf(o) != null, start, endP1);
+            return endP1 - left;
+        } else {
+            if (BALANCED_MEMORY_CPU.compareTo(memoryBalance) >= 0) {
+                int j = start;
+                List<T> aux = new ArrayList<>();
+                for (int i = start; i < endP1; i++) {
+                    T value = list[i];
+                    if (mapper.valueOf(value) == null) {
+                        nullFields++;
+                        aux.add(value);
+                    } else {
+                        list[j] = value;
+                        j++;
+                    }
+                }
+                int i = 0;
+                for (; j < endP1; j++, i++) {
+                    list[j] = aux.get(i);
+                }
+                return nullFields;
+            } else {
+                int left = partitionStableNoMemory(list, (o) -> mapper.valueOf(o) != null, start, endP1);
+                return endP1 - left;
+            }
+        }
+    }
+
+    public static <T> int partitionNotStable(final T[] array, Predicate<T> predicate, final int start, final int endP1) {
+        int left = start;
+        int right = endP1 - 1;
+
+        while (left <= right) {
+            T element = array[left];
+            if (predicate.test(element)) {
+                left++;
+            } else {
+                while (left <= right) {
+                    element = array[right];
+                    if (predicate.test(element)) {
+                        swap(array, left, right);
+                        left++;
+                        right--;
+                        break;
+                    } else {
+                        right--;
+                    }
+                }
+            }
+        }
+        return left;
+    }
+    public static <T> int partitionStableNoMemory(final T[] array, Predicate<T> predicate, final int start, final int endP1) {
+        throw new RuntimeException("NOT IMPLEMENTED YET");
+    }
+
+
+    public static void main(String[] args) {
+        class Test {
+            int a;
+            int b;
+        }
+        IntegerMapper<Test> i2mapper = (o) -> o.a;
+        IntMapper<Test> i1Mapper = (o) -> o.b;
+        Test test = new Test();
+        test.a = 5;
+        test.b = 8;
+
+        aa(i1Mapper, test);
+
+        System.out.println("Hello, World!");
+    }
+
+    private static <T> int aa(IntMapper<T> a, T b) {
+        return a.value(b);
+    }
+
+    private static <T> int aa(IntegerMapper<T> a, T b) {
+        return a.value(b);
     }
 }

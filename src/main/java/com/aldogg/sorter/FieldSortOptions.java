@@ -1,27 +1,27 @@
 package com.aldogg.sorter;
 
+import com.aldogg.Order;
 import com.aldogg.sorter.shared.FieldType;
 import com.aldogg.sorter.shared.NullHandling;
 
-import static com.aldogg.sorter.shared.NullHandling.NO_HANDLING;
+import static com.aldogg.Order.ASC;
+import static com.aldogg.sorter.shared.NullHandling.UNKNOWN;
 
 public final class FieldSortOptions {
 
-    public enum ORDER { ASC, DESC}
+    private Order order = ASC;
 
-    private ORDER order = ORDER.ASC;
-
-    private NullHandling nullHandling = NO_HANDLING;
+    private NullHandling nullHandling = UNKNOWN;
 
     private boolean stable = false;
 
     private FieldType fieldType = FieldType.SIGNED_INTEGER;
 
-    public ORDER getOrder() {
+    public Order getOrder() {
         return order;
     }
 
-    public void setOrder(ORDER order) {
+    public void setOrder(Order order) {
         this.order = order;
     }
 
@@ -48,4 +48,5 @@ public final class FieldSortOptions {
     public void setFieldType(FieldType fieldType) {
         this.fieldType = fieldType;
     }
+
 }

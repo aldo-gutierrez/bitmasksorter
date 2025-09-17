@@ -23,7 +23,7 @@ public interface SorterObjectLong<T> extends SorterPrimitive<Long> {
     default void sort(List<T> list, LongMapper<T> mapper, int start, int endP1) {
         int nulls = 0;
         FieldSortOptions fieldSorterOptions = getDefaultFieldSortOptions();
-        boolean throwExceptionIfNull = fieldSorterOptions.getNullHandling().equals(NullHandling.NO_HANDLING);
+        boolean throwExceptionIfNull = fieldSorterOptions.getNullHandling().equals(NullHandling.UNKNOWN);
         List<T> subList = start == 0 && endP1 == list.size() ? list : list.subList(start, endP1);
         for (T value : subList) {
             if (value == null) {

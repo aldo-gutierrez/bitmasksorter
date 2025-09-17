@@ -143,7 +143,8 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
         if (!(1 << tBits == maxThreads)) {
             tBits += 1;
         }
-        int threadBits = Math.min(tBits, bList.length);
+        //int threadBits = Math.min(tBits, bList.length);
+        int threadBits = 8;
         int sortMask = MaskInfoInt.getMask(bList, 0, threadBits - 1);
         int maxProcessNumber = 1 << threadBits;
         int remainingBits = bList.length - threadBits;
@@ -166,9 +167,21 @@ public class RadixBitSorterMTObjectInt<T> implements SorterObjectInt<T> {
 
         if (remainingBits > 0) {
             ParallelRunner runner = new ParallelRunner();
-            runner.init(maxProcessNumber, 1);
+            runner.init(maxThreads, 0);
 
-            for (int i = 0; i < count.length; i++) {
+            for (int i = 0; i < count.length; i+=2) {
+                int finalI = i;
+                int lengthT = count[finalI] - (finalI == 0 ? 0 : count[finalI - 1]);
+                if (lengthT > 1) {
+                    Runnable r = () -> {
+                        int endIBZ = count[finalI];
+                        int startIBZ = endIBZ - lengthT; //auxStart is BAD
+                        RadixBitSorterObjectInt.radixSort(runtime, oStart + startIBZ, aStart + startIBZ, bList, threadBits, startAux + startIBZ, lengthT);
+                    };
+                    runner.preSubmit(r);
+                }
+            }
+            for (int i = 1; i < count.length; i+=2) {
                 int finalI = i;
                 int lengthT = count[finalI] - (finalI == 0 ? 0 : count[finalI - 1]);
                 if (lengthT > 1) {

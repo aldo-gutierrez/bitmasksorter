@@ -1,11 +1,16 @@
 package com.aldogg.sorter.int_;
 
 import com.aldogg.sorter.FieldSortOptions;
-import com.aldogg.sorter.shared.NullHandling;
+import com.aldogg.sorter.int_.object.IntegerMapper;
 import com.aldogg.sorter.int_.object.IntMapper;
+import com.aldogg.sorter.shared.NullHandling;
 import com.aldogg.sorter.shared.SorterObjectType;
 
 import java.util.*;
+
+import static com.aldogg.sorter.shared.NullHandling.*;
+import static com.aldogg.sorter.shared.SorterObjectUtils.nullFirst;
+import static com.aldogg.sorter.shared.SorterObjectUtils.nullLast;
 
 public interface SorterObjectInt<T> extends SorterObjectType<T, Integer> {
 
@@ -15,21 +20,25 @@ public interface SorterObjectInt<T> extends SorterObjectType<T, Integer> {
         sort(list, mapper, 0, list.size(), getDefaultFieldSortOptions());
     }
 
+    default void sort(List<T> list, IntegerMapper<T> mapper) {
+        sort(list, mapper, 0, list.size(), getDefaultFieldSortOptions());
+    }
+
     default void sort(T[] array, IntMapper<T> mapper) {
         sort(array, mapper, 0, array.length, getDefaultFieldSortOptions());
     }
 
     default void sort(List<T> list, IntMapper<T> mapper, int start, int endP1, FieldSortOptions fieldSortOptions) {
+        NullHandling collectionNullHandling = getCollectionOptions().getNullHandling() != null ? getCollectionOptions().getNullHandling() : fieldSortOptions.getNullHandling();
         int nulls = 0;
-        boolean throwExceptionIfNull = fieldSortOptions.getNullHandling().equals(NullHandling.NO_HANDLING);
         List<T> subList = start == 0 && endP1 == list.size() ? list : list.subList(start, endP1);
         for (T value : subList) {
             if (value == null) {
-                if (throwExceptionIfNull) {
-                    throw new RuntimeException("Null found in Collection");
-                }
                 nulls++;
             }
+        }
+        if (UNKNOWN.equals(collectionNullHandling) && nulls > 0) {
+            throw new NullPointerException("Null found in Collection please specify option NullHandling.NULLS_FIRST or NullHandling.NULLS_LAST");
         }
         int n = endP1 - start - nulls;
         T[] array = (T[]) new Object[n];
@@ -51,7 +60,7 @@ public interface SorterObjectInt<T> extends SorterObjectType<T, Integer> {
         j = 0;
         ListIterator<T> iterator = subList.listIterator();
         if (nulls > 0) {
-            if (fieldSortOptions.getNullHandling().equals(NullHandling.NULLS_FIRST)) {
+            if (NULLS_FIRST.equals(collectionNullHandling)) {
                 while (nulls > 0) {
                     iterator.next();
                     iterator.set(null);
@@ -63,7 +72,105 @@ public interface SorterObjectInt<T> extends SorterObjectType<T, Integer> {
                 iterator.set(array[j]);
                 j++;
             }
-            if (fieldSortOptions.getNullHandling().equals(NullHandling.NULLS_LAST)) {
+            if (NULLS_LAST.equals(collectionNullHandling)) {
+                while (nulls > 0) {
+                    iterator.next();
+                    iterator.set(null);
+                    nulls--;
+                }
+            }
+        } else {
+            while (iterator.hasNext()) {
+                iterator.next();
+                iterator.set(array[j]);
+                j++;
+            }
+        }
+    }
+
+    default void sort(List<T> list, IntegerMapper<T> mapper, int start, int endP1, FieldSortOptions fieldSortOptions) {
+        NullHandling collectionNullHandling = getCollectionOptions().getNullHandling() != null ? getCollectionOptions().getNullHandling() : fieldSortOptions.getNullHandling();
+        int nulls = 0;
+        int nullFields = 0;
+        List<T> subList = start == 0 && endP1 == list.size() ? list : list.subList(start, endP1);
+        for (T value : subList) {
+            if (value == null) {
+                nulls++;
+            } else {
+                if (mapper.valueOf(value) == null) {
+                    nullFields++;
+                }
+            }
+        }
+        if (UNKNOWN.equals(collectionNullHandling) && nulls > 0) {
+            throw new NullPointerException("Null found in Collection please specify option NullHandling.NULLS_FIRST or NullHandling.NULLS_LAST");
+        }
+        if (UNKNOWN.equals(fieldSortOptions.getNullHandling()) && nullFields > 0) {
+            throw new NullPointerException("Null found in Collection please specify option NullHandling.NULLS_FIRST or NullHandling.NULLS_LAST");
+        }
+        int n = endP1 - start - nulls;
+        T[] array = (T[]) new Object[n];
+        int j = 0;
+        if (nulls == 0 && nullFields == 0) {
+            for (T value : subList) {
+                array[j] = value;
+                j++;
+            }
+        } else {
+            if (nullFields == 0) {
+                for (T value : subList) {
+                    if (value != null) {
+                        array[j] = value;
+                        j++;
+                    }
+                }
+            } else {
+                int jn;
+                if (NULLS_FIRST.equals(fieldSortOptions.getNullHandling()) && nullFields > 0) {
+                    j = nullFields;
+                    jn = 0;
+                } else { //NULLS_LAST
+                    j = 0;
+                    jn = n - nullFields;
+                }
+                for (T value : subList) {
+                    if (value != null) {
+                        if (mapper.valueOf(value) != null) {
+                            array[j] = value;
+                            j++;
+                        } else {
+                            array[jn] = value;
+                            jn++;
+                        }
+                    }
+                }
+            }
+        }
+        if (nullFields == 0) {
+            sortNNA(array, mapper, 0, n, fieldSortOptions);
+        } else {
+            if (NULLS_FIRST.equals(fieldSortOptions.getNullHandling()) && nullFields > 0) {
+                sortNNA(array, mapper, nullFields, n, fieldSortOptions);
+            } else { //NULLS_LAST
+                sortNNA(array, mapper, 0, n - nullFields, fieldSortOptions);
+            }
+        }
+        j = 0;
+        ListIterator<T> iterator = subList.listIterator();
+        if (nulls > 0) {
+            if (NULLS_FIRST.equals(collectionNullHandling)) {
+                while (nulls > 0) {
+                    iterator.next();
+                    iterator.set(null);
+                    nulls--;
+                }
+            }
+            while (j < n) {
+                iterator.next();
+                iterator.set(array[j]);
+                j++;
+            }
+            if (NULLS_LAST.equals(collectionNullHandling)) {
                 while (nulls > 0) {
                     iterator.next();
                     iterator.set(null);
@@ -80,45 +187,57 @@ public interface SorterObjectInt<T> extends SorterObjectType<T, Integer> {
     }
 
     default void sort(T[] list, IntMapper<T> mapper, int start, int endP1, FieldSortOptions fieldSortOptions) {
-        int nulls = 0;
-        if (fieldSortOptions.getNullHandling() == NullHandling.NULLS_LAST) {
-            int j = start;
-            for (int i = start; i < endP1; i++) {
-                T value = list[i];
-                if (value == null) {
-                    nulls++;
-                } else {
-                    list[j] = value;
-                    j++;
-                }
-            }
-            for (; j < endP1; j++) {
-                list[j] = null;
-            }
+        NullHandling collectionNullHandling = getCollectionOptions().getNullHandling() != null ? getCollectionOptions().getNullHandling() : fieldSortOptions.getNullHandling();
+        int nulls;
+        if (NULLS_LAST.equals(collectionNullHandling)) {
+            nulls = nullLast(list, start, endP1);
             sortNNA(list, mapper, 0, endP1 - nulls, fieldSortOptions);
-        } else if (fieldSortOptions.getNullHandling() == NullHandling.NULLS_FIRST) {
-            int j = endP1 - 1;
-            for (int i = endP1 - 1; i >= start; i--) {
-                T value = list[i];
-                if (value == null) {
-                    nulls++;
-                } else {
-                    list[j] = value;
-                    j--;
-                }
-            }
-            for (; j >= start; j--) {
-                list[j] = null;
-            }
+        } else if (NULLS_FIRST.equals(collectionNullHandling)) {
+            nulls = nullFirst(list, start, endP1);
             sortNNA(list, mapper, start + nulls, endP1, fieldSortOptions);
         } else {
-            for (int i = start; i < endP1; i++) {
-                T value = list[i];
-                if (value == null) {
-                    throw new RuntimeException("Null found in Collection");
+            if (UNKNOWN.equals(collectionNullHandling) || collectionNullHandling == null) {
+                for (int i = start; i < endP1; i++) {
+                    T value = list[i];
+                    if (value == null) {
+                        throw new NullPointerException("Null found in Collection please specify option NullHandling.NULLS_FIRST or NullHandling.NULLS_LAST");
+                    }
                 }
             }
             sortNNA(list, mapper, 0, endP1, fieldSortOptions);
+        }
+    }
+
+    default void sort(T[] list, IntegerMapper<T> mapper, int start, int endP1, FieldSortOptions fieldSortOptions) {
+        NullHandling collectionNullHandling = getCollectionOptions().getNullHandling() != null ? getCollectionOptions().getNullHandling() : fieldSortOptions.getNullHandling();
+        int nulls;
+        if (NULLS_LAST.equals(collectionNullHandling)) {
+            nulls = nullLast(list, start, endP1);
+            // nullLastFields(list, start, endP1, mapper);
+            // nullFirstFields(list, start, endP1, mapper);
+            sortNNA(list, mapper, 0, endP1 - nulls, fieldSortOptions);
+        } else if (NULLS_FIRST.equals(collectionNullHandling)) {
+            nulls = nullFirst(list, start, endP1);
+            // nullLastFields(list, start, endP1, mapper);
+            // nullFirstFields(list, start, endP1, mapper);
+            sortNNA(list, mapper, start + nulls, endP1, fieldSortOptions);
+        } else {
+            if (NO_NULLS_HANDLING.equals(collectionNullHandling) && NO_NULLS_HANDLING.equals(fieldSortOptions.getNullHandling())) {
+                sortNNA(list, mapper, 0, endP1, fieldSortOptions);
+            } else {
+                for (int i = start; i < endP1; i++) {
+                    T value = list[i];
+                    if (value == null) {
+                        if (UNKNOWN.equals(collectionNullHandling) || collectionNullHandling == null) {
+                            throw new NullPointerException("Null found in Collection please specify option NullHandling.NULLS_FIRST or NullHandling.NULLS_LAST");
+                        }
+                    } else if (mapper.valueOf(value) == null) {
+                        if (UNKNOWN.equals(fieldSortOptions.getNullHandling()) || fieldSortOptions.getNullHandling() == null) {
+                            throw new NullPointerException("Null found in Collection please specify option NullHandling.NULLS_FIRST or NullHandling.NULLS_LAST");
+                        }
+                    }
+                }
+            }
         }
     }
 

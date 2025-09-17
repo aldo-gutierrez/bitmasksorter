@@ -4,6 +4,8 @@ import com.aldogg.sorter.FieldSortOptions;
 
 import java.util.List;
 
+import static com.aldogg.Order.DESC;
+
 public interface SorterPrimitive<P> extends Sorter {
 
     default FieldSortOptions getDefaultFieldSortOptions() {
@@ -18,7 +20,7 @@ public interface SorterPrimitive<P> extends Sorter {
 
     default void sortDesc(List<P> list) {
         FieldSortOptions defaultFieldSortOptions = getDefaultFieldSortOptions();
-        defaultFieldSortOptions.setOrder(FieldSortOptions.ORDER.DESC);
+        defaultFieldSortOptions.setOrder(DESC);
         sort(list, 0, list.size(), defaultFieldSortOptions);
     }
 
@@ -28,7 +30,7 @@ public interface SorterPrimitive<P> extends Sorter {
 
     default void sortDesc(List<P> list, int start, int endP1) {
         FieldSortOptions defaultFieldSortOptions = getDefaultFieldSortOptions();
-        defaultFieldSortOptions.setOrder(FieldSortOptions.ORDER.DESC);
+        defaultFieldSortOptions.setOrder(DESC);
         sort(list, start, endP1, defaultFieldSortOptions);
     }
 
@@ -38,7 +40,7 @@ public interface SorterPrimitive<P> extends Sorter {
 
     default void sortDesc(P[] list) {
         FieldSortOptions defaultFieldSortOptions = getDefaultFieldSortOptions();
-        defaultFieldSortOptions.setOrder(FieldSortOptions.ORDER.DESC);
+        defaultFieldSortOptions.setOrder(DESC);
         sort(list, 0, list.length, defaultFieldSortOptions);
     }
 
@@ -48,7 +50,7 @@ public interface SorterPrimitive<P> extends Sorter {
 
     default void sortDesc(P[] list, int start, int endP1) {
         FieldSortOptions defaultFieldSortOptions = getDefaultFieldSortOptions();
-        defaultFieldSortOptions.setOrder(FieldSortOptions.ORDER.DESC);
+        defaultFieldSortOptions.setOrder(DESC);
         sort(list, start, endP1, defaultFieldSortOptions);
     }
 
