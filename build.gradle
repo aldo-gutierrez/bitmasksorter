@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id("com.github.spotbugs") version "6.1.0"
+    id("com.github.spotbugs") version "6.4.4"
     id 'pmd'
     id 'jacoco'
 }
@@ -9,9 +9,13 @@ plugins {
 group = 'com.aldogg.sorter'
 version = '1.0-SNAPSHOT'
 
-compileJava {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 8
 }
 
 repositories {
@@ -27,8 +31,9 @@ publishing {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.14.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.14.0'
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
     testImplementation 'org.apache.velocity:velocity:1.7'
 }
 
