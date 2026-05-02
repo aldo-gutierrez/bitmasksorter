@@ -3,6 +3,7 @@ package com.aldogg.sorter.test.performance;
 import com.aldogg.sorter.generic.RadixBitSorterGenericInt;
 import com.aldogg.sorter.int_.object.IntMapper;
 import com.aldogg.sorter.int_.object.mt.RadixBitSorterMTObjectInt;
+import com.aldogg.sorter.int_.object.st.JavaSorterObjectInt;
 import com.aldogg.sorter.int_.object.st.RadixBitSorterObjectInt;
 import com.aldogg.sorter.int_.st.RadixBitSorterInt;
 import com.aldogg.sorter.shared.NullHandling;
@@ -21,6 +22,9 @@ public class IntListArrayPTest {
     @Test
     /**
      * {Java=4081, RadixBitSorterGenericInt=1895, RadixBitSorterMTObjectInt=477, RadixBitSorterObjectInt=798, RadixBitSorterInt=229}
+     *
+     * Mac OS ARM M2 Max
+     * {Java=2916, RadixBitSorterGenericInt=917, RadixBitSorterMTObjectInt=468, RadixBitSorterObjectInt=503, RadixBitSorterInt=250}
      */
     public void testPerformanceSortingIntegerArray() {
         Random random = new Random();
@@ -90,6 +94,9 @@ public class IntListArrayPTest {
      *
      * rep=10, random.nexInt(100), IntMapper.isStable=false (Strange Results)`
      * {Java=872, RadixBitSorterGenericInt=125, RadixBitSorterMTObjectInt=1015, RadixBitSorterObjectInt=588, RadixBitSorterInt=105}
+     *
+     * rep=10, random.nextInt(), default, Mac OS ARM M2 Max
+     * {Java=2521, RadixBitSorterGenericInt=835, RadixBitSorterMTObjectInt=992, RadixBitSorterObjectInt=510, RadixBitSorterInt=187}
      */
     public void testPerformanceSortingIntegerList() {
         Random random = new Random();
@@ -150,6 +157,9 @@ public class IntListArrayPTest {
      *
      * rep=10, IntMapper.isStable=false (Strange Results)
      * {Java=3946, RadixBitSorterGenericInt=1866, RadixBitSorterMTObjectInt=1414, RadixBitSorterObjectInt=1330, RadixBitSorterInt=832}
+     *
+     * mac os arm result
+     * {Java=2757, RadixBitSorterGenericInt=851, RadixBitSorterMTObjectInt=871, RadixBitSorterObjectInt=558, RadixBitSorterInt=388, JavaSorterObjectInt=3824}
      */
     public void testPerformanceSortingIntegerLinkedList() {
         Random random = new Random();
@@ -166,7 +176,6 @@ public class IntListArrayPTest {
                 Collections.sort(arraySorted);
                 totalElapsed.merge(JAVA, System.nanoTime() - startTime, Long::sum);
             }
-
             {
                 List<Integer> arrayAux = new LinkedList<>(arrayOrig);
                 long startTime = System.nanoTime();
@@ -193,6 +202,13 @@ public class IntListArrayPTest {
                 long startTime = System.nanoTime();
                 new RadixBitSorterMTObjectInt<Integer>().sort(arrayAux, x -> x);
                 totalElapsed.merge(RadixBitSorterMTObjectInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
+                Assertions.assertIterableEquals(arraySorted, arrayAux);
+            }
+            {
+                List<Integer> arrayAux = new LinkedList<>(arrayOrig);
+                long startTime = System.nanoTime();
+                new JavaSorterObjectInt<Integer>().sort(arrayAux, x -> x);
+                totalElapsed.merge(JavaSorterObjectInt.class.getSimpleName(), System.nanoTime() - startTime, Long::sum);
                 Assertions.assertIterableEquals(arraySorted, arrayAux);
             }
         }

@@ -10,14 +10,14 @@ import java.util.List;
 
 import static com.aldogg.sorter.shared.FieldType.UNSIGNED_INTEGER;
 
-public class JavaSorterObjectInt implements SorterObjectInt {
+public class JavaSorterObjectInt<T> implements SorterObjectInt<T> {
     @Override
-    public void sortNNA(Object[] array, int start, int endP1, IntMapper mapper) {
+    public void sortNNA(T[] array, int start, int endP1, IntMapper<T> mapper) {
         sort(array, start, endP1, mapper); //COMMENT: this code should never be call and doesn't optimize for already filtered nulls
     }
 
     @Override
-    public void sort(Object[] array, int start, int endP1, IntMapper options) {
+    public void sort(T[] array, int start, int endP1, IntMapper<T> options) {
         if (options.getNullHandling().equals(NullHandling.NULLS_LAST)) {
             if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 Arrays.sort(array, start, endP1, Comparator.nullsLast((o1, o2) -> Integer.compareUnsigned(options.value(o1), options.value(o2))));
@@ -40,7 +40,7 @@ public class JavaSorterObjectInt implements SorterObjectInt {
     }
 
     @Override
-    public void sort(List list, int start, int endP1, IntMapper options) {
+    public void sort(List<T> list, int start, int endP1, IntMapper<T> options) {
         if (options.getNullHandling().equals(NullHandling.NULLS_LAST)) {
             if (options.getFieldType().equals(UNSIGNED_INTEGER)) {
                 if (start == 0 && endP1 == list.size()) {
